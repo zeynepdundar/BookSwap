@@ -1,4 +1,4 @@
-import { useFonts } from 'expo-font'
+import { useFonts } from 'expo-font';
 import { extendTheme, NativeBaseProvider, Center, Button, Text } from "native-base";
 
 export default function App() {
