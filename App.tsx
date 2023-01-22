@@ -2,6 +2,11 @@ import { useFonts } from 'expo-font';
 import { NativeBaseProvider, Center, Button, Text } from "native-base";
 import { theme } from './src/theme';
 
+import { Amplify } from 'aws-amplify';
+import awsconfig from './src/aws-exports';
+
+Amplify.configure(awsconfig);
+
 export default function App() {
 
   const [fontsLoaded] = useFonts({
