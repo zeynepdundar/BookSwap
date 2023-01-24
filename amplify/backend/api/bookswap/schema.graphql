@@ -1,0 +1,14 @@
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  birthdate: AWSDateTime
+  gender: Gender
+  profile_photo: String
+  language_preference: String
+}
