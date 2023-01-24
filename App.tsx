@@ -54,8 +54,8 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={theme}>
-      {/* <Welcome /> */}
-      <Center flex="1" fontFamily="heading" mt={20}>
+      <Welcome></Welcome>
+      {/* <Center flex="1" fontFamily="heading" mt={20}>
         <Input w="75%" value={name} onChangeText={setName} />
         <Button
           bg="primary.100"
@@ -72,7 +72,7 @@ export default function App() {
           keyExtractor={({ id }) => id}
           renderItem={renderItem}
         />
-      </Center>
+      </Center> */}
     </NativeBaseProvider>
   );
 }
