@@ -26,10 +26,10 @@ export const theme = extendTheme({
     coolGray: {
       100: "#161719",
       200: "#91919F",
-      300: "#7AC1E4",
+      300: "#7B7B80",
       400: "#47A9DA",
       500: "#0088CC",
-      600: "#007AB8",
+      600: "#7b7b80",
     },
     // Redefining only one shade, rest of the color will remain same.
     amber: {
@@ -57,8 +57,8 @@ export const theme = extendTheme({
     },
   },
   fonts: {
-    heading: "poppins-black",
-    body: "poppins-medium",
-    mono: "poppins-light",
+    heading: "Poppins",
+    body: "Poppins",
+    mono: "Poppins",
   },
 });

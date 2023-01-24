@@ -8,6 +8,7 @@ import awsconfig from './src/aws-exports';
 import { Gender, User } from './src/models';
 import { FlatList } from 'react-native';
 import Welcome from "./src/screens/Welcome";
+import Auth from "./src/screens/auth";
 
 Amplify.configure(awsconfig);
 
@@ -54,7 +55,8 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={theme}>
-      <Welcome></Welcome>
+      <Auth></Auth>
+      {/* <Welcome></Welcome> */}
       {/* <Center flex="1" fontFamily="heading" mt={20}>
         <Input w="75%" value={name} onChangeText={setName} />
         <Button
