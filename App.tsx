@@ -54,29 +54,25 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={theme}>
-      <Center flex="1">
-        {/* <Center flex="1" fontFamily="heading">
-          <Text color="primary.50" fontSize="lg" display="flex"  >
-            BOOKSWAP
-          </Text>
-          <Text color="primary.200" mb="1">
-            Welcome our awesome app!
-          </Text>
-          <Button bg="primary.100" m="7" _text={{
-            color: "primary.50"
-          }}>GET STARTED</Button>
-          <Input w="75%" value={name} onChangeText={setName} />
-          <Button bg="primary.100" m="7" _text={{
-            color: "primary.50"
-          }} onPress={handleInsert}>Insert into Dynamo DB</Button>
-          <FlatList
-            data={users}
-            keyExtractor={({ id }) => id}
-            renderItem={renderItem}
-          />
-        </Center> */}
+      {/* <Welcome /> */}
+      <Center flex="1" fontFamily="heading" mt={20}>
+        <Input w="75%" value={name} onChangeText={setName} />
+        <Button
+          bg="primary.100"
+          m="7"
+          _text={{
+            color: "primary.50",
+          }}
+          onPress={handleInsert}
+        >
+          Insert into Dynamo DB
+        </Button>
+        <FlatList
+          data={users}
+          keyExtractor={({ id }) => id}
+          renderItem={renderItem}
+        />
       </Center>
-      <Welcome />
     </NativeBaseProvider>
   );
 }

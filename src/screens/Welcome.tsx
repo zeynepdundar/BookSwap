@@ -1,4 +1,4 @@
-import { Button, Center, Flex, Heading, Image } from "native-base";
+import { Button, Center, Flex, Heading, Image, Text } from "native-base";
 import Screen from "../components/Screen";
 
 export default function Welcome() {
@@ -6,24 +6,33 @@ export default function Welcome() {
 
   return (
     <Screen>
-      <Flex direction="column" mb="2.5" mt="10">
-        <Center>
+      <Flex direction="column" mb="2.5" mt="20">
+        <Center mb="7">
           <Image source={inifiniteLibrary} alt="Infinite Library" size="375" />
         </Center>
         <Center>
-          <Heading>Infinite library</Heading>
-        </Center>
-        <Center>
-          <Heading mt="1" color="coolGray.600" fontWeight="medium">
-            “Making your library as different as possible!”
+          <Heading fontSize="lg" mb="3" color="coolGray.100">
+            Infinite library
           </Heading>
         </Center>
         <Center>
+          <Heading
+            fontSize="md"
+            mt="1"
+            color="coolGray.200"
+            w={312}
+            justifyItems="center"
+          >
+            “Making your library as different as possible!”
+          </Heading>
+        </Center>
+
+        <Center>
           <Button
-            bg="primary.100"
+            bg="primary.50"
             m="7"
             _text={{
-              color: "primary.50",
+              color: "white",
             }}
           >
             GET STARTED
