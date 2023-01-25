@@ -39,20 +39,13 @@ export default function Auth() {
           <Image source={swapBook} alt="Book Swap" width={120} />
         </Center>
         <Center>
-          <Text color="coolGray.300">
+          <Text color="black.300">
             Enter your phone number to verify your account
           </Text>
         </Center>
 
         <Center>
-          <Button
-            bg="primary.50"
-            m="7"
-            px="10"
-            _text={{
-              color: "white",
-            }}
-          >
+          <Button variant="primary" m={5}>
             Send
           </Button>
         </Center>

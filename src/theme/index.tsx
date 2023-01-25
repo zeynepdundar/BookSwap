@@ -10,10 +10,9 @@ export const theme = extendTheme({
     "123x": 20,
   },
   colors: {
-    // Add new color
     primary: {
       50: "#7F3DFF",
-      100: "rgba(127, 61, 255, 0.18)",
+      100: "#E7DCFF",
       200: "#323232",
       300: "#7AC1E4",
       400: "#47A9DA",
@@ -23,7 +22,7 @@ export const theme = extendTheme({
       800: "#005885",
       900: "#003F5E",
     },
-    coolGray: {
+    black: {
       100: "#161719",
       200: "#91919F",
       300: "#7B7B80",
@@ -44,7 +43,6 @@ export const theme = extendTheme({
       200: {
         normal: "poppins-light",
       },
-
       400: {
         normal: "poppins-regular",
       },
@@ -52,7 +50,10 @@ export const theme = extendTheme({
         normal: "poppins-medium",
       },
       600: {
-        normal: "poppins-black",
+        normal: "poppins-semi-bold",
+      },
+      700: {
+        normal: "poppins-bold",
       },
     },
   },
@@ -60,5 +61,41 @@ export const theme = extendTheme({
     heading: "Poppins",
     body: "Poppins",
     mono: "Poppins",
+  },
+  components: {
+    Button: {
+      baseStyle: {
+        rounded: "md",
+        _text: {
+          fontFamily: "Poppins",
+          fontWeight: "700",
+          px: "6",
+        },
+        // _pressed: {
+        //   bg: "primary.100",
+        //   _text: {
+        //     color: "primary.50",
+        //   },
+        // },
+      },
+      variants: {
+        primary: () => {
+          return {
+            bg: "primary.50",
+            _text: {
+              color: "#fff",
+            },
+          };
+        },
+        secondary: () => {
+          return {
+            bg: "primary.100",
+            _text: {
+              color: "primary.50",
+            },
+          };
+        },
+      },
+    },
   },
 });

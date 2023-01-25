@@ -31,10 +31,11 @@ export default function App() {
   }, []);
 
   const [fontsLoaded] = useFonts({
-    'poppins-black': require('./src/assets/fonts/Poppins-Black.ttf'),
-    'poppins-light': require('./src/assets/fonts/Poppins-Light.ttf'),
-    'poppins-medium': require('./src/assets/fonts/Poppins-Medium.ttf'),
-    'poppins-regular': require('./src/assets/fonts/Poppins-Regular.ttf'),
+    "poppins-light": require("./src/assets/fonts/Poppins-Light.ttf"),
+    "poppins-regular": require("./src/assets/fonts/Poppins-Regular.ttf"),
+    "poppins-medium": require("./src/assets/fonts/Poppins-Medium.ttf"),
+    "poppins-semi-bold": require("./src/assets/fonts/Poppins-SemiBold.ttf"),
+    "poppins-bold": require("./src/assets/fonts/Poppins-Bold.ttf"),
   });
 
   if (!fontsLoaded) {

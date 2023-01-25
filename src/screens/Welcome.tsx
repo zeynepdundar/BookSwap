@@ -11,7 +11,7 @@ export default function Welcome() {
           <Image source={inifiniteLibrary} alt="Infinite Library" size="375" />
         </Center>
         <Center>
-          <Heading fontSize="lg" mb="3" color="coolGray.100">
+          <Heading fontSize="lg" mb="3" color="black.100">
             Infinite library
           </Heading>
         </Center>
@@ -19,7 +19,7 @@ export default function Welcome() {
           <Heading
             fontSize="md"
             mt="1"
-            color="coolGray.200"
+            color="black.200"
             w={312}
             justifyItems="center"
           >
