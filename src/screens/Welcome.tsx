@@ -26,7 +26,6 @@ export default function Welcome() {
             “Making your library as different as possible!”
           </Heading>
         </Center>
-
         <Center>
           <Button
             bg="primary.50"

@@ -27,7 +27,7 @@ export const theme = extendTheme({
       200: "#91919F",
       300: "#7B7B80",
       400: "#323232",
-      500: "#0088CC",
+      500: "#808085",
       600: "#7b7b80",
     },
     // Redefining only one shade, rest of the color will remain same.
