@@ -56,8 +56,8 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={theme}>
-      <Auth></Auth>
-      {/* <Welcome></Welcome> */}
+      <Auth />
+      {/* <Welcome /> */}
       {/* <Center flex="1" fontFamily="heading" mt={20}>
         <Input w="75%" value={name} onChangeText={setName} />
         <Button
