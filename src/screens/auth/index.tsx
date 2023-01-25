@@ -24,6 +24,8 @@ export default function Auth() {
   const [number, setNumber] = useState("");
   const [confirm, setConfirm] = useState<Boolean | null>(null);
 
+  console.log(width, height);
+
   const signin = async () => {
     const confirmation = true;
     if (confirmation) {
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: "#4267B2",
     borderRadius: 5,
-    color: "primary.200",
+    color: "black.400",
     padding: 11,
     flexDirection: "row",
     marginTop: 15,

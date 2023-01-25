@@ -13,7 +13,7 @@ export const theme = extendTheme({
     primary: {
       50: "#7F3DFF",
       100: "#E7DCFF",
-      200: "#323232",
+      200: "#F2ECFF",
       300: "#7AC1E4",
       400: "#47A9DA",
       500: "#0088CC",
@@ -26,7 +26,7 @@ export const theme = extendTheme({
       100: "#161719",
       200: "#91919F",
       300: "#7B7B80",
-      400: "#47A9DA",
+      400: "#323232",
       500: "#0088CC",
       600: "#7b7b80",
     },
@@ -65,9 +65,9 @@ export const theme = extendTheme({
   components: {
     Button: {
       baseStyle: {
-        rounded: "md",
+        rounded: "10px",
         _text: {
-          fontFamily: "Poppins",
+          fontFamily: "poppins-semi-bold",
           fontWeight: "700",
           px: "6",
         },
