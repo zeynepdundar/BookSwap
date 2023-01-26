@@ -7,34 +7,21 @@ export default function Welcome() {
   return (
     <Screen>
       <Flex direction="column" mb="2.5" mt="20">
-        <Center>
-          <Image source={inifiniteLibrary} alt="Infinite Library" size="450" />
+        <Center mb="7">
+          <Image source={inifiniteLibrary} alt="Infinite Library" size="375" />
         </Center>
         <Center>
-          <Heading fontSize="lg" mb="3" color="coolGray.100">
+          <Heading fontSize="lg" mb="3" color="black.100" fontWeight={600}>
             Infinite library
           </Heading>
         </Center>
         <Center>
-          <Heading
-            fontSize="md"
-            mt="1"
-            color="coolGray.200"
-            w={312}
-            justifyItems="center"
-          >
+          <Heading fontSize="18px" color="black.200" w={312} fontWeight={400}>
             “Making your library as different as possible!”
           </Heading>
         </Center>
-
         <Center>
-          <Button
-            bg="primary.50"
-            m="7"
-            _text={{
-              color: "white",
-            }}
-          >
+          <Button m="7" variant="primary">
             GET STARTED
           </Button>
         </Center>
