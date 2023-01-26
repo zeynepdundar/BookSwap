@@ -72,6 +72,9 @@ export default function Auth() {
                 color: "#808085",
               }}
               offset={20}
+              textProps={{
+                maxLength: 20,
+              }}
               autoFormat={true}
             />
           </Box>
