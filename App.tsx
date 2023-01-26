@@ -7,7 +7,8 @@ import { Amplify, DataStore } from 'aws-amplify';
 import awsconfig from './src/aws-exports';
 import { Gender, User } from './src/models';
 import { FlatList } from 'react-native';
-import Welcome from "./src/screens/Welcome";
+import Welcome from "./src/screens/WelcomeScreen";
+import NameInputScreen from "./src/screens/NameInputScreen";
 
 Amplify.configure(awsconfig);
 
@@ -18,22 +19,22 @@ export default function App() {
   useEffect(() => {
     //query the initial todolist and subscribe to data updates
     const subscription = DataStore.observeQuery(User).subscribe((snapshot) => {
-        //isSynced can be used to show a loading spinner when the list is being loaded. 
-        const { items, isSynced } = snapshot;
-        setUsers(items);
-      });
-  
-      //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
-      return function cleanup() {
-        subscription.unsubscribe();
-      }
+      //isSynced can be used to show a loading spinner when the list is being loaded.
+      const { items, isSynced } = snapshot;
+      setUsers(items);
+    });
+
+    //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
+    return function cleanup() {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const [fontsLoaded] = useFonts({
-    'poppins-black': require('./src/assets/fonts/Poppins-Black.ttf'),
-    'poppins-light': require('./src/assets/fonts/Poppins-Light.ttf'),
-    'poppins-medium': require('./src/assets/fonts/Poppins-Medium.ttf'),
-    'poppins-regular': require('./src/assets/fonts/Poppins-Regular.ttf'),
+    "poppins-black": require("./src/assets/fonts/Poppins-Black.ttf"),
+    "poppins-light": require("./src/assets/fonts/Poppins-Light.ttf"),
+    "poppins-medium": require("./src/assets/fonts/Poppins-Medium.ttf"),
+    "poppins-regular": require("./src/assets/fonts/Poppins-Regular.ttf"),
   });
 
   if (!fontsLoaded) {
@@ -41,20 +42,19 @@ export default function App() {
   }
 
   const handleInsert = async () => {
-    await DataStore.save(new User({ name, gender:Gender.FEMALE }));
-    setName('');
-  }
+    await DataStore.save(new User({ name, gender: Gender.FEMALE }));
+    setName("");
+  };
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-nocheck
   // @ts-ignore
-  const renderItem = ({ item }) => (
-        <Text>{item.name}</Text>
-  );
+  const renderItem = ({ item }) => <Text>{item.name}</Text>;
 
   return (
     <NativeBaseProvider theme={theme}>
-      <Welcome></Welcome>
+      <NameInputScreen></NameInputScreen>
+      {/* <Welcome></Welcome> */}
       {/* <Center flex="1" fontFamily="heading" mt={20}>
         <Input w="75%" value={name} onChangeText={setName} />
         <Button

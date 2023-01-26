@@ -1,12 +1,12 @@
 import { Button, Center, Flex, Heading, Image, Text } from "native-base";
 import Screen from "../components/Screen";
 
-export default function Welcome() {
+export default function WelcomeScreen() {
   const inifiniteLibrary = require("../assets/images/infinite-library.png");
 
   return (
     <Screen>
-      <Flex direction="column" mb="2.5" mt="20">
+      <Flex direction="column" mb="2.5">
         <Center>
           <Image source={inifiniteLibrary} alt="Infinite Library" size="450" />
         </Center>
