@@ -66,17 +66,46 @@ export const theme = extendTheme({
     Button: {
       baseStyle: {
         rounded: "10px",
+        boxShadow: "5",
         _text: {
           fontFamily: "poppins-semi-bold",
           fontWeight: "700",
           px: "6",
         },
-        // _pressed: {
-        //   bg: "primary.100",
-        //   _text: {
-        //     color: "primary.50",
-        //   },
-        // },
+        _pressed: {
+          opacity: "80",
+        },
+      },
+      variants: {
+        primary: () => {
+          return {
+            bg: "primary.50",
+            _text: {
+              color: "#fff",
+            },
+          };
+        },
+        secondary: () => {
+          return {
+            bg: "primary.100",
+            _text: {
+              color: "primary.50",
+            },
+          };
+        },
+      },
+    },
+    Heading: {
+      baseStyle: {
+        color: "black.400",
+        fontFamily: "poppins-semi-bold",
+        fontSize: "50",
+
+        _text: {
+          fontFamily: "poppins-semi-bold",
+          fontWeight: "700",
+          px: "6",
+        },
       },
       variants: {
         primary: () => {

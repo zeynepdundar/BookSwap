@@ -6,35 +6,22 @@ export default function WelcomeScreen() {
 
   return (
     <Screen>
-      <Flex direction="column" mb="2.5">
+      <Flex direction="column" mb="2.5" mt="70">
         <Center>
-          <Image source={inifiniteLibrary} alt="Infinite Library" size="450" />
+          <Image source={inifiniteLibrary} alt="Infinite Library" size="300" />
         </Center>
-        <Center>
-          <Heading fontSize="lg" mb="3" color="coolGray.100">
+        <Center mb="3" mt="10">
+          <Heading fontSize="lg" color="black.100" fontWeight={600}>
             Infinite library
           </Heading>
         </Center>
         <Center>
-          <Heading
-            fontSize="md"
-            mt="1"
-            color="coolGray.200"
-            w={312}
-            justifyItems="center"
-          >
+          <Heading fontSize="18px" color="black.200" w={312} fontWeight={400}>
             “Making your library as different as possible!”
           </Heading>
         </Center>
-
         <Center>
-          <Button
-            bg="primary.50"
-            m="7"
-            _text={{
-              color: "white",
-            }}
-          >
+          <Button mt="10" variant="primary">
             GET STARTED
           </Button>
         </Center>

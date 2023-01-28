@@ -7,8 +7,9 @@ import { Amplify, DataStore } from 'aws-amplify';
 import awsconfig from './src/aws-exports';
 import { Gender, User } from './src/models';
 import { FlatList } from 'react-native';
-import Welcome from "./src/screens/WelcomeScreen";
+import WelcomeScreen from "./src/screens/WelcomeScreen";
 import NameInputScreen from "./src/screens/NameInputScreen";
+import Auth from "./src/screens/auth";
 
 Amplify.configure(awsconfig);
 
@@ -31,10 +32,11 @@ export default function App() {
   }, []);
 
   const [fontsLoaded] = useFonts({
-    "poppins-black": require("./src/assets/fonts/Poppins-Black.ttf"),
     "poppins-light": require("./src/assets/fonts/Poppins-Light.ttf"),
-    "poppins-medium": require("./src/assets/fonts/Poppins-Medium.ttf"),
     "poppins-regular": require("./src/assets/fonts/Poppins-Regular.ttf"),
+    "poppins-medium": require("./src/assets/fonts/Poppins-Medium.ttf"),
+    "poppins-semi-bold": require("./src/assets/fonts/Poppins-SemiBold.ttf"),
+    "poppins-bold": require("./src/assets/fonts/Poppins-Bold.ttf"),
   });
 
   if (!fontsLoaded) {
@@ -54,7 +56,8 @@ export default function App() {
   return (
     <NativeBaseProvider theme={theme}>
       <NameInputScreen></NameInputScreen>
-      {/* <Welcome></Welcome> */}
+      {/* <Auth /> */}
+      {/* <WelcomeScreen /> */}
       {/* <Center flex="1" fontFamily="heading" mt={20}>
         <Input w="75%" value={name} onChangeText={setName} />
         <Button
