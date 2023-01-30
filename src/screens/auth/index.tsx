@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Dimensions } from "react-native";
 import Screen from "../../components/Screen";
 import PhoneInput from "react-native-phone-input";
+import i18n from "../../i18n";
 
 const { width, height } = Dimensions.get("window");
 
@@ -42,7 +43,7 @@ export default function Auth() {
         </Center>
         <Center>
           <Text color="black.300" mb="12">
-            Enter your phone number to verify your account
+            {i18n.t("enter-your-phone-number")}
           </Text>
         </Center>
         <Center>
@@ -87,7 +88,7 @@ export default function Auth() {
               sendCode(phoneNumber);
             }}
           >
-            Send
+            {i18n.t("send")}
           </Button>
         </Center>
       </Flex>
