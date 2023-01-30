@@ -9,8 +9,12 @@ import { Gender, User } from './src/models';
 import { FlatList } from 'react-native';
 import Welcome from "./src/screens/Welcome";
 import Auth from "./src/screens/auth";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 Amplify.configure(awsconfig);
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [name, setName] = useState("");
@@ -54,8 +58,26 @@ export default function App() {
 
   return (
     <NativeBaseProvider theme={theme}>
-      {/* <Auth /> */}
-      <Welcome></Welcome>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{ contentStyle: { backgroundColor: "#fff" } }}
+        >
+          <Stack.Screen
+            name="Welcome"
+            component={Welcome}
+            options={{
+              headerShown: false,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="Auth"
+            component={Auth}
+            options={{
+              headerShown: false,
+            }}
+          ></Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
       {/* <Center flex="1" fontFamily="heading" mt={20}>
         <Input w="75%" value={name} onChangeText={setName} />
         <Button
