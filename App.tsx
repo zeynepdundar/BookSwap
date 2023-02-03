@@ -11,6 +11,7 @@ import Welcome from "./src/screens/Welcome";
 import Auth from "./src/screens/auth";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import VerificationCode from "./src/screens/auth/VerificationCode";
 
 Amplify.configure(awsconfig);
 
@@ -72,6 +73,13 @@ export default function App() {
           <Stack.Screen
             name="Auth"
             component={Auth}
+            options={{
+              headerShown: false,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="VerificationCode"
+            component={VerificationCode}
             options={{
               headerShown: false,
             }}
