@@ -71,8 +71,7 @@ export default function VerificationCode({ navigation, route }) {
           borderBottomColor="black.300"
           color="black.300"
           textAlign="center"
-          autoCapitalize="none"
-          autoCorrect={false}
+          keyboardType="numeric"
           onChangeText={setCode}
         />
         <Center>
