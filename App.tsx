@@ -65,7 +65,7 @@ export default function App() {
         >
           <Stack.Screen
             name="Welcome"
-            component={VerificationCode}
+            component={Welcome}
             options={{
               headerShown: false,
             }}

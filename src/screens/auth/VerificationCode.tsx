@@ -1,16 +1,19 @@
-import { Button, Center, Heading, Input, Text } from "native-base";
+import { Alert, Button, Center, Heading, Input, Text } from "native-base";
 import { useState } from "react";
 import firebase from "firebase/compat/app";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 
-export default function VerificationCode({ navigation }) {
+export default function VerificationCode({ navigation, route }) {
   const [code, setCode] = useState<string | null>("");
-  const [error, setError] = useState<Object | null>(null);
-  // const verificationId = route.params.verificationId;
+  const [error, setError] = useState<any | null>(null);
+  const verificationId = route.params.verificationId;
 
   const confirmCode = () => {
-    const credential = firebase.auth.PhoneAuthProvider.credential(null, code);
+    const credential = firebase.auth.PhoneAuthProvider.credential(
+      verificationId,
+      code
+    );
     firebase
       .auth()
       .signInWithCredential(credential)
@@ -89,6 +92,13 @@ export default function VerificationCode({ navigation }) {
             {i18n.t("confirm")}
           </Button>
         </Center>
+        {error && (
+          <Alert w="80%" borderRadius="20px" backgroundColor="black.700">
+            <Text fontSize="sm" fontWeight="medium" color="#dddddd">
+              {error.message}
+            </Text>
+          </Alert>
+        )}
       </Center>
     </Screen>
   );
