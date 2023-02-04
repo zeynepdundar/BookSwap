@@ -3,5 +3,10 @@
   "make-your-library-different": "Kitaplığına okumak istediğin kitapları ücretsiz ekle, sonsuz kez!",
   "get-started": "BAŞLA",
   "enter-your-phone-number": "Hesabını doğrulamamız için telefon numaranı gir",
-  "send": "Gönder"
+  "send": "Gönder",
+  "verification-code": "Doğrulama Kodu",
+  "type-verification-code": "Lütfen telefonuna gönderdiğimiz kodu gir",
+  "resend-code-text-1": "Kod gelmedi, ",
+  "resend-code-text-2": "tekrar gönder.",
+  "confirm": "Doğrula"
 }

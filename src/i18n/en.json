@@ -3,5 +3,10 @@
   "make-your-library-different": "Making your library as different as possible!",
   "get-started": "GET STARTED",
   "enter-your-phone-number": "Enter your phone number to verify your account",
-  "send": "Send"
+  "send": "Send",
+  "verification-code": "Verification Code",
+  "type-verification-code": "Please type the verification code sent to your phone",
+  "resend-code-text-1": "I don’t recevie a code!",
+  "resend-code-text-2": "Please resend",
+  "confirm": "Confirm"
 }

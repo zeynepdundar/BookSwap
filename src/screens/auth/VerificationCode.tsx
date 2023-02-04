@@ -1,19 +1,16 @@
-import { Box, Button, Center, Flex, Input, Text } from "native-base";
-import React, { useState } from "react";
-import Screen from "../../components/Screen";
-import i18n from "../../i18n";
+import { Button, Center, Heading, Input, Text } from "native-base";
+import { useState } from "react";
 import firebase from "firebase/compat/app";
+import i18n from "../../i18n";
+import Screen from "../../components/Screen";
 
-export default function VerificationCode({ navigation, route }) {
+export default function VerificationCode({ navigation }) {
   const [code, setCode] = useState<string | null>("");
   const [error, setError] = useState<Object | null>(null);
-  const verificationId = route.params.verificationId;
+  // const verificationId = route.params.verificationId;
 
   const confirmCode = () => {
-    const credential = firebase.auth.PhoneAuthProvider.credential(
-      verificationId,
-      code
-    );
+    const credential = firebase.auth.PhoneAuthProvider.credential(null, code);
     firebase
       .auth()
       .signInWithCredential(credential)
@@ -54,38 +51,34 @@ export default function VerificationCode({ navigation, route }) {
   };
 
   return (
-    //   style={{
-    //     height: height,
-    //     width: "100%",
-    //     flex: 1,
-    //     justifyContent: "center",
-    //   }}
     <Screen>
-      <Flex direction="column" m="3" mt="20">
+      <Heading mt="100px">{i18n.t("verification-code")}</Heading>
+      <Center>
+        <Text color="black.300" mb="12">
+          {i18n.t("type-verification-code")}
+        </Text>
+      </Center>
+      <Center mt="50">
+        <Input
+          variant="underlined"
+          maxLength={6}
+          width={200}
+          fontSize={20}
+          borderTopColor="none"
+          borderBottomColor="black.300"
+          color="black.300"
+          textAlign="center"
+          autoCapitalize="none"
+          autoCorrect={false}
+          onChangeText={setCode}
+        />
         <Center>
           <Text color="black.300" mb="12">
-            {i18n.t("enter-your-phone-number")}
+            {i18n.t("resend-code-text-1")}
+            <Text color="primary.50">{i18n.t("resend-code-text-2")}</Text>
           </Text>
         </Center>
-        <Center>
-          <Box
-            width={{
-              base: 300,
-              lg: 250,
-            }}
-            maxW="80"
-            rounded="4px"
-            overflow="hidden"
-            borderColor="black.500"
-            borderWidth="1"
-            px="17px"
-            py="12px"
-          >
-            <Input placeholder="Code" onChangeText={setCode} />
-          </Box>
-          {error && <Text>An Error: </Text>}
-        </Center>
-        <Center>
+        <Center mt={100}>
           <Button
             variant="primary"
             mt={60}
@@ -93,10 +86,10 @@ export default function VerificationCode({ navigation, route }) {
               confirmCode();
             }}
           >
-            Verify
+            {i18n.t("confirm")}
           </Button>
         </Center>
-      </Flex>
+      </Center>
     </Screen>
   );
 }
