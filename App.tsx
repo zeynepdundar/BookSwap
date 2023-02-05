@@ -9,8 +9,12 @@ import { Gender, User } from './src/models';
 import { FlatList } from 'react-native';
 import Welcome from "./src/screens/Welcome";
 import Auth from "./src/screens/auth";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 Amplify.configure(awsconfig);
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [name, setName] = useState("");
@@ -19,15 +23,15 @@ export default function App() {
   useEffect(() => {
     //query the initial todolist and subscribe to data updates
     const subscription = DataStore.observeQuery(User).subscribe((snapshot) => {
-        //isSynced can be used to show a loading spinner when the list is being loaded. 
-        const { items, isSynced } = snapshot;
-        setUsers(items);
-      });
-  
-      //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
-      return function cleanup() {
-        subscription.unsubscribe();
-      }
+      //isSynced can be used to show a loading spinner when the list is being loaded.
+      const { items, isSynced } = snapshot;
+      setUsers(items);
+    });
+
+    //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
+    return function cleanup() {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const [fontsLoaded] = useFonts({
@@ -43,21 +47,37 @@ export default function App() {
   }
 
   const handleInsert = async () => {
-    await DataStore.save(new User({ name, gender:Gender.FEMALE }));
-    setName('');
-  }
+    await DataStore.save(new User({ name, gender: Gender.FEMALE }));
+    setName("");
+  };
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-nocheck
   // @ts-ignore
-  const renderItem = ({ item }) => (
-        <Text>{item.name}</Text>
-  );
+  const renderItem = ({ item }) => <Text>{item.name}</Text>;
 
   return (
     <NativeBaseProvider theme={theme}>
-      <Auth />
-      {/* <Welcome /> */}
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{ contentStyle: { backgroundColor: "#fff" } }}
+        >
+          <Stack.Screen
+            name="Welcome"
+            component={Welcome}
+            options={{
+              headerShown: false,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="Auth"
+            component={Auth}
+            options={{
+              headerShown: false,
+            }}
+          ></Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
       {/* <Center flex="1" fontFamily="heading" mt={20}>
         <Input w="75%" value={name} onChangeText={setName} />
         <Button
