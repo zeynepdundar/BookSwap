@@ -3,6 +3,7 @@ import { useState } from "react";
 import firebase from "firebase/compat/app";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function VerificationCode({ navigation, route }) {
   const [code, setCode] = useState<string | null>("");
@@ -19,11 +20,11 @@ export default function VerificationCode({ navigation, route }) {
       .signInWithCredential(credential)
       .then(() => {
         setCode("");
-        console.log("worked");
         navigation.navigate("Welcome");
       })
       .catch((error) => {
         console.log("error", error.message);
+        AsyncStorage.setItem("token", "");
         switch (error.code) {
           case "auth/invalid-phone-number":
             setError({
