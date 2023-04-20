@@ -11,12 +11,15 @@ import Welcome from "./src/screens/Welcome";
 import Auth from "./src/screens/auth";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import VerificationCode from "./src/screens/auth/VerificationCode";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 Amplify.configure(awsconfig);
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
   const [name, setName] = useState("");
   const [users, setUsers] = useState<User[] | null>([]);
 
@@ -56,28 +59,62 @@ export default function App() {
   // @ts-ignore
   const renderItem = ({ item }) => <Text>{item.name}</Text>;
 
+  function Root() {
+    useEffect(() => {
+      async function fetchToken() {
+        const storedToken = await AsyncStorage.getItem("token");
+        if (storedToken) {
+          setIsAuthenticated(true);
+        }
+      }
+      fetchToken();
+    }, []);
+
+    return <Navigation />;
+  }
+
+  function AuthStack() {
+    return (
+      <Stack.Navigator
+        screenOptions={{
+          contentStyle: { backgroundColor: "#fff" },
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
+        <Stack.Screen name="Auth" component={Auth}></Stack.Screen>
+        <Stack.Screen
+          name="VerificationCode"
+          component={VerificationCode}
+        ></Stack.Screen>
+      </Stack.Navigator>
+    );
+  }
+
+  function AuthenticatedStack() {
+    return (
+      <Stack.Navigator
+        screenOptions={{
+          contentStyle: { backgroundColor: "red" },
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="Auth" component={Auth}></Stack.Screen>
+      </Stack.Navigator>
+    );
+  }
+
+  function Navigation() {
+    return (
+      <NavigationContainer>
+        {!isAuthenticated && <AuthStack />}
+        {isAuthenticated && <AuthenticatedStack />}
+      </NavigationContainer>
+    );
+  }
   return (
     <NativeBaseProvider theme={theme}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{ contentStyle: { backgroundColor: "#fff" } }}
-        >
-          <Stack.Screen
-            name="Welcome"
-            component={Welcome}
-            options={{
-              headerShown: false,
-            }}
-          ></Stack.Screen>
-          <Stack.Screen
-            name="Auth"
-            component={Auth}
-            options={{
-              headerShown: false,
-            }}
-          ></Stack.Screen>
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Root />
       {/* <Center flex="1" fontFamily="heading" mt={20}>
         <Input w="75%" value={name} onChangeText={setName} />
         <Button

@@ -29,13 +29,10 @@ export const theme = extendTheme({
       400: "#323232",
       500: "#808085",
       600: "#7b7b80",
-    },
-    // Redefining only one shade, rest of the color will remain same.
-    amber: {
-      400: "#d97706",
+      700: "#979797",
     },
     error: {
-      500: "rgba(226, 40, 40, 0.72)",
+      500: "#ED8080",
     },
   },
   fontConfig: {
