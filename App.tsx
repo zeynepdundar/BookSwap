@@ -15,6 +15,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import VerificationCode from "./src/screens/auth/VerificationCode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Welcome from './src/screens/WelcomeScreen';
+import GenderInputScreen from './src/screens/GenderInputScreen';
 
 Amplify.configure(awsconfig);
 
@@ -97,11 +98,10 @@ export default function App() {
     return (
       <Stack.Navigator
         screenOptions={{
-          contentStyle: { backgroundColor: "red" },
           headerShown: false,
         }}
       >
-        <Stack.Screen name="NameInput" component={NameInputScreen}></Stack.Screen>
+        <Stack.Screen name="GenderInput" component={GenderInputScreen}></Stack.Screen>
       </Stack.Navigator>
     );
   }
