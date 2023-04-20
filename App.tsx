@@ -7,12 +7,14 @@ import { Amplify, DataStore } from 'aws-amplify';
 import awsconfig from './src/aws-exports';
 import { Gender, User } from './src/models';
 import { FlatList } from 'react-native';
-import Welcome from "./src/screens/Welcome";
+import WelcomeScreen from "./src/screens/WelcomeScreen";
+import NameInputScreen from "./src/screens/NameInputScreen";
 import Auth from "./src/screens/auth";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import VerificationCode from "./src/screens/auth/VerificationCode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Welcome from './src/screens/WelcomeScreen';
 
 Amplify.configure(awsconfig);
 
@@ -99,7 +101,7 @@ export default function App() {
           headerShown: false,
         }}
       >
-        <Stack.Screen name="Auth" component={Auth}></Stack.Screen>
+        <Stack.Screen name="NameInput" component={NameInputScreen}></Stack.Screen>
       </Stack.Navigator>
     );
   }

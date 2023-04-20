@@ -1,4 +1,4 @@
-import { View } from "native-base";
+import { View, StyledProps } from "native-base";
 import {
   ScrollView,
   ViewProps,
@@ -6,6 +6,9 @@ import {
   StyleSheet,
   ViewStyle,
 } from "react-native";
+import { Dimensions } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 interface Props extends ViewProps {
   scroll?: boolean;
@@ -23,7 +26,7 @@ export const Screen: React.FC<Props> = ({ scroll, style, children }) => {
       {children}
     </ScrollView>
   ) : (
-    <View style={style}>{children}</View>
+    <View style={[styles.container, style]}>{children}</View>
   );
 };
 export default Screen;
@@ -31,9 +34,10 @@ export default Screen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 36,
-    paddingBottom: 36,
-    paddingLeft: 14,
+    marginTop: 20,
+    padding: 16,
+    height: height,
+    width: "100%",
   },
   contentContainer: {
     paddingBottom: 36,
