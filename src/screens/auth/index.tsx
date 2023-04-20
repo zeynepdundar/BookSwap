@@ -1,48 +1,61 @@
 import { Box, Button, Center, Flex, Image, Text } from "native-base";
-import React, { useState } from "react";
-import { Dimensions } from "react-native";
+import React, { useRef, useState } from "react";
 import Screen from "../../components/Screen";
 import PhoneInput from "react-native-phone-input";
+import i18n from "../../i18n";
+import firebase from "firebase/compat/app";
+import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
+import { firebaseConfig } from "../../../firebase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const { width, height } = Dimensions.get("window");
-
-export default function Auth() {
+export default function Auth({ navigation }) {
   const surfLogo = require("../../assets/images/surf.png");
   const swapBook = require("../../assets/images/swap-book.png");
 
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState("");
-  const [confirm, setConfirm] = useState<Boolean | null>(null);
 
-  console.log(width, height);
+  const [code, setCode] = useState<string>("");
+  const [verificationId, setVerificationId] = useState<string>(null);
+  const [error, setError] = useState<any | null>(null);
 
-  const sendCode = (code: string) => {
-    console.log(code);
-  };
-
-  const signin = async () => {
-    const confirmation = true;
-    if (confirmation) {
-      setConfirm(confirmation);
-    }
+  const recaptchaVerifier = useRef(null);
+  const sendCode = () => {
+    const phoneProvider = new firebase.auth.PhoneAuthProvider();
+    phoneProvider
+      .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
+      .then((res) => {
+        setVerificationId(res);
+        console.log("res", res);
+        const token = res;
+        AsyncStorage.setItem("token", res);
+        navigation.navigate("VerificationCode", {
+          verificationId: res,
+        });
+      })
+      .catch((err) => {
+        console.log("ERROR", err);
+        setError(true);
+      });
+    // The SMS code has expired. Please re-send the verification code to try again. (auth/code-expired).
+    setPhoneNumber("");
   };
 
   return (
-    //   style={{
-    //     height: height,
-    //     width: "100%",
-    //     flex: 1,
-    //     justifyContent: "center",
-    //   }}
     <Screen>
       <Flex direction="column" m="3" mt="20">
+        <FirebaseRecaptchaVerifierModal
+          ref={recaptchaVerifier}
+          firebaseConfig={firebaseConfig}
+          attemptInvisibleVerification={true}
+        ></FirebaseRecaptchaVerifierModal>
         <Center mb={30}>
           <Image source={surfLogo} alt="Book Swap Logo" size="7" mb={2} />
           <Image source={swapBook} alt="Book Swap" width={120} />
         </Center>
         <Center>
           <Text color="black.300" mb="12">
-            Enter your phone number to verify your account
+            {i18n.t("enter-your-phone-number")}
           </Text>
         </Center>
         <Center>
@@ -54,7 +67,7 @@ export default function Auth() {
             maxW="80"
             rounded="4px"
             overflow="hidden"
-            borderColor="black.500"
+            borderColor={error ? "error.500" : "black.500"}
             borderWidth="1"
             px="17px"
             py="12px"
@@ -78,20 +91,25 @@ export default function Auth() {
               autoFormat={true}
             />
           </Box>
+          {error && (
+            <Text mt={2} px={5} fontSize="xs" color="error.500">
+              Sorry, we can’t fulfill this request at this time. Please try
+              again later or use a different phone number
+            </Text>
+          )}
         </Center>
         <Center>
           <Button
             variant="primary"
             mt={60}
             onPress={() => {
-              sendCode(phoneNumber);
+              sendCode();
             }}
           >
-            Send
+            {i18n.t("send")}
           </Button>
         </Center>
       </Flex>
     </Screen>
   );
 }
-
