@@ -1,18 +1,43 @@
-import { Button, Center, Heading, Box } from "native-base";
-import { Radio } from "native-base";
 import { useState } from "react";
+import { Button, Center, Heading, Box, ArrowBackIcon, Radio, Flex } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
 
-export default function GenderInputScreen() {
+export default function GenderInputScreen({ navigation }) {
   const [gender, setGender] = useState<string>("");
 
   const pressHandler = () => {
     console.log("enteredgender", gender);
   };
-
+  const k = require("../assets/images/icon/arrow-left.svg");
   return (
     <Screen>
+      <Flex direction="row" justifyContent="space-between" m="0" p="0">
+        <Button
+          variant="ghost"
+          width="50"
+          leftIcon={<ArrowBackIcon size="6" mt="0.5" color="#212325" />}
+          _pressed={{
+            bg: "transparent",
+          }}
+          onPress={() => navigation.goBack()}
+        ></Button>
+        <Button
+          variant="ghost"
+          maxWidth="130"
+          _pressed={{
+            bg: "transparent",
+          }}
+          onPress={() => navigation.navigate("Birthdate")}
+          _text={{
+            textTransform: "uppercase",
+            color: "black.300",
+            fontWeight: "600",
+          }}
+        >
+          {i18n.t("skip")}
+        </Button>
+      </Flex>
       <Heading mt="100px">{i18n.t("my-gender")}</Heading>
       <Center mt="50">
         <Radio.Group

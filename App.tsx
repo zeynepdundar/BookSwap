@@ -102,7 +102,10 @@ export default function App() {
           headerShown: false,
         }}
       >
-        <Stack.Screen name="GenderInput" component={BirthdateInputScreen}></Stack.Screen>
+        <Stack.Screen name="Name" component={NameInputScreen}></Stack.Screen>
+        <Stack.Screen name="Gender" component={GenderInputScreen}></Stack.Screen>
+        <Stack.Screen name="Birthdate" component={BirthdateInputScreen}></Stack.Screen>
+
       </Stack.Navigator>
     );
   }

@@ -1,4 +1,4 @@
-import { Button, Center, Flex, Heading, Image, Text } from "native-base";
+import { Button, Center, Flex, Heading, Image } from "native-base";
 import Screen from "../components/Screen";
 import i18n from "../i18n";
 
