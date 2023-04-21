@@ -8,5 +8,7 @@
   "type-verification-code": "Please type the verification code sent to your phone",
   "resend-code-text-1": "I don’t recevie a code!",
   "resend-code-text-2": "Please resend",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "man": "Man",
+  "woman": "Woman"
 }

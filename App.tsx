@@ -16,6 +16,7 @@ import VerificationCode from "./src/screens/auth/VerificationCode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Welcome from './src/screens/WelcomeScreen';
 import GenderInputScreen from './src/screens/GenderInputScreen';
+import BirthdateInputScreen from './src/screens/BirthdateInputScreen';
 
 Amplify.configure(awsconfig);
 

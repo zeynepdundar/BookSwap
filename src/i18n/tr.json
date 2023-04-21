@@ -8,5 +8,7 @@
   "type-verification-code": "Lütfen telefonuna gönderdiğimiz kodu gir",
   "resend-code-text-1": "Kod gelmedi, ",
   "resend-code-text-2": "tekrar gönder.",
-  "confirm": "Doğrula"
+  "confirm": "Doğrula",
+  "man": "Erkek",
+  "woman": "Kadın"
 }
