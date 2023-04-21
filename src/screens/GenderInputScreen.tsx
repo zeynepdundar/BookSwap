@@ -9,7 +9,7 @@ export default function GenderInputScreen({ navigation }) {
   const pressHandler = () => {
     console.log("enteredgender", gender);
   };
-  const k = require("../assets/images/icon/arrow-left.svg");
+
   return (
     <Screen>
       <Flex direction="row" justifyContent="space-between" m="0" p="0">

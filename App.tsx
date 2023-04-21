@@ -99,6 +99,7 @@ export default function App() {
     return (
       <Stack.Navigator
         screenOptions={{
+          contentStyle: { backgroundColor: "#fff" },
           headerShown: false,
         }}
       >

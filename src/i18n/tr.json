@@ -14,5 +14,6 @@
   "my-full-name":"Adım",
   "man": "Erkek",
   "woman": "Kadın",
-  "my-birthdate":"Doğum tarihim"
+  "my-birthdate":"Doğum tarihim",
+  "search-by-title":"Kitap ismine göre ara"
 }
