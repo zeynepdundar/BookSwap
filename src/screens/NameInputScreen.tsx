@@ -1,13 +1,19 @@
-import { Button, Center, Heading, Input } from "native-base";
 import { useState } from "react";
-import Screen from "../components/Screen";
+import {
+  Button,
+  Center,
+  Heading,
+  Input,
+} from "native-base";
 import i18n from "../i18n";
+import Screen from "../components/Screen";
 
-export default function NameInputScreen() {
+export default function NameInputScreen({ navigation }) {
   const [name, setName] = useState<string>("");
 
   const pressHandler = (event: any) => {
     console.log("enteredName", name);
+    navigation.navigate("Birthdate");
   };
 
   return (

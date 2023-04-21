@@ -20,7 +20,7 @@ export default function VerificationCode({ navigation, route }) {
       .signInWithCredential(credential)
       .then(() => {
         setCode("");
-        navigation.navigate("Welcome");
+        navigation.navigate("Name");
       })
       .catch((error) => {
         console.log("error", error.message);

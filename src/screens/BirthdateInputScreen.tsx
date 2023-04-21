@@ -1,21 +1,37 @@
-import { Button, Center, Flex, Heading, Input, Spacer } from "native-base";
-import { Radio } from "native-base";
 import { useState } from "react";
+import { Button, Center, Flex, Heading, Input, Spacer, ArrowBackIcon } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
-import { TextInput } from "react-native";
 
-export default function BirthdateInputScreen() {
+export default function BirthdateInputScreen({ navigation }) {
   const [birthDay, setBirthDay] = useState<any>();
   const [birthMonth, setBirthMonth] = useState<any>();
   const [birthYear, setBirthYear] = useState<any>();
 
+  //@TODO: Convert date input to db date fomrmat, here is one of the dynamoDB approach.
+  // You can use the string data type to represent a date or a timestamp. One way to do this is by using ISO 8601 strings, as shown in these examples:
+  const mergeDate = () => {
+    return `${birthYear + "-" + birthMonth + "-" + birthDay}`;
+  };
+
   const pressHandler = () => {
     console.log("birthdat", birthDay);
+    navigation.navigate("Gender");
   };
 
   return (
     <Screen>
+      <Flex direction="row" justifyContent="space-between" m="0" p="0">
+        <Button
+          variant="ghost"
+          width="50"
+          leftIcon={<ArrowBackIcon size="6" mt="0.5" color="#212325" />}
+          _pressed={{
+            bg: "transparent",
+          }}
+          onPress={() => navigation.goBack()}
+        ></Button>
+      </Flex>
       <Heading mt="100px">{i18n.t("my-birthdate")}</Heading>
       <Center>
         <Flex mt="50" direction="row" justifyContent="justify" width={190}>
@@ -72,12 +88,13 @@ export default function BirthdateInputScreen() {
               setBirthYear(enteredYear);
             }}
           />
-        </Flex></Center>
-        <Center mt={100}>
-          <Button variant="primary" onPress={pressHandler}>
+        </Flex>
+      </Center>
+      <Center mt={100}>
+        <Button variant="primary" onPress={pressHandler}>
           {i18n.t("continue")}
-          </Button>
-        </Center>
+        </Button>
+      </Center>
     </Screen>
   );
 }
