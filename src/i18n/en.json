@@ -15,5 +15,6 @@
   "my-gender":"I am a",
   "man": "Man",
   "woman": "Woman",
-  "my-birthdate":"My birthdate is"
+  "my-birthdate":"My birthdate is",
+  "search-by-title":"Search by Title"
 }

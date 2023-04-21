@@ -30,6 +30,8 @@ export const theme = extendTheme({
       500: "#808085",
       600: "#7b7b80",
       700: "#979797",
+      800: "#FCFCFD",
+      900:"#EFEFEF"
     },
     error: {
       500: "#ED8080",
