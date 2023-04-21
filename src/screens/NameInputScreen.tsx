@@ -1,34 +1,38 @@
-import { Button, Center, Heading, Input, Text, View } from "native-base";
+import { Button, Center, Heading, Input } from "native-base";
 import { useState } from "react";
 import Screen from "../components/Screen";
+import i18n from "../i18n";
 
 export default function NameInputScreen() {
   const [name, setName] = useState<string>("");
 
   const pressHandler = (event: any) => {
-    console.log("enteredName");
+    console.log("enteredName", name);
   };
 
   return (
     <Screen>
-      <Heading mt="100px">My full name is</Heading>
+      <Heading mt="100px"> {i18n.t("my-full-name")}</Heading>
       <Center mt="50">
         <Input
           value={name}
           variant="underlined"
           maxLength={25}
-          width={330}
+          width={250}
           fontSize={20}
           borderTopColor="none"
-          borderBottomColor="black.300"
-          color="black.300"
+          borderBottomColor="black.400"
+          color="black.400"
           textAlign="center"
           autoCapitalize="none"
           autoCorrect={false}
+          onChangeText={(enteredName) => {
+            setName(enteredName);
+          }}
         />
         <Center mt={100}>
           <Button variant="primary" onPress={pressHandler}>
-            Continue
+            {i18n.t("continue")}
           </Button>
         </Center>
       </Center>
