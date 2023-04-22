@@ -16,5 +16,8 @@
   "man": "Man",
   "woman": "Woman",
   "my-birthdate":"My birthdate is",
-  "search-by-title":"Search by Title"
+  "search-by-title":"Search by Title",
+  "add-books-to-wishlist":"Add books to wishlist",
+  "keep-exploring":"Keep exploring",
+  "done":"Done"
 }

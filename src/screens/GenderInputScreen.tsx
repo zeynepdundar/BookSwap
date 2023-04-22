@@ -8,6 +8,7 @@ export default function GenderInputScreen({ navigation }) {
 
   const pressHandler = () => {
     console.log("enteredgender", gender);
+    navigation.navigate("Wishlist");
   };
 
   return (
@@ -28,7 +29,7 @@ export default function GenderInputScreen({ navigation }) {
           _pressed={{
             bg: "transparent",
           }}
-          onPress={() => navigation.navigate("Birthdate")}
+          onPress={() => navigation.navigate("Wishlist")}
           _text={{
             textTransform: "uppercase",
             color: "black.300",

@@ -31,7 +31,7 @@ export const theme = extendTheme({
       600: "#7b7b80",
       700: "#979797",
       800: "#FCFCFD",
-      900:"#EFEFEF"
+      900: "#EFEFEF",
     },
     error: {
       500: "#ED8080",
@@ -87,6 +87,15 @@ export const theme = extendTheme({
         secondary: () => {
           return {
             bg: "primary.100",
+            _text: {
+              color: "primary.50",
+            },
+          };
+        },
+        outline: () => {
+          return {
+            bg: "transparent",
+            borderColor: "primary.50",
             _text: {
               color: "primary.50",
             },

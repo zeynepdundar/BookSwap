@@ -1,22 +1,22 @@
-import { useFonts } from 'expo-font';
-import { NativeBaseProvider, Center, Button, Text, Input } from "native-base";
-import { theme } from './src/theme';
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Amplify, DataStore } from "aws-amplify";
+import { useFonts } from "expo-font";
+import { NativeBaseProvider, Text } from "native-base";
 
-import { Amplify, DataStore } from 'aws-amplify';
-import awsconfig from './src/aws-exports';
-import { Gender, User } from './src/models';
-import { FlatList } from 'react-native';
+import { theme } from "./src/theme";
+import awsconfig from "./src/aws-exports";
+import { Gender, User } from "./src/models";
 import WelcomeScreen from "./src/screens/WelcomeScreen";
 import NameInputScreen from "./src/screens/NameInputScreen";
 import Auth from "./src/screens/auth";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import VerificationCode from "./src/screens/auth/VerificationCode";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Welcome from './src/screens/WelcomeScreen';
-import GenderInputScreen from './src/screens/GenderInputScreen';
-import BirthdateInputScreen from './src/screens/BirthdateInputScreen';
+import GenderInputScreen from "./src/screens/GenderInputScreen";
+import BirthdateInputScreen from "./src/screens/BirthdateInputScreen";
+import WishlistInputScreen from "./src/screens/WishlistInputScreen";
+import BookSearchScreen from "./src/screens/BookSearchScreen";
 
 Amplify.configure(awsconfig);
 
@@ -85,12 +85,14 @@ export default function App() {
           headerShown: false,
         }}
       >
-        <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
-        <Stack.Screen name="Auth" component={Auth}></Stack.Screen>
-        <Stack.Screen
-          name="VerificationCode"
-          component={VerificationCode}
-        ></Stack.Screen>
+        <Stack.Group>
+          <Stack.Screen name="Welcome" component={WelcomeScreen}></Stack.Screen>
+          <Stack.Screen name="Auth" component={Auth}></Stack.Screen>
+          <Stack.Screen
+            name="VerificationCode"
+            component={VerificationCode}
+          ></Stack.Screen>
+        </Stack.Group>
       </Stack.Navigator>
     );
   }
@@ -103,10 +105,15 @@ export default function App() {
           headerShown: false,
         }}
       >
-        <Stack.Screen name="Name" component={NameInputScreen}></Stack.Screen>
-        <Stack.Screen name="Gender" component={GenderInputScreen}></Stack.Screen>
-        <Stack.Screen name="Birthdate" component={BirthdateInputScreen}></Stack.Screen>
-
+        <Stack.Group>
+          <Stack.Screen name="Name" component={NameInputScreen}></Stack.Screen>
+          <Stack.Screen name="Gender" component={GenderInputScreen}></Stack.Screen>
+          <Stack.Screen name="Birthdate" component={BirthdateInputScreen}></Stack.Screen>
+          <Stack.Screen name="Wishlist" component={WishlistInputScreen}></Stack.Screen>
+        </Stack.Group>
+        <Stack.Group screenOptions={{ presentation: "modal" }}>
+          <Stack.Screen name="BookSearch" component={BookSearchScreen }></Stack.Screen>
+        </Stack.Group>
       </Stack.Navigator>
     );
   }

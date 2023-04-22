@@ -9,18 +9,18 @@ export default function SearchBar() {
     <Center>
       <Input
         placeholder={i18n.t("search-by-title")}
-        width="85%"
+        width="90%"
         maxWidth="500"
         borderRadius="6"
         borderColor="black.900"
         color="black.400"
         backgroundColor="black.800"
-        mt="500"
+        m="5"
         py="3"
         px="1"
         fontSize="14"
         _focus={{
-          borderColor: "black.900",
+          borderColor: "black.700",
         }}
         InputLeftElement={
           <SearchIcon size="5" mt="0.5" mx="2" color="black.300" />
