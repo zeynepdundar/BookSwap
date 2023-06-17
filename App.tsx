@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Amplify, DataStore } from "aws-amplify";
+// import { Amplify, DataStore } from "aws-amplify";
 import { useFonts } from "expo-font";
 import { NativeBaseProvider, Text } from "native-base";
 
@@ -18,7 +18,7 @@ import BirthdateInputScreen from "./src/screens/BirthdateInputScreen";
 import WishlistInputScreen from "./src/screens/WishlistInputScreen";
 import BookSearchScreen from "./src/screens/BookSearchScreen";
 
-Amplify.configure(awsconfig);
+// Amplify.configure(awsconfig);
 
 const Stack = createNativeStackNavigator();
 
@@ -27,19 +27,19 @@ export default function App() {
   const [name, setName] = useState("");
   const [users, setUsers] = useState<User[] | null>([]);
 
-  useEffect(() => {
-    //query the initial todolist and subscribe to data updates
-    const subscription = DataStore.observeQuery(User).subscribe((snapshot) => {
-      //isSynced can be used to show a loading spinner when the list is being loaded.
-      const { items, isSynced } = snapshot;
-      setUsers(items);
-    });
+  // useEffect(() => {
+  //   //query the initial todolist and subscribe to data updates
+  //   const subscription = DataStore.observeQuery(User).subscribe((snapshot) => {
+  //     //isSynced can be used to show a loading spinner when the list is being loaded.
+  //     const { items, isSynced } = snapshot;
+  //     setUsers(items);
+  //   });
 
-    //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
-    return function cleanup() {
-      subscription.unsubscribe();
-    };
-  }, []);
+  //   //unsubscribe to data updates when component is destroyed so that you don’t introduce a memory leak.
+  //   return function cleanup() {
+  //     subscription.unsubscribe();
+  //   };
+  // }, []);
 
   const [fontsLoaded] = useFonts({
     "poppins-light": require("./src/assets/fonts/Poppins-Light.ttf"),
@@ -54,7 +54,7 @@ export default function App() {
   }
 
   const handleInsert = async () => {
-    await DataStore.save(new User({ name, gender: Gender.FEMALE }));
+    // await DataStore.save(new User({ name, gender: Gender.FEMALE }));
     setName("");
   };
 
