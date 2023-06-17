@@ -19,5 +19,13 @@
   "search-by-title":"Search by Title",
   "add-books-to-wishlist":"Add books to wishlist",
   "keep-exploring":"Keep exploring",
-  "done":"Done"
+  "done":"Done",
+  "profile":"Profile",
+  "my-wishlist": "My wishlist",
+  "my-library": "My Library",
+  "language": "Language",
+  "feedback": "Feedback",
+  "logout":"Logout"
+
+
 }
