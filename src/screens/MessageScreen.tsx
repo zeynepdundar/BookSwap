@@ -2,12 +2,12 @@ import { Text } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
 
-export default function MyLibraryScreen({ navigation }) {
+export default function MessageScreen({ navigation }) {
 
 
   return (
     <Screen>
-      <Text>MyLibrary Screen</Text>
+      <Text>Message Screen</Text>
     </Screen>
   );
 }
