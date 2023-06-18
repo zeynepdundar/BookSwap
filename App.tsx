@@ -18,6 +18,7 @@ import BirthdateInputScreen from "./src/screens/BirthdateInputScreen";
 import WishlistInputScreen from "./src/screens/WishlistInputScreen";
 import BookSearchScreen from "./src/screens/BookSearchScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
+import MyWishlistScreen from "./src/screens/MyWishlistScreen";
 
 // Amplify.configure(awsconfig);
 
@@ -107,7 +108,7 @@ export default function App() {
         }}
       >
         <Stack.Group>
-        
+          <Stack.Screen name="MyWishlist" component={MyWishlistScreen}></Stack.Screen>
           <Stack.Screen name="Profile" component={ProfileScreen}></Stack.Screen>
           <Stack.Screen name="Name" component={NameInputScreen}></Stack.Screen>
           <Stack.Screen name="Gender" component={GenderInputScreen}></Stack.Screen>
