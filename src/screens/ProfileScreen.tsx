@@ -52,7 +52,7 @@ export default function ProfileScreen({ navigation }) {
       </Center>
       <Center>
         {/* Wishlist */}
-        <Pressable width={320} onPress={() => console.log("See wishlist")}>
+        <Pressable width={320} onPress={() => navigation.navigate("MyWishlist")}>
           <Flex
             direction="row"
             alignItems="center"
@@ -89,7 +89,7 @@ export default function ProfileScreen({ navigation }) {
         </Pressable>
 
         {/* Library */}
-        <Pressable width={320} onPress={() => console.log("See library")}>
+        <Pressable width={320} onPress={() => navigation.navigate("MyLibrary")}>
           <Flex
             direction="row"
             alignItems="center"
