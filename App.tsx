@@ -105,6 +105,7 @@ export default function App() {
         screenOptions={{
           contentStyle: { backgroundColor: "#fff" },
           headerShown: false,
+          animation: 'none'
         }}
       >
         <Stack.Group>
