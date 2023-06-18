@@ -24,6 +24,8 @@
   "my-library": "Kitaplığım",
   "language": "Dil",
   "feedback": "Geri bildirim",
-  "logout":"Çıkış"
-
+  "logout":"Çıkış",
+  "my_wishlist": {
+    "my_wishlist": "İstek Listem"
+  }
 }

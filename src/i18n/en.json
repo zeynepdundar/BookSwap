@@ -25,7 +25,8 @@
   "my-library": "My Library",
   "language": "Language",
   "feedback": "Feedback",
-  "logout":"Logout"
-
-
+  "logout":"Logout",
+  "my_wishlist": {
+    "my_wishlist": "My Wishlist"
+  }
 }
