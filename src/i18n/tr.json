@@ -11,13 +11,21 @@
   "confirm": "Doğrula",
   "continue": "Devam",
   "skip": "geç",
-  "my-full-name":"Adım",
+  "my-full-name": "Adım",
   "man": "Erkek",
   "woman": "Kadın",
-  "my-birthdate":"Doğum tarihim",
-  "search-by-title":"Kitap ismine göre ara",
-  "add-books-to-wishlist":"İstek listene kitap ekle",
-  "keep-exploring":"Keşfet",
-  "done":"Tamamla"
-
+  "my-birthdate": "Doğum tarihim",
+  "search-by-title": "Kitap ismine göre ara",
+  "add-books-to-wishlist": "İstek listene kitap ekle",
+  "keep-exploring": "Keşfet",
+  "done": "Tamamla",
+  "profile": "Profil",
+  "my-wishlist": "İstek Listem",
+  "my-library": "Kitaplığım",
+  "language": "Dil",
+  "feedback": "Geri bildirim",
+  "logout":"Çıkış",
+  "my_wishlist": {
+    "my_wishlist": "İstek Listem"
+  }
 }
