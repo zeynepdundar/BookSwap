@@ -17,17 +17,23 @@ export default function HomeTabs() {
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
+      
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarActiveTintColor: '#7F3DFF',
+        tabBarInactiveTintColor: '#e1d0ff',
+        tabBarStyle:{position:"absolute", backgroundColor:"#fff", height:90, paddingHorizontal:10, borderTopColor:"#B3B3B3"}
+
       }}
+      
     >
       <BottomTab.Screen
         name="Home"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Image source={homeIcon} alt="Home" size={5} />
+            <Image source={homeIcon} alt="Home" size={5}/>
           ),
         }}
       />
@@ -38,6 +44,8 @@ export default function HomeTabs() {
           tabBarIcon: ({ color, size }) => (
             <Image source={bellIcon} alt="Notification" size={5} />
           ),
+          tabBarBadge: 3,
+          tabBarBadgeStyle:{backgroundColor:"#7F3DFF", color:"#fff"}
         }}
       />
       <BottomTab.Screen
