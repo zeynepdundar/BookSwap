@@ -104,11 +104,12 @@ export default function App() {
         screenOptions={{
           contentStyle: { backgroundColor: "#fff" },
           headerShown: false,
+          animation: 'none'
         }}
       >
         <Stack.Group>
         
-          <Stack.Screen name="Profile" component={ProfileScreen}></Stack.Screen>
+          {/* <Stack.Screen name="Profile" component={ProfileScreen}></Stack.Screen> */}
           <Stack.Screen name="Name" component={NameInputScreen}></Stack.Screen>
           <Stack.Screen name="Gender" component={GenderInputScreen}></Stack.Screen>
           <Stack.Screen name="Birthdate" component={BirthdateInputScreen}></Stack.Screen>
