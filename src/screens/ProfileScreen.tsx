@@ -9,6 +9,7 @@ import {
   Box,
   Text,
   Pressable,
+  Menu,
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
@@ -52,7 +53,10 @@ export default function ProfileScreen({ navigation }) {
       </Center>
       <Center>
         {/* Wishlist */}
-        <Pressable width={320} onPress={() => navigation.navigate("MyWishlist")}>
+        <Pressable
+          width={320}
+          onPress={() => navigation.navigate("MyWishlist")}
+        >
           <Flex
             direction="row"
             alignItems="center"
@@ -64,7 +68,7 @@ export default function ProfileScreen({ navigation }) {
             borderBottomColor="#f5f5f5"
             borderBottomWidth={2}
           >
-            <Image source={libraryIcon} alt="Library icon" />
+            <Image source={wishlistIcon} alt="Library icon" />
             <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
               {i18n.t("my-wishlist")}
             </Text>
@@ -101,7 +105,7 @@ export default function ProfileScreen({ navigation }) {
             borderBottomColor="#f5f5f5"
             borderBottomWidth={2}
           >
-            <Image source={wishlistIcon} alt="Wishlist icon" />{" "}
+            <Image source={libraryIcon} alt="Wishlist icon" />{" "}
             <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
               {i18n.t("my-library")}
             </Text>
@@ -143,19 +147,31 @@ export default function ProfileScreen({ navigation }) {
               {i18n.t("language")}
             </Text>
             <Spacer></Spacer>
-            <Box
-              alignSelf="center"
-              maxW="20"
-              px={2}
-              py={0.5}
-              _text={{
-                fontSize: "md",
-                fontWeight: "medium",
-                color: "black.700",
-                letterSpacing: "lg",
-              }}
-            >
-              EN
+            <Box maxW="20" px={1} >
+              <Menu
+                w="100"
+                mr={18}
+                trigger={(triggerProps) => {
+                  return (
+                    <Pressable
+                      accessibilityLabel="Language selection"
+                      {...triggerProps}
+                    >
+                      <Text
+                        fontSize="md"
+                        fontWeight="medium"
+                        color="black.700"
+                        letterSpacing="lg"
+                      >
+                        EN
+                      </Text>
+                    </Pressable>
+                  );
+                }}
+              >               
+                <Menu.Item textValue="tr">Turkish</Menu.Item>
+                <Menu.Item textValue="en" isDisabled>English</Menu.Item>
+              </Menu>
             </Box>
           </Flex>
         </Pressable>
