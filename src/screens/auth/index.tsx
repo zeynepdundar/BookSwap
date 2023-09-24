@@ -26,15 +26,38 @@ export default function Auth({ navigation }) {
       .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
       .then((res) => {
         setVerificationId(res);
-        console.log("res", res);
-        const token = res;
-        AsyncStorage.setItem("token", res);
         navigation.navigate("VerificationCode", {
           verificationId: res,
         });
       })
       .catch((err) => {
         console.log("ERROR", err);
+        switch (error.code) {
+          case "auth/invalid-phone-number":
+            setError({
+              key: "auth-failed",
+              message: "Invalid phone number format.",
+            });
+            break;
+          case "auth/missing-phone-number":
+            setError({
+              key: "auth-failed",
+              message: "Please enter a valid phone number.",
+            });
+            break;
+          case "auth/too-many-requests":
+            setError({
+              key: "auth-failed",
+              message: "Too many requests, please try again after 5 minutes.",
+            });
+            break;
+          default:
+            setError({
+              key: "auth-failed",
+              message: "An unknown error occured.",
+            });
+            break;
+        }
         setError(true);
       });
     // The SMS code has expired. Please re-send the verification code to try again. (auth/code-expired).

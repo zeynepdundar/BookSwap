@@ -4,11 +4,27 @@ import firebase from "firebase/compat/app";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ProfileCreationStack from "../../navigation/ProfileCreationStack";
+import HomeScreen from "../HomeScreen";
+import NameInputScreen from "../NameInputScreen";
 
 export default function VerificationCode({ navigation, route }) {
   const [code, setCode] = useState<string | null>("");
   const [error, setError] = useState<any | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<any | null>(null);
+
   const verificationId = route.params.verificationId;
+
+  function RenderedStack() {
+    console.log("Rendered")
+    return isAuthenticated ? (
+      <ProfileCreationStack />
+    ) : (
+      navigation.navigate('Home', { screen: 'Home' })
+
+
+    );
+  }
 
   const confirmCode = () => {
     const credential = firebase.auth.PhoneAuthProvider.credential(
@@ -20,37 +36,14 @@ export default function VerificationCode({ navigation, route }) {
       .signInWithCredential(credential)
       .then(() => {
         setCode("");
-        navigation.navigate("Name");
+        //Navigate to profile creation flow pages
+        AsyncStorage.setItem("token", verificationId);
+        RenderedStack();
       })
       .catch((error) => {
         console.log("error", error.message);
-        AsyncStorage.setItem("token", "");
-        switch (error.code) {
-          case "auth/invalid-phone-number":
-            setError({
-              key: "auth-failed",
-              message: "Invalid phone number format.",
-            });
-            break;
-          case "auth/missing-phone-number":
-            setError({
-              key: "auth-failed",
-              message: "Please enter a valid phone number.",
-            });
-            break;
-          case "auth/too-many-requests":
-            setError({
-              key: "auth-failed",
-              message: "Too many requests, please try again after 5 minutes.",
-            });
-            break;
-          default:
-            setError({
-              key: "auth-failed",
-              message: "An unknown error occured.",
-            });
-            break;
-        }
+        // AsyncStorage.setItem("token", "");
+
       });
   };
 
@@ -62,7 +55,7 @@ export default function VerificationCode({ navigation, route }) {
           {i18n.t("type-verification-code")}
         </Text>
       </Center>
-      <Center mt="50">
+      <Center>
         <Input
           variant="underlined"
           maxLength={6}
@@ -76,15 +69,14 @@ export default function VerificationCode({ navigation, route }) {
           onChangeText={setCode}
         />
         <Center>
-          <Text color="black.300" mb="12">
+          <Text color="black.300" mt="5">
             {i18n.t("resend-code-text-1")}
             <Text color="primary.50">{i18n.t("resend-code-text-2")}</Text>
           </Text>
         </Center>
-        <Center mt={100}>
+        <Center mt={10}>
           <Button
             variant="primary"
-            mt={60}
             onPress={() => {
               confirmCode();
             }}
@@ -93,7 +85,7 @@ export default function VerificationCode({ navigation, route }) {
           </Button>
         </Center>
         {error && (
-          <Alert w="80%" borderRadius="20px" backgroundColor="black.700">
+          <Alert w="80%" borderRadius="10px" backgroundColor="black.700" mt={5}>
             <Text fontSize="sm" fontWeight="medium" color="#dddddd">
               {error.message}
             </Text>
