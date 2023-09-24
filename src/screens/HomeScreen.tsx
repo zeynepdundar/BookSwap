@@ -6,7 +6,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <Screen>
-      <Text>My HoME Screen</Text>
+      <Text>My Home Screen</Text>
     </Screen>
   );
 }

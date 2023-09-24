@@ -24,9 +24,10 @@ export default function Navigation({ isAuthenticated }) {
           headerShown: false,
         }}
       >
-        {/* <Stack.Screen name="Home" component={HomeTabs} /> */}
-        <Stack.Screen name="Profile" component={ProfileStack} />
+        {/* <Stack.Screen name="Profile" component={ProfileStack} /> */}
         <Stack.Screen name="AuthenticationFlow" component={RenderedStack} />
+        <Stack.Screen name="Home" component={HomeTabs} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -14,6 +14,7 @@ export default function NameInputScreen({ navigation }) {
   const pressHandler = (event: any) => {
     console.log("enteredName", name);
     navigation.navigate("Birthdate");
+    
   };
 
   return (
