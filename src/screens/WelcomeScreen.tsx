@@ -7,6 +7,7 @@ export default function WelcomeScreen({ navigation }) {
 
   const pressHandler = () => {
     navigation.navigate("Auth");
+    
   };
 
   return (

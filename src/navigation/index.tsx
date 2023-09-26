@@ -1,20 +1,17 @@
 import { NavigationContainer } from "@react-navigation/native";
-
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ProfileScreen from "../screens/ProfileScreen";
-import MyWishlistScreen from "../screens/MyWishlistScreen";
-import MyLibraryScreen from "../screens/MyLibraryScreen";
 import AuthStack from "./AuthStack";
 import ProfileStack from "./ProfileStack";
 import HomeTabs from "./HomeTabs";
 import ProfileCreationStack from "./ProfileCreationStack";
+import { useState } from "react";
 
 const Stack = createNativeStackNavigator();
 
 export default function Navigation({ isAuthenticated }) {
-  function RenderedStack() {
-    return isAuthenticated ? <ProfileCreationStack /> : <AuthStack />;
-  }
+
+  const [isNewUser, setIsNewUser] = useState<string >("New");
+
 
   return (
     <NavigationContainer>
@@ -24,10 +21,21 @@ export default function Navigation({ isAuthenticated }) {
           headerShown: false,
         }}
       >
-        {/* <Stack.Screen name="Profile" component={ProfileStack} /> */}
-        <Stack.Screen name="AuthenticationFlow" component={RenderedStack} />
-        <Stack.Screen name="Home" component={HomeTabs} />
-
+        {isAuthenticated ? (
+          <>
+            <Stack.Screen
+              navigationKey={isNewUser ? "New" : "Existing" }
+              name="ProfileCreation"
+              component={ProfileCreationStack}
+            />
+            <Stack.Screen name="HomeTabs" component={HomeTabs} />
+            <Stack.Screen name="Profile" component={ProfileStack} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="AuthenticationFlow" component={AuthStack} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
