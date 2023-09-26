@@ -5,26 +5,14 @@ import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProfileCreationStack from "../../navigation/ProfileCreationStack";
-import HomeScreen from "../HomeScreen";
-import NameInputScreen from "../NameInputScreen";
+
 
 export default function VerificationCode({ navigation, route }) {
   const [code, setCode] = useState<string | null>("");
   const [error, setError] = useState<any | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<any | null>(null);
 
   const verificationId = route.params.verificationId;
 
-  function RenderedStack() {
-    console.log("Rendered")
-    return isAuthenticated ? (
-      <ProfileCreationStack />
-    ) : (
-      navigation.navigate('Home', { screen: 'Home' })
-
-
-    );
-  }
 
   const confirmCode = () => {
     const credential = firebase.auth.PhoneAuthProvider.credential(
@@ -34,16 +22,16 @@ export default function VerificationCode({ navigation, route }) {
     firebase
       .auth()
       .signInWithCredential(credential)
-      .then(() => {
+      .then((res) => {
         setCode("");
+
         //Navigate to profile creation flow pages
-        AsyncStorage.setItem("token", verificationId);
-        RenderedStack();
+        if (res.additionalUserInfo.isNewUser) {
+          AsyncStorage.setItem("token", "");
+        } 
       })
       .catch((error) => {
         console.log("error", error.message);
-        // AsyncStorage.setItem("token", "");
-
       });
   };
 

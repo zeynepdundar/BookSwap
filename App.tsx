@@ -10,15 +10,12 @@ import Navigation from "./src/navigation";
 
 // Amplify.configure(awsconfig);
 
-
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
   const [name, setName] = useState("");
   const [users, setUsers] = useState<User[] | null>([]);
 
-
-
-  // useEffect(() => { 
+  // useEffect(() => {
   //   //query the initial todolist and subscribe to data updates
   //   const subscription = DataStore.observeQuery(User).subscribe((snapshot) => {
   //     //isSynced can be used to show a loading spinner when the list is being loaded.
@@ -55,23 +52,19 @@ export default function App() {
   const renderItem = ({ item }) => <Text>{item.name}</Text>;
 
   function Root() {
-
     useEffect(() => {
       async function fetchToken() {
         const storedToken = await AsyncStorage.getItem("token");
         if (storedToken) {
           setIsAuthenticated(true);
         }
-        console.log("Fetching token...", storedToken);
-
-
-
       }
 
       fetchToken();
     }, []);
 
-    return <Navigation isAuthenticated={isAuthenticated} />;
+
+    return <Navigation isAuthenticated={true} />;
   }
 
   return (
