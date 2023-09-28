@@ -4,13 +4,12 @@ import AuthStack from "./AuthStack";
 import ProfileStack from "./ProfileStack";
 import HomeTabs from "./HomeTabs";
 import ProfileCreationStack from "./ProfileCreationStack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Stack = createNativeStackNavigator();
 
 export default function Navigation({ isAuthenticated }) {
-
-  const [isNewUser, setIsNewUser] = useState<string >("New");
+  const [isNewUser, setIsNewUser] = useState<boolean>(false);
 
 
   return (
@@ -23,11 +22,15 @@ export default function Navigation({ isAuthenticated }) {
       >
         {isAuthenticated ? (
           <>
-            <Stack.Screen
-              navigationKey={isNewUser ? "New" : "Existing" }
-              name="ProfileCreation"
-              component={ProfileCreationStack}
-            />
+            {isNewUser ? (
+              <Stack.Screen
+                name="ProfileCreation"
+                component={ProfileCreationStack}
+              />
+            ) : (
+              <></>
+            )}
+
             <Stack.Screen name="HomeTabs" component={HomeTabs} />
             <Stack.Screen name="Profile" component={ProfileStack} />
           </>

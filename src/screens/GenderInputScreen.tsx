@@ -7,7 +7,6 @@ export default function GenderInputScreen({ navigation }) {
   const [gender, setGender] = useState<string>("");
 
   const pressHandler = () => {
-    console.log("enteredgender", gender);
     navigation.navigate("Wishlist");
   };
 

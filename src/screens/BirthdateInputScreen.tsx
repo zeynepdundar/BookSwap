@@ -15,7 +15,6 @@ export default function BirthdateInputScreen({ navigation }) {
   };
 
   const pressHandler = () => {
-    console.log("birthdat", birthDay);
     navigation.navigate("Gender");
   };
 
