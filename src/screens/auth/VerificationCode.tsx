@@ -4,7 +4,6 @@ import firebase from "firebase/compat/app";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ProfileCreationStack from "../../navigation/ProfileCreationStack";
 
 
 export default function VerificationCode({ navigation, route }) {

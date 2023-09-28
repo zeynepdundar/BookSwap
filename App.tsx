@@ -12,6 +12,7 @@ import Navigation from "./src/navigation";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
+  const [isNewUser, setIsNewUser] = useState<boolean>(false);
   const [name, setName] = useState("");
   const [users, setUsers] = useState<User[] | null>([]);
 
@@ -57,6 +58,7 @@ export default function App() {
         const storedToken = await AsyncStorage.getItem("token");
         if (storedToken) {
           setIsAuthenticated(true);
+          setIsNewUser(false)
         }
       }
 
@@ -64,7 +66,7 @@ export default function App() {
     }, []);
 
 
-    return <Navigation isAuthenticated={true} />;
+    return <Navigation isAuthenticated={false} />;
   }
 
   return (
