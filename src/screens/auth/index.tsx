@@ -6,7 +6,6 @@ import i18n from "../../i18n";
 import firebase from "firebase/compat/app";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import { firebaseConfig } from "../../../firebase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Auth({ navigation }) {
   const surfLogo = require("../../assets/images/surf.png");
@@ -15,8 +14,6 @@ export default function Auth({ navigation }) {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState("");
 
-  const [code, setCode] = useState<string>("");
-  const [verificationId, setVerificationId] = useState<string>(null);
   const [error, setError] = useState<any | null>(null);
 
   const recaptchaVerifier = useRef(null);
@@ -25,14 +22,12 @@ export default function Auth({ navigation }) {
     phoneProvider
       .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
       .then((res) => {
-        setVerificationId(res);
         navigation.navigate("VerificationCode", {
           verificationId: res,
         });
       })
       .catch((err) => {
-        console.log("ERROR", err);
-        switch (error.code) {
+        switch (err.code) {
           case "auth/invalid-phone-number":
             setError({
               key: "auth-failed",
@@ -45,22 +40,26 @@ export default function Auth({ navigation }) {
               message: "Please enter a valid phone number.",
             });
             break;
-          case "auth/too-many-requests":
+          case "auth/too-many-requests"://
             setError({
               key: "auth-failed",
               message: "Too many requests, please try again after 5 minutes.",
             });
             break;
+            case "auth/quota-exceeded"://
+              setError({
+                key: "auth-failed",
+                message: "Exceeded quota",
+              });
+              break;
           default:
             setError({
               key: "auth-failed",
-              message: "An unknown error occured.",
+              message: err,
             });
             break;
         }
-        setError(true);
       });
-    // The SMS code has expired. Please re-send the verification code to try again. (auth/code-expired).
     setPhoneNumber("");
   };
 
@@ -117,7 +116,8 @@ export default function Auth({ navigation }) {
           {error && (
             <Text mt={2} px={5} fontSize="xs" color="error.500">
               Sorry, we can’t fulfill this request at this time. Please try
-              again later or use a different phone number
+              again later or use a different phone number.
+              [ERR_CODE :{error.message}]
             </Text>
           )}
         </Center>

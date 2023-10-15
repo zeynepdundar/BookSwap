@@ -13,7 +13,7 @@ export default function ProfileStack() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Profile" component={ProfileScreen}></Stack.Screen>
+      <Stack.Screen name="MyProfile" component={ProfileScreen}></Stack.Screen>
       <Stack.Screen
         name="MyWishlist"
         component={MyWishlistScreen}

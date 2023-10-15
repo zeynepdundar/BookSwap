@@ -34,10 +34,11 @@ export default Screen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
     padding: 16,
+    paddingTop:40,
     height: height,
     width: "100%",
+    backgroundColor:"#fff"
   },
   contentContainer: {
     paddingBottom: 36,

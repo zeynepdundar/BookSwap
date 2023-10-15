@@ -1,37 +1,20 @@
-import { Alert, Button, Center, Heading, Input, Text } from "native-base";
+import { Button, Center, Heading, Input, Text } from "native-base";
 import { useState } from "react";
-import firebase from "firebase/compat/app";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { useDispatch } from "react-redux";
+import { login } from "../../store/auth-actions";
+import { AppDispatch } from "../../store/store";
 
 export default function VerificationCode({ navigation, route }) {
   const [code, setCode] = useState<string | null>("");
-  const [error, setError] = useState<any | null>(null);
 
   const verificationId = route.params.verificationId;
 
+  const dispatch = useDispatch<AppDispatch>();
 
-  const confirmCode = () => {
-    const credential = firebase.auth.PhoneAuthProvider.credential(
-      verificationId,
-      code
-    );
-    firebase
-      .auth()
-      .signInWithCredential(credential)
-      .then((res) => {
-        setCode("");
-
-        //Navigate to profile creation flow pages
-        if (res.additionalUserInfo.isNewUser) {
-          AsyncStorage.setItem("token", "");
-        } 
-      })
-      .catch((error) => {
-        console.log("error", error.message);
-      });
+  const confirmCodeHandler = async (): Promise<void> => {
+    dispatch(login({verificationId, code}))
   };
 
   return (
@@ -65,19 +48,19 @@ export default function VerificationCode({ navigation, route }) {
           <Button
             variant="primary"
             onPress={() => {
-              confirmCode();
+              confirmCodeHandler();
             }}
           >
             {i18n.t("confirm")}
           </Button>
         </Center>
-        {error && (
+        {/* {error && (
           <Alert w="80%" borderRadius="10px" backgroundColor="black.700" mt={5}>
             <Text fontSize="sm" fontWeight="medium" color="#dddddd">
               {error.message}
             </Text>
           </Alert>
-        )}
+        )} */}
       </Center>
     </Screen>
   );
