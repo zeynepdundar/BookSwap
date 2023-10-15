@@ -1,7 +1,15 @@
 import { useState } from "react";
-import { Button, Center, Heading, Box, ArrowBackIcon, Radio, Flex } from "native-base";
-import i18n from "../i18n";
-import Screen from "../components/Screen";
+import {
+  Button,
+  Center,
+  Heading,
+  Box,
+  ArrowBackIcon,
+  Radio,
+  Flex,
+} from "native-base";
+import i18n from "../../i18n";
+import Screen from "../../components/Screen";
 
 export default function GenderInputScreen({ navigation }) {
   const [gender, setGender] = useState<string>("");
@@ -12,11 +20,12 @@ export default function GenderInputScreen({ navigation }) {
 
   return (
     <Screen>
-      <Flex direction="row" justifyContent="space-between" m="0" p="0">
+      <Flex direction="row" justifyContent="space-between">
         <Button
           variant="ghost"
-          width="50"
-          leftIcon={<ArrowBackIcon size="6" mt="0.5" color="#212325" />}
+          position="absolute"
+          padding="0"
+          leftIcon={<ArrowBackIcon size="6" color="#212325" />}
           _pressed={{
             bg: "transparent",
           }}
@@ -24,7 +33,9 @@ export default function GenderInputScreen({ navigation }) {
         ></Button>
         <Button
           variant="ghost"
-          maxWidth="130"
+          position="absolute"
+          padding="0"
+          right="0"
           _pressed={{
             bg: "transparent",
           }}
@@ -38,8 +49,9 @@ export default function GenderInputScreen({ navigation }) {
           {i18n.t("skip")}
         </Button>
       </Flex>
+
       <Heading mt="100px">{i18n.t("my-gender")}</Heading>
-      <Center mt="50">
+      <Center mt="30">
         <Radio.Group
           name="genderRadioGroup"
           defaultValue=""

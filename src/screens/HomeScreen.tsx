@@ -1,6 +1,7 @@
 import { Flex, Heading, Image, Pressable, Text } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
+import SearchBar from "../components/shared/SearchBar";
 
 export default function HomeScreen({ navigation }) {
   const jesse = require("../assets/images/jesse-pinkman.png");
@@ -20,6 +21,7 @@ export default function HomeScreen({ navigation }) {
           <Image source={jesse} alt="Notification" size={10} />
         </Pressable>
       </Flex>
+      <SearchBar/>
     </Screen>
   );
 }

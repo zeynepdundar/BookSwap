@@ -2,9 +2,7 @@ import { useState } from "react";
 import {
   Button,
   Center,
-  Flex,
   Heading,
-  ArrowBackIcon,
   SearchIcon,
   Input,
   Image,
@@ -14,7 +12,6 @@ import {
   Spacer,
   VStack,
   HStack,
-  Avatar,
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
@@ -104,38 +101,11 @@ export default function BookSearchScreen({ navigation }) {
     },
   ];
   const pressHandler = () => {
-    console.log("birthdat", birthDay);
     navigation.navigate("Gender");
   };
 
   return (
     <Screen>
-      {/* <Flex direction="row" justifyContent="space-between" m="0" p="0">
-        <Button
-          variant="ghost"
-          width="50"
-          leftIcon={<ArrowBackIcon size="6" mt="0.5" color="#212325" />}
-          _pressed={{
-            bg: "transparent",
-          }}
-          onPress={() => navigation.goBack()}
-        ></Button>
-        <Button
-          variant="ghost"
-          maxWidth="130"
-          _pressed={{
-            bg: "transparent",
-          }}
-          onPress={() => navigation.navigate("Gender")}
-          _text={{
-            textTransform: "uppercase",
-            color: "black.300",
-            fontWeight: "600",
-          }}
-        >
-          {i18n.t("skip")}
-        </Button>
-      </Flex> */}
       <Heading mt="2">{i18n.t("keep-exploring")}</Heading>
       {/* <SearchBar></SearchBar> */}
       <Center>
@@ -177,7 +147,8 @@ export default function BookSearchScreen({ navigation }) {
                   source={importUrl}
                   alt=" Library"
                   width="85"
-                  height="100"                />
+                  height="100"
+                />
 
                 <VStack>
                   <Text color="#000000">{item.fullName}</Text>

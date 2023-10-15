@@ -18,8 +18,6 @@ export default function Navigation() {
   const userToken = useSelector(selectUserToken);
   const user = useSelector(selectUser);
 
-  console.log( "Nav",userToken)
-
   if (isLoading) {
     // We haven't finished checking for the token yet
     return <LoadingOverlay></LoadingOverlay>;
@@ -33,9 +31,9 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
-        {userToken!==null ? (
+        {true ? (
           <>
-            {user.isNewUser && (
+            {true && (
               <Stack.Screen
                 name="ProfileCreation"
                 component={ProfileCreationStack}

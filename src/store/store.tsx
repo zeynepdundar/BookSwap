@@ -10,6 +10,7 @@ const store = configureStore({
     serializableCheck: {
       // Ignore these action types
       ignoredActions: ['userContent/login/fulfilled'],
+      ignoredPaths: ['userAuth.user']
     },
   }),
 });
