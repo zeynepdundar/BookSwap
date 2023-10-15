@@ -13,6 +13,9 @@ import {
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store/store";
+import { signOut } from "../store/auth-actions";
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../assets/images/icon/library-icon.png");
@@ -20,7 +23,14 @@ export default function ProfileScreen({ navigation }) {
   const languageIcon = require("../assets/images/icon/language-icon.png");
   const feedbackIcon = require("../assets/images/icon/feedback-icon.png");
   const logoutIcon = require("../assets/images/icon/logout-icon.png");
-  const profilePhoto = require("../assets/images/profile.png");
+  const profilePhoto = require("../assets/images/jesse-pinkman-profile.png");
+
+  const dispatch = useDispatch<AppDispatch>();
+
+
+  const signOutHandler = async (): Promise<void> => {
+    dispatch(signOut())
+  };
 
   return (
     <Screen>
@@ -45,8 +55,8 @@ export default function ProfileScreen({ navigation }) {
               borderRadius={100}
               source={profilePhoto}
             />
-            <Heading color="black.100" mb={10}>
-              Iriana Saliha
+            <Heading color="black.100" mb={10} mt={5}>
+              Jesse Pinkman
             </Heading>
           </Center>
         </Flex>
@@ -198,7 +208,7 @@ export default function ProfileScreen({ navigation }) {
         </Pressable>
 
         {/* Logout */}
-        <Pressable width={320} onPress={() => console.log("Logged out")}>
+        <Pressable width={320} onPress={() => signOutHandler()}>
           <Flex
             direction="row"
             alignItems="center"

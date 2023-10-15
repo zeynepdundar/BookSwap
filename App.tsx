@@ -7,6 +7,8 @@ import { NativeBaseProvider, Text } from "native-base";
 import { theme } from "./src/theme";
 import { Gender, User } from "./src/models";
 import Navigation from "./src/navigation";
+import { Provider } from "react-redux";
+import store  from "./src/store/store";
 
 // Amplify.configure(awsconfig);
 
@@ -58,21 +60,21 @@ export default function App() {
         const storedToken = await AsyncStorage.getItem("token");
         if (storedToken) {
           setIsAuthenticated(true);
-          setIsNewUser(false)
+          setIsNewUser(false);
         }
       }
 
       fetchToken();
     }, []);
 
-
-    return <Navigation isAuthenticated={false} />;
+    return <Navigation/>;
   }
 
   return (
     <NativeBaseProvider theme={theme}>
-      <Root />
-      {/* <Center flex="1" fontFamily="heading" mt={20}>
+      <Provider store={store}>
+        <Root />
+        {/* <Center flex="1" fontFamily="heading" mt={20}>
         <Input w="75%" value={name} onChangeText={setName} />
         <Button
           bg="primary.100"
@@ -90,6 +92,7 @@ export default function App() {
           renderItem={renderItem}
         />
       </Center> */}
+      </Provider>
     </NativeBaseProvider>
   );
 }

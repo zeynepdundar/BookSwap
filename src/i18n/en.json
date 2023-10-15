@@ -28,5 +28,7 @@
   "logout":"Logout",
   "my_wishlist": {
     "my_wishlist": "My Wishlist"
-  }
+  },
+  "hello": "Hello!"
+  
 }

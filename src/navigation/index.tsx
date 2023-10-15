@@ -1,16 +1,29 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
 import AuthStack from "./AuthStack";
 import ProfileStack from "./ProfileStack";
 import HomeTabs from "./HomeTabs";
 import ProfileCreationStack from "./ProfileCreationStack";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
+import {  useSelector } from "react-redux";
+import { LoadingOverlay } from "../components/LoadingOverlay";
+import { selectIsLoading, selectUser, selectUserToken } from "../store/auth-slice";
 
 const Stack = createNativeStackNavigator();
 
-export default function Navigation({ isAuthenticated }) {
+export default function Navigation() {
   const [isNewUser, setIsNewUser] = useState<boolean>(false);
+  const isLoading = useSelector(selectIsLoading);
+  const userToken = useSelector(selectUserToken);
+  const user = useSelector(selectUser);
 
+  console.log( "Nav",userToken)
+
+  if (isLoading) {
+    // We haven't finished checking for the token yet
+    return <LoadingOverlay></LoadingOverlay>;
+  }
 
   return (
     <NavigationContainer>
@@ -20,19 +33,21 @@ export default function Navigation({ isAuthenticated }) {
           headerShown: false,
         }}
       >
-        {isAuthenticated ? (
+        {userToken!==null ? (
           <>
-            {isNewUser ? (
+            {user.isNewUser && (
               <Stack.Screen
                 name="ProfileCreation"
                 component={ProfileCreationStack}
               />
-            ) : (
-              <></>
             )}
 
-            <Stack.Screen name="HomeTabs" component={HomeTabs} />
-            <Stack.Screen name="Profile" component={ProfileStack} />
+            {!isNewUser && (
+              <Stack.Group>
+                <Stack.Screen name="HomeTabs" component={HomeTabs} />
+                <Stack.Screen name="ProfileStack" component={ProfileStack} />
+              </Stack.Group>
+            )}
           </>
         ) : (
           <>
