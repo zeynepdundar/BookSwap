@@ -18,7 +18,7 @@ export default function Navigation() {
   const userToken = useSelector(selectUserToken);
   const user = useSelector(selectUser);
 
-  console.log( "Nav",userToken)
+  console.log( "userToken",userToken)
 
   if (isLoading) {
     // We haven't finished checking for the token yet

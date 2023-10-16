@@ -17,6 +17,7 @@
   "my-birthdate": "Doğum tarihim",
   "search-by-title": "Kitap ismine göre ara",
   "add-books-to-wishlist": "İstek listene kitap ekle",
+  "add-books-to-library": "Kitaplığına kitap ekle",
   "keep-exploring": "Keşfet",
   "done": "Tamamla",
   "profile": "Profil",
@@ -28,5 +29,8 @@
   "my_wishlist": {
     "my_wishlist": "İstek Listem"
   },
-  "hello": "Merhaba!"
+  "hello": "Merhaba!",
+  "are-you-sure-log-out": "Çıkmak istediğine emin misin?",
+  "cancel": "vazgeç"
+
 }

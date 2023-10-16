@@ -1,7 +1,15 @@
 import { useState } from "react";
-import { Button, Center, Flex, Heading, Input, Spacer, ArrowBackIcon } from "native-base";
-import i18n from "../i18n";
-import Screen from "../components/Screen";
+import {
+  Button,
+  Center,
+  Flex,
+  Heading,
+  Input,
+  Spacer,
+  ArrowBackIcon,
+} from "native-base";
+import i18n from "../../i18n";
+import Screen from "../../components/Screen";
 
 export default function BirthdateInputScreen({ navigation }) {
   const [birthDay, setBirthDay] = useState<any>();
@@ -20,11 +28,12 @@ export default function BirthdateInputScreen({ navigation }) {
 
   return (
     <Screen>
-      <Flex direction="row" justifyContent="space-between" m="0" p="0">
+      <Flex direction="row" justifyContent="space-between">
         <Button
           variant="ghost"
-          width="50"
-          leftIcon={<ArrowBackIcon size="6" mt="0.5" color="#212325" />}
+          position="absolute"
+          padding="0"
+          leftIcon={<ArrowBackIcon size="6" color="#212325" />}
           _pressed={{
             bg: "transparent",
           }}

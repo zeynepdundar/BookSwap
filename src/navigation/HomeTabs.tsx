@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image } from "native-base";
 import HomeScreen from "../screens/HomeScreen";
 import NotificationScreen from "../screens/NotificationScreen";
-import TradeScreen from "../screens/TradeScreen";
+import TradeScreen from "../screens/Trade/TradeScreen";
 import MessageScreen from "../screens/MessageScreen";
 
 const BottomTab = createBottomTabNavigator();
