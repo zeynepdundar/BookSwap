@@ -31,6 +31,9 @@
   },
   "hello": "Merhaba!",
   "are-you-sure-log-out": "Çıkmak istediğine emin misin?",
-  "cancel": "vazgeç"
+  "cancel": "vazgeç",
+  "request": "İstek",
+  "propose": "Teklif",
+  "history": "Geçmiş"
 
 }

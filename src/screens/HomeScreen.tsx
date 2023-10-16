@@ -4,11 +4,11 @@ import Screen from "../components/Screen";
 import SearchBar from "../components/shared/SearchBar";
 
 export default function HomeScreen({ navigation }) {
-  const jesse = require("../assets/images/jesse-pinkman.png");
+  const jesse = require("../../assets/images/jesse-pinkman.png");
 
   return (
     <Screen>
-      <Flex direction="row" justifyContent="space-between" alignItems="center" m="4" p="0">
+      <Flex direction="row" justifyContent="space-between" alignItems="center">
         <Flex>
           <Heading color="black.100" >
           {i18n.t("hello")}
