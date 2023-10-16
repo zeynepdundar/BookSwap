@@ -11,25 +11,30 @@ import {
   Pressable,
   Menu,
 } from "native-base";
-import i18n from "../i18n";
-import Screen from "../components/Screen";
+import i18n from "../../i18n";
+import Screen from "../../components/Screen";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store/store";
-import { signOut } from "../store/auth-actions";
+import { AppDispatch } from "../../store/store";
+import { signOut } from "../../store/auth-actions";
+import { useState } from "react";
+import { AlertDialogBox } from "../../components/AlertDialogBox";
 
 export default function ProfileScreen({ navigation }) {
-  const libraryIcon = require("../assets/images/icon/library-icon.png");
-  const wishlistIcon = require("../assets/images/icon/wishlist-icon.png");
-  const languageIcon = require("../assets/images/icon/language-icon.png");
-  const feedbackIcon = require("../assets/images/icon/feedback-icon.png");
-  const logoutIcon = require("../assets/images/icon/logout-icon.png");
-  const profilePhoto = require("../assets/images/jesse-pinkman-profile.png");
+  const libraryIcon = require("../../assets/images/icon/library-icon.png");
+  const wishlistIcon = require("../../assets/images/icon/wishlist-icon.png");
+  const languageIcon = require("../../assets/images/icon/language-icon.png");
+  const feedbackIcon = require("../../assets/images/icon/feedback-icon.png");
+  const logoutIcon = require("../../assets/images/icon/logout-icon.png");
+  const profilePhoto = require("../../assets/images/jesse-pinkman-profile.png");
 
   const dispatch = useDispatch<AppDispatch>();
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onClose = () => setIsOpen(false);
 
   const signOutHandler = async (): Promise<void> => {
-    dispatch(signOut())
+    dispatch(signOut());
   };
 
   return (
@@ -157,7 +162,7 @@ export default function ProfileScreen({ navigation }) {
               {i18n.t("language")}
             </Text>
             <Spacer></Spacer>
-            <Box maxW="20" px={1} >
+            <Box maxW="20" px={1}>
               <Menu
                 w="100"
                 mr={18}
@@ -178,9 +183,11 @@ export default function ProfileScreen({ navigation }) {
                     </Pressable>
                   );
                 }}
-              >               
+              >
                 <Menu.Item textValue="tr">Turkish</Menu.Item>
-                <Menu.Item textValue="en" isDisabled>English</Menu.Item>
+                <Menu.Item textValue="en" isDisabled>
+                  English
+                </Menu.Item>
               </Menu>
             </Box>
           </Flex>
@@ -208,7 +215,7 @@ export default function ProfileScreen({ navigation }) {
         </Pressable>
 
         {/* Logout */}
-        <Pressable width={320} onPress={() => signOutHandler()}>
+        <Pressable width={320} onPress={() => setIsOpen(!isOpen)}>
           <Flex
             direction="row"
             alignItems="center"
@@ -227,6 +234,15 @@ export default function ProfileScreen({ navigation }) {
             <Spacer></Spacer>
           </Flex>
         </Pressable>
+        <AlertDialogBox
+          isOpen={isOpen}
+          onClose={onClose}
+          onConfirm={signOutHandler}
+          title={i18n.t("logout")}
+          description={i18n.t("are-you-sure-log-out")}
+          cancelButtonLabel={i18n.t("cancel")}
+          confirmButtonLabel={i18n.t("logout")}
+        ></AlertDialogBox>
       </Center>
     </Screen>
   );

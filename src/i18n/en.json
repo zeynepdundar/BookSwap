@@ -11,25 +11,26 @@
   "confirm": "Confirm",
   "continue": "Continue",
   "skip": "skip",
-  "my-full-name":"My full name is",
-  "my-gender":"I am a",
+  "my-full-name": "My full name is",
+  "my-gender": "I am a",
   "man": "Man",
   "woman": "Woman",
-  "my-birthdate":"My birthdate is",
-  "search-by-title":"Search by Title",
-  "add-books-to-wishlist":"Add books to wishlist",
+  "my-birthdate": "My birthdate is",
+  "search-by-title": "Search by Title",
+  "add-books-to-wishlist": "Add books to wishlist",
   "add-books-to-library": "Add books to library",
-  "keep-exploring":"Keep exploring",
-  "done":"Done",
-  "profile":"Profile",
+  "keep-exploring": "Keep exploring",
+  "done": "Done",
+  "profile": "Profile",
   "my-wishlist": "My wishlist",
   "my-library": "My Library",
   "language": "Language",
   "feedback": "Feedback",
-  "logout":"Logout",
+  "logout": "Logout",
   "my_wishlist": {
     "my_wishlist": "My Wishlist"
   },
-  "hello": "Hello!"
-  
+  "hello": "Hello!",
+  "are-you-sure-log-out": "Are you sure do you wanna logout?",
+  "cancel": "Cancel"
 }

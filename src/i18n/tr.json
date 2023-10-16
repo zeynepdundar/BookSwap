@@ -29,5 +29,8 @@
   "my_wishlist": {
     "my_wishlist": "İstek Listem"
   },
-  "hello": "Merhaba!"
+  "hello": "Merhaba!",
+  "are-you-sure-log-out": "Çıkmak istediğine emin misin?",
+  "cancel": "vazgeç"
+
 }

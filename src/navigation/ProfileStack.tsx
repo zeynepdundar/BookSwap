@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ProfileScreen from "../screens/ProfileScreen";
+import ProfileScreen from "../screens/MyProfile/ProfileScreen";
 import WishlistInputScreen from "../screens/ProfileCreation/WishlistInputScreen";
-import MyLibraryScreen from "../screens/MyLibraryScreen";
+import MyLibraryScreen from "../screens/MyProfile/MyLibraryScreen";
 
 const Stack = createNativeStackNavigator();
 

@@ -16,11 +16,11 @@ import {
   HStack,
   Avatar,
 } from "native-base";
-import i18n from "../i18n";
-import Screen from "../components/Screen";
+import i18n from "../../i18n";
+import Screen from "../../components/Screen";
 
 export default function MyWishlistScreen({ navigation }) {
-  const importUrl = require("../assets/images/cover_1.png");
+  const importUrl = require("../../assets/images/cover_1.png");
 
   const data = [
     {
