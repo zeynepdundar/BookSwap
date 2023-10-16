@@ -32,5 +32,8 @@
   },
   "hello": "Hello!",
   "are-you-sure-log-out": "Are you sure do you wanna logout?",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "request": "Request",
+  "propose": "Propose",
+  "history": "History"
 }
