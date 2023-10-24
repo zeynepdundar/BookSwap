@@ -2,9 +2,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image } from "native-base";
 import HomeScreen from "../screens/HomeScreen";
 import NotificationScreen from "../screens/NotificationScreen";
-import TradeScreen from "../screens/TradeScreen";
+import TradeScreen from "../screens/Trading/HistoryScreen";
 import MessageScreen from "../screens/MessageScreen";
-import ProfileStack from "./ProfileStack";
+import TradingTabs from "./TradingTabs";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -17,7 +17,7 @@ export default function HomeTabs() {
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
-      screenOptions={{
+      screenOptions={{   
         headerShown: false,
         tabBarShowLabel: false,
         tabBarActiveTintColor: "#7F3DFF",
@@ -52,8 +52,8 @@ export default function HomeTabs() {
         }}
       />
       <BottomTab.Screen
-        name="Trade"
-        component={TradeScreen}
+        name="Trading"
+        component={TradingTabs}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image source={tradeIcon} alt="Trade" size={5} />

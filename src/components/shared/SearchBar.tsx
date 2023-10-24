@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Input, SearchIcon, Center } from "native-base";
 import i18n from "../../i18n";
 
-export default function SearchBar() {
+export default function SearchBar(props) {
   const [gender, setGender] = useState<string>("");
 
   return (
@@ -22,6 +22,7 @@ export default function SearchBar() {
         _focus={{
           borderColor: "black.700",
         }}
+        onFocus={props.onFocus}
         InputLeftElement={
           <SearchIcon size="5" mt="0.5" mx="2" color="black.300" />
         }

@@ -1,11 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ProfileScreen from "../screens/ProfileScreen";
-import MyWishlistScreen from "../screens/MyWishlistScreen";
-import MyLibraryScreen from "../screens/MyLibraryScreen";
+import ProfileScreen from "../screens/MyProfile/MyProfileScreen";
+import WishlistInputScreen from "../screens/ProfileCreation/WishlistInputScreen";
+import MyLibraryScreen from "../screens/MyProfile/MyLibraryScreen";
 
 const Stack = createNativeStackNavigator();
 
-export default function ProfileStack() {
+export default function MyProfileStack() {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -13,10 +13,10 @@ export default function ProfileStack() {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Profile" component={ProfileScreen}></Stack.Screen>
+      <Stack.Screen name="MyProfile" component={ProfileScreen}></Stack.Screen>
       <Stack.Screen
         name="MyWishlist"
-        component={MyWishlistScreen}
+        component={WishlistInputScreen}
       ></Stack.Screen>
       <Stack.Screen name="MyLibrary" component={MyLibraryScreen}></Stack.Screen>
     </Stack.Navigator>
