@@ -1,14 +1,38 @@
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
+type Author {
+  name: String
+  ol_key: String
+}
+
+type Edition @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  subtitle: String
+  authors: [Author!]
+  publish_year: Int
+  languages: [String]
+  number_of_pages: Int
+  subjects: [String]
+  iccn: [String]
+  oclc_numbers: [String]
+  isbn_10: [String]
+  isbn_13: [String]
+  ol_key: String
+  contributions: [String]
+  publish_country: String
+  publishers: [String]
+  translation_of: String
+  work: String
+  wishingUsers: [User] @manyToMany(relationName: "UserEditionWishing")
+  owningUsers: [User] @manyToMany(relationName: "UserEditionOwning")
 }
 
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!
   birthdate: AWSDateTime
-  gender: Gender
+  gender: String
   profile_photo: String
   language_preference: String
+  wishedEditions: [Edition] @manyToMany(relationName: "UserEditionWishing")
+  ownedEditions: [Edition] @manyToMany(relationName: "UserEditionOwning")
 }
