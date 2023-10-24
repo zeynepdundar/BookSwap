@@ -22,8 +22,8 @@ type Edition @model @auth(rules: [{allow: public}]) {
   publishers: [String]
   translation_of: String
   work: String
-  wishingUsers: [User] @manyToMany(relationName: "UserEditionsWishing")
-  owningUsers: [User] @manyToMany(relationName: "UserEditionsOwning")
+  wishingUsers: [User] @manyToMany(relationName: "UserEditionWishing")
+  owningUsers: [User] @manyToMany(relationName: "UserEditionOwning")
 }
 
 type User @model @auth(rules: [{allow: public}]) {
@@ -33,6 +33,6 @@ type User @model @auth(rules: [{allow: public}]) {
   gender: String
   profile_photo: String
   language_preference: String
-  wishingEditions: [Edition] @manyToMany(relationName: "UserEditionsWishing")
-  owningEditions: [Edition] @manyToMany(relationName: "UserEditionsOwning")
+  wishedEditions: [Edition] @manyToMany(relationName: "UserEditionWishing")
+  ownedEditions: [Edition] @manyToMany(relationName: "UserEditionOwning")
 }
