@@ -19,7 +19,8 @@ import {
 import { Amplify } from "aws-amplify";
 import { API, graphqlOperation } from "aws-amplify";
 import { createUser, createEdition } from "./src/graphql/mutations";
-import { listUsers } from "./src/graphql/queries";
+import { listUsers, listEditions } from "./src/graphql/queries";
+import { listEditionsIncludeOwningUsers } from "./src/graphql/custom-queries";
 import awsExports from "./src/aws-exports";
 import { theme } from "./src/theme";
 import Navigation from "./src/navigation";
@@ -289,6 +290,7 @@ export default function App() {
   useEffect(() => {
     fetchUsers();
     //addEditions();
+    fetchEditions();
   }, []);
 
   function setInput(key, value) {
@@ -331,6 +333,17 @@ export default function App() {
     }
   }
 
+  async function fetchEditions() {
+    try {
+      const editionData = await API.graphql(graphqlOperation(listEditionsIncludeOwningUsers));
+      console.log("editionData: ", editionData.data.listEditions.items[0]);
+      const editions = editionData.data.listEditions.items;
+      
+    } catch (err) {
+      console.log("error fetching editions", err);
+    }
+  }
+
   async function addUser() {
     try {
       if (!formState.name || !formState.profile_photo) return;
@@ -364,7 +377,6 @@ export default function App() {
           setIsNewUser(false);
         }
       }
-
       fetchToken();
     }, []);
 
