@@ -14,7 +14,7 @@ import SearchBar from "../../components/shared/SearchBar";
 
 export default function WishlistInputScreen({ navigation }) {
   const pressHandler = () => {
-    navigation.navigate("BookSearch");
+    navigation.navigate("Library");
   };
 
   return (
@@ -52,6 +52,7 @@ export default function WishlistInputScreen({ navigation }) {
         onFocus={() => {
           navigation.navigate("BookSearch");
         }}
+        onPress={() => navigation.navigate("BookSearch")}
       ></SearchBar>
       <Center mt={100}>
         <Button variant="primary" onPress={pressHandler}>

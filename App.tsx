@@ -369,7 +369,7 @@ export default function App() {
       fetchToken();
     }, []);
 
-    // return <Navigation />;
+    return <Navigation />;
   }
 
   return (
@@ -377,8 +377,7 @@ export default function App() {
       {/* <Root /> */}
 
       <Provider store={store}>
-        {/* <Root /> */}
-        <BookSearchScreen/>
+        <Root />
         {/* <SafeAreaView style={styles.container}>
           <View style={styles.container}>
             <TextInput

@@ -23,6 +23,7 @@ export default function SearchBar(props) {
           borderColor: "black.700",
         }}
         onFocus={props.onFocus}
+        onChangeText={props.onPress}
         InputLeftElement={
           <SearchIcon size="5" mt="0.5" mx="2" color="black.300" />
         }

@@ -21,38 +21,36 @@ import SearchBar from "../components/shared/SearchBar";
 import { listEditions } from "../graphql/queries";
 import { API, graphqlOperation } from "aws-amplify";
 
-export default function BookSearchScreen({}) {
+export default function BookSearchScreen({ navigation }) {
   const importUrl = require("../assets/images/cover_1.png");
   const wishlistIcon = require("../assets/images/icon/add-wishlist.png");
   const libraryIcon = require("../assets/images/icon/add-library.png");
 
   const [editions, updateEditions] = useState([]);
-  const [all, setAll] = useState([]);
 
   const [libraryItems, setLibraryItem] = useState<any>([]);
 
   useEffect(() => {
+    let fetchedEditions = [];
     const fetchEditions = async () => {
       const editionData = await API.graphql(graphqlOperation(listEditions));
-      updateEditions(editionData.data.listEditions.items);
+      fetchedEditions = editionData.data.listEditions.items;
     };
     fetchEditions()
       .then(() => {
-        const k = editions.map((x) => ({
+        const mappedEditions = fetchedEditions.map((x) => ({
           id: x.id,
           title: x.title.slice(0, 20),
           publisher: x.publishers[0],
           coverUrl: importUrl,
           author: "Zeynep Dündar",
         }));
-        setAll(k);
-        console.log("all", all);
+        updateEditions(mappedEditions);
       })
       .catch((error) => {
         console.error(error);
       });
-    console.log(editions);
-  }, []);
+  }, [editions]);
 
   const addLibraryItemHandler = (selectedLibraryItem: any) => {
     setLibraryItem((currentLibraryItems) => [
@@ -75,7 +73,7 @@ export default function BookSearchScreen({}) {
   };
 
   const pressHandler = () => {
-    // navigation.navigate("Gender");
+    navigation.navigate("Wishlist");
   };
 
   return (
@@ -103,7 +101,7 @@ export default function BookSearchScreen({}) {
           <FlatList
             maxWidth="100%"
             height="540px"
-            data={all}
+            data={editions}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               <Pressable

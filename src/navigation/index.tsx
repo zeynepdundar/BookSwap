@@ -33,9 +33,9 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
-        {userToken!==null ? (
+        {true ? (
           <>
-            {user.isNewUser && (
+            {true&& (
               <Stack.Screen
                 name="ProfileCreation"
                 component={ProfileCreationStack}
