@@ -17,11 +17,10 @@ interface Props extends ViewProps {
 
 export const Screen: React.FC<Props> = ({ scroll, style, children }) => {
   return scroll ? (
-    <ScrollView
+    <ScrollView showsVerticalScrollIndicator={false}
     //   testID="scrollview-screen"
     //   contentContainerStyle={styles.contentContainer}
     //   style={[styles.container, { backgroundColor }, style]}
-    //   showsVerticalScrollIndicator={false}
     >
       {children}
     </ScrollView>

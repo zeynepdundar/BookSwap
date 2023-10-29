@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import authSlice from "./auth-slice";
+import bookSlice from "./book-slice";
 
 const store = configureStore({
-  reducer: { userAuth: authSlice },
+  reducer: { userAuth: authSlice, books: bookSlice },
 
   middleware: (getDefaultMiddleware) =>
   getDefaultMiddleware({

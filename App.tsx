@@ -25,6 +25,7 @@ import { theme } from "./src/theme";
 import Navigation from "./src/navigation";
 import { Provider } from "react-redux";
 import store from "./src/store/store";
+import BookSearchScreen from "./src/screens/BookSearchScreen";
 
 const EDITIONS = [
   {
@@ -368,7 +369,7 @@ export default function App() {
       fetchToken();
     }, []);
 
-    return <Navigation />;
+    // return <Navigation />;
   }
 
   return (
@@ -376,7 +377,8 @@ export default function App() {
       {/* <Root /> */}
 
       <Provider store={store}>
-        <Root />
+        {/* <Root /> */}
+        <BookSearchScreen/>
         {/* <SafeAreaView style={styles.container}>
           <View style={styles.container}>
             <TextInput
