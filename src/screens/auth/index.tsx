@@ -3,9 +3,9 @@ import React, { useRef, useState } from "react";
 import Screen from "../../components/Screen";
 import PhoneInput from "react-native-phone-input";
 import i18n from "../../i18n";
-import firebase from "firebase/compat/app";
-import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-import { firebaseConfig } from "../../../firebase";
+// import firebase from "firebase/compat/app";
+// import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
+// import { firebaseConfig } from "../../../firebase";
 
 export default function Auth({ navigation }) {
   const surfLogo = require("../../assets/images/surf.png");
@@ -18,59 +18,61 @@ export default function Auth({ navigation }) {
 
   const recaptchaVerifier = useRef(null);
   const sendCode = () => {
-    const phoneProvider = new firebase.auth.PhoneAuthProvider();
-    phoneProvider
-      .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
-      .then((res) => {
-        navigation.navigate("VerificationCode", {
-          verificationId: res,
-        });
-      })
-      .catch((err) => {
-        switch (err.code) {
-          case "auth/invalid-phone-number":
-            setError({
-              key: "auth-failed",
-              message: "Invalid phone number format.",
-            });
-            break;
-          case "auth/missing-phone-number":
-            setError({
-              key: "auth-failed",
-              message: "Please enter a valid phone number.",
-            });
-            break;
-          case "auth/too-many-requests"://
-            setError({
-              key: "auth-failed",
-              message: "Too many requests, please try again after 5 minutes.",
-            });
-            break;
-            case "auth/quota-exceeded"://
-              setError({
-                key: "auth-failed",
-                message: "Exceeded quota",
-              });
-              break;
-          default:
-            setError({
-              key: "auth-failed",
-              message: err,
-            });
-            break;
-        }
-      });
+    // const phoneProvider = new firebase.auth.PhoneAuthProvider();
+    // phoneProvider
+    //   .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
+    //   .then((res) => {
+    //     navigation.navigate("VerificationCode", {
+    //       verificationId: res,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     switch (err.code) {
+    //       case "auth/invalid-phone-number":
+    //         setError({
+    //           key: "auth-failed",
+    //           message: "Invalid phone number format.",
+    //         });
+    //         break;
+    //       case "auth/missing-phone-number":
+    //         setError({
+    //           key: "auth-failed",
+    //           message: "Please enter a valid phone number.",
+    //         });
+    //         break;
+    //       case "auth/too-many-requests"://
+    //         setError({
+    //           key: "auth-failed",
+    //           message: "Too many requests, please try again after 5 minutes.",
+    //         });
+    //         break;
+    //         case "auth/quota-exceeded"://
+    //           setError({
+    //             key: "auth-failed",
+    //             message: "Exceeded quota",
+    //           });
+    //           break;
+    //       default:
+    //         setError({
+    //           key: "auth-failed",
+    //           message: err,
+    //         });
+    //         break;
+    //     }
+    //   });
     setPhoneNumber("");
   };
 
   return (
     <Screen>
       <Flex direction="column" m="3" mt="20">
+        {/*
         <FirebaseRecaptchaVerifierModal
           ref={recaptchaVerifier}
           firebaseConfig={firebaseConfig}
           attemptInvisibleVerification={true}
         ></FirebaseRecaptchaVerifierModal>
+  */}
         <Center mb={30}>
           <Image source={surfLogo} alt="Book Swap Logo" size="7" mb={2} />
           <Image source={swapBook} alt="Book Swap" width={120} />
