@@ -39,7 +39,8 @@
             "handlelistnullabilitytransparently": true,
             "emitauthprovider": true,
             "generateindexrules": true,
-            "enabledartnullsafety": true
+            "enabledartnullsafety": true,
+            "generatemodelsforlazyloadandcustomselectionset": false
         },
         "appsync": {
             "generategraphqlpermissions": true
@@ -56,5 +57,7 @@
             "overrides": true
         }
     },
-    "debug": {}
+    "debug": {
+        "shareProjectConfig": false
+    }
 }
