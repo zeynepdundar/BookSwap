@@ -1,11 +1,12 @@
 import { Box, Button, Center, Flex, Image, Text } from "native-base";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Screen from "../../components/Screen";
 import PhoneInput from "react-native-phone-input";
 import i18n from "../../i18n";
 // import firebase from "firebase/compat/app";
 // import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 // import { firebaseConfig } from "../../../firebase";
+import auth from '@react-native-firebase/auth';
 
 export default function Auth({ navigation }) {
   const surfLogo = require("../../assets/images/surf.png");
@@ -60,8 +61,34 @@ export default function Auth({ navigation }) {
     //         break;
     //     }
     //   });
+    signInWithPhoneNumber(phoneNumber);
     setPhoneNumber("");
   };
+
+  // Handle login
+  function onAuthStateChanged(user) {
+    if (user) {
+      // Some Android devices can automatically process the verification code (OTP) message, and the user would NOT need to enter the code.
+      // Actually, if he/she tries to enter it, he/she will get an error message because the code was already used in the background.
+      // In this function, make sure you hide the component(s) for entering the code and/or navigate away from this screen.
+      // It is also recommended to display a message to the user informing him/her that he/she has successfully logged in.
+      console.log("user: ", user);
+    }
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  // Handle the button press
+  async function signInWithPhoneNumber(phoneNumber) {
+    const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+    console.log("confirmation:", confirmation);
+    navigation.navigate("VerificationCode", {
+      confirmation: confirmation,
+    });
+  }
 
   return (
     <Screen>

@@ -20,12 +20,12 @@
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF",
-        "googleServicesFile": "./google-services.json"
+        "backgroundColor": "#FFFFFF"
       },
-      "package": "com.isiyok.bookswap"
+      "package": "com.harmony.bookswap"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +33,7 @@
     "plugins": [
       "expo-localization",
       "@react-native-firebase/app",
+      "@react-native-firebase/auth",
       [
         "expo-build-properties",
         {

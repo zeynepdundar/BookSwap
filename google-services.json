@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "657434982358",
+    "project_id": "book-swap-2d9a5",
+    "storage_bucket": "book-swap-2d9a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657434982358:android:59d4f3b95a2efad94a5677",
+        "android_client_info": {
+          "package_name": "com.harmony.bookswap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "657434982358-muke2l51gp6sc69dkdps7figphc4qc97.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQPKotSBkbIoPBtTw4m1eb9qvsWpEt3ZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "657434982358-muke2l51gp6sc69dkdps7figphc4qc97.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
