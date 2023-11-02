@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Center, Heading, Input } from "native-base";
+import { Button, Center, Heading, VStack, Input, Spacer } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 
@@ -12,30 +12,36 @@ export default function NameInputScreen({ navigation }) {
 
   return (
     <Screen>
-      <Heading mt="100px">{i18n.t("my-full-name")}</Heading>
-      <Center mt="50">
-        <Input
-          value={name}
-          variant="underlined"
-          maxLength={25}
-          width={250}
-          fontSize={20}
-          borderTopColor="none"
-          borderBottomColor="black.400"
-          color="black.400"
-          textAlign="center"
-          autoCapitalize="none"
-          autoCorrect={false}
-          onChangeText={(enteredName) => {
-            setName(enteredName);
-          }}
-        />
-        <Center mt={100}>
+      <VStack space={1} alignItems="center" height={"50%"}>
+        <Center h="20" />
+        <Heading w="100%" h="8" px={6}>
+          {i18n.t("my-full-name")}
+        </Heading>
+        <Center w="100%" h="20" px={8}>
+          <Input
+            value={name}
+            variant="underlined"
+            maxLength={25}
+            width={250}
+            fontSize={20}
+            borderTopColor="none"
+            borderBottomColor="black.400"
+            color="black.400"
+            textAlign="center"
+            autoCapitalize="none"
+            autoCorrect={false}
+            onChangeText={(enteredName) => {
+              setName(enteredName);
+            }}
+          />
+        </Center>
+        <Spacer />
+        <Center p={4}>
           <Button variant="primary" onPress={pressHandler}>
             {i18n.t("continue")}
           </Button>
         </Center>
-      </Center>
+      </VStack>
     </Screen>
   );
 }

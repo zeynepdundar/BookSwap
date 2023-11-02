@@ -1,28 +1,10 @@
-import { View, Spinner, Text } from "native-base";
-import { StyleSheet } from "react-native";
-import { Dimensions } from "react-native";
-
-const { width, height } = Dimensions.get("window");
+import { Spinner, Text, Box } from "native-base";
 
 export const LoadingOverlay = ({ message = null }) => {
   return (
-    <View style={[styles.container]}>
-      {message && <Text style={styles.message}>{message}</Text>}
+    <Box p={5}>
+      {message && <Text mb={3}>{message}</Text>}
       <Spinner color="indigo.500" size="sm" />
-    </View>
+    </Box>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 320,
-    padding: 16,
-    height: height,
-    width: "100%",
-  },
-  message: {
-    fontSize: 16,
-    marginBottom: 12,
-  },
-});

@@ -25,7 +25,7 @@ export const Screen: React.FC<Props> = ({ scroll, style, children }) => {
       {children}
     </ScrollView>
   ) : (
-    <View style={[styles.container, style]}>{children}</View>
+    <View style={[styles.container, style]} >{children}</View>
   );
 };
 export default Screen;
@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     paddingTop:40,
     height: height,
     width: "100%",
-    backgroundColor:"#fff"
   },
   contentContainer: {
     paddingBottom: 36,

@@ -9,8 +9,7 @@ export default function SearchBar(props) {
     <Center>
       <Input
         placeholder={i18n.t("search-by-title")}
-        width="90%"
-        maxWidth="500"
+        width="100%"
         borderRadius="6"
         borderColor="black.900"
         color="black.400"
