@@ -26,6 +26,7 @@ import { theme } from "./src/theme";
 import Navigation from "./src/navigation";
 import { Provider } from "react-redux";
 import store from "./src/store/store";
+import 'expo-dev-client';
 
 const EDITIONS = [
   {
