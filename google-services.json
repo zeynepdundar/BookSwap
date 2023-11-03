@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "657434982358-muke2l51gp6sc69dkdps7figphc4qc97.apps.googleusercontent.com",
+          "client_id": "657434982358-bshr0mvs6in9m9o5rijpt0dilgmt6ufc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.harmony.bookswap",
+            "certificate_hash": "930408a7802115e7667fd1fcf7e72c1bf9c173b0"
+          }
+        },
+        {
+          "client_id": "657434982358-u7vf1rabc7173a8cvodvde9b344ilv1h.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -29,6 +37,13 @@
             {
               "client_id": "657434982358-muke2l51gp6sc69dkdps7figphc4qc97.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "657434982358-kbiganp58vjhce6m7tthftr7j1unr0eh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.harmony.bookswap"
+              }
             }
           ]
         }
