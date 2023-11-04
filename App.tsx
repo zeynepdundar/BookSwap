@@ -291,7 +291,7 @@ export default function App() {
   useEffect(() => {
     fetchUsers();
     //addEditions();
-    fetchEditions();
+    //fetchEditions();
   }, []);
 
   function setInput(key, value) {

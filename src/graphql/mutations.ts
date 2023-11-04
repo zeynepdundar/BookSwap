@@ -151,11 +151,11 @@ export const createUser = /* GraphQL */ `mutation CreateUser(
     gender
     profile_photo
     language_preference
-    wishingEditions {
+    wishedEditions {
       nextToken
       __typename
     }
-    owningEditions {
+    ownedEditions {
       nextToken
       __typename
     }
@@ -179,11 +179,11 @@ export const updateUser = /* GraphQL */ `mutation UpdateUser(
     gender
     profile_photo
     language_preference
-    wishingEditions {
+    wishedEditions {
       nextToken
       __typename
     }
-    owningEditions {
+    ownedEditions {
       nextToken
       __typename
     }
@@ -207,11 +207,11 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
     gender
     profile_photo
     language_preference
-    wishingEditions {
+    wishedEditions {
       nextToken
       __typename
     }
-    owningEditions {
+    ownedEditions {
       nextToken
       __typename
     }
@@ -224,11 +224,11 @@ export const deleteUser = /* GraphQL */ `mutation DeleteUser(
   APITypes.DeleteUserMutationVariables,
   APITypes.DeleteUserMutation
 >;
-export const createUserEditionsWishing = /* GraphQL */ `mutation CreateUserEditionsWishing(
-  $input: CreateUserEditionsWishingInput!
-  $condition: ModelUserEditionsWishingConditionInput
+export const createUserEditionWishing = /* GraphQL */ `mutation CreateUserEditionWishing(
+  $input: CreateUserEditionWishingInput!
+  $condition: ModelUserEditionWishingConditionInput
 ) {
-  createUserEditionsWishing(input: $input, condition: $condition) {
+  createUserEditionWishing(input: $input, condition: $condition) {
     id
     editionId
     userId
@@ -271,14 +271,14 @@ export const createUserEditionsWishing = /* GraphQL */ `mutation CreateUserEditi
   }
 }
 ` as GeneratedMutation<
-  APITypes.CreateUserEditionsWishingMutationVariables,
-  APITypes.CreateUserEditionsWishingMutation
+  APITypes.CreateUserEditionWishingMutationVariables,
+  APITypes.CreateUserEditionWishingMutation
 >;
-export const updateUserEditionsWishing = /* GraphQL */ `mutation UpdateUserEditionsWishing(
-  $input: UpdateUserEditionsWishingInput!
-  $condition: ModelUserEditionsWishingConditionInput
+export const updateUserEditionWishing = /* GraphQL */ `mutation UpdateUserEditionWishing(
+  $input: UpdateUserEditionWishingInput!
+  $condition: ModelUserEditionWishingConditionInput
 ) {
-  updateUserEditionsWishing(input: $input, condition: $condition) {
+  updateUserEditionWishing(input: $input, condition: $condition) {
     id
     editionId
     userId
@@ -321,14 +321,14 @@ export const updateUserEditionsWishing = /* GraphQL */ `mutation UpdateUserEditi
   }
 }
 ` as GeneratedMutation<
-  APITypes.UpdateUserEditionsWishingMutationVariables,
-  APITypes.UpdateUserEditionsWishingMutation
+  APITypes.UpdateUserEditionWishingMutationVariables,
+  APITypes.UpdateUserEditionWishingMutation
 >;
-export const deleteUserEditionsWishing = /* GraphQL */ `mutation DeleteUserEditionsWishing(
-  $input: DeleteUserEditionsWishingInput!
-  $condition: ModelUserEditionsWishingConditionInput
+export const deleteUserEditionWishing = /* GraphQL */ `mutation DeleteUserEditionWishing(
+  $input: DeleteUserEditionWishingInput!
+  $condition: ModelUserEditionWishingConditionInput
 ) {
-  deleteUserEditionsWishing(input: $input, condition: $condition) {
+  deleteUserEditionWishing(input: $input, condition: $condition) {
     id
     editionId
     userId
@@ -371,14 +371,14 @@ export const deleteUserEditionsWishing = /* GraphQL */ `mutation DeleteUserEditi
   }
 }
 ` as GeneratedMutation<
-  APITypes.DeleteUserEditionsWishingMutationVariables,
-  APITypes.DeleteUserEditionsWishingMutation
+  APITypes.DeleteUserEditionWishingMutationVariables,
+  APITypes.DeleteUserEditionWishingMutation
 >;
-export const createUserEditionsOwning = /* GraphQL */ `mutation CreateUserEditionsOwning(
-  $input: CreateUserEditionsOwningInput!
-  $condition: ModelUserEditionsOwningConditionInput
+export const createUserEditionOwning = /* GraphQL */ `mutation CreateUserEditionOwning(
+  $input: CreateUserEditionOwningInput!
+  $condition: ModelUserEditionOwningConditionInput
 ) {
-  createUserEditionsOwning(input: $input, condition: $condition) {
+  createUserEditionOwning(input: $input, condition: $condition) {
     id
     editionId
     userId
@@ -421,14 +421,14 @@ export const createUserEditionsOwning = /* GraphQL */ `mutation CreateUserEditio
   }
 }
 ` as GeneratedMutation<
-  APITypes.CreateUserEditionsOwningMutationVariables,
-  APITypes.CreateUserEditionsOwningMutation
+  APITypes.CreateUserEditionOwningMutationVariables,
+  APITypes.CreateUserEditionOwningMutation
 >;
-export const updateUserEditionsOwning = /* GraphQL */ `mutation UpdateUserEditionsOwning(
-  $input: UpdateUserEditionsOwningInput!
-  $condition: ModelUserEditionsOwningConditionInput
+export const updateUserEditionOwning = /* GraphQL */ `mutation UpdateUserEditionOwning(
+  $input: UpdateUserEditionOwningInput!
+  $condition: ModelUserEditionOwningConditionInput
 ) {
-  updateUserEditionsOwning(input: $input, condition: $condition) {
+  updateUserEditionOwning(input: $input, condition: $condition) {
     id
     editionId
     userId
@@ -471,14 +471,14 @@ export const updateUserEditionsOwning = /* GraphQL */ `mutation UpdateUserEditio
   }
 }
 ` as GeneratedMutation<
-  APITypes.UpdateUserEditionsOwningMutationVariables,
-  APITypes.UpdateUserEditionsOwningMutation
+  APITypes.UpdateUserEditionOwningMutationVariables,
+  APITypes.UpdateUserEditionOwningMutation
 >;
-export const deleteUserEditionsOwning = /* GraphQL */ `mutation DeleteUserEditionsOwning(
-  $input: DeleteUserEditionsOwningInput!
-  $condition: ModelUserEditionsOwningConditionInput
+export const deleteUserEditionOwning = /* GraphQL */ `mutation DeleteUserEditionOwning(
+  $input: DeleteUserEditionOwningInput!
+  $condition: ModelUserEditionOwningConditionInput
 ) {
-  deleteUserEditionsOwning(input: $input, condition: $condition) {
+  deleteUserEditionOwning(input: $input, condition: $condition) {
     id
     editionId
     userId
@@ -521,6 +521,6 @@ export const deleteUserEditionsOwning = /* GraphQL */ `mutation DeleteUserEditio
   }
 }
 ` as GeneratedMutation<
-  APITypes.DeleteUserEditionsOwningMutationVariables,
-  APITypes.DeleteUserEditionsOwningMutation
+  APITypes.DeleteUserEditionOwningMutationVariables,
+  APITypes.DeleteUserEditionOwningMutation
 >;

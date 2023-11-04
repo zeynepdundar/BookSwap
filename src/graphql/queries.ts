@@ -93,11 +93,11 @@ export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
     gender
     profile_photo
     language_preference
-    wishingEditions {
+    wishedEditions {
       nextToken
       __typename
     }
-    owningEditions {
+    ownedEditions {
       nextToken
       __typename
     }
@@ -129,8 +129,8 @@ export const listUsers = /* GraphQL */ `query ListUsers(
   }
 }
 ` as GeneratedQuery<APITypes.ListUsersQueryVariables, APITypes.ListUsersQuery>;
-export const getUserEditionsWishing = /* GraphQL */ `query GetUserEditionsWishing($id: ID!) {
-  getUserEditionsWishing(id: $id) {
+export const getUserEditionWishing = /* GraphQL */ `query GetUserEditionWishing($id: ID!) {
+  getUserEditionWishing(id: $id) {
     id
     editionId
     userId
@@ -173,15 +173,15 @@ export const getUserEditionsWishing = /* GraphQL */ `query GetUserEditionsWishin
   }
 }
 ` as GeneratedQuery<
-  APITypes.GetUserEditionsWishingQueryVariables,
-  APITypes.GetUserEditionsWishingQuery
+  APITypes.GetUserEditionWishingQueryVariables,
+  APITypes.GetUserEditionWishingQuery
 >;
-export const listUserEditionsWishings = /* GraphQL */ `query ListUserEditionsWishings(
-  $filter: ModelUserEditionsWishingFilterInput
+export const listUserEditionWishings = /* GraphQL */ `query ListUserEditionWishings(
+  $filter: ModelUserEditionWishingFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listUserEditionsWishings(
+  listUserEditionWishings(
     filter: $filter
     limit: $limit
     nextToken: $nextToken
@@ -199,17 +199,17 @@ export const listUserEditionsWishings = /* GraphQL */ `query ListUserEditionsWis
   }
 }
 ` as GeneratedQuery<
-  APITypes.ListUserEditionsWishingsQueryVariables,
-  APITypes.ListUserEditionsWishingsQuery
+  APITypes.ListUserEditionWishingsQueryVariables,
+  APITypes.ListUserEditionWishingsQuery
 >;
-export const userEditionsWishingsByEditionId = /* GraphQL */ `query UserEditionsWishingsByEditionId(
+export const userEditionWishingsByEditionId = /* GraphQL */ `query UserEditionWishingsByEditionId(
   $editionId: ID!
   $sortDirection: ModelSortDirection
-  $filter: ModelUserEditionsWishingFilterInput
+  $filter: ModelUserEditionWishingFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  userEditionsWishingsByEditionId(
+  userEditionWishingsByEditionId(
     editionId: $editionId
     sortDirection: $sortDirection
     filter: $filter
@@ -229,17 +229,17 @@ export const userEditionsWishingsByEditionId = /* GraphQL */ `query UserEditions
   }
 }
 ` as GeneratedQuery<
-  APITypes.UserEditionsWishingsByEditionIdQueryVariables,
-  APITypes.UserEditionsWishingsByEditionIdQuery
+  APITypes.UserEditionWishingsByEditionIdQueryVariables,
+  APITypes.UserEditionWishingsByEditionIdQuery
 >;
-export const userEditionsWishingsByUserId = /* GraphQL */ `query UserEditionsWishingsByUserId(
+export const userEditionWishingsByUserId = /* GraphQL */ `query UserEditionWishingsByUserId(
   $userId: ID!
   $sortDirection: ModelSortDirection
-  $filter: ModelUserEditionsWishingFilterInput
+  $filter: ModelUserEditionWishingFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  userEditionsWishingsByUserId(
+  userEditionWishingsByUserId(
     userId: $userId
     sortDirection: $sortDirection
     filter: $filter
@@ -259,11 +259,11 @@ export const userEditionsWishingsByUserId = /* GraphQL */ `query UserEditionsWis
   }
 }
 ` as GeneratedQuery<
-  APITypes.UserEditionsWishingsByUserIdQueryVariables,
-  APITypes.UserEditionsWishingsByUserIdQuery
+  APITypes.UserEditionWishingsByUserIdQueryVariables,
+  APITypes.UserEditionWishingsByUserIdQuery
 >;
-export const getUserEditionsOwning = /* GraphQL */ `query GetUserEditionsOwning($id: ID!) {
-  getUserEditionsOwning(id: $id) {
+export const getUserEditionOwning = /* GraphQL */ `query GetUserEditionOwning($id: ID!) {
+  getUserEditionOwning(id: $id) {
     id
     editionId
     userId
@@ -306,15 +306,15 @@ export const getUserEditionsOwning = /* GraphQL */ `query GetUserEditionsOwning(
   }
 }
 ` as GeneratedQuery<
-  APITypes.GetUserEditionsOwningQueryVariables,
-  APITypes.GetUserEditionsOwningQuery
+  APITypes.GetUserEditionOwningQueryVariables,
+  APITypes.GetUserEditionOwningQuery
 >;
-export const listUserEditionsOwnings = /* GraphQL */ `query ListUserEditionsOwnings(
-  $filter: ModelUserEditionsOwningFilterInput
+export const listUserEditionOwnings = /* GraphQL */ `query ListUserEditionOwnings(
+  $filter: ModelUserEditionOwningFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listUserEditionsOwnings(
+  listUserEditionOwnings(
     filter: $filter
     limit: $limit
     nextToken: $nextToken
@@ -332,17 +332,17 @@ export const listUserEditionsOwnings = /* GraphQL */ `query ListUserEditionsOwni
   }
 }
 ` as GeneratedQuery<
-  APITypes.ListUserEditionsOwningsQueryVariables,
-  APITypes.ListUserEditionsOwningsQuery
+  APITypes.ListUserEditionOwningsQueryVariables,
+  APITypes.ListUserEditionOwningsQuery
 >;
-export const userEditionsOwningsByEditionId = /* GraphQL */ `query UserEditionsOwningsByEditionId(
+export const userEditionOwningsByEditionId = /* GraphQL */ `query UserEditionOwningsByEditionId(
   $editionId: ID!
   $sortDirection: ModelSortDirection
-  $filter: ModelUserEditionsOwningFilterInput
+  $filter: ModelUserEditionOwningFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  userEditionsOwningsByEditionId(
+  userEditionOwningsByEditionId(
     editionId: $editionId
     sortDirection: $sortDirection
     filter: $filter
@@ -362,17 +362,17 @@ export const userEditionsOwningsByEditionId = /* GraphQL */ `query UserEditionsO
   }
 }
 ` as GeneratedQuery<
-  APITypes.UserEditionsOwningsByEditionIdQueryVariables,
-  APITypes.UserEditionsOwningsByEditionIdQuery
+  APITypes.UserEditionOwningsByEditionIdQueryVariables,
+  APITypes.UserEditionOwningsByEditionIdQuery
 >;
-export const userEditionsOwningsByUserId = /* GraphQL */ `query UserEditionsOwningsByUserId(
+export const userEditionOwningsByUserId = /* GraphQL */ `query UserEditionOwningsByUserId(
   $userId: ID!
   $sortDirection: ModelSortDirection
-  $filter: ModelUserEditionsOwningFilterInput
+  $filter: ModelUserEditionOwningFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  userEditionsOwningsByUserId(
+  userEditionOwningsByUserId(
     userId: $userId
     sortDirection: $sortDirection
     filter: $filter
@@ -392,6 +392,6 @@ export const userEditionsOwningsByUserId = /* GraphQL */ `query UserEditionsOwni
   }
 }
 ` as GeneratedQuery<
-  APITypes.UserEditionsOwningsByUserIdQueryVariables,
-  APITypes.UserEditionsOwningsByUserIdQuery
+  APITypes.UserEditionOwningsByUserIdQueryVariables,
+  APITypes.UserEditionOwningsByUserIdQuery
 >;
