@@ -2,6 +2,92 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
+export type ModelEditionConnection = {
+  __typename: "ModelEditionConnection",
+  items:  Array<Edition | null >,
+  nextToken?: string | null,
+};
+
+export type Edition = {
+  __typename: "Edition",
+  id: string,
+  title: string,
+  subtitle?: string | null,
+  authors?:  Array<Author > | null,
+  publish_year?: number | null,
+  languages?: Array< string | null > | null,
+  number_of_pages?: number | null,
+  subjects?: Array< string | null > | null,
+  iccn?: Array< string | null > | null,
+  oclc_numbers?: Array< string | null > | null,
+  isbn_10?: Array< string | null > | null,
+  isbn_13?: Array< string | null > | null,
+  ol_key?: string | null,
+  contributions?: Array< string | null > | null,
+  publish_country?: string | null,
+  publishers?: Array< string | null > | null,
+  translation_of?: string | null,
+  work?: string | null,
+  wishingUsers?: ModelUserEditionWishingConnection | null,
+  owningUsers?: ModelUserEditionOwningConnection | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type Author = {
+  __typename: "Author",
+  name?: string | null,
+  ol_key?: string | null,
+};
+
+export type ModelUserEditionWishingConnection = {
+  __typename: "ModelUserEditionWishingConnection",
+  items:  Array<UserEditionWishing | null >,
+  nextToken?: string | null,
+};
+
+export type UserEditionWishing = {
+  __typename: "UserEditionWishing",
+  id: string,
+  editionId: string,
+  userId: string,
+  edition: Edition,
+  user: User,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type User = {
+  __typename: "User",
+  id: string,
+  name: string,
+  birthdate?: string | null,
+  gender?: string | null,
+  profile_photo?: string | null,
+  language_preference?: string | null,
+  wishedEditions?: ModelUserEditionWishingConnection | null,
+  ownedEditions?: ModelUserEditionOwningConnection | null,
+  createdAt: string,
+  updatedAt: string,
+};
+
+export type ModelUserEditionOwningConnection = {
+  __typename: "ModelUserEditionOwningConnection",
+  items:  Array<UserEditionOwning | null >,
+  nextToken?: string | null,
+};
+
+export type UserEditionOwning = {
+  __typename: "UserEditionOwning",
+  id: string,
+  editionId: string,
+  userId: string,
+  edition: Edition,
+  user: User,
+  createdAt: string,
+  updatedAt: string,
+};
+
 export type CreateEditionInput = {
   id?: string | null,
   title: string,
@@ -102,86 +188,6 @@ export type ModelIntInput = {
   attributeType?: ModelAttributeTypes | null,
 };
 
-export type Edition = {
-  __typename: "Edition",
-  id: string,
-  title: string,
-  subtitle?: string | null,
-  authors?:  Array<Author > | null,
-  publish_year?: number | null,
-  languages?: Array< string | null > | null,
-  number_of_pages?: number | null,
-  subjects?: Array< string | null > | null,
-  iccn?: Array< string | null > | null,
-  oclc_numbers?: Array< string | null > | null,
-  isbn_10?: Array< string | null > | null,
-  isbn_13?: Array< string | null > | null,
-  ol_key?: string | null,
-  contributions?: Array< string | null > | null,
-  publish_country?: string | null,
-  publishers?: Array< string | null > | null,
-  translation_of?: string | null,
-  work?: string | null,
-  wishingUsers?: ModelUserEditionsWishingConnection | null,
-  owningUsers?: ModelUserEditionsOwningConnection | null,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export type Author = {
-  __typename: "Author",
-  name?: string | null,
-  ol_key?: string | null,
-};
-
-export type ModelUserEditionsWishingConnection = {
-  __typename: "ModelUserEditionsWishingConnection",
-  items:  Array<UserEditionsWishing | null >,
-  nextToken?: string | null,
-};
-
-export type UserEditionsWishing = {
-  __typename: "UserEditionsWishing",
-  id: string,
-  editionId: string,
-  userId: string,
-  edition: Edition,
-  user: User,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export type User = {
-  __typename: "User",
-  id: string,
-  name: string,
-  birthdate?: string | null,
-  gender?: string | null,
-  profile_photo?: string | null,
-  language_preference?: string | null,
-  wishingEditions?: ModelUserEditionsWishingConnection | null,
-  owningEditions?: ModelUserEditionsOwningConnection | null,
-  createdAt: string,
-  updatedAt: string,
-};
-
-export type ModelUserEditionsOwningConnection = {
-  __typename: "ModelUserEditionsOwningConnection",
-  items:  Array<UserEditionsOwning | null >,
-  nextToken?: string | null,
-};
-
-export type UserEditionsOwning = {
-  __typename: "UserEditionsOwning",
-  id: string,
-  editionId: string,
-  userId: string,
-  edition: Edition,
-  user: User,
-  createdAt: string,
-  updatedAt: string,
-};
-
 export type UpdateEditionInput = {
   id: string,
   title?: string | null,
@@ -240,18 +246,18 @@ export type DeleteUserInput = {
   id: string,
 };
 
-export type CreateUserEditionsWishingInput = {
+export type CreateUserEditionWishingInput = {
   id?: string | null,
   editionId: string,
   userId: string,
 };
 
-export type ModelUserEditionsWishingConditionInput = {
+export type ModelUserEditionWishingConditionInput = {
   editionId?: ModelIDInput | null,
   userId?: ModelIDInput | null,
-  and?: Array< ModelUserEditionsWishingConditionInput | null > | null,
-  or?: Array< ModelUserEditionsWishingConditionInput | null > | null,
-  not?: ModelUserEditionsWishingConditionInput | null,
+  and?: Array< ModelUserEditionWishingConditionInput | null > | null,
+  or?: Array< ModelUserEditionWishingConditionInput | null > | null,
+  not?: ModelUserEditionWishingConditionInput | null,
 };
 
 export type ModelIDInput = {
@@ -270,37 +276,37 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null,
 };
 
-export type UpdateUserEditionsWishingInput = {
+export type UpdateUserEditionWishingInput = {
   id: string,
   editionId?: string | null,
   userId?: string | null,
 };
 
-export type DeleteUserEditionsWishingInput = {
+export type DeleteUserEditionWishingInput = {
   id: string,
 };
 
-export type CreateUserEditionsOwningInput = {
+export type CreateUserEditionOwningInput = {
   id?: string | null,
   editionId: string,
   userId: string,
 };
 
-export type ModelUserEditionsOwningConditionInput = {
+export type ModelUserEditionOwningConditionInput = {
   editionId?: ModelIDInput | null,
   userId?: ModelIDInput | null,
-  and?: Array< ModelUserEditionsOwningConditionInput | null > | null,
-  or?: Array< ModelUserEditionsOwningConditionInput | null > | null,
-  not?: ModelUserEditionsOwningConditionInput | null,
+  and?: Array< ModelUserEditionOwningConditionInput | null > | null,
+  or?: Array< ModelUserEditionOwningConditionInput | null > | null,
+  not?: ModelUserEditionOwningConditionInput | null,
 };
 
-export type UpdateUserEditionsOwningInput = {
+export type UpdateUserEditionOwningInput = {
   id: string,
   editionId?: string | null,
   userId?: string | null,
 };
 
-export type DeleteUserEditionsOwningInput = {
+export type DeleteUserEditionOwningInput = {
   id: string,
 };
 
@@ -327,12 +333,6 @@ export type ModelEditionFilterInput = {
   not?: ModelEditionFilterInput | null,
 };
 
-export type ModelEditionConnection = {
-  __typename: "ModelEditionConnection",
-  items:  Array<Edition | null >,
-  nextToken?: string | null,
-};
-
 export type ModelUserFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
@@ -351,13 +351,13 @@ export type ModelUserConnection = {
   nextToken?: string | null,
 };
 
-export type ModelUserEditionsWishingFilterInput = {
+export type ModelUserEditionWishingFilterInput = {
   id?: ModelIDInput | null,
   editionId?: ModelIDInput | null,
   userId?: ModelIDInput | null,
-  and?: Array< ModelUserEditionsWishingFilterInput | null > | null,
-  or?: Array< ModelUserEditionsWishingFilterInput | null > | null,
-  not?: ModelUserEditionsWishingFilterInput | null,
+  and?: Array< ModelUserEditionWishingFilterInput | null > | null,
+  or?: Array< ModelUserEditionWishingFilterInput | null > | null,
+  not?: ModelUserEditionWishingFilterInput | null,
 };
 
 export enum ModelSortDirection {
@@ -366,13 +366,13 @@ export enum ModelSortDirection {
 }
 
 
-export type ModelUserEditionsOwningFilterInput = {
+export type ModelUserEditionOwningFilterInput = {
   id?: ModelIDInput | null,
   editionId?: ModelIDInput | null,
   userId?: ModelIDInput | null,
-  and?: Array< ModelUserEditionsOwningFilterInput | null > | null,
-  or?: Array< ModelUserEditionsOwningFilterInput | null > | null,
-  not?: ModelUserEditionsOwningFilterInput | null,
+  and?: Array< ModelUserEditionOwningFilterInput | null > | null,
+  or?: Array< ModelUserEditionOwningFilterInput | null > | null,
+  not?: ModelUserEditionOwningFilterInput | null,
 };
 
 export type ModelSubscriptionEditionFilterInput = {
@@ -450,20 +450,45 @@ export type ModelSubscriptionUserFilterInput = {
   or?: Array< ModelSubscriptionUserFilterInput | null > | null,
 };
 
-export type ModelSubscriptionUserEditionsWishingFilterInput = {
+export type ModelSubscriptionUserEditionWishingFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   editionId?: ModelSubscriptionIDInput | null,
   userId?: ModelSubscriptionIDInput | null,
-  and?: Array< ModelSubscriptionUserEditionsWishingFilterInput | null > | null,
-  or?: Array< ModelSubscriptionUserEditionsWishingFilterInput | null > | null,
+  and?: Array< ModelSubscriptionUserEditionWishingFilterInput | null > | null,
+  or?: Array< ModelSubscriptionUserEditionWishingFilterInput | null > | null,
 };
 
-export type ModelSubscriptionUserEditionsOwningFilterInput = {
+export type ModelSubscriptionUserEditionOwningFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   editionId?: ModelSubscriptionIDInput | null,
   userId?: ModelSubscriptionIDInput | null,
-  and?: Array< ModelSubscriptionUserEditionsOwningFilterInput | null > | null,
-  or?: Array< ModelSubscriptionUserEditionsOwningFilterInput | null > | null,
+  and?: Array< ModelSubscriptionUserEditionOwningFilterInput | null > | null,
+  or?: Array< ModelSubscriptionUserEditionOwningFilterInput | null > | null,
+};
+
+export type ListEditionsIncludeOwningUsersQuery = {
+  listEditions?:  {
+    __typename: "ModelEditionConnection",
+    items:  Array< {
+      __typename: "Edition",
+      title: string,
+      authors?:  Array< {
+        __typename: "Author",
+        name?: string | null,
+      } > | null,
+      owningUsers?:  {
+        __typename: "ModelUserEditionOwningConnection",
+        items:  Array< {
+          __typename: "UserEditionOwning",
+          user:  {
+            __typename: "User",
+            name: string,
+          },
+        } | null >,
+      } | null,
+      publishers?: Array< string | null > | null,
+    } | null >,
+  } | null,
 };
 
 export type CreateEditionMutationVariables = {
@@ -497,11 +522,11 @@ export type CreateEditionMutation = {
     translation_of?: string | null,
     work?: string | null,
     wishingUsers?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
     owningUsers?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -540,11 +565,11 @@ export type UpdateEditionMutation = {
     translation_of?: string | null,
     work?: string | null,
     wishingUsers?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
     owningUsers?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -583,11 +608,11 @@ export type DeleteEditionMutation = {
     translation_of?: string | null,
     work?: string | null,
     wishingUsers?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
     owningUsers?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -609,12 +634,12 @@ export type CreateUserMutation = {
     gender?: string | null,
     profile_photo?: string | null,
     language_preference?: string | null,
-    wishingEditions?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+    wishedEditions?:  {
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
-    owningEditions?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+    ownedEditions?:  {
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -636,12 +661,12 @@ export type UpdateUserMutation = {
     gender?: string | null,
     profile_photo?: string | null,
     language_preference?: string | null,
-    wishingEditions?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+    wishedEditions?:  {
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
-    owningEditions?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+    ownedEditions?:  {
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -663,12 +688,12 @@ export type DeleteUserMutation = {
     gender?: string | null,
     profile_photo?: string | null,
     language_preference?: string | null,
-    wishingEditions?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+    wishedEditions?:  {
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
-    owningEditions?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+    ownedEditions?:  {
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -676,14 +701,14 @@ export type DeleteUserMutation = {
   } | null,
 };
 
-export type CreateUserEditionsWishingMutationVariables = {
-  input: CreateUserEditionsWishingInput,
-  condition?: ModelUserEditionsWishingConditionInput | null,
+export type CreateUserEditionWishingMutationVariables = {
+  input: CreateUserEditionWishingInput,
+  condition?: ModelUserEditionWishingConditionInput | null,
 };
 
-export type CreateUserEditionsWishingMutation = {
-  createUserEditionsWishing?:  {
-    __typename: "UserEditionsWishing",
+export type CreateUserEditionWishingMutation = {
+  createUserEditionWishing?:  {
+    __typename: "UserEditionWishing",
     id: string,
     editionId: string,
     userId: string,
@@ -725,14 +750,14 @@ export type CreateUserEditionsWishingMutation = {
   } | null,
 };
 
-export type UpdateUserEditionsWishingMutationVariables = {
-  input: UpdateUserEditionsWishingInput,
-  condition?: ModelUserEditionsWishingConditionInput | null,
+export type UpdateUserEditionWishingMutationVariables = {
+  input: UpdateUserEditionWishingInput,
+  condition?: ModelUserEditionWishingConditionInput | null,
 };
 
-export type UpdateUserEditionsWishingMutation = {
-  updateUserEditionsWishing?:  {
-    __typename: "UserEditionsWishing",
+export type UpdateUserEditionWishingMutation = {
+  updateUserEditionWishing?:  {
+    __typename: "UserEditionWishing",
     id: string,
     editionId: string,
     userId: string,
@@ -774,14 +799,14 @@ export type UpdateUserEditionsWishingMutation = {
   } | null,
 };
 
-export type DeleteUserEditionsWishingMutationVariables = {
-  input: DeleteUserEditionsWishingInput,
-  condition?: ModelUserEditionsWishingConditionInput | null,
+export type DeleteUserEditionWishingMutationVariables = {
+  input: DeleteUserEditionWishingInput,
+  condition?: ModelUserEditionWishingConditionInput | null,
 };
 
-export type DeleteUserEditionsWishingMutation = {
-  deleteUserEditionsWishing?:  {
-    __typename: "UserEditionsWishing",
+export type DeleteUserEditionWishingMutation = {
+  deleteUserEditionWishing?:  {
+    __typename: "UserEditionWishing",
     id: string,
     editionId: string,
     userId: string,
@@ -823,14 +848,14 @@ export type DeleteUserEditionsWishingMutation = {
   } | null,
 };
 
-export type CreateUserEditionsOwningMutationVariables = {
-  input: CreateUserEditionsOwningInput,
-  condition?: ModelUserEditionsOwningConditionInput | null,
+export type CreateUserEditionOwningMutationVariables = {
+  input: CreateUserEditionOwningInput,
+  condition?: ModelUserEditionOwningConditionInput | null,
 };
 
-export type CreateUserEditionsOwningMutation = {
-  createUserEditionsOwning?:  {
-    __typename: "UserEditionsOwning",
+export type CreateUserEditionOwningMutation = {
+  createUserEditionOwning?:  {
+    __typename: "UserEditionOwning",
     id: string,
     editionId: string,
     userId: string,
@@ -872,14 +897,14 @@ export type CreateUserEditionsOwningMutation = {
   } | null,
 };
 
-export type UpdateUserEditionsOwningMutationVariables = {
-  input: UpdateUserEditionsOwningInput,
-  condition?: ModelUserEditionsOwningConditionInput | null,
+export type UpdateUserEditionOwningMutationVariables = {
+  input: UpdateUserEditionOwningInput,
+  condition?: ModelUserEditionOwningConditionInput | null,
 };
 
-export type UpdateUserEditionsOwningMutation = {
-  updateUserEditionsOwning?:  {
-    __typename: "UserEditionsOwning",
+export type UpdateUserEditionOwningMutation = {
+  updateUserEditionOwning?:  {
+    __typename: "UserEditionOwning",
     id: string,
     editionId: string,
     userId: string,
@@ -921,14 +946,14 @@ export type UpdateUserEditionsOwningMutation = {
   } | null,
 };
 
-export type DeleteUserEditionsOwningMutationVariables = {
-  input: DeleteUserEditionsOwningInput,
-  condition?: ModelUserEditionsOwningConditionInput | null,
+export type DeleteUserEditionOwningMutationVariables = {
+  input: DeleteUserEditionOwningInput,
+  condition?: ModelUserEditionOwningConditionInput | null,
 };
 
-export type DeleteUserEditionsOwningMutation = {
-  deleteUserEditionsOwning?:  {
-    __typename: "UserEditionsOwning",
+export type DeleteUserEditionOwningMutation = {
+  deleteUserEditionOwning?:  {
+    __typename: "UserEditionOwning",
     id: string,
     editionId: string,
     userId: string,
@@ -1000,11 +1025,11 @@ export type GetEditionQuery = {
     translation_of?: string | null,
     work?: string | null,
     wishingUsers?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
     owningUsers?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -1060,12 +1085,12 @@ export type GetUserQuery = {
     gender?: string | null,
     profile_photo?: string | null,
     language_preference?: string | null,
-    wishingEditions?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+    wishedEditions?:  {
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
-    owningEditions?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+    ownedEditions?:  {
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -1097,13 +1122,13 @@ export type ListUsersQuery = {
   } | null,
 };
 
-export type GetUserEditionsWishingQueryVariables = {
+export type GetUserEditionWishingQueryVariables = {
   id: string,
 };
 
-export type GetUserEditionsWishingQuery = {
-  getUserEditionsWishing?:  {
-    __typename: "UserEditionsWishing",
+export type GetUserEditionWishingQuery = {
+  getUserEditionWishing?:  {
+    __typename: "UserEditionWishing",
     id: string,
     editionId: string,
     userId: string,
@@ -1145,17 +1170,17 @@ export type GetUserEditionsWishingQuery = {
   } | null,
 };
 
-export type ListUserEditionsWishingsQueryVariables = {
-  filter?: ModelUserEditionsWishingFilterInput | null,
+export type ListUserEditionWishingsQueryVariables = {
+  filter?: ModelUserEditionWishingFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ListUserEditionsWishingsQuery = {
-  listUserEditionsWishings?:  {
-    __typename: "ModelUserEditionsWishingConnection",
+export type ListUserEditionWishingsQuery = {
+  listUserEditionWishings?:  {
+    __typename: "ModelUserEditionWishingConnection",
     items:  Array< {
-      __typename: "UserEditionsWishing",
+      __typename: "UserEditionWishing",
       id: string,
       editionId: string,
       userId: string,
@@ -1166,19 +1191,19 @@ export type ListUserEditionsWishingsQuery = {
   } | null,
 };
 
-export type UserEditionsWishingsByEditionIdQueryVariables = {
+export type UserEditionWishingsByEditionIdQueryVariables = {
   editionId: string,
   sortDirection?: ModelSortDirection | null,
-  filter?: ModelUserEditionsWishingFilterInput | null,
+  filter?: ModelUserEditionWishingFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type UserEditionsWishingsByEditionIdQuery = {
-  userEditionsWishingsByEditionId?:  {
-    __typename: "ModelUserEditionsWishingConnection",
+export type UserEditionWishingsByEditionIdQuery = {
+  userEditionWishingsByEditionId?:  {
+    __typename: "ModelUserEditionWishingConnection",
     items:  Array< {
-      __typename: "UserEditionsWishing",
+      __typename: "UserEditionWishing",
       id: string,
       editionId: string,
       userId: string,
@@ -1189,19 +1214,19 @@ export type UserEditionsWishingsByEditionIdQuery = {
   } | null,
 };
 
-export type UserEditionsWishingsByUserIdQueryVariables = {
+export type UserEditionWishingsByUserIdQueryVariables = {
   userId: string,
   sortDirection?: ModelSortDirection | null,
-  filter?: ModelUserEditionsWishingFilterInput | null,
+  filter?: ModelUserEditionWishingFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type UserEditionsWishingsByUserIdQuery = {
-  userEditionsWishingsByUserId?:  {
-    __typename: "ModelUserEditionsWishingConnection",
+export type UserEditionWishingsByUserIdQuery = {
+  userEditionWishingsByUserId?:  {
+    __typename: "ModelUserEditionWishingConnection",
     items:  Array< {
-      __typename: "UserEditionsWishing",
+      __typename: "UserEditionWishing",
       id: string,
       editionId: string,
       userId: string,
@@ -1212,13 +1237,13 @@ export type UserEditionsWishingsByUserIdQuery = {
   } | null,
 };
 
-export type GetUserEditionsOwningQueryVariables = {
+export type GetUserEditionOwningQueryVariables = {
   id: string,
 };
 
-export type GetUserEditionsOwningQuery = {
-  getUserEditionsOwning?:  {
-    __typename: "UserEditionsOwning",
+export type GetUserEditionOwningQuery = {
+  getUserEditionOwning?:  {
+    __typename: "UserEditionOwning",
     id: string,
     editionId: string,
     userId: string,
@@ -1260,17 +1285,17 @@ export type GetUserEditionsOwningQuery = {
   } | null,
 };
 
-export type ListUserEditionsOwningsQueryVariables = {
-  filter?: ModelUserEditionsOwningFilterInput | null,
+export type ListUserEditionOwningsQueryVariables = {
+  filter?: ModelUserEditionOwningFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ListUserEditionsOwningsQuery = {
-  listUserEditionsOwnings?:  {
-    __typename: "ModelUserEditionsOwningConnection",
+export type ListUserEditionOwningsQuery = {
+  listUserEditionOwnings?:  {
+    __typename: "ModelUserEditionOwningConnection",
     items:  Array< {
-      __typename: "UserEditionsOwning",
+      __typename: "UserEditionOwning",
       id: string,
       editionId: string,
       userId: string,
@@ -1281,19 +1306,19 @@ export type ListUserEditionsOwningsQuery = {
   } | null,
 };
 
-export type UserEditionsOwningsByEditionIdQueryVariables = {
+export type UserEditionOwningsByEditionIdQueryVariables = {
   editionId: string,
   sortDirection?: ModelSortDirection | null,
-  filter?: ModelUserEditionsOwningFilterInput | null,
+  filter?: ModelUserEditionOwningFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type UserEditionsOwningsByEditionIdQuery = {
-  userEditionsOwningsByEditionId?:  {
-    __typename: "ModelUserEditionsOwningConnection",
+export type UserEditionOwningsByEditionIdQuery = {
+  userEditionOwningsByEditionId?:  {
+    __typename: "ModelUserEditionOwningConnection",
     items:  Array< {
-      __typename: "UserEditionsOwning",
+      __typename: "UserEditionOwning",
       id: string,
       editionId: string,
       userId: string,
@@ -1304,19 +1329,19 @@ export type UserEditionsOwningsByEditionIdQuery = {
   } | null,
 };
 
-export type UserEditionsOwningsByUserIdQueryVariables = {
+export type UserEditionOwningsByUserIdQueryVariables = {
   userId: string,
   sortDirection?: ModelSortDirection | null,
-  filter?: ModelUserEditionsOwningFilterInput | null,
+  filter?: ModelUserEditionOwningFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type UserEditionsOwningsByUserIdQuery = {
-  userEditionsOwningsByUserId?:  {
-    __typename: "ModelUserEditionsOwningConnection",
+export type UserEditionOwningsByUserIdQuery = {
+  userEditionOwningsByUserId?:  {
+    __typename: "ModelUserEditionOwningConnection",
     items:  Array< {
-      __typename: "UserEditionsOwning",
+      __typename: "UserEditionOwning",
       id: string,
       editionId: string,
       userId: string,
@@ -1357,11 +1382,11 @@ export type OnCreateEditionSubscription = {
     translation_of?: string | null,
     work?: string | null,
     wishingUsers?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
     owningUsers?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -1399,11 +1424,11 @@ export type OnUpdateEditionSubscription = {
     translation_of?: string | null,
     work?: string | null,
     wishingUsers?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
     owningUsers?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -1441,11 +1466,11 @@ export type OnDeleteEditionSubscription = {
     translation_of?: string | null,
     work?: string | null,
     wishingUsers?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
     owningUsers?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -1466,12 +1491,12 @@ export type OnCreateUserSubscription = {
     gender?: string | null,
     profile_photo?: string | null,
     language_preference?: string | null,
-    wishingEditions?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+    wishedEditions?:  {
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
-    owningEditions?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+    ownedEditions?:  {
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -1492,12 +1517,12 @@ export type OnUpdateUserSubscription = {
     gender?: string | null,
     profile_photo?: string | null,
     language_preference?: string | null,
-    wishingEditions?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+    wishedEditions?:  {
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
-    owningEditions?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+    ownedEditions?:  {
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -1518,12 +1543,12 @@ export type OnDeleteUserSubscription = {
     gender?: string | null,
     profile_photo?: string | null,
     language_preference?: string | null,
-    wishingEditions?:  {
-      __typename: "ModelUserEditionsWishingConnection",
+    wishedEditions?:  {
+      __typename: "ModelUserEditionWishingConnection",
       nextToken?: string | null,
     } | null,
-    owningEditions?:  {
-      __typename: "ModelUserEditionsOwningConnection",
+    ownedEditions?:  {
+      __typename: "ModelUserEditionOwningConnection",
       nextToken?: string | null,
     } | null,
     createdAt: string,
@@ -1531,13 +1556,13 @@ export type OnDeleteUserSubscription = {
   } | null,
 };
 
-export type OnCreateUserEditionsWishingSubscriptionVariables = {
-  filter?: ModelSubscriptionUserEditionsWishingFilterInput | null,
+export type OnCreateUserEditionWishingSubscriptionVariables = {
+  filter?: ModelSubscriptionUserEditionWishingFilterInput | null,
 };
 
-export type OnCreateUserEditionsWishingSubscription = {
-  onCreateUserEditionsWishing?:  {
-    __typename: "UserEditionsWishing",
+export type OnCreateUserEditionWishingSubscription = {
+  onCreateUserEditionWishing?:  {
+    __typename: "UserEditionWishing",
     id: string,
     editionId: string,
     userId: string,
@@ -1579,13 +1604,13 @@ export type OnCreateUserEditionsWishingSubscription = {
   } | null,
 };
 
-export type OnUpdateUserEditionsWishingSubscriptionVariables = {
-  filter?: ModelSubscriptionUserEditionsWishingFilterInput | null,
+export type OnUpdateUserEditionWishingSubscriptionVariables = {
+  filter?: ModelSubscriptionUserEditionWishingFilterInput | null,
 };
 
-export type OnUpdateUserEditionsWishingSubscription = {
-  onUpdateUserEditionsWishing?:  {
-    __typename: "UserEditionsWishing",
+export type OnUpdateUserEditionWishingSubscription = {
+  onUpdateUserEditionWishing?:  {
+    __typename: "UserEditionWishing",
     id: string,
     editionId: string,
     userId: string,
@@ -1627,13 +1652,13 @@ export type OnUpdateUserEditionsWishingSubscription = {
   } | null,
 };
 
-export type OnDeleteUserEditionsWishingSubscriptionVariables = {
-  filter?: ModelSubscriptionUserEditionsWishingFilterInput | null,
+export type OnDeleteUserEditionWishingSubscriptionVariables = {
+  filter?: ModelSubscriptionUserEditionWishingFilterInput | null,
 };
 
-export type OnDeleteUserEditionsWishingSubscription = {
-  onDeleteUserEditionsWishing?:  {
-    __typename: "UserEditionsWishing",
+export type OnDeleteUserEditionWishingSubscription = {
+  onDeleteUserEditionWishing?:  {
+    __typename: "UserEditionWishing",
     id: string,
     editionId: string,
     userId: string,
@@ -1675,13 +1700,13 @@ export type OnDeleteUserEditionsWishingSubscription = {
   } | null,
 };
 
-export type OnCreateUserEditionsOwningSubscriptionVariables = {
-  filter?: ModelSubscriptionUserEditionsOwningFilterInput | null,
+export type OnCreateUserEditionOwningSubscriptionVariables = {
+  filter?: ModelSubscriptionUserEditionOwningFilterInput | null,
 };
 
-export type OnCreateUserEditionsOwningSubscription = {
-  onCreateUserEditionsOwning?:  {
-    __typename: "UserEditionsOwning",
+export type OnCreateUserEditionOwningSubscription = {
+  onCreateUserEditionOwning?:  {
+    __typename: "UserEditionOwning",
     id: string,
     editionId: string,
     userId: string,
@@ -1723,13 +1748,13 @@ export type OnCreateUserEditionsOwningSubscription = {
   } | null,
 };
 
-export type OnUpdateUserEditionsOwningSubscriptionVariables = {
-  filter?: ModelSubscriptionUserEditionsOwningFilterInput | null,
+export type OnUpdateUserEditionOwningSubscriptionVariables = {
+  filter?: ModelSubscriptionUserEditionOwningFilterInput | null,
 };
 
-export type OnUpdateUserEditionsOwningSubscription = {
-  onUpdateUserEditionsOwning?:  {
-    __typename: "UserEditionsOwning",
+export type OnUpdateUserEditionOwningSubscription = {
+  onUpdateUserEditionOwning?:  {
+    __typename: "UserEditionOwning",
     id: string,
     editionId: string,
     userId: string,
@@ -1771,13 +1796,13 @@ export type OnUpdateUserEditionsOwningSubscription = {
   } | null,
 };
 
-export type OnDeleteUserEditionsOwningSubscriptionVariables = {
-  filter?: ModelSubscriptionUserEditionsOwningFilterInput | null,
+export type OnDeleteUserEditionOwningSubscriptionVariables = {
+  filter?: ModelSubscriptionUserEditionOwningFilterInput | null,
 };
 
-export type OnDeleteUserEditionsOwningSubscription = {
-  onDeleteUserEditionsOwning?:  {
-    __typename: "UserEditionsOwning",
+export type OnDeleteUserEditionOwningSubscription = {
+  onDeleteUserEditionOwning?:  {
+    __typename: "UserEditionOwning",
     id: string,
     editionId: string,
     userId: string,

@@ -1,11 +1,12 @@
 import { Box, Button, Center, Flex, Image, Text } from "native-base";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Screen from "../../components/Screen";
 import PhoneInput from "react-native-phone-input";
 import i18n from "../../i18n";
-import firebase from "firebase/compat/app";
-import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-import { firebaseConfig } from "../../../firebase";
+// import firebase from "firebase/compat/app";
+// import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
+// import { firebaseConfig } from "../../../firebase";
+import auth from '@react-native-firebase/auth';
 
 export default function Auth({ navigation }) {
   const surfLogo = require("../../assets/images/surf.png");
@@ -18,59 +19,87 @@ export default function Auth({ navigation }) {
 
   const recaptchaVerifier = useRef(null);
   const sendCode = () => {
-    const phoneProvider = new firebase.auth.PhoneAuthProvider();
-    phoneProvider
-      .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
-      .then((res) => {
-        navigation.navigate("VerificationCode", {
-          verificationId: res,
-        });
-      })
-      .catch((err) => {
-        switch (err.code) {
-          case "auth/invalid-phone-number":
-            setError({
-              key: "auth-failed",
-              message: "Invalid phone number format.",
-            });
-            break;
-          case "auth/missing-phone-number":
-            setError({
-              key: "auth-failed",
-              message: "Please enter a valid phone number.",
-            });
-            break;
-          case "auth/too-many-requests"://
-            setError({
-              key: "auth-failed",
-              message: "Too many requests, please try again after 5 minutes.",
-            });
-            break;
-            case "auth/quota-exceeded"://
-              setError({
-                key: "auth-failed",
-                message: "Exceeded quota",
-              });
-              break;
-          default:
-            setError({
-              key: "auth-failed",
-              message: err,
-            });
-            break;
-        }
-      });
+    // const phoneProvider = new firebase.auth.PhoneAuthProvider();
+    // phoneProvider
+    //   .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
+    //   .then((res) => {
+    //     navigation.navigate("VerificationCode", {
+    //       verificationId: res,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     switch (err.code) {
+    //       case "auth/invalid-phone-number":
+    //         setError({
+    //           key: "auth-failed",
+    //           message: "Invalid phone number format.",
+    //         });
+    //         break;
+    //       case "auth/missing-phone-number":
+    //         setError({
+    //           key: "auth-failed",
+    //           message: "Please enter a valid phone number.",
+    //         });
+    //         break;
+    //       case "auth/too-many-requests"://
+    //         setError({
+    //           key: "auth-failed",
+    //           message: "Too many requests, please try again after 5 minutes.",
+    //         });
+    //         break;
+    //         case "auth/quota-exceeded"://
+    //           setError({
+    //             key: "auth-failed",
+    //             message: "Exceeded quota",
+    //           });
+    //           break;
+    //       default:
+    //         setError({
+    //           key: "auth-failed",
+    //           message: err,
+    //         });
+    //         break;
+    //     }
+    //   });
+    signInWithPhoneNumber(phoneNumber);
     setPhoneNumber("");
   };
+
+  // Handle login
+  function onAuthStateChanged(user) {
+    if (user) {
+      // Some Android devices can automatically process the verification code (OTP) message, and the user would NOT need to enter the code.
+      // Actually, if he/she tries to enter it, he/she will get an error message because the code was already used in the background.
+      // In this function, make sure you hide the component(s) for entering the code and/or navigate away from this screen.
+      // It is also recommended to display a message to the user informing him/her that he/she has successfully logged in.
+      console.log("user: ", user);
+    }
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  // Handle the button press
+  async function signInWithPhoneNumber(phoneNumber) {
+    const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+    console.log("confirmation:", confirmation);
+    navigation.navigate("VerificationCode", {
+      confirmation: confirmation,
+    });
+  }
 
   return (
     <Screen>
       <Flex direction="column" m="3" mt="20">
+        {/*
         <FirebaseRecaptchaVerifierModal
           ref={recaptchaVerifier}
           firebaseConfig={firebaseConfig}
           attemptInvisibleVerification={true}
         ></FirebaseRecaptchaVerifierModal>
+  */}
         <Center mb={30}>
           <Image source={surfLogo} alt="Book Swap Logo" size="7" mb={2} />
           <Image source={swapBook} alt="Book Swap" width={120} />

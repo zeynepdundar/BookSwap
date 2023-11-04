@@ -9,12 +9,24 @@ import { AppDispatch } from "../../store/store";
 export default function VerificationCode({ navigation, route }) {
   const [code, setCode] = useState<string | null>("");
 
-  const verificationId = route.params.verificationId;
+   const verificationId = route.params.verificationId;
+  const confirmation = route.params.confirmation;
 
   const dispatch = useDispatch<AppDispatch>();
 
+  async function confirmCode() {
+    try {
+      await confirmation.confirm(code);
+      
+      console.log('Confirmed Successfully!');
+    } catch (error) {
+      console.log('Invalid code.');
+    }
+  }
+
   const confirmCodeHandler = async (): Promise<void> => {
-    dispatch(login({verificationId, code}))
+    //dispatch(login({verificationId, code}))
+    await confirmCode();
   };
 
   return (
