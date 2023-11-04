@@ -18,10 +18,9 @@ import {
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import SearchBar from "../../components/shared/SearchBar";
+import {HorizontalList} from "../../components/shared/HorizontalList";
 
 export default function WishlistInputScreen({ navigation }) {
-  const importUrl = require("../../assets/images/cover_1.png");
-
   const data = [
     {
       id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -55,11 +54,7 @@ export default function WishlistInputScreen({ navigation }) {
 
   return (
     <Screen>
-      <VStack
-        space={1}
-        alignItems="center"
-        height={"50%"}
-      >
+      <VStack space={1} alignItems="center" height={"50%"}>
         <Center w="100%" h="20" justifyContent="space-between">
           <Flex direction="row" justifyContent="space-between" w="100%" h="10">
             <Button
@@ -87,7 +82,7 @@ export default function WishlistInputScreen({ navigation }) {
         <Heading w="100%" h="8" px={6}>
           {i18n.t("add-books-to-wishlist")}
         </Heading>
-        <Center w="100%" h="20" px={8} >
+        <Center w="100%" h="20" px={8}>
           <SearchBar
             onFocus={() => {
               navigation.navigate("BookSearch", {
@@ -102,31 +97,8 @@ export default function WishlistInputScreen({ navigation }) {
           />
         </Center>
         {data.length > 0 && (
-          <Center w="100%" h="109px" px={6} >
-            <FlatList
-              data={data}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <Box w="90px" h="95px" mx={1} justifyContent="center">
-                  <AspectRatio ratio={4 / 3}>
-                    <Image source={importUrl} alt="image base" />
-                  </AspectRatio>
-                  <Badge
-                    rounded="100"
-                    w="7"
-                    h="7"
-                    bg="#F2F2F2"
-                    position="absolute"
-                    right={0}
-                    top={0}
-                  >
-                    <CloseIcon fontSize={10} color="coolGray.800" />
-                  </Badge>
-                </Box>
-              )}
-              keyExtractor={(item) => item.id}
-            />
+          <Center w="100%"  px={6}>
+            <HorizontalList data={data} editable={true}/>
           </Center>
         )}
         <Spacer />

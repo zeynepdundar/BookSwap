@@ -42,7 +42,7 @@ export default function Navigation() {
               />
             )}
 
-            {!isNewUser && (
+            {true && (
               <Stack.Group>
                 <Stack.Screen name="HomeTabs" component={HomeTabs} />
                 <Stack.Screen name="ProfileStack" component={MyProfileStack} />
