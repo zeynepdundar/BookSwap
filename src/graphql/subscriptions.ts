@@ -139,11 +139,11 @@ export const onCreateUser = /* GraphQL */ `subscription OnCreateUser($filter: Mo
     gender
     profile_photo
     language_preference
-    wishingEditions {
+    wishedEditions {
       nextToken
       __typename
     }
-    owningEditions {
+    ownedEditions {
       nextToken
       __typename
     }
@@ -164,11 +164,11 @@ export const onUpdateUser = /* GraphQL */ `subscription OnUpdateUser($filter: Mo
     gender
     profile_photo
     language_preference
-    wishingEditions {
+    wishedEditions {
       nextToken
       __typename
     }
-    owningEditions {
+    ownedEditions {
       nextToken
       __typename
     }
@@ -189,11 +189,11 @@ export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser($filter: Mo
     gender
     profile_photo
     language_preference
-    wishingEditions {
+    wishedEditions {
       nextToken
       __typename
     }
-    owningEditions {
+    ownedEditions {
       nextToken
       __typename
     }
@@ -206,10 +206,10 @@ export const onDeleteUser = /* GraphQL */ `subscription OnDeleteUser($filter: Mo
   APITypes.OnDeleteUserSubscriptionVariables,
   APITypes.OnDeleteUserSubscription
 >;
-export const onCreateUserEditionsWishing = /* GraphQL */ `subscription OnCreateUserEditionsWishing(
-  $filter: ModelSubscriptionUserEditionsWishingFilterInput
+export const onCreateUserEditionWishing = /* GraphQL */ `subscription OnCreateUserEditionWishing(
+  $filter: ModelSubscriptionUserEditionWishingFilterInput
 ) {
-  onCreateUserEditionsWishing(filter: $filter) {
+  onCreateUserEditionWishing(filter: $filter) {
     id
     editionId
     userId
@@ -252,13 +252,13 @@ export const onCreateUserEditionsWishing = /* GraphQL */ `subscription OnCreateU
   }
 }
 ` as GeneratedSubscription<
-  APITypes.OnCreateUserEditionsWishingSubscriptionVariables,
-  APITypes.OnCreateUserEditionsWishingSubscription
+  APITypes.OnCreateUserEditionWishingSubscriptionVariables,
+  APITypes.OnCreateUserEditionWishingSubscription
 >;
-export const onUpdateUserEditionsWishing = /* GraphQL */ `subscription OnUpdateUserEditionsWishing(
-  $filter: ModelSubscriptionUserEditionsWishingFilterInput
+export const onUpdateUserEditionWishing = /* GraphQL */ `subscription OnUpdateUserEditionWishing(
+  $filter: ModelSubscriptionUserEditionWishingFilterInput
 ) {
-  onUpdateUserEditionsWishing(filter: $filter) {
+  onUpdateUserEditionWishing(filter: $filter) {
     id
     editionId
     userId
@@ -301,13 +301,13 @@ export const onUpdateUserEditionsWishing = /* GraphQL */ `subscription OnUpdateU
   }
 }
 ` as GeneratedSubscription<
-  APITypes.OnUpdateUserEditionsWishingSubscriptionVariables,
-  APITypes.OnUpdateUserEditionsWishingSubscription
+  APITypes.OnUpdateUserEditionWishingSubscriptionVariables,
+  APITypes.OnUpdateUserEditionWishingSubscription
 >;
-export const onDeleteUserEditionsWishing = /* GraphQL */ `subscription OnDeleteUserEditionsWishing(
-  $filter: ModelSubscriptionUserEditionsWishingFilterInput
+export const onDeleteUserEditionWishing = /* GraphQL */ `subscription OnDeleteUserEditionWishing(
+  $filter: ModelSubscriptionUserEditionWishingFilterInput
 ) {
-  onDeleteUserEditionsWishing(filter: $filter) {
+  onDeleteUserEditionWishing(filter: $filter) {
     id
     editionId
     userId
@@ -350,13 +350,13 @@ export const onDeleteUserEditionsWishing = /* GraphQL */ `subscription OnDeleteU
   }
 }
 ` as GeneratedSubscription<
-  APITypes.OnDeleteUserEditionsWishingSubscriptionVariables,
-  APITypes.OnDeleteUserEditionsWishingSubscription
+  APITypes.OnDeleteUserEditionWishingSubscriptionVariables,
+  APITypes.OnDeleteUserEditionWishingSubscription
 >;
-export const onCreateUserEditionsOwning = /* GraphQL */ `subscription OnCreateUserEditionsOwning(
-  $filter: ModelSubscriptionUserEditionsOwningFilterInput
+export const onCreateUserEditionOwning = /* GraphQL */ `subscription OnCreateUserEditionOwning(
+  $filter: ModelSubscriptionUserEditionOwningFilterInput
 ) {
-  onCreateUserEditionsOwning(filter: $filter) {
+  onCreateUserEditionOwning(filter: $filter) {
     id
     editionId
     userId
@@ -399,13 +399,13 @@ export const onCreateUserEditionsOwning = /* GraphQL */ `subscription OnCreateUs
   }
 }
 ` as GeneratedSubscription<
-  APITypes.OnCreateUserEditionsOwningSubscriptionVariables,
-  APITypes.OnCreateUserEditionsOwningSubscription
+  APITypes.OnCreateUserEditionOwningSubscriptionVariables,
+  APITypes.OnCreateUserEditionOwningSubscription
 >;
-export const onUpdateUserEditionsOwning = /* GraphQL */ `subscription OnUpdateUserEditionsOwning(
-  $filter: ModelSubscriptionUserEditionsOwningFilterInput
+export const onUpdateUserEditionOwning = /* GraphQL */ `subscription OnUpdateUserEditionOwning(
+  $filter: ModelSubscriptionUserEditionOwningFilterInput
 ) {
-  onUpdateUserEditionsOwning(filter: $filter) {
+  onUpdateUserEditionOwning(filter: $filter) {
     id
     editionId
     userId
@@ -448,13 +448,13 @@ export const onUpdateUserEditionsOwning = /* GraphQL */ `subscription OnUpdateUs
   }
 }
 ` as GeneratedSubscription<
-  APITypes.OnUpdateUserEditionsOwningSubscriptionVariables,
-  APITypes.OnUpdateUserEditionsOwningSubscription
+  APITypes.OnUpdateUserEditionOwningSubscriptionVariables,
+  APITypes.OnUpdateUserEditionOwningSubscription
 >;
-export const onDeleteUserEditionsOwning = /* GraphQL */ `subscription OnDeleteUserEditionsOwning(
-  $filter: ModelSubscriptionUserEditionsOwningFilterInput
+export const onDeleteUserEditionOwning = /* GraphQL */ `subscription OnDeleteUserEditionOwning(
+  $filter: ModelSubscriptionUserEditionOwningFilterInput
 ) {
-  onDeleteUserEditionsOwning(filter: $filter) {
+  onDeleteUserEditionOwning(filter: $filter) {
     id
     editionId
     userId
@@ -497,6 +497,6 @@ export const onDeleteUserEditionsOwning = /* GraphQL */ `subscription OnDeleteUs
   }
 }
 ` as GeneratedSubscription<
-  APITypes.OnDeleteUserEditionsOwningSubscriptionVariables,
-  APITypes.OnDeleteUserEditionsOwningSubscription
+  APITypes.OnDeleteUserEditionOwningSubscriptionVariables,
+  APITypes.OnDeleteUserEditionOwningSubscription
 >;
