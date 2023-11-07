@@ -49,7 +49,7 @@ export default function ProfileScreen({ navigation }) {
           onPress={() => navigation.goBack()}
         ></Button>
         <Heading>{i18n.t("profile")}</Heading>
-        <Heading>---</Heading>
+        <Center/>
       </Flex>
       <Center>
         <Flex direction="column" justifyContent="justify" m={1}>

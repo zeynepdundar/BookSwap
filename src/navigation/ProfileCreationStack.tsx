@@ -5,6 +5,7 @@ import GenderInputScreen from "../screens/ProfileCreation/GenderInputScreen";
 import LibraryInputScreen from "../screens/ProfileCreation/LibraryInputScreen";
 import NameInputScreen from "../screens/ProfileCreation/NameInputScreen";
 import WishlistInputScreen from "../screens/ProfileCreation/WishlistInputScreen";
+import PhotoInputScreen from "../screens/ProfileCreation/PhotoInputScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,7 @@ export default function ProfileCreationStack() {
           name="Birthdate"
           component={BirthdateInputScreen}
         ></Stack.Screen>
+        <Stack.Screen name="Photo" component={PhotoInputScreen}></Stack.Screen>
         <Stack.Screen
           name="Wishlist"
           component={WishlistInputScreen}

@@ -1,15 +1,16 @@
 import { Button, Center, Heading, Input, Text } from "native-base";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { useDispatch } from "react-redux";
-import { login } from "../../store/auth-actions";
+import { userAuth } from "../../store/auth-actions";
 import { AppDispatch } from "../../store/store";
+import auth from "@react-native-firebase/auth";
 
 export default function VerificationCode({ navigation, route }) {
   const [code, setCode] = useState<string | null>("");
 
-   const verificationId = route.params.verificationId;
+  const verificationId = route.params.verificationId;
   const confirmation = route.params.confirmation;
 
   const dispatch = useDispatch<AppDispatch>();
@@ -17,15 +18,32 @@ export default function VerificationCode({ navigation, route }) {
   async function confirmCode() {
     try {
       await confirmation.confirm(code);
-      
-      console.log('Confirmed Successfully!');
+      dispatch(userAuth(user));
+      console.log("Confirmed Successfully!");
     } catch (error) {
-      console.log('Invalid code.');
+      console.log("Invalid code.");
     }
   }
 
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  // Handle user state changes
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  if (initializing) return null;
+
   const confirmCodeHandler = async (): Promise<void> => {
-    //dispatch(login({verificationId, code}))
     await confirmCode();
   };
 

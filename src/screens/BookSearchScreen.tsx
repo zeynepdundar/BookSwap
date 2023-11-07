@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
-  Center,
   Heading,
   SearchIcon,
   Input,
@@ -9,178 +8,202 @@ import {
   FlatList,
   Box,
   Text,
-  Spacer,
   VStack,
   HStack,
+  Flex,
+  AspectRatio,
+  Pressable,
+  Spacer,
+  WarningTwoIcon,
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
 import SearchBar from "../components/shared/SearchBar";
 
-export default function BookSearchScreen({ navigation }) {
-  const importUrl = require("../assets/images/cover_1.png");
+import { API, graphqlOperation } from "aws-amplify";
+import { listEditionsIncludeOwningUsers } from "../graphql/custom-queries";
+import { LoadingOverlay } from "../components/LoadingOverlay";
 
-  const [birthDay, setBirthDay] = useState<any>();
-  const data = [
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      fullName: "Crime and Punishment",
-      timeStamp: "12:47 PM",
-      recentText: "Good Day!",
-      avatarUrl: importUrl,
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      fullName: "Sujitha Mathur",
-      timeStamp: "11:11 PM",
-      recentText: "Cheer up, there!",
-      avatarUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      fullName: "Anci Barroco",
-      timeStamp: "6:22 PM",
-      recentText: "Good Day!",
-      avatarUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
-    },
-    {
-      id: "68694a0f-3da1-431f-bd56-142371e29d72",
-      fullName: "Aniket Kumar",
-      timeStamp: "8:56 PM",
-      recentText: "All the best",
-      avatarUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU",
-    },
-    {
-      id: "28694a0f-3da1-471f-bd96-142456e29d72",
-      fullName: "Kiara",
-      timeStamp: "12:47 PM",
-      recentText: "I will call today.",
-      avatarUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU",
-    },
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      fullName: "Aafreen Khan",
-      timeStamp: "12:47 PM",
-      recentText: "Good Day!",
-      avatarUrl:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      fullName: "Sujitha Mathur",
-      timeStamp: "11:11 PM",
-      recentText: "Cheer up, there!",
-      avatarUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      fullName: "Anci Barroco",
-      timeStamp: "6:22 PM",
-      recentText: "Good Day!",
-      avatarUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
-    },
-    {
-      id: "68694a0f-3da1-431f-bd56-142371e29d72",
-      fullName: "Aniket Kumar",
-      timeStamp: "8:56 PM",
-      recentText: "All the best",
-      avatarUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU",
-    },
-    {
-      id: "28694a0f-3da1-471f-bd96-142456e29d72",
-      fullName: "Kiara",
-      timeStamp: "12:47 PM",
-      recentText: "I will call today.",
-      avatarUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU",
-    },
-  ];
+export default function BookSearchScreen({ navigation, route }) {
+  const mode = route.params.relatedScreen;
+
+  const importUrl = require("../assets/images/cover_1.png");
+  const wishlistIcon = require("../assets/images/icon/add-wishlist.png");
+  const libraryIcon = require("../assets/images/icon/add-library.png");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
+
+  const [editions, updateEditions] = useState([]);
+
+  const [libraryItems, setLibraryItem] = useState<any>([]);
+
+  useEffect(() => {
+
+    let fetchedEditions = [];
+    const fetchEditions = async () => {
+      const editionData = await API.graphql(
+        graphqlOperation(listEditionsIncludeOwningUsers)
+      );
+      fetchedEditions = editionData.data.listEditions.items;
+    };
+    fetchEditions()
+      .then(() => {
+        const mappedEditions = fetchedEditions.map((x) => ({
+          id: x.id,
+          title: x.title.slice(0, 20),
+          publisher: x.publishers[0],
+          coverUrl: importUrl,
+          author: x.authors[0].name,
+        }));
+        updateEditions(mappedEditions);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setError(true);
+        setLoading(false);
+      });
+  }, [editions]);
+
+  const addLibraryItemHandler = (selectedLibraryItem: any) => {
+    setLibraryItem((currentLibraryItems) => [
+      ...currentLibraryItems,
+      { id: selectedLibraryItem.id, title: selectedLibraryItem.title },
+    ]);
+  };
+
+  const removeLibraryItemHandler = (id: string) => {
+    setLibraryItem((currentLibraryItems) => {
+      return currentLibraryItems.filter((item) => item.id !== id);
+    });
+  };
+
+  const isSelectedItem = (id: string) => {
+    const existingLibraryItemIndex = libraryItems.findIndex(
+      (item) => item.id === id
+    );
+    return existingLibraryItemIndex !== -1;
+  };
+
   const pressHandler = () => {
-    navigation.navigate("Gender");
+    console.log("Selected Library Items");
+    navigation.navigate(mode==="WISHLIST" ?  "Wishlist" : "Library");
   };
 
   return (
     <Screen>
-      <Heading mt="2">{i18n.t("keep-exploring")}</Heading>
-      {/* <SearchBar></SearchBar> */}
-      <Center>
-        <Input
-          placeholder={i18n.t("search-by-title")}
-          width="90%"
-          maxWidth="500"
-          borderRadius="6"
-          borderColor="black.900"
-          color="black.400"
-          backgroundColor="black.800"
-          m="5"
-          py="3"
-          px="1"
-          fontSize="14"
-          _focus={{
-            borderColor: "black.700",
-          }}
-          onFocus={() => {}}
-          InputLeftElement={
-            <SearchIcon size="5" mt="0.5" mx="2" color="black.300" />
-          }
-        />
-        <FlatList
-          data={data}
-          renderItem={({ item }) => (
-            <Box
-              borderWidth="1"
-              borderRadius="15"
-              borderColor="#F1F1F1"
-              backgroundColor="primary.200"
-              pl={["3", "4"]}
-              pr={["3", "5"]}
-              py="2"
-              m="0.5"
-            >
-              <HStack space={[2, 3]} justifyContent="space-between">
-                <Image
-                  source={importUrl}
-                  alt=" Library"
-                  width="85"
-                  height="100"
-                />
-
-                <VStack>
-                  <Text color="#000000">{item.fullName}</Text>
-                  <Text color="#8c8c8c" fontSize="xs">
-                    {item.recentText}
-                  </Text>
-                  <Text color="#8c8c8c" fontSize="9px">
-                    Can Publications
-                  </Text>
-                </VStack>
-                <Spacer />
-                <Text
-                  fontSize="xs"
-                  _dark={{
-                    color: "warmGray.50",
-                  }}
-                  color="coolGray.800"
-                  alignSelf="flex-start"
-                >
-                  {item.timeStamp}
-                </Text>
-              </HStack>
+      <Flex h="100%">
+        <Heading p={2}>{i18n.t("keep-exploring")}</Heading>
+        {/* <SearchBar></SearchBar> */}
+        <Box>
+          <Input
+            placeholder={i18n.t("search-by-title")}
+            width="90%"
+            borderRadius="6"
+            borderColor="black.900"
+            color="black.400"
+            backgroundColor="black.800"
+            m="4"
+            py="3"
+            fontSize="14"
+            _focus={{
+              borderColor: "black.700",
+            }}
+            onFocus={() => {}}
+            InputLeftElement={<SearchIcon size="5" ml="3" color="black.300" />}
+          />
+          {loading && (
+            <Box h="75%" alignItems="center" justifyContent="center">
+              <LoadingOverlay />
             </Box>
           )}
-          keyExtractor={(item) => item.id}
-        />
-      </Center>
-      <Center mb={100}>
-        <Button variant="outline" onPress={pressHandler}>
-          {i18n.t("done")}
-        </Button>
-      </Center>
+          {!loading && !error && !!editions && editions?.length > 0 && (
+            <>
+              <FlatList
+                maxWidth="100%"
+                height="75%"
+                data={editions}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      isSelectedItem(item.id)
+                        ? removeLibraryItemHandler(item.id)
+                        : addLibraryItemHandler(item);
+                    }}
+                  >
+                    <Box
+                      borderWidth="1"
+                      borderRadius="15"
+                      borderColor="#F1F1F1"
+                      backgroundColor={
+                        isSelectedItem(item.id) ? "primary.200" : "white"
+                      }
+                      p="2"
+                      mx="2"
+                      my="1"
+                    >
+                      <HStack
+                        justifyContent="space-between"
+                        width="100%"
+                        space={3}
+                        p={1}
+                      >
+                        <Image
+                          source={importUrl}
+                          alt="Library"
+                          width="25%"
+                          rounded="8"
+                          height="100"
+                        />
+                        <VStack width="75%">
+                          <Text color="#000000">{item.title}</Text>
+                          <Text color="#8c8c8c" fontSize="xs" p={0}>
+                            {item.author}
+                          </Text>
+                          <Text color="#8c8c8c" fontSize="9px">
+                            {item.publisher}
+                          </Text>
+                        </VStack>
+
+                        <Box position="absolute" bottom="5" right="5">
+                          <AspectRatio w="100%" ratio={16 / 9}>
+                            {isSelectedItem(item.id) ? (
+                              <Image source={libraryIcon} alt="Library" />
+                            ) : (
+                              <Image source={wishlistIcon} alt="Wishlist" />
+                            )}
+                          </AspectRatio>
+                        </Box>
+                      </HStack>
+                    </Box>
+                  </Pressable>
+                )}
+                keyExtractor={(item) => item.id}
+              />
+              <Spacer />
+              <Box alignItems="center" justifyContent="center" h="8%" mx="2">
+                <Button
+                  variant="outline"
+                  onPress={pressHandler}
+                  right={0}
+                  position="absolute"
+                >
+                  {i18n.t("done")}
+                </Button>
+              </Box>
+            </>
+          )}
+          {error && (
+            <Box h="75%" alignItems="center" justifyContent="center">
+              <WarningTwoIcon size="5" mt="0.5" mx="2" color="error.500" />
+              <Text mt={2} px={5} fontSize="xs" color="error.500">
+                Something went wrong! [ERR_CODE :{error}]
+              </Text>
+            </Box>
+          )}
+        </Box>
+      </Flex>
     </Screen>
   );
 }

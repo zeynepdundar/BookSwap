@@ -2,6 +2,7 @@
   query ListEditionsIncludeOwningUsers {
     listEditions {
       items {
+        id
         title
         authors {
           name
