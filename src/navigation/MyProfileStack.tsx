@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ProfileScreen from "../screens/MyProfile/MyProfileScreen";
-import WishlistInputScreen from "../screens/ProfileCreation/WishlistInputScreen";
 import MyLibraryScreen from "../screens/MyProfile/MyLibraryScreen";
 import MyWishlistScreen from "../screens/MyProfile/MyWishlistScreen";
 

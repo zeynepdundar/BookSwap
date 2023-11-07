@@ -2,7 +2,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import VerificationCode from "../screens/Auth/VerificationCode";
 import Auth from "../screens/Auth";
-import PhotoInputScreen from "../screens/ProfileCreation/PhotoInputScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,7 +14,6 @@ export default function AuthStack() {
       }}
     >
       <Stack.Group>
-        <Stack.Screen name="Photo" component={PhotoInputScreen}></Stack.Screen>
         <Stack.Screen name="Welcome" component={WelcomeScreen}></Stack.Screen>
         <Stack.Screen name="Auth" component={Auth}></Stack.Screen>
         <Stack.Screen

@@ -1,5 +1,5 @@
 import { AnyAction, createSlice, current } from "@reduxjs/toolkit";
-import { login, signOut } from "./auth-actions";
+import { signOut, userAuth } from "./auth-actions";
 
 const initialState = {
   loading: false,
@@ -16,22 +16,22 @@ const authSlice = createSlice({
     addBook: () => {},
   },
   extraReducers: (builder) => {
-    //LOGIN
-    builder.addCase(login.pending, (state) => {
+    //AUTHENTICATE USER
+    builder.addCase(userAuth.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(login.fulfilled, (state, action: AnyAction) => {
+    builder.addCase(userAuth.fulfilled, (state, action: AnyAction) => {
       state.loading = false;
       state.error = false;
       state.success = true;
       state.user = {
-        name: action.payload.user.displayName,
-        isNewUser: action.payload.additionalUserInfo.isNewUser,
+        uid: action.payload.uid,
+        fullName: action.payload.firstName,
       };
-      state.userToken = action.payload.user.uid;
+      state.userToken = "123456";
       console.log(current(state), action);
     });
-    builder.addCase(login.rejected, (state, action: AnyAction) => {
+    builder.addCase(userAuth.rejected, (state, action: AnyAction) => {
       state.loading = false;
       state.error = true;
     });

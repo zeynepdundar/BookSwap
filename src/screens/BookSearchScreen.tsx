@@ -87,9 +87,6 @@ export default function BookSearchScreen({ navigation, route }) {
 
   const pressHandler = () => {
     console.log("Selected Library Items");
-    libraryItems.forEach((item) => {
-      console.log(item);
-    });
     navigation.navigate(mode==="WISHLIST" ?  "Wishlist" : "Library");
   };
 

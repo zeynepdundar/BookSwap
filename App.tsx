@@ -1,32 +1,18 @@
 import { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  Pressable,
-  SafeAreaView,
-} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
-import {
-  Button,
-  Center,
-  FlatList,
-  Input,
-  NativeBaseProvider,
-} from "native-base";
+import { NativeBaseProvider } from "native-base";
 import { Amplify } from "aws-amplify";
 import { API, graphqlOperation } from "aws-amplify";
 import { createUser, createEdition } from "./src/graphql/mutations";
-import { listUsers, listEditions } from "./src/graphql/queries";
+import { listUsers } from "./src/graphql/queries";
 import { listEditionsIncludeOwningUsers } from "./src/graphql/custom-queries";
 import awsExports from "./src/aws-exports";
 import { theme } from "./src/theme";
 import Navigation from "./src/navigation";
-import { Provider } from "react-redux";
-import store from "./src/store/store";
-import 'expo-dev-client';
+import { Provider, useDispatch } from "react-redux";
+import store, { AppDispatch } from "./src/store/store";
+import "expo-dev-client";
 
 const EDITIONS = [
   {
@@ -279,6 +265,7 @@ const EDITIONS = [
 
 Amplify.configure(awsExports);
 
+
 const initialState = { name: "", profile_photo: "" };
 
 export default function App() {
@@ -289,7 +276,7 @@ export default function App() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetchUsers();
+    //fetchUsers();
     //addEditions();
     //fetchEditions();
   }, []);
@@ -336,10 +323,11 @@ export default function App() {
 
   async function fetchEditions() {
     try {
-      const editionData = await API.graphql(graphqlOperation(listEditionsIncludeOwningUsers));
+      const editionData = await API.graphql(
+        graphqlOperation(listEditionsIncludeOwningUsers)
+      );
       console.log("editionData: ", editionData.data.listEditions.items[0]);
       const editions = editionData.data.listEditions.items;
-      
     } catch (err) {
       console.log("error fetching editions", err);
     }
@@ -437,22 +425,3 @@ export default function App() {
     </NativeBaseProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { width: 400, flex: 1, padding: 20, alignSelf: "center" },
-  todo: { marginBottom: 15 },
-  input: {
-    backgroundColor: "#ddd",
-    marginBottom: 10,
-    padding: 8,
-    fontSize: 18,
-  },
-  todoName: { fontSize: 20, fontWeight: "bold" },
-  todoDesc: { fontSize: 15 },
-  buttonContainer: {
-    alignSelf: "center",
-    backgroundColor: "black",
-    paddingHorizontal: 8,
-  },
-  buttonText: { color: "white", padding: 16, fontSize: 18 },
-});
