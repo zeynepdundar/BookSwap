@@ -16,7 +16,6 @@ import MyProfileStack from "./MyProfileStack";
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
-  const [isNewUser, setIsNewUser] = useState<boolean>(false);
   const isLoading = useSelector(selectIsLoading);
   const userToken = useSelector(selectUserToken);
   const user = useSelector(selectUser);
