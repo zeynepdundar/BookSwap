@@ -25,7 +25,7 @@
   "my-library": "Kitaplığım",
   "language": "Dil",
   "feedback": "Geri bildirim",
-  "logout":"Çıkış",
+  "logout": "Çıkış",
   "my_wishlist": {
     "my_wishlist": "İstek Listem"
   },
@@ -35,5 +35,8 @@
   "request": "İstek",
   "propose": "Teklif",
   "history": "Geçmiş",
-  "my-photo": "Fotoğrafım"
+  "my-photo": "Fotoğrafım",
+  "upload-photo": "Fotoğraf yükle",
+  "take-photo": "Fotoğraf çek"
+
 }
