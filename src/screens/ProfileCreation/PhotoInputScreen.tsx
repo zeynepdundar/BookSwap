@@ -117,7 +117,6 @@ export default function PhotoInputScreen({ navigation }) {
           px={8}
           justifyItems="center"
           alignItems="center"
-          backgroundColor="red.100"
         >
           <Pressable
             onPress={() => setIsOpen(true)}
