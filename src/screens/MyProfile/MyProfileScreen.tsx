@@ -10,6 +10,7 @@ import {
   Text,
   Pressable,
   Menu,
+  VStack,
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
@@ -18,6 +19,7 @@ import { AppDispatch } from "../../store/store";
 import { signOut } from "../../store/auth-actions";
 import { useState } from "react";
 import { AlertDialogBox } from "../../components/AlertDialogBox";
+import ImagePicker from "../../components/ImagePicker";
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../../assets/images/icon/library-icon.png");
@@ -25,7 +27,7 @@ export default function ProfileScreen({ navigation }) {
   const languageIcon = require("../../assets/images/icon/language-icon.png");
   const feedbackIcon = require("../../assets/images/icon/feedback-icon.png");
   const logoutIcon = require("../../assets/images/icon/logout-icon.png");
-  const profilePhoto = require("../../assets/images/jesse-pinkman-profile.png");
+  const profilePhoto = "jesse-pinkman-profile.png";
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -39,34 +41,29 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <Screen>
-      <Flex direction="row" justifyContent="space-between" alignItems="center">
-        <Button
-          variant="ghost"
-          leftIcon={<ArrowBackIcon size="6" color="#212325" />}
-          _pressed={{
-            bg: "transparent",
-          }}
-          onPress={() => navigation.goBack()}
-        ></Button>
-        <Heading>{i18n.t("profile")}</Heading>
-        <Center/>
-      </Flex>
-      <Center>
-        <Flex direction="column" justifyContent="justify" m={1}>
-          <Center>
-            <Image
-              size={150}
-              alt="fallback text"
-              borderRadius={100}
-              source={profilePhoto}
-            />
-            <Heading color="black.100" mb={10} mt={5}>
-              Jesse Pinkman
-            </Heading>
-          </Center>
-        </Flex>
-      </Center>
-      <Center>
+      <VStack space={1} alignItems="center" height={"50%"}>
+        <Center w="100%" h="10" justifyContent="space-between">
+          <Flex direction="row" justifyContent="space-between" w="100%" h="10">
+            <Button
+              backgroundColor="transparent"
+              variant="ghost"
+              leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+              _pressed={{
+                bg: "transparent",
+              }}
+              onPress={() => navigation.goBack()}
+            ></Button>
+            <Heading>{i18n.t("profile")}</Heading>
+            <Text></Text>
+          </Flex>
+        </Center>
+        <Center w="100%" h="215px" px={6}>
+          <ImagePicker selectedImage={true} />
+          <Heading color="black.100" my={3}>
+            Jesse Pinkman
+          </Heading>
+        </Center>
+
         {/* Wishlist */}
         <Pressable
           width={320}
@@ -243,7 +240,7 @@ export default function ProfileScreen({ navigation }) {
           cancelButtonLabel={i18n.t("cancel")}
           confirmButtonLabel={i18n.t("logout")}
         ></AlertDialogBox>
-      </Center>
+      </VStack>
     </Screen>
   );
 }

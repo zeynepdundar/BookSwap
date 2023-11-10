@@ -12,6 +12,7 @@ import {
   selectUserToken,
 } from "../store/auth-slice";
 import MyProfileStack from "./MyProfileStack";
+import PhotoInputScreen from "../screens/ProfileCreation/PhotoInputScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +36,10 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
+                      <Stack.Screen
+                name="PhoneInput"
+                component={PhotoInputScreen}
+              />
         {userToken !== null ? (
           <>
             {!user.fullName && (
