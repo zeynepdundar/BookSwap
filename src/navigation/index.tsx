@@ -36,10 +36,6 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
-                      <Stack.Screen
-                name="PhoneInput"
-                component={PhotoInputScreen}
-              />
         {userToken !== null ? (
           <>
             {!user.fullName && (
