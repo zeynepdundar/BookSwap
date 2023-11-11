@@ -15,6 +15,7 @@
           }
         }
         publishers
+        isbn_13
       }
     }
   }
