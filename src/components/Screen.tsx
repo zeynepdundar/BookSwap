@@ -1,6 +1,5 @@
-import { View, StyledProps } from "native-base";
+import { ScrollView, View } from "native-base";
 import {
-  ScrollView,
   ViewProps,
   StyleProp,
   StyleSheet,

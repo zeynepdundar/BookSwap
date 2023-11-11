@@ -69,9 +69,15 @@ export default function HomeScreen({ navigation }) {
       </Flex>
       <SearchBar />
       {data.length > 0 && (
-        <Center w="100%">
-          <HorizontalList data={data} editable={false} />
-        </Center>
+        <>
+          <Text color="black.400" fontWeight="700">
+            Recently Added
+          </Text>
+
+          <Center w="100%">
+            <HorizontalList data={data} editable={false} />
+          </Center>
+        </>
       )}
     </Screen>
   );
