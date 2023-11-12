@@ -239,7 +239,7 @@ export default function ProfileScreen({ navigation }) {
           description={i18n.t("are-you-sure-log-out")}
           cancelButtonLabel={i18n.t("cancel")}
           confirmButtonLabel={i18n.t("logout")}
-        ></AlertDialogBox>
+        />
       </VStack>
     </Screen>
   );

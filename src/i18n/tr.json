@@ -37,6 +37,9 @@
   "history": "Geçmiş",
   "my-photo": "Fotoğrafım",
   "upload-photo": "Fotoğraf yükle",
-  "take-photo": "Fotoğraf çek"
-
+  "take-photo": "Fotoğraf çek",
+  "send-offer": "Teklif Gönder",
+  "add-my-wishlist":"İstek listeme ekle",
+  "add-my-library":"Kitaplığıma ekle"
+  
 }
