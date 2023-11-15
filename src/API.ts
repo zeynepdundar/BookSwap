@@ -333,6 +333,180 @@ export type ModelEditionFilterInput = {
   not?: ModelEditionFilterInput | null,
 };
 
+export type SearchableEditionFilterInput = {
+  id?: SearchableIDFilterInput | null,
+  title?: SearchableStringFilterInput | null,
+  subtitle?: SearchableStringFilterInput | null,
+  publish_year?: SearchableIntFilterInput | null,
+  languages?: SearchableStringFilterInput | null,
+  number_of_pages?: SearchableIntFilterInput | null,
+  subjects?: SearchableStringFilterInput | null,
+  iccn?: SearchableStringFilterInput | null,
+  oclc_numbers?: SearchableStringFilterInput | null,
+  isbn_10?: SearchableStringFilterInput | null,
+  isbn_13?: SearchableStringFilterInput | null,
+  ol_key?: SearchableStringFilterInput | null,
+  contributions?: SearchableStringFilterInput | null,
+  publish_country?: SearchableStringFilterInput | null,
+  publishers?: SearchableStringFilterInput | null,
+  translation_of?: SearchableStringFilterInput | null,
+  work?: SearchableStringFilterInput | null,
+  createdAt?: SearchableStringFilterInput | null,
+  updatedAt?: SearchableStringFilterInput | null,
+  and?: Array< SearchableEditionFilterInput | null > | null,
+  or?: Array< SearchableEditionFilterInput | null > | null,
+  not?: SearchableEditionFilterInput | null,
+};
+
+export type SearchableIDFilterInput = {
+  ne?: string | null,
+  gt?: string | null,
+  lt?: string | null,
+  gte?: string | null,
+  lte?: string | null,
+  eq?: string | null,
+  match?: string | null,
+  matchPhrase?: string | null,
+  matchPhrasePrefix?: string | null,
+  multiMatch?: string | null,
+  exists?: boolean | null,
+  wildcard?: string | null,
+  regexp?: string | null,
+  range?: Array< string | null > | null,
+};
+
+export type SearchableStringFilterInput = {
+  ne?: string | null,
+  gt?: string | null,
+  lt?: string | null,
+  gte?: string | null,
+  lte?: string | null,
+  eq?: string | null,
+  match?: string | null,
+  matchPhrase?: string | null,
+  matchPhrasePrefix?: string | null,
+  multiMatch?: string | null,
+  exists?: boolean | null,
+  wildcard?: string | null,
+  regexp?: string | null,
+  range?: Array< string | null > | null,
+};
+
+export type SearchableIntFilterInput = {
+  ne?: number | null,
+  gt?: number | null,
+  lt?: number | null,
+  gte?: number | null,
+  lte?: number | null,
+  eq?: number | null,
+  range?: Array< number | null > | null,
+};
+
+export type SearchableEditionSortInput = {
+  field?: SearchableEditionSortableFields | null,
+  direction?: SearchableSortDirection | null,
+};
+
+export enum SearchableEditionSortableFields {
+  id = "id",
+  title = "title",
+  subtitle = "subtitle",
+  publish_year = "publish_year",
+  languages = "languages",
+  number_of_pages = "number_of_pages",
+  subjects = "subjects",
+  iccn = "iccn",
+  oclc_numbers = "oclc_numbers",
+  isbn_10 = "isbn_10",
+  isbn_13 = "isbn_13",
+  ol_key = "ol_key",
+  contributions = "contributions",
+  publish_country = "publish_country",
+  publishers = "publishers",
+  translation_of = "translation_of",
+  work = "work",
+  createdAt = "createdAt",
+  updatedAt = "updatedAt",
+}
+
+
+export enum SearchableSortDirection {
+  asc = "asc",
+  desc = "desc",
+}
+
+
+export type SearchableEditionAggregationInput = {
+  name: string,
+  type: SearchableAggregateType,
+  field: SearchableEditionAggregateField,
+};
+
+export enum SearchableAggregateType {
+  terms = "terms",
+  avg = "avg",
+  min = "min",
+  max = "max",
+  sum = "sum",
+}
+
+
+export enum SearchableEditionAggregateField {
+  id = "id",
+  title = "title",
+  subtitle = "subtitle",
+  publish_year = "publish_year",
+  languages = "languages",
+  number_of_pages = "number_of_pages",
+  subjects = "subjects",
+  iccn = "iccn",
+  oclc_numbers = "oclc_numbers",
+  isbn_10 = "isbn_10",
+  isbn_13 = "isbn_13",
+  ol_key = "ol_key",
+  contributions = "contributions",
+  publish_country = "publish_country",
+  publishers = "publishers",
+  translation_of = "translation_of",
+  work = "work",
+  createdAt = "createdAt",
+  updatedAt = "updatedAt",
+}
+
+
+export type SearchableEditionConnection = {
+  __typename: "SearchableEditionConnection",
+  items:  Array<Edition | null >,
+  nextToken?: string | null,
+  total?: number | null,
+  aggregateItems:  Array<SearchableAggregateResult | null >,
+};
+
+export type SearchableAggregateResult = {
+  __typename: "SearchableAggregateResult",
+  name: string,
+  result?: SearchableAggregateGenericResult | null,
+};
+
+export type SearchableAggregateGenericResult = SearchableAggregateScalarResult | SearchableAggregateBucketResult
+
+
+export type SearchableAggregateScalarResult = {
+  __typename: "SearchableAggregateScalarResult",
+  value: number,
+};
+
+export type SearchableAggregateBucketResult = {
+  __typename: "SearchableAggregateBucketResult",
+  buckets?:  Array<SearchableAggregateBucketResultItem | null > | null,
+};
+
+export type SearchableAggregateBucketResultItem = {
+  __typename: "SearchableAggregateBucketResultItem",
+  key: string,
+  doc_count: number,
+};
+
 export type ModelUserFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
@@ -471,6 +645,7 @@ export type ListEditionsIncludeOwningUsersQuery = {
     __typename: "ModelEditionConnection",
     items:  Array< {
       __typename: "Edition",
+      id: string,
       title: string,
       authors?:  Array< {
         __typename: "Author",
@@ -487,6 +662,26 @@ export type ListEditionsIncludeOwningUsersQuery = {
         } | null >,
       } | null,
       publishers?: Array< string | null > | null,
+      isbn_13?: Array< string | null > | null,
+    } | null >,
+  } | null,
+};
+
+export type SearchEditionsByISBN13QueryVariables = {
+  isbn_13: string,
+};
+
+export type SearchEditionsByISBN13Query = {
+  listEditions?:  {
+    __typename: "ModelEditionConnection",
+    items:  Array< {
+      __typename: "Edition",
+      id: string,
+      authors?:  Array< {
+        __typename: "Author",
+        name?: string | null,
+      } > | null,
+      title: string,
     } | null >,
   } | null,
 };
@@ -1069,6 +1264,61 @@ export type ListEditionsQuery = {
       updatedAt: string,
     } | null >,
     nextToken?: string | null,
+  } | null,
+};
+
+export type SearchEditionsQueryVariables = {
+  filter?: SearchableEditionFilterInput | null,
+  sort?: Array< SearchableEditionSortInput | null > | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  from?: number | null,
+  aggregates?: Array< SearchableEditionAggregationInput | null > | null,
+};
+
+export type SearchEditionsQuery = {
+  searchEditions?:  {
+    __typename: "SearchableEditionConnection",
+    items:  Array< {
+      __typename: "Edition",
+      id: string,
+      title: string,
+      subtitle?: string | null,
+      publish_year?: number | null,
+      languages?: Array< string | null > | null,
+      number_of_pages?: number | null,
+      subjects?: Array< string | null > | null,
+      iccn?: Array< string | null > | null,
+      oclc_numbers?: Array< string | null > | null,
+      isbn_10?: Array< string | null > | null,
+      isbn_13?: Array< string | null > | null,
+      ol_key?: string | null,
+      contributions?: Array< string | null > | null,
+      publish_country?: string | null,
+      publishers?: Array< string | null > | null,
+      translation_of?: string | null,
+      work?: string | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+    total?: number | null,
+    aggregateItems:  Array< {
+      __typename: "SearchableAggregateResult",
+      name: string,
+      result: ( {
+          __typename: "SearchableAggregateScalarResult",
+          value: number,
+        } | {
+          __typename: "SearchableAggregateBucketResult",
+          buckets?:  Array< {
+            __typename: string,
+            key: string,
+            doc_count: number,
+          } | null > | null,
+        }
+      ) | null,
+    } | null >,
   } | null,
 };
 
