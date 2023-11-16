@@ -49,6 +49,12 @@
             "useFrameworks": "static"
           }
         }
+      ],
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
+        }
       ]
     ],
     "extra": {

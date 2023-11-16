@@ -13,6 +13,7 @@ import {
 } from "../store/auth-slice";
 import MyProfileStack from "./MyProfileStack";
 import PhotoInputScreen from "../screens/ProfileCreation/PhotoInputScreen";
+import BarcodeScannerScreen from "../screens/BarcodeScannerScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -54,6 +55,7 @@ export default function Navigation() {
           </>
         ) : (
           <>
+            <Stack.Screen name="BarcodeScanner" component={BarcodeScannerScreen} />
             <Stack.Screen name="AuthenticationFlow" component={AuthStack} />
           </>
         )}
