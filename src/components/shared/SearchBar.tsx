@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, SearchIcon, Center } from "native-base";
+import { Input, SearchIcon, Center, VStack, Box } from "native-base";
 import i18n from "../../i18n";
 
 export default function SearchBar(props) {
@@ -7,7 +7,7 @@ export default function SearchBar(props) {
 
   return (
     <Center>
-      <Input
+      {/* <Input
         placeholder={i18n.t("search-by-title")}
         width="100%"
         borderRadius="6"
@@ -26,7 +26,10 @@ export default function SearchBar(props) {
         InputLeftElement={
           <SearchIcon size="5" mt="0.5" mx="2" color="black.300" />
         }
-      />
+      /> */}
+
+        {/* <Input placeholder="Search People & Places" width="100%" borderRadius="4" py="3" px="1" fontSize="14" InputLeftElement={<Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />} InputRightElement={<Icon m="2" mr="3" size="6" color="gray.400" as={<MaterialIcons name="mic" />} />} /> */}
+
     </Center>
   );
 }

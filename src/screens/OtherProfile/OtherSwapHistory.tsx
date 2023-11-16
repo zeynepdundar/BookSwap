@@ -1,47 +1,119 @@
 import {
-  Button,
   Center,
-  Flex,
-  Heading,
   Spacer,
-  ArrowBackIcon,
   Image,
   Box,
   Text,
-  Pressable,
-  Menu,
   VStack,
+  HStack,
+  FlatList,
+  AspectRatio,
+  Avatar,
+  Flex,
 } from "native-base";
-import i18n from "../../i18n";
 import Screen from "../../components/Screen";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { signOut } from "../../store/auth-actions";
-import { useState } from "react";
-import { AlertDialogBox } from "../../components/AlertDialogBox";
-import ImagePicker from "../../components/ImagePicker";
 
 export default function OtherSwapHistory() {
-  const libraryIcon = require("../../assets/images/icon/library-icon.png");
-  const wishlistIcon = require("../../assets/images/icon/wishlist-icon.png");
-  const languageIcon = require("../../assets/images/icon/language-icon.png");
-  const feedbackIcon = require("../../assets/images/icon/feedback-icon.png");
-  const logoutIcon = require("../../assets/images/icon/logout-icon.png");
-  const profilePhoto = "jesse-pinkman-profile.png";
+  const tradeIcon = require("../../assets/images/icon/trade-in.png");
+  const profilePhoto = require("../../assets/images/lalo-salamanca.png");
+  const importUrl = require("../../assets/images/cover_2.png");
 
-  const dispatch = useDispatch<AppDispatch>();
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const onClose = () => setIsOpen(false);
-
-  const signOutHandler = async (): Promise<void> => {
-    dispatch(signOut());
-  };
+  const data = [
+    {
+      id: "1",
+      senderUserName: "Lalo Salamanca",
+      profilPhotoUrl: "../../assets/images/icon/logout-icon.png",
+      requestedBookCover: "",
+      offeredBookCover: "../../assets/images/cover_2.png",
+      requestedBookTitle: "The Path Made Clear",
+      offeredBookTitle: "The Path Made Clear",
+      acceptedDate: "",
+    },
+    {
+      id: "2",
+      senderUserName: "Lalo Salamanca",
+      profilPhotoUrl: "../../assets/images/icon/logout-icon.png",
+      requestedBookCover: "",
+      offeredBookCover: "../../assets/images/cover_2.png",
+      requestedBookTitle: "The Path Made Clear",
+      offeredBookTitle: "The Path Made Clear",
+      acceptedDate: "",
+    },
+  ];
 
   return (
     <Screen>
-      <Text>Swap History</Text>
+      <Center>
+        <FlatList
+          w="100%"
+          data={data}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <Box
+              p="1.5"
+              mb="2"
+              borderWidth="1"
+              borderRadius="10"
+              borderColor="#EEEEEE"
+              shadow={0.8}
+              overflow="hidden"
+            >
+              <HStack space="0.8" alignItems="center" h={151}>
+                <VStack w="85px" h={140} alignItems="center" pt={3}>
+                  <Image
+                    source={importUrl}
+                    alt=" Library"
+                    width="60"
+                    height="82"
+                    borderRightRadius={10}
+                  />
+                  <Text color="#06070D" fontSize="xs" mt="1" textAlign="center">
+                    {item.requestedBookTitle}
+                  </Text>
+                </VStack>
+                <Image source={tradeIcon} alt=" Library" />
+                <VStack w="85px" h={140} alignItems="center" pt={3}>
+                  <Image
+                    source={importUrl}
+                    alt=" Library"
+                    width="60"
+                    height="82"
+                    borderRightRadius={10}
+                  />
+                  <Text color="#06070D" fontSize="xs" mt="1" textAlign="center">
+                    {item.offeredBookTitle}
+                  </Text>
+                </VStack>
+                <Spacer></Spacer>
+                <VStack w="102" h={126}>
+                  <Text color="#8c8c8c" fontSize="xs" textAlign="right">
+                    20 Jun
+                  </Text>
+                  <Spacer />
+                  <Flex
+                    direction="row"
+                    alignItems="baseline"
+                    justifyContent="space-between"
+                  >
+                    <Text
+                      color="#8c8c8c"
+                      fontSize="10"
+                      fontWeight="600"
+                      maxW="68px"
+                    >
+                      with {item.senderUserName}
+                    </Text>
+                    <AspectRatio w="39">
+                      <Avatar source={profilePhoto} size="31" />
+                    </AspectRatio>
+                  </Flex>
+                </VStack>
+              </HStack>
+            </Box>
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      </Center>
     </Screen>
   );
 }

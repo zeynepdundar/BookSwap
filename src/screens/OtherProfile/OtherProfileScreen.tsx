@@ -5,12 +5,12 @@ import {
   Heading,
   Spacer,
   ArrowBackIcon,
-  Image,
   Box,
   Pressable,
   VStack,
   HStack,
   useColorModeValue,
+  Avatar,
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
@@ -146,12 +146,10 @@ export default function OtherProfileScreen({ navigation }) {
             w="100%"
             h="100%"
           >
-            <Image
+            <Avatar
               width="25%"
               height="100%"
-              borderRadius="full"
               source={otherUserImage}
-              alt="image base"
             />
             <Heading width="60%" color="black.100" my={3}>
               Walter White
