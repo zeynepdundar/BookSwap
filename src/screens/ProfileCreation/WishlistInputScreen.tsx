@@ -18,12 +18,13 @@ import {
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import SearchBar from "../../components/shared/SearchBar";
-import {HorizontalList} from "../../components/shared/HorizontalList";
+import {HorizontalCoverList} from "../../components/shared/HorizontalCoverList";
 
 export default function WishlistInputScreen({ navigation }) {
   const data = [
     {
       id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+      
       coverUrl:
         "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
     },
@@ -98,7 +99,7 @@ export default function WishlistInputScreen({ navigation }) {
         </Center>
         {data.length > 0 && (
           <Center w="100%"  px={6}>
-            <HorizontalList data={data} editable={true}/>
+            <HorizontalCoverList data={data} editable={true}/>
           </Center>
         )}
         <Spacer />
