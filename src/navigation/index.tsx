@@ -13,6 +13,7 @@ import {
 } from "../store/auth-slice";
 import MyProfileStack from "./MyProfileStack";
 import PhotoInputScreen from "../screens/ProfileCreation/PhotoInputScreen";
+import ChatScreen from "../screens/ChatScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -54,6 +55,7 @@ export default function Navigation() {
           </>
         ) : (
           <>
+            <Stack.Screen name="Chat" component={ChatScreen} />
             <Stack.Screen name="AuthenticationFlow" component={AuthStack} />
           </>
         )}
