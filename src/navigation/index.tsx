@@ -13,6 +13,7 @@ import {
 } from "../store/auth-slice";
 import MyProfileStack from "./MyProfileStack";
 import OtherProfileScreen from "../screens/OtherProfile/OtherProfileScreen";
+import BarcodeScannerScreen from "../screens/BarcodeScannerScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -36,10 +37,6 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
-        <Stack.Screen
-          name="OtherProfile"
-          component={OtherProfileScreen}
-        ></Stack.Screen>
         {userToken !== null ? (
           <>
             {!user.fullName && (
@@ -65,6 +62,7 @@ export default function Navigation() {
           </>
         ) : (
           <>
+            <Stack.Screen name="BarcodeScanner" component={BarcodeScannerScreen} />
             <Stack.Screen name="AuthenticationFlow" component={AuthStack} />
           </>
         )}

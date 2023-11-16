@@ -38,7 +38,6 @@ export default function BookSearchScreen({ navigation, route }) {
   const [libraryItems, setLibraryItem] = useState<any>([]);
 
   useEffect(() => {
-
     let fetchedEditions = [];
     const fetchEditions = async () => {
       const editionData = await API.graphql(
@@ -48,13 +47,25 @@ export default function BookSearchScreen({ navigation, route }) {
     };
     fetchEditions()
       .then(() => {
-        const mappedEditions = fetchedEditions.map((x) => ({
-          id: x.id,
-          title: x.title.slice(0, 20),
-          publisher: x.publishers[0],
-          coverUrl: importUrl,
-          author: x.authors[0].name,
-        }));
+        const mappedEditions = fetchedEditions.map((x) => {
+          let coverUrl;
+          if ( x.isbn_13 && x.isbn_13 > 0) {
+            const isbn_13 = x.isbn_13[0];
+            //prepare uri
+            const key = "isbn";
+            const value = isbn_13;
+            const size = "M";
+            coverUrl = `https://covers.openlibrary.org/b/${key}/${value}-${size}.jpg`;
+          }
+          return {
+            id: x.id,
+            title: x.title.slice(0, 20),
+            publisher: x.publishers[0],
+            coverUrl: coverUrl,
+            author: x.authors[0].name,
+          };
+        });
+
         updateEditions(mappedEditions);
         setLoading(false);
       })
@@ -63,7 +74,7 @@ export default function BookSearchScreen({ navigation, route }) {
         setError(true);
         setLoading(false);
       });
-  }, [editions]);
+  }, []);
 
   const addLibraryItemHandler = (selectedLibraryItem: any) => {
     setLibraryItem((currentLibraryItems) => [
@@ -87,7 +98,7 @@ export default function BookSearchScreen({ navigation, route }) {
 
   const pressHandler = () => {
     console.log("Selected Library Items");
-    navigation.navigate(mode==="WISHLIST" ?  "Wishlist" : "Library");
+    navigation.navigate(mode === "WISHLIST" ? "Wishlist" : "Library");
   };
 
   return (
@@ -150,7 +161,7 @@ export default function BookSearchScreen({ navigation, route }) {
                         p={1}
                       >
                         <Image
-                          source={importUrl}
+                          source={{ uri: item.coverUrl }}
                           alt="Library"
                           width="25%"
                           rounded="8"

@@ -85,6 +85,69 @@ export const listEditions = /* GraphQL */ `query ListEditions(
   APITypes.ListEditionsQueryVariables,
   APITypes.ListEditionsQuery
 >;
+export const searchEditions = /* GraphQL */ `query SearchEditions(
+  $filter: SearchableEditionFilterInput
+  $sort: [SearchableEditionSortInput]
+  $limit: Int
+  $nextToken: String
+  $from: Int
+  $aggregates: [SearchableEditionAggregationInput]
+) {
+  searchEditions(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+    from: $from
+    aggregates: $aggregates
+  ) {
+    items {
+      id
+      title
+      subtitle
+      publish_year
+      languages
+      number_of_pages
+      subjects
+      iccn
+      oclc_numbers
+      isbn_10
+      isbn_13
+      ol_key
+      contributions
+      publish_country
+      publishers
+      translation_of
+      work
+      createdAt
+      updatedAt
+      __typename
+    }
+    nextToken
+    total
+    aggregateItems {
+      name
+      result {
+        ... on SearchableAggregateScalarResult {
+          value
+        }
+        ... on SearchableAggregateBucketResult {
+          buckets {
+            key
+            doc_count
+            __typename
+          }
+        }
+      }
+      __typename
+    }
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SearchEditionsQueryVariables,
+  APITypes.SearchEditionsQuery
+>;
 export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
