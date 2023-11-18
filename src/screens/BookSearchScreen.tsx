@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import {
   Button,
   Heading,
-  SearchIcon,
-  Input,
   Image,
   FlatList,
   Box,
@@ -15,6 +13,7 @@ import {
   Pressable,
   Spacer,
   WarningTwoIcon,
+  Center,
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
@@ -49,7 +48,7 @@ export default function BookSearchScreen({ navigation, route }) {
       .then(() => {
         const mappedEditions = fetchedEditions.map((x) => {
           let coverUrl;
-          if ( x.isbn_13 && x.isbn_13 > 0) {
+          if (x.isbn_13 && x.isbn_13 > 0) {
             const isbn_13 = x.isbn_13[0];
             //prepare uri
             const key = "isbn";
@@ -96,33 +95,31 @@ export default function BookSearchScreen({ navigation, route }) {
     return existingLibraryItemIndex !== -1;
   };
 
+  const searchBookTitleHandler = (enteredBookTitle) => {
+    console.log("Searching..",enteredBookTitle);
+  };
+
   const pressHandler = () => {
     console.log("Selected Library Items");
-    navigation.navigate(mode === "WISHLIST" ? "Wishlist" : "Library");
+    navigation.goBack();
   };
 
   return (
     <Screen>
       <Flex h="100%">
         <Heading p={2}>{i18n.t("keep-exploring")}</Heading>
-        {/* <SearchBar></SearchBar> */}
-        <Box>
-          <Input
-            placeholder={i18n.t("search-by-title")}
-            width="90%"
-            borderRadius="6"
-            borderColor="black.900"
-            color="black.400"
-            backgroundColor="black.800"
-            m="4"
-            py="3"
-            fontSize="14"
-            _focus={{
-              borderColor: "black.700",
+        <Center w="100%" h="20" px={2}>
+          <SearchBar
+            onSearchBook={searchBookTitleHandler}
+            onFocus={null}
+            onScanBarcode={() => {
+              navigation.navigate("BarcodeScanner", {
+                relatedScreen: mode,
+              });
             }}
-            onFocus={() => {}}
-            InputLeftElement={<SearchIcon size="5" ml="3" color="black.300" />}
           />
+        </Center>
+        <Box>
           {loading && (
             <Box h="75%" alignItems="center" justifyContent="center">
               <LoadingOverlay />
@@ -164,7 +161,7 @@ export default function BookSearchScreen({ navigation, route }) {
                           source={{ uri: item.coverUrl }}
                           alt="Library"
                           width="25%"
-                          rounded="8"
+                          roundedRight="6"
                           height="100"
                         />
                         <VStack width="75%">

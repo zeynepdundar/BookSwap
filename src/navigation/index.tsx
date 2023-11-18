@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -13,7 +12,7 @@ import {
 } from "../store/auth-slice";
 import MyProfileStack from "./MyProfileStack";
 import OtherProfileScreen from "../screens/OtherProfile/OtherProfileScreen";
-import BarcodeScannerScreen from "../screens/BarcodeScannerScreen";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -21,8 +20,6 @@ export default function Navigation() {
   const isLoading = useSelector(selectIsLoading);
   const userToken = useSelector(selectUserToken);
   const user = useSelector(selectUser);
-
-  console.log("userToken on Navigation", userToken);
 
   if (isLoading) {
     // We haven't finished checking for the token yet
@@ -56,13 +53,12 @@ export default function Navigation() {
                 <Stack.Screen
                   name="OtherProfile"
                   component={OtherProfileScreen}
-                ></Stack.Screen>{" "}
+                />
               </Stack.Group>
             )}
           </>
         ) : (
           <>
-            <Stack.Screen name="BarcodeScanner" component={BarcodeScannerScreen} />
             <Stack.Screen name="AuthenticationFlow" component={AuthStack} />
           </>
         )}

@@ -85,16 +85,21 @@ export default function WishlistInputScreen({ navigation }) {
         </Heading>
         <Center w="100%" h="20" px={8}>
           <SearchBar
-            onFocus={() => {
+            onSearchBook={() => {
               navigation.navigate("BookSearch", {
-                relatedScreen: "WISHLIST",
+                relatedScreen: "Wishlist",
               });
             }}
-            onPress={() =>
+            onScanBarcode={() => {
+              navigation.navigate("BarcodeScanner", {
+                relatedScreen: "Wishlist",
+              });
+            }}
+            onFocus={() => {
               navigation.navigate("BookSearch", {
-                relatedScreen: "WISHLIST",
-              })
-            }
+                relatedScreen: "Wishlist",
+              });
+            }}
           />
         </Center>
         {data.length > 0 && (

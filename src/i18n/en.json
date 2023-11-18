@@ -16,7 +16,7 @@
   "man": "Man",
   "woman": "Woman",
   "my-birthdate": "My birthdate is",
-  "search-by-title": "Search by Title",
+  "search-book-by-title": "Search Book by Title",
   "add-books-to-wishlist": "Add books to wishlist",
   "add-books-to-library": "Add books to library",
   "keep-exploring": "Keep exploring",
@@ -41,5 +41,6 @@
   "take-photo": "Take Photo",
   "send-offer": "Send Offer",
   "add-my-wishlist":"Add My Wishlist",
-  "add-my-library":"Add My Library"
+  "add-my-library":"Add My Library",
+  "the-book-added": "The Book Added!"
 }

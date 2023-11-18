@@ -1,19 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
-
+import { MaterialIcons } from "@expo/vector-icons";
 import { API, graphqlOperation } from "aws-amplify";
+import { StyleSheet, Dimensions } from "react-native";
 import { SearchEditionsByISBN13 } from "../graphql/custom-queries";
-import { Image } from "native-base";
+import {
+  Box,
+  Center,
+  HStack,
+  Image,
+  View,
+  VStack,
+  Text,
+  Icon,
+  IconButton,
+  Actionsheet,
+  Button,
+} from "native-base";
+import i18n from "../i18n";
 
-export default function BarcodeScannerScreen() {
+export default function BarcodeScannerScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [edition, setEdition] = useState(null);
+  const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
 
   const fetchEditions = async (isbn_13) => {
     const editionData = await API.graphql(
-      graphqlOperation(SearchEditionsByISBN13, { isbn_13: isbn_13  })
+      graphqlOperation(SearchEditionsByISBN13, { isbn_13: isbn_13 })
     );
     return editionData.data.listEditions.items;
   };
@@ -29,24 +43,16 @@ export default function BarcodeScannerScreen() {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-    
-    let coverUrl;
+
     const isbn_13 = data;
     //prepare uri
     const key = "isbn";
     const value = isbn_13;
     const size = "M";
-    coverUrl = `https://covers.openlibrary.org/b/${key}/${value}-${size}.jpg`;
-
-    let e;
-    let mappedEdition = {
-      coverUrl: coverUrl
-    };
+    let coverUrl = `https://covers.openlibrary.org/b/${key}/${value}-${size}.jpg`;
 
     fetchEditions(data)
       .then((fetchedEditions) => {
-        console.log("fetchedEditions: ", fetchedEditions);
         if (fetchedEditions.length == 0) {
           console.log("Edition not found with this ISBN!");
           return;
@@ -55,21 +61,18 @@ export default function BarcodeScannerScreen() {
           return;
         }
         const e = fetchedEditions[0];
-        console.log("e: ", e);
 
-        mappedEdition = {
+        let mappedEdition = {
           id: e.id,
-          title: e.title.slice(0, 20),
+          title: e.title.slice(0, 30),
           coverUrl: coverUrl,
           author: e.authors[0].name,
         };
-        console.log("mapped edition: ", mappedEdition);
-        // setEdition(mappedEdition);
+        setEdition(mappedEdition);
       })
       .catch((error) => {
         console.error(error);
       });
-      setEdition(mappedEdition);
   };
 
   if (hasPermission === null) {
@@ -79,31 +82,107 @@ export default function BarcodeScannerScreen() {
     return <Text>No access to camera</Text>;
   }
 
+  const addBookList = () => {
+    console.log("Book added!");
+    setIsActionSheetOpen(true);
+  };
+  const handleNewBookScan = () => {
+    setEdition(null);
+    setScanned(false);
+    setIsActionSheetOpen(false);
+  };
+
+  const { width, height } = Dimensions.get("window");
+
   return (
-    <View style={styles.container}>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFillObject}
-        barCodeTypes={[BarCodeScanner.Constants.BarCodeType.ean13]}
+    <View width={width} h={height}>
+      <IconButton
+        onPress={() =>navigation.goBack()}
+        size="40"
+        m={"8px"}
+        borderRadius="full"
+        bg="#f2f2f2"
+        variant="solid"
+        p="3"
+        icon={
+          <Icon color="black" name={"close"} as={MaterialIcons} size="lg" />
+        }
       />
+      <Center width={"100%"} h="100%" bg="transparent" opacity={1}>
+        <BarCodeScanner
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          style={StyleSheet.absoluteFillObject}
+          barCodeTypes={[BarCodeScanner.Constants.BarCodeType.ean13]}
+        />
+      </Center>
       {scanned && (
-        <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
+        <Center>
+          <Box
+            width="80"
+            height="120px"
+            shadow="9"
+            backgroundColor="white"
+            borderWidth="2"
+            borderRadius="15"
+            borderColor="#F1F1F1"
+            p="2"
+            m="2"
+            position="absolute"
+            bottom={150}
+          >
+            <HStack
+              justifyContent="space-between"
+              alignItems="center"
+              width="100%"
+              height="100%"
+              p={1}
+              space={2.5}
+            >
+              <Image
+                source={{ uri: edition?.coverUrl }}
+                alt="Library"
+                width="60"
+                height="82"
+                roundedRight="6"
+                />
+              <VStack width="40" height="82">
+                <Text color="#8c8c8c" fontSize="xs" letterSpacing="2xl">
+                  {edition?.author}
+                </Text>
+                <Text color="#494949" fontSize="16">
+                  {edition?.title}
+                </Text>
+              </VStack>
+              <IconButton
+                onPress={addBookList}
+                m={"8px"}
+                borderRadius="11"
+                bg="primary.50"
+                variant="solid"
+                p="3"
+                size={20}
+                _pressed={{
+                  bg: "primary.100",
+                }}
+                icon={
+                  <Icon
+                    color="white"
+                    name={"add"}
+                    as={MaterialIcons}
+                    size="md"
+                  />
+                }
+              />
+            </HStack>
+          </Box>
+          <Button onPress={() => setScanned(false)}>Tap to Scan Again</Button>
+        </Center>
       )}
-      <Image
-        source={{ uri: edition ? edition.coverUrl : null }}
-        alt="Library"
-        width="25%"
-        rounded="8"
-        height="100"
-      />
+      <Actionsheet isOpen={isActionSheetOpen} onClose={handleNewBookScan}>
+        <Actionsheet.Content>
+          <Actionsheet.Item>{i18n.t("the-book-added")}</Actionsheet.Item>
+        </Actionsheet.Content>
+      </Actionsheet>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-  },
-});
