@@ -38,6 +38,8 @@
   "history": "History",
   "my-photo": "My Photo",
   "upload-photo": "Upload Photo",
-  "take-photo": "Take Photo"
-
+  "take-photo": "Take Photo",
+  "send-offer": "Send Offer",
+  "add-my-wishlist":"Add My Wishlist",
+  "add-my-library":"Add My Library"
 }

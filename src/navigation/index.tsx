@@ -12,7 +12,8 @@ import {
   selectUserToken,
 } from "../store/auth-slice";
 import MyProfileStack from "./MyProfileStack";
-import PhotoInputScreen from "../screens/ProfileCreation/PhotoInputScreen";
+import OtherProfileScreen from "../screens/OtherProfile/OtherProfileScreen";
+import BarcodeScannerScreen from "../screens/BarcodeScannerScreen";
 import ChatScreen from "../screens/ChatScreen";
 
 const Stack = createNativeStackNavigator();
@@ -49,13 +50,21 @@ export default function Navigation() {
             {!!user.fullName && (
               <Stack.Group>
                 <Stack.Screen name="HomeTabs" component={HomeTabs} />
-                <Stack.Screen name="ProfileStack" component={MyProfileStack} />
+                <Stack.Screen
+                  name="MyProfileStack"
+                  component={MyProfileStack}
+                />
+                <Stack.Screen
+                  name="OtherProfile"
+                  component={OtherProfileScreen}
+                ></Stack.Screen>{" "}
               </Stack.Group>
             )}
           </>
         ) : (
           <>
             <Stack.Screen name="Chat" component={ChatScreen} />
+            <Stack.Screen name="BarcodeScanner" component={BarcodeScannerScreen} />
             <Stack.Screen name="AuthenticationFlow" component={AuthStack} />
           </>
         )}

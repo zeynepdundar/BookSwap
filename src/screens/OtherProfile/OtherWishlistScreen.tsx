@@ -1,21 +1,13 @@
-import {
-  AspectRatio,
-  Box,
-  Center,
-  FlatList,
-  Flex,
-  Heading,
-  Image,
-  Pressable,
-  Text,
-} from "native-base";
-import i18n from "../i18n";
-import Screen from "../components/Screen";
-import SearchBar from "../components/shared/SearchBar";
-import { HorizontalList } from "../components/shared/HorizontalCoverList";
+import { useState } from "react";
+import { Center } from "native-base";
+import Screen from "../../components/Screen";
+import { VerticalList } from "../../components/shared/VerticalList";
 
-export default function HomeScreen({ navigation }) {
-  const jesse = require("../assets/images/jesse-pinkman.png");
+export default function OtherWishlistScreen() {
+  const importUrl = require("../../assets/images/cover_1.png");
+
+  const sendOffer = (event: any) => {
+  };
 
   const data = [
     {
@@ -56,29 +48,9 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <Screen>
-      <Flex direction="row" justifyContent="space-between" alignItems="center">
-        <Flex>
-          <Heading color="black.100">{i18n.t("hello")}</Heading>
-          <Text color="black.400" fontWeight="500" fontSize={16}>
-            Jesse Pinkman
-          </Text>
-        </Flex>
-        <Pressable onPress={() => navigation.navigate("ProfileStack")}>
-          <Image source={jesse} alt="Notification" size={10} />
-        </Pressable>
-      </Flex>
-      <SearchBar />
-      {data.length > 0 && (
-        <>
-          <Text color="black.400" fontWeight="700">
-            Recently Added
-          </Text>
-
-          <Center w="100%">
-            <HorizontalList data={data} editable={false} />
-          </Center>
-        </>
-      )}
+      <Center>
+        <VerticalList data={data} onAction={sendOffer}/>
+      </Center>
     </Screen>
   );
 }
