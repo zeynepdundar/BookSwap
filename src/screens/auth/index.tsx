@@ -1,13 +1,11 @@
-import { Box, Button, Center, Flex, Image, Text } from "native-base";
-import React, { useRef, useState, useEffect } from "react";
+import { Box, Button, Center, Flex, Icon, Image, Text } from "native-base";
+import { useState } from "react";
 import Screen from "../../components/Screen";
 import PhoneInput from "react-native-phone-input";
 import i18n from "../../i18n";
-// import firebase from "firebase/compat/app";
-// import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-// import { firebaseConfig } from "../../../firebase";
-import auth from '@react-native-firebase/auth';
+import { MaterialIcons } from "@expo/vector-icons";
 
+import auth from "@react-native-firebase/auth";
 
 export default function Auth({ navigation }) {
   const surfLogo = require("../../assets/images/surf.png");
@@ -18,75 +16,60 @@ export default function Auth({ navigation }) {
 
   const [error, setError] = useState<any | null>(null);
 
-  const recaptchaVerifier = useRef(null);
   const sendCode = () => {
-    // const phoneProvider = new firebase.auth.PhoneAuthProvider();
-    // phoneProvider
-    //   .verifyPhoneNumber(phoneNumber, recaptchaVerifier.current)
-    //   .then((res) => {
-    //     navigation.navigate("VerificationCode", {
-    //       verificationId: res,
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     switch (err.code) {
-    //       case "auth/invalid-phone-number":
-    //         setError({
-    //           key: "auth-failed",
-    //           message: "Invalid phone number format.",
-    //         });
-    //         break;
-    //       case "auth/missing-phone-number":
-    //         setError({
-    //           key: "auth-failed",
-    //           message: "Please enter a valid phone number.",
-    //         });
-    //         break;
-    //       case "auth/too-many-requests"://
-    //         setError({
-    //           key: "auth-failed",
-    //           message: "Too many requests, please try again after 5 minutes.",
-    //         });
-    //         break;
-    //         case "auth/quota-exceeded"://
-    //           setError({
-    //             key: "auth-failed",
-    //             message: "Exceeded quota",
-    //           });
-    //           break;
-    //       default:
-    //         setError({
-    //           key: "auth-failed",
-    //           message: err,
-    //         });
-    //         break;
-    //     }
-    //   });
     signInWithPhoneNumber(phoneNumber);
     setPhoneNumber("");
   };
 
-
-
-  // Handle the button press
   async function signInWithPhoneNumber(phoneNumber) {
-    const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
-    console.log("confirmation:", confirmation);
-    navigation.navigate("VerificationCode", {
-      confirmation: confirmation,
-    });
+    auth()
+      .signInWithPhoneNumber(phoneNumber)
+      .then((confirmationResult) => {
+        navigation.navigate("VerificationCode", {
+          confirmation: confirmationResult,
+        });
+      })
+      .catch((error) => {
+        // Error; SMS not sent
+        switch (error.code) {
+          case "auth/invalid-phone-number":
+            setError({
+              key: "auth-failed",
+              message: "Invalid phone number format.",
+            });
+            break;
+          case "auth/missing-phone-number":
+            setError({
+              key: "auth-failed",
+              message: "Please enter a valid phone number.",
+            });
+            break;
+          case "auth/too-many-requests": //
+            setError({
+              key: "auth-failed",
+              message: "Too many requests, please try again after 5 minutes.",
+            });
+            break;
+          case "auth/quota-exceeded": //
+            setError({
+              key: "auth-failed",
+              message: "Exceeded quota",
+            });
+            break;
+          default:
+            setError({
+              key: "auth-failed",
+              message:
+                "Sorry, we can’t fulfill this request at this time. Please try again later or use a different phone number. ",
+            });
+            break;
+        }
+      });
   }
 
   return (
     <Screen>
       <Flex direction="column" m="3" mt="20">
-        {/*
-        <FirebaseRecaptchaVerifierModal
-          ref={recaptchaVerifier}
-          firebaseConfig={firebaseConfig}
-          attemptInvisibleVerification={true}
-        ></FirebaseRecaptchaVerifierModal>
-  */}
         <Center mb={30}>
           <Image source={surfLogo} alt="Book Swap Logo" size="7" mb={2} />
           <Image source={swapBook} alt="Book Swap" width={120} />
@@ -111,7 +94,10 @@ export default function Auth({ navigation }) {
             py="12px"
           >
             <PhoneInput
-              onChangePhoneNumber={setPhoneNumber}
+              onChangePhoneNumber={(val) => {
+                setPhoneNumber(val);
+                setError(null);
+              }}
               initialCountry={"tr"}
               ref={(ref) => {
                 ref ? setCountryCode(ref.getCountryCode()) : 1;
@@ -130,11 +116,22 @@ export default function Auth({ navigation }) {
             />
           </Box>
           {error && (
-            <Text mt={2} px={5} fontSize="xs" color="error.500">
-              Sorry, we can’t fulfill this request at this time. Please try
-              again later or use a different phone number.
-              [ERR_CODE :{error.message}]
-            </Text>
+            <Box width="100%" px="4" py="1">
+              <Icon
+                size="4"
+                color="error.500"
+                as={<MaterialIcons name="error-outline" />}
+              />
+              <Text
+                mt={1}
+                px={35}
+                fontSize="xs"
+                color="error.500"
+                position="absolute"
+              >
+                {error.message}
+              </Text>
+            </Box>
           )}
         </Center>
         <Center>

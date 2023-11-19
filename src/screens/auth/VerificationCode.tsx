@@ -1,4 +1,4 @@
-import { Button, Center, Heading, Input, Text } from "native-base";
+import { Alert, Button, Center, Heading, Input, Text } from "native-base";
 import { useEffect, useState } from "react";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
@@ -7,10 +7,10 @@ import { userAuth } from "../../store/auth-actions";
 import { AppDispatch } from "../../store/store";
 import auth from "@react-native-firebase/auth";
 
-export default function VerificationCode({ navigation, route }) {
+export default function VerificationCode({ route }) {
   const [code, setCode] = useState<string | null>("");
+  const [error, setError] = useState<any | null>(null);
 
-  const verificationId = route.params.verificationId;
   const confirmation = route.params.confirmation;
 
   const dispatch = useDispatch<AppDispatch>();
@@ -21,7 +21,29 @@ export default function VerificationCode({ navigation, route }) {
       dispatch(userAuth(user));
       console.log("Confirmed Successfully!");
     } catch (error) {
-      console.log("Invalid code.");
+      console.log("Error: ", error.code);
+      switch (error.code) {
+        case "auth/code-expired":
+          setError({
+            key: "auth-failed",
+            message:
+              "The SMS code has expired. Please re-send the verification code",
+          });
+          break;
+        case "auth/invalid-verification-code":
+          setError({
+            key: "auth-failed",
+            message: "Invalid verification code",
+          });
+          break;
+        default:
+          setError({
+            key: "auth-failed",
+            message:
+              "Sorry, we can’t fulfill this request at this time. Please try again later or use a different phone number. ",
+          });
+          break;
+      }
     }
   }
 
@@ -33,8 +55,6 @@ export default function VerificationCode({ navigation, route }) {
     setUser(user);
     if (initializing) setInitializing(false);
   }
-
-
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -84,13 +104,13 @@ export default function VerificationCode({ navigation, route }) {
             {i18n.t("confirm")}
           </Button>
         </Center>
-        {/* {error && (
+        {error && (
           <Alert w="80%" borderRadius="10px" backgroundColor="black.700" mt={5}>
             <Text fontSize="sm" fontWeight="medium" color="#dddddd">
               {error.message}
             </Text>
           </Alert>
-        )} */}
+        )}
       </Center>
     </Screen>
   );

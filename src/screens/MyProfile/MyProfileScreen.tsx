@@ -11,6 +11,7 @@ import {
   Pressable,
   Menu,
   VStack,
+  HStack,
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
@@ -27,7 +28,6 @@ export default function ProfileScreen({ navigation }) {
   const languageIcon = require("../../assets/images/icon/language-icon.png");
   const feedbackIcon = require("../../assets/images/icon/feedback-icon.png");
   const logoutIcon = require("../../assets/images/icon/logout-icon.png");
-  const profilePhoto = "jesse-pinkman-profile.png";
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -41,22 +41,25 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <Screen>
+      <HStack
+        alignItems="center"
+        space="26%"
+        justifyContent="space-between"
+        w="100%"
+        h={16}
+      >
+        <Button
+          variant="ghost"
+          leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+          _pressed={{
+            bg: "transparent",
+          }}
+          onPress={() => navigation.goBack()}
+        ></Button>
+        <Heading>{i18n.t("profile")}</Heading>
+        <Spacer></Spacer>
+      </HStack>
       <VStack space={1} alignItems="center" height={"50%"}>
-        <Center w="100%" h="10" justifyContent="space-between">
-          <Flex direction="row" justifyContent="space-between" w="100%" h="10">
-            <Button
-              backgroundColor="transparent"
-              variant="ghost"
-              leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
-              _pressed={{
-                bg: "transparent",
-              }}
-              onPress={() => navigation.goBack()}
-            ></Button>
-            <Heading>{i18n.t("profile")}</Heading>
-            <Text></Text>
-          </Flex>
-        </Center>
         <Center w="100%" h="215px" px={6}>
           <ImagePicker selectedImage={true} />
           <Heading color="black.100" my={3}>
