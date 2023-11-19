@@ -22,7 +22,7 @@ export const theme = extendTheme({
       800: "#005885",
       900: "#003F5E",
     },
-    black: {    
+    black: {
       100: "#161719",
       200: "#91919F",
       300: "#7B7B80",
@@ -104,34 +104,12 @@ export const theme = extendTheme({
       },
     },
     Heading: {
-      baseStyle: {
-        color: "black.400",
-        fontFamily: "poppins-semi-bold",
-        fontSize: "50",
-
-        _text: {
-          fontFamily: "poppins-semi-bold",
-          fontWeight: "700",
-          px: "6",
-        },
-      },
-      variants: {
-        primary: () => {
-          return {
-            bg: "primary.50",
-            _text: {
-              color: "#fff",
-            },
-          };
-        },
-        secondary: () => {
-          return {
-            bg: "primary.100",
-            _text: {
-              color: "primary.50",
-            },
-          };
-        },
+      baseStyle: ({ }) => {
+        return {
+          color: "black.400",
+          fontWeight: "medium",
+          fontFamily: "poppins",
+        };
       },
     },
   },

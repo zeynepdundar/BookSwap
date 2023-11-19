@@ -13,7 +13,6 @@ import {
 import MyProfileStack from "./MyProfileStack";
 import OtherProfileScreen from "../screens/OtherProfile/OtherProfileScreen";
 
-
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
