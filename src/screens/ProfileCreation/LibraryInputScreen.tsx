@@ -66,17 +66,22 @@ export default function LibraryInputScreen({ navigation }) {
           {i18n.t("add-books-to-library")}
         </Heading>
         <Center w="100%" h="20" px={8}>
-          <SearchBar
-            onFocus={() => {
+        <SearchBar
+            onSearchBook={() => {
               navigation.navigate("BookSearch", {
-                relatedScreen: "LIBRARY",
+                relatedScreen: "Library",
               });
             }}
-            onPress={() =>
+            onScanBarcode={() => {
+              navigation.navigate("BarcodeScanner", {
+                relatedScreen: "Library",
+              });
+            }}
+            onFocus={() => {
               navigation.navigate("BookSearch", {
-                relatedScreen: "LIBRARY",
-              })
-            }
+                relatedScreen: "Library",
+              });
+            }}
           />
         </Center>
         {data.length > 0 ? (

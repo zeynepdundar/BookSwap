@@ -15,7 +15,7 @@
   "man": "Erkek",
   "woman": "Kadın",
   "my-birthdate": "Doğum tarihim",
-  "search-by-title": "Kitap ismine göre ara",
+  "search-book-by-title": "Kitap ismine göre ara",
   "add-books-to-wishlist": "İstek listene kitap ekle",
   "add-books-to-library": "Kitaplığına kitap ekle",
   "keep-exploring": "Keşfet",
@@ -40,6 +40,11 @@
   "take-photo": "Fotoğraf çek",
   "send-offer": "Teklif Gönder",
   "add-my-wishlist":"İstek listeme ekle",
-  "add-my-library":"Kitaplığıma ekle"
-  
+  "add-my-library":"Kitaplığıma ekle",
+  "the-book-added": "Kitap listene eklendi!",
+  "no-books-in-your-library-yet":"Henüz kitaplığında eklenmiş kitap yok",
+  "no-books-in-your-wishlist-yet":"Henüz istek listene eklenmiş kitap yok",
+  "add-books-to-your-library-to-swap-books": "İstediğin kitapları takas etmek için şimdi kitaplığına kitap ekle",
+  "add-books-to-your-wishlist-to-swap-books": "İstediğin kitapları takas etmek için şimdi istek listene kitap ekle"
+
 }

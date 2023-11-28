@@ -98,10 +98,9 @@ export default function OtherSwapHistory() {
                     <Text
                       color="#8c8c8c"
                       fontSize="10"
-                      fontWeight="600"
                       maxW="68px"
                     >
-                      with {item.senderUserName}
+                      with <Text bold> {item.senderUserName}</Text>
                     </Text>
                     <AspectRatio w="39">
                       <Avatar source={profilePhoto} size="31" />

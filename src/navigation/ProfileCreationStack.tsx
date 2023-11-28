@@ -6,6 +6,7 @@ import LibraryInputScreen from "../screens/ProfileCreation/LibraryInputScreen";
 import NameInputScreen from "../screens/ProfileCreation/NameInputScreen";
 import WishlistInputScreen from "../screens/ProfileCreation/WishlistInputScreen";
 import PhotoInputScreen from "../screens/ProfileCreation/PhotoInputScreen";
+import BarcodeScannerScreen from "../screens/BarcodeScannerScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,10 @@ export default function ProfileCreationStack() {
           component={BookSearchScreen}
         ></Stack.Screen>
       </Stack.Group>
+      <Stack.Screen
+        name="BarcodeScanner"
+        component={BarcodeScannerScreen}
+      ></Stack.Screen>
     </Stack.Navigator>
   );
 }

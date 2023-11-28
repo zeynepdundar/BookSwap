@@ -1,52 +1,50 @@
 import { useState } from "react";
 import {
   FlatList,
-  Box,
   Image,
   HStack,
   VStack,
   Text,
   Spacer,
   Divider,
-  Button,
-  Pressable,
   Actionsheet,
+  Center,
+  Icon,
 } from "native-base";
 import i18n from "../../i18n";
 import { InfoDialogBox } from "../InfoDialogBox";
+import { MaterialIcons } from "@expo/vector-icons";
 
-export const VerticalList = ({ data, onAction }) => {
+export const VerticalList = ({ data, ...props }) => {
   const importUrl = require("../../assets/images/cover_2.png");
-  const icon = require("../../assets/images/icon/dots-icon.png");
 
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
 
 
-  data.forEach((item) => {
-    console.log(item);
-  });
-
-  const pressHandler = () => {
-    //Navigate to trade creating screen
-  };
-
-
   return (
     <>
       <FlatList
-        w="100%"
+        w="325px"
         data={data}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <>
-            <Box pl={["3", "4"]} pr={["3", "5"]} py="2" mb="1">
+            <Center
+              pl={["3", "4"]}
+              pr={["3", "5"]}
+              py="2"
+              mb="1"
+              justifyContent="center"
+            >
               <HStack space={[2, 3]} justifyContent="space-between">
                 <Image
                   source={importUrl}
                   alt=" Library"
-                  width="85"
-                  height="100"
+                  width="74px"
+                  height="96px"
+                  borderRightRadius={9}
+                  shadow="8"
                 />
                 <VStack>
                   <Text color="#000000">{item.title}</Text>
@@ -58,34 +56,36 @@ export const VerticalList = ({ data, onAction }) => {
                   </Text>
                 </VStack>
                 <Spacer />
-                <Pressable
-                  onPress={() => {
-                    setIsActionSheetOpen(true);
-                  }}
-                >
-                  <Image source={icon} alt=" Library" />
-                </Pressable>
-                <Button
-                  variant="outline"
-                  onPress={pressHandler}
-                  right={0}
-                  bottom="0"
-                  position="absolute"
-                  p={2}
-                  px="0"
-                >
-                  {i18n.t("send-offer")}
-                </Button>
+                <VStack>
+                  {props.secondaryAction && (
+                    <Icon
+                      onPress={() => {
+                        setIsActionSheetOpen(true);
+                      }}
+                      name={"more-vert"}
+                      variant="solid"
+                      size="md"
+                      as={MaterialIcons}
+                    />
+                  )}
+                  <Spacer />
+                  {
+                    props.children && props.children(item.id) // <Icon
+                  }
+                </VStack>
               </HStack>
-            </Box>
-            <Divider my="1" bg="#EEEEEE" />
+            </Center>
+            <Divider mt="0" mb="3" mx="3" bg="#EEEEEE" />
           </>
         )}
         keyExtractor={(item) => item.id}
       />
-      <Actionsheet isOpen={isActionSheetOpen} onClose={()=>setIsActionSheetOpen(false)}>
+      <Actionsheet
+        isOpen={isActionSheetOpen}
+        onClose={() => setIsActionSheetOpen(false)}
+      >
         <Actionsheet.Content>
-          <Actionsheet.Item onPress={()=>setIsInfoDialogOpen(true)}>
+          <Actionsheet.Item onPress={() => setIsInfoDialogOpen(true)}>
             {i18n.t("add-my-wishlist")}
           </Actionsheet.Item>
           <Actionsheet.Item onPress={null}>
@@ -95,12 +95,12 @@ export const VerticalList = ({ data, onAction }) => {
         </Actionsheet.Content>
       </Actionsheet>
       <InfoDialogBox
-          isOpen={isInfoDialogOpen}
-          onClose={()=>setIsInfoDialogOpen(false)}
-          title={i18n.t("logout")}
-          description={i18n.t("are-you-sure-log-out")}
-          confirmButtonLabel={i18n.t("logout")}
-        />
+        isOpen={isInfoDialogOpen}
+        onClose={() => setIsInfoDialogOpen(false)}
+        title={i18n.t("logout")}
+        description={i18n.t("are-you-sure-log-out")}
+        confirmButtonLabel={i18n.t("logout")}
+      />
     </>
   );
 };
