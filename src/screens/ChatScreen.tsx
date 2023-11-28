@@ -1,31 +1,66 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import { GiftedChat } from "react-native-gifted-chat";
-
-import { Text } from "native-base";
+import firestore from "@react-native-firebase/firestore";
 import Screen from "../components/Screen";
 
-export default function ChatScreen({ navigation }) {
+export default function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: "Hello developer",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "React Native",
-          avatar: "https://placeimg.com/140/140/any",
-        },
-      },
-    ]);
+  const uid = route.params.userId;
+  const friendId = route.params.friendId;
+
+  // this value will come from the Messages screen
+  const conversationId = "nMllpV37qtjaJFjEyrzS";
+  const userId = uid;
+  const friendUserId = friendId;
+
+  useLayoutEffect(() => {
+    console.log("userId: ", userId);
+    console.log("friendId: ", friendId);
+
+    const subscriber = firestore()
+      .collection("Conversations")
+      .doc(conversationId)
+      .collection("messages")
+      .orderBy("createdAt", "desc")
+      .onSnapshot((querySnapshot) => {
+        console.log("querySnapshot: ", querySnapshot.docs[0].data().createdAt);
+        setMessages(
+          querySnapshot.docs.map((doc) => ({
+            _id: doc.id,
+            createdAt: doc.data().createdAt.toDate(),
+            text: doc.data().text,
+            user: {
+              _id: doc.data().senderId,
+            },
+          }))
+        );
+      });
+
+    // Stop listening for updates when no longer required
+    return () => subscriber();
   }, []);
 
   const onSend = useCallback((messages = []) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, messages)
-    );
+    // setMessages((previousMessages) =>
+    //   GiftedChat.append(previousMessages, messages)
+    // );
+    firestore()
+      .collection("Conversations")
+      .doc(conversationId)
+      .collection("messages")
+      .add({
+        createdAt: firestore.Timestamp.now(),
+        text: messages[0].text,
+        senderId: userId,
+      })
+      .then(() => {
+        console.log("Message sent!");
+      });
   }, []);
 
   return (
@@ -34,7 +69,7 @@ export default function ChatScreen({ navigation }) {
         messages={messages}
         onSend={(messages) => onSend(messages)}
         user={{
-          _id: 1,
+          _id: userId,
         }}
       />
     </Screen>
