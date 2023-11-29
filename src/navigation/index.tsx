@@ -12,6 +12,9 @@ import {
 } from "../store/auth-slice";
 import MyProfileStack from "./MyProfileStack";
 import OtherProfileScreen from "../screens/OtherProfile/OtherProfileScreen";
+import BookSearchScreen from "../screens/BookSearchScreen";
+import UserListScreen from "../screens/UserListScreen";
+import BarcodeScannerScreen from "../screens/BarcodeScannerScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,13 +38,14 @@ export default function Navigation() {
       >
         {userToken !== null ? (
           <>
-            {!user.fullName && (
-              <Stack.Screen
-                name="ProfileCreation"
-                component={ProfileCreationStack}
-              />
+            {user.fullName && (
+              <Stack.Group>
+                <Stack.Screen
+                  name="ProfileCreation"
+                  component={ProfileCreationStack}
+                />
+              </Stack.Group>
             )}
-
             {!!user.fullName && (
               <Stack.Group>
                 <Stack.Screen name="HomeTabs" component={HomeTabs} />
@@ -50,11 +54,25 @@ export default function Navigation() {
                   component={MyProfileStack}
                 />
                 <Stack.Screen
+                  name="UserList"
+                  component={UserListScreen}
+                />
+                <Stack.Screen
                   name="OtherProfile"
                   component={OtherProfileScreen}
                 />
               </Stack.Group>
             )}
+            <Stack.Screen
+              name="BarcodeScanner"
+              component={BarcodeScannerScreen}
+            />
+            <Stack.Group screenOptions={{ presentation: "modal" }}>
+              <Stack.Screen
+                name="BookSearch"
+                component={BookSearchScreen}
+              ></Stack.Screen>
+            </Stack.Group>
           </>
         ) : (
           <>

@@ -23,8 +23,8 @@ import { API, graphqlOperation } from "aws-amplify";
 import { listEditionsIncludeOwningUsers } from "../graphql/custom-queries";
 import { LoadingOverlay } from "../components/LoadingOverlay";
 
-export default function BookSearchScreen({ navigation, route }) {
-  const mode = route.params.relatedScreen;
+export default function BookSearchScreen({ navigation, route = null }) {
+  const mode = route?.params?.relatedScreen;
 
   const importUrl = require("../assets/images/cover_1.png");
   const wishlistIcon = require("../assets/images/icon/add-wishlist.png");
@@ -96,7 +96,7 @@ export default function BookSearchScreen({ navigation, route }) {
   };
 
   const searchBookTitleHandler = (enteredBookTitle) => {
-    console.log("Searching..",enteredBookTitle);
+    console.log("Searching..", enteredBookTitle);
   };
 
   const pressHandler = () => {
@@ -165,16 +165,45 @@ export default function BookSearchScreen({ navigation, route }) {
                           height="100"
                         />
                         <VStack width="75%">
-                          <Text color="#000000">{item.title}</Text>
-                          <Text color="#8c8c8c" fontSize="xs" p={0}>
+                          <Text color="#000000" fontSize="16">
+                            {item.title}
+                          </Text>
+                          <Text color="#8c8c8c" fontSize="11">
                             {item.author}
                           </Text>
-                          <Text color="#8c8c8c" fontSize="9px">
+                          <Text
+                            color="#000000"
+                            fontSize="13px"
+                            mt="1"
+                            fontWeight="200"
+                          >
                             {item.publisher}
                           </Text>
+                          <Spacer></Spacer>
+                          <Pressable
+                            onPress={() => {
+                              {
+                                event.stopPropagation();
+                                navigation.navigate("UserList");
+                              }
+                            }}
+                            borderColor="#323232"
+                            borderWidth="0.5"
+                            borderRadius="9"
+                            p="1"
+                            width="90px"
+                          >
+                            <Text
+                              alignSelf="center"
+                              color="#323232"
+                              fontSize="12px"
+                            >
+                              999 Owner
+                            </Text>
+                          </Pressable>
                         </VStack>
 
-                        <Box position="absolute" bottom="5" right="5">
+                        <Box position="absolute" bottom="7" right="5">
                           <AspectRatio w="100%" ratio={16 / 9}>
                             {isSelectedItem(item.id) ? (
                               <Image source={libraryIcon} alt="Library" />
