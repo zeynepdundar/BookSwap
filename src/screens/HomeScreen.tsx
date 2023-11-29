@@ -11,8 +11,8 @@ import {
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
-import SearchBar from "../components/shared/SearchBar";
-import { HorizontalList } from "../components/shared/HorizontalCoverList";
+import { HorizontalCoverList } from "../components/shared/HorizontalCoverList";
+import { SearchBar } from "react-native-screens";
 
 export default function HomeScreen({ navigation }) {
   const jesse = require("../assets/images/jesse-pinkman.png");
@@ -63,7 +63,7 @@ export default function HomeScreen({ navigation }) {
             Jesse Pinkman
           </Text>
         </Flex>
-        <Pressable onPress={() => navigation.navigate("ProfileStack")}>
+        <Pressable onPress={() => navigation.navigate('MyProfileStack', { screen: 'MyProfile' })}>
           <Image source={jesse} alt="Notification" size={10} />
         </Pressable>
       </Flex>
@@ -75,7 +75,7 @@ export default function HomeScreen({ navigation }) {
           </Text>
 
           <Center w="100%">
-            <HorizontalList data={data} editable={false} />
+            <HorizontalCoverList data={data} editable={false} />
           </Center>
         </>
       )}

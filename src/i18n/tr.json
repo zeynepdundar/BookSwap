@@ -39,12 +39,12 @@
   "upload-photo": "Fotoğraf yükle",
   "take-photo": "Fotoğraf çek",
   "send-offer": "Teklif Gönder",
-  "add-my-wishlist":"İstek listeme ekle",
-  "add-my-library":"Kitaplığıma ekle",
+  "add-my-wishlist": "İstek listeme ekle",
+  "add-my-library": "Kitaplığıma ekle",
   "the-book-added": "Kitap listene eklendi!",
-  "no-books-in-your-library-yet":"Henüz kitaplığında eklenmiş kitap yok",
-  "no-books-in-your-wishlist-yet":"Henüz istek listene eklenmiş kitap yok",
+  "no-books-in-your-library-yet": "Henüz kitaplığında eklenmiş kitap yok",
+  "no-books-in-your-wishlist-yet": "Henüz istek listene eklenmiş kitap yok",
   "add-books-to-your-library-to-swap-books": "İstediğin kitapları takas etmek için şimdi kitaplığına kitap ekle",
-  "add-books-to-your-wishlist-to-swap-books": "İstediğin kitapları takas etmek için şimdi istek listene kitap ekle"
-
+  "add-books-to-your-wishlist-to-swap-books": "İstediğin kitapları takas etmek için şimdi istek listene kitap ekle",
+  "ask-for-swap": "Takas iste"
 }

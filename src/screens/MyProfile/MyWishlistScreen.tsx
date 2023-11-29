@@ -65,9 +65,10 @@ export default function MyWishlistScreen({ navigation }) {
   };
 
   const addBookHandler = (book) => {
-    setBooks((prevBooks) => {
-      return [book, ...prevBooks];
-    });
+    // setBooks((prevBooks) => {
+    //   return [book, ...prevBooks];
+    // });
+    navigation.navigate('BookSearch')
   };
 
   const pressHandler = () => {

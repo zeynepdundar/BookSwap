@@ -120,7 +120,7 @@ export default function ProfileScreen({ navigation }) {
             borderBottomColor="#f5f5f5"
             borderBottomWidth={2}
           >
-            <Image source={libraryIcon} alt="Wishlist icon" />{" "}
+            <Image source={libraryIcon} alt="Wishlist icon" />
             <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
               {i18n.t("my-library")}
             </Text>
