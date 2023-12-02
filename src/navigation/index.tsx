@@ -16,7 +16,8 @@ import BookSearchScreen from "../screens/BookSearchScreen";
 import UserListScreen from "../screens/UserListScreen";
 import BarcodeScannerScreen from "../screens/BarcodeScannerScreen";
 import ChatScreen from "../screens/ChatScreen";
-import MessagesScreen from "../screens/MessagesScreen";
+import { MaterialIcons } from "@expo/vector-icons";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +39,12 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
+        <Stack.Group>
+          <Stack.Screen name="HomeTabs" component={HomeTabs} />
+          <Stack.Screen name="MyProfileStack" component={MyProfileStack} />
+          <Stack.Screen name="UserList" component={UserListScreen} />
+          <Stack.Screen name="OtherProfile" component={OtherProfileScreen} />
+        </Stack.Group>
         {userToken !== null ? (
           <>
             {user.fullName && (
@@ -55,10 +62,7 @@ export default function Navigation() {
                   name="MyProfileStack"
                   component={MyProfileStack}
                 />
-                <Stack.Screen
-                  name="UserList"
-                  component={UserListScreen}
-                />
+                <Stack.Screen name="UserList" component={UserListScreen} />
                 <Stack.Screen
                   name="OtherProfile"
                   component={OtherProfileScreen}
@@ -78,9 +82,11 @@ export default function Navigation() {
           </>
         ) : (
           <>
-            <Stack.Screen name="Messages" component={MessagesScreen} />
             <Stack.Screen name="Chat" component={ChatScreen} />
-            <Stack.Screen name="BarcodeScanner" component={BarcodeScannerScreen} />
+            <Stack.Screen
+              name="BarcodeScanner"
+              component={BarcodeScannerScreen}
+            />
             <Stack.Screen name="AuthenticationFlow" component={AuthStack} />
           </>
         )}
