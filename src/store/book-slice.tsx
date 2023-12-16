@@ -1,42 +1,38 @@
-import { AnyAction, createSlice, current } from "@reduxjs/toolkit";
-import { signOut } from "./auth-actions";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  loading: false,
-  user: null,
-  userToken: null, // for storing the JWT
-  error: null,
-  success: false,
+  wishlistBookIds: ["28694a0f-3da1-471f-bd96-142456e29d72"],
+  libraryBookIds: [],
 };
 
 const bookSlice = createSlice({
-  name: "books",
+  name: "bookList",
   initialState,
   reducers: {
-    addBook: () => {},
+    addBook: (state, action) => {
+      if (action.payload.listType === "wishlist")
+        state.wishlistBookIds.push(action.payload.id);
+      if (action.payload.listType === "library")
+        state.libraryBookIds.push(action.payload.id);
+    },
+    removeBook: (state, action) => {
+      initialState.wishlistBookIds.filter((id) => id !== id);
+      if (action.payload.listType === "wishlist")
+        state.wishlistBookIds.splice(
+          state.wishlistBookIds.indexOf(action.payload.id),
+          1
+        );
+      if (action.payload.listType === "library")
+        state.libraryBookIds.splice(
+          state.libraryBookIds.indexOf(action.payload.id),
+          1
+        );
+    },
   },
-  extraReducers: (builder) => {
-
-
-    //SIGN-OUT
-    builder.addCase(signOut.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(signOut.fulfilled, (state, action: AnyAction) => {
-      state.loading = false;
-      state.error = false;
-      state.user = null;
-      state.userToken = null;
-    });
-    builder.addCase(signOut.rejected, (state, action: AnyAction) => {
-      state.loading = false;
-      state.error = true;
-    });
-  },
+  extraReducers: (builder) => {},
 });
 
-export const selectUser = (state) => state.userAuth.user;
-export const selectUserToken = (state) => state.userAuth.userToken;
-export const selectIsLoading = (state) => state.userAuth.loading;
+export const addBook = bookSlice.actions.addBook;
+export const removeBook = bookSlice.actions.removeBook;
 
 export default bookSlice.reducer;

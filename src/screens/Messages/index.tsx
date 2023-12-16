@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Screen from "../components/Screen";
+import Screen from "../../components/Screen";
 import {
   Avatar,
   Badge,
@@ -14,7 +14,7 @@ import {
   Text,
   VStack,
 } from "native-base";
-import i18n from "../i18n";
+import i18n from "../../i18n";
 
 const DUMMY_USERS = [
   {
@@ -69,6 +69,7 @@ export default function MessagesScreen({ navigation }) {
     console.log("User: ", name);
     setUserId(uid);
     setFriendId(friendId);
+    navigation.navigate("Chat", { userId: uid, friendId: friendId })
   };
 
   return (

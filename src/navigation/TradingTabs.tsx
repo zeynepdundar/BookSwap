@@ -1,5 +1,6 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Heading, HStack } from "native-base";
+import { Dimensions } from "react-native";
 import Screen from "../components/Screen";
 import i18n from "../i18n";
 import HistoryScreen from "../screens/Trading/HistoryScreen";
@@ -7,6 +8,7 @@ import ProposeScreen from "../screens/Trading/ProposeScreen";
 import RequestScreen from "../screens/Trading/RequestScreen";
 
 const Tab = createMaterialTopTabNavigator();
+const { width, height } = Dimensions.get("window");
 
 export default function TradingTabs() {
   return (
@@ -27,13 +29,10 @@ export default function TradingTabs() {
           tabBarActiveTintColor: "#001833",
           tabBarInactiveTintColor: "#D8D8D8",
           tabBarLabelStyle: { fontSize: 14 },
-          tabBarItemStyle: { width: 100 },
-          tabBarStyle: {backgroundColor:"transparent"},
+          tabBarStyle: { backgroundColor: "transparent" },
           tabBarAllowFontScaling: true,
-          tabBarPressColor: "#001833",
-          tabBarIndicatorContainerStyle: { alignContent: "center"},
-          tabBarGap: 25,
         }}
+        initialLayout={{ width: width }}
       >
         <Tab.Screen
           name="Request"

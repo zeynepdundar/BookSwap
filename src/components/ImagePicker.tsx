@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Actionsheet, AddIcon, Badge, Image, Pressable } from "native-base";
+import { Actionsheet, AddIcon, Alert, Badge, Image, Pressable } from "native-base";
 import {
   launchCameraAsync,
   launchImageLibraryAsync,
@@ -28,9 +28,8 @@ function ImagePicker(selectedImage) {
     }
 
     if (cameraPermissionInformation.status === PermissionStatus.DENIED) {
-      Alert.alert(
+      Alert(
         "Insufficient Permissions",
-        "You need to grant camera permissions to use this app."
       );
       return false;
     }

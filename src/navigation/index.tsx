@@ -5,28 +5,21 @@ import AuthStack from "./AuthStack";
 import HomeTabs from "./HomeTabs";
 import ProfileCreationStack from "./ProfileCreationStack";
 import { LoadingOverlay } from "../components/LoadingOverlay";
-import {
-  selectIsLoading,
-  selectUser,
-  selectUserToken,
-} from "../store/auth-slice";
-import MyProfileStack from "./MyProfileStack";
-import OtherProfileScreen from "../screens/OtherProfile/OtherProfileScreen";
 import BookSearchScreen from "../screens/BookSearchScreen";
 import UserListScreen from "../screens/UserListScreen";
 import BarcodeScannerScreen from "../screens/BarcodeScannerScreen";
-import ChatScreen from "../screens/ChatScreen";
-import { MaterialIcons } from "@expo/vector-icons";
-
+import ProfileStack from "./ProfileStack";
+import OtherUserProfileScreen from "../screens/OtherUserProfile";
+import ChatScreen from "../screens/Messages/ChatScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
-  const isLoading = useSelector(selectIsLoading);
-  const userToken = useSelector(selectUserToken);
-  const user = useSelector(selectUser);
+  const { loading, user, authToken } = useSelector((state: any) => state.userAuth);
+  const isAuthenticated = useSelector((state:any) => state.userAuth.isAuthenticated);
 
-  if (isLoading) {
+  console.log("Loading", user, authToken);
+  if (loading) {
     // We haven't finished checking for the token yet
     return <LoadingOverlay></LoadingOverlay>;
   }
@@ -39,55 +32,55 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
-        <Stack.Group>
-          <Stack.Screen name="HomeTabs" component={HomeTabs} />
-          <Stack.Screen name="MyProfileStack" component={MyProfileStack} />
-          <Stack.Screen name="UserList" component={UserListScreen} />
-          <Stack.Screen name="OtherProfile" component={OtherProfileScreen} />
-        </Stack.Group>
-        {userToken !== null ? (
+        {isAuthenticated? (
           <>
-            {user.fullName && (
-              <Stack.Group>
-                <Stack.Screen
-                  name="ProfileCreation"
-                  component={ProfileCreationStack}
-                />
-              </Stack.Group>
+            {user.isNewUser && (
+              <>
+                <Stack.Group>
+                  <Stack.Screen
+                    name="ProfileCreation"
+                    component={ProfileCreationStack}
+                  />
+                  <Stack.Screen
+                    name="BarcodeScanner"
+                    component={BarcodeScannerScreen}
+                  />
+                </Stack.Group>
+                <Stack.Group screenOptions={{ presentation: "modal" }}>
+                  <Stack.Screen
+                    name="BookSearch"
+                    component={BookSearchScreen}
+                  ></Stack.Screen>
+                </Stack.Group>
+              </>
             )}
-            {!!user.fullName && (
-              <Stack.Group>
-                <Stack.Screen name="HomeTabs" component={HomeTabs} />
-                <Stack.Screen
-                  name="MyProfileStack"
-                  component={MyProfileStack}
-                />
-                <Stack.Screen name="UserList" component={UserListScreen} />
-                <Stack.Screen
-                  name="OtherProfile"
-                  component={OtherProfileScreen}
-                />
-              </Stack.Group>
+            {!user.isNewUser && (
+              <>
+                <Stack.Group>
+                  <Stack.Screen name="HomeTabs" component={HomeTabs} />
+                  <Stack.Screen name="ProfileStack" component={ProfileStack} />
+                  <Stack.Screen name="UserList" component={UserListScreen} />
+                  <Stack.Screen
+                    name="OtherUserProfile"
+                    component={OtherUserProfileScreen}
+                  />
+                  <Stack.Screen
+                    name="BarcodeScanner"
+                    component={BarcodeScannerScreen}
+                  />
+                </Stack.Group>
+                <Stack.Group screenOptions={{ presentation: "modal" }}>
+                  <Stack.Screen
+                    name="BookSearch"
+                    component={BookSearchScreen}
+                  ></Stack.Screen>
+                </Stack.Group>
+              </>
             )}
-            <Stack.Screen
-              name="BarcodeScanner"
-              component={BarcodeScannerScreen}
-            />
-            <Stack.Group screenOptions={{ presentation: "modal" }}>
-              <Stack.Screen
-                name="BookSearch"
-                component={BookSearchScreen}
-              ></Stack.Screen>
-            </Stack.Group>
           </>
         ) : (
           <>
-            <Stack.Screen name="Chat" component={ChatScreen} />
-            <Stack.Screen
-              name="BarcodeScanner"
-              component={BarcodeScannerScreen}
-            />
-            <Stack.Screen name="AuthenticationFlow" component={AuthStack} />
+            <Stack.Screen name="AuthStack" component={AuthStack} />
           </>
         )}
       </Stack.Navigator>

@@ -1,0 +1,196 @@
+import {
+  Alert,
+  Box,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  Icon,
+  Image,
+  Input,
+  Text,
+} from "native-base";
+import { useState } from "react";
+import Screen from "../../components/Screen";
+import PhoneInput from "react-native-phone-input";
+import i18n from "../../i18n";
+import { MaterialIcons } from "@expo/vector-icons";
+
+import { useDispatch, useSelector } from "react-redux";
+import {
+  checkVerificationCode,
+  resendVerificationCode,
+  verifyPhoneNumber,
+} from "../../store/auth-actions";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import { setVerificationCode } from "../../store/auth-slice";
+
+export default function AuthVerificationScreen({ navigation }) {
+  const surfLogo = require("../../assets/images/surf.png");
+  const swapBook = require("../../assets/images/swap-book.png");
+
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [countryCode, setCountryCode] = useState("");
+
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const { loading, error, confirmationResult, verificationCode } = useSelector(
+    (state: any) => state.userAuth
+  );
+
+  const handleVerifyPhoneNumber = () => {
+    dispatch(verifyPhoneNumber(phoneNumber));
+  };
+
+  const handleCheckVerificationCode = () => {
+    dispatch(checkVerificationCode({ confirmationResult, verificationCode }));
+    // setPhoneNumber("");
+  };
+
+  const handleResendVerificationCode = () => {
+    // Check if confirmationResult is available
+    if (confirmationResult) {
+      // Dispatch the async thunk to resend the verification code
+      dispatch(resendVerificationCode({confirmationResult}));
+    } else {
+      // Handle the case where confirmationResult is not available
+      console.error('Confirmation result is not available.');
+    }
+  };
+
+  return (
+    <Screen>
+      {/* Phone Input Screen */}
+      {(!confirmationResult || error?.type === "verifyPhoneNumberError") && (
+        <>
+          <Flex direction="column" m="3" mt="20">
+            <Center mb={30}>
+              <Image source={surfLogo} alt="Book Swap Logo" size="7" mb={2} />
+              <Image source={swapBook} alt="Book Swap" width={120} />
+            </Center>
+            <Center>
+              <Text color="black.300" mb="12">
+                {i18n.t("enter-your-phone-number")}
+              </Text>
+            </Center>
+            <Center>
+              <Box
+                width={{
+                  base: 300,
+                  lg: 250,
+                }}
+                maxW="80"
+                rounded="4px"
+                overflow="hidden"
+                borderColor={error ? "error.500" : "black.500"}
+                borderWidth="1"
+                px="17px"
+                py="12px"
+              >
+                <PhoneInput
+                  onChangePhoneNumber={(val) => {
+                    setPhoneNumber(val);
+                  }}
+                  initialCountry={"tr"}
+                  ref={(ref) => {
+                    ref ? setCountryCode(ref.getCountryCode()) : 1;
+                  }}
+                  flagStyle={{ width: 32, height: 24, borderWidth: 0 }}
+                  textStyle={{
+                    fontSize: 16,
+                    fontFamily: "poppins-regular",
+                    color: "#808085",
+                  }}
+                  offset={20}
+                  textProps={{
+                    maxLength: 20,
+                  }}
+                  autoFormat={true}
+                />
+              </Box>
+              {error && (
+                <Flex direction="row" width="100%" px="4" py="2">
+                  <Icon
+                    size="4"
+                    color="error.500"
+                    as={<MaterialIcons name="error-outline" />}
+                  />
+                  <Text px={2} fontSize="xs" color="error.500">
+                    {error.message}
+                  </Text>
+                </Flex>
+              )}
+            </Center>
+            <Center>
+              <Button
+                variant="primary"
+                mt={60}
+                onPress={() => {
+                  handleVerifyPhoneNumber();
+                }}
+              >
+                {i18n.t("send")}
+              </Button>
+            </Center>
+          </Flex>
+        </>
+      )}
+      {/* Verification Code Screen */}
+      {(confirmationResult || error?.type === "checkVerificationCodeError") && (
+        <>
+          <Heading mt="100px">{i18n.t("verification-code")}</Heading>
+          <Center>
+            <Text color="black.300" mb="12">
+              {i18n.t("type-verification-code")}
+            </Text>
+          </Center>
+          <Center>
+            <Input
+              variant="underlined"
+              maxLength={6}
+              width={200}
+              fontSize={20}
+              borderTopColor="none"
+              borderBottomColor="black.300"
+              color="black.300"
+              textAlign="center"
+              keyboardType="numeric"
+              onChangeText={(value: string) =>
+                dispatch(setVerificationCode(value))
+              }
+            />
+            <Center>
+              <Text color="black.300" mt="5"              onPress={() => {
+                  handleResendVerificationCode();
+                }}>
+                {i18n.t("resend-code-text-1")}
+                <Text color="primary.50">{i18n.t("resend-code-text-2")}</Text>
+              </Text>
+            </Center>
+            <Center mt={10}>
+              <Button
+                variant="primary"
+                onPress={() => {
+                  handleCheckVerificationCode();
+                }}
+              >
+                {i18n.t("confirm")}
+              </Button>
+            </Center>
+            {error && (
+              <Alert
+                w="80%"
+                borderRadius="10px"
+                backgroundColor="black.700"
+                mt={5}
+              >
+                <Text fontSize="sm" fontWeight="medium" color="#dddddd">
+                  {error.message}
+                </Text>
+              </Alert>
+            )}
+          </Center>
+        </>
+      )}
+    </Screen>
+  );
+}
