@@ -9,8 +9,8 @@ import {
   Spacer,
   HStack,
   Text,
-  VStack,
   Divider,
+  VStack,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -55,20 +55,17 @@ const DUMMY_BOOKS = [
   },
 ];
 
-export default function MyWishlistScreen({ navigation }) {
-  const [books, setBooks] = useState(DUMMY_BOOKS);
+export default function LibraryScreen({ navigation }) {
+  const [books, setBooks] = useState([]);
 
   const removeBookHandler = (id) => {
-    // setBooks()
-    const existingBookItemIndex = books.findIndex((book) => book.id === id);
     setBooks(books.filter((book) => book.id !== id));
   };
 
   const addBookHandler = (book) => {
-    // setBooks((prevBooks) => {
-    //   return [book, ...prevBooks];
-    // });
-    navigation.navigate('BookSearch')
+    setBooks((prevBooks) => {
+      return [book, ...prevBooks];
+    });
   };
 
   const pressHandler = () => {
@@ -105,10 +102,9 @@ export default function MyWishlistScreen({ navigation }) {
           }}
           onPress={() => navigation.goBack()}
         ></Button>
-        <Heading>{i18n.t("my_wishlist.my_wishlist")}</Heading>
+        <Heading>{i18n.t("my-library")}</Heading>
         <Spacer></Spacer>
       </HStack>
-
       {books.length === 0 && (
         <VStack width="100%" height={200} mt="100">
           <Center>
@@ -120,13 +116,14 @@ export default function MyWishlistScreen({ navigation }) {
               as={MaterialIcons}
             />
 
-            <Text fontSize="md">{i18n.t("no-books-in-your-wishlist-yet")}</Text>
+            <Text fontSize="md">{i18n.t("no-books-in-your-library-yet")}</Text>
           </Center>
           <Center w="100%">
             <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
 
             <Text textAlign="center" mx="30" fontWeight="200">
-            {i18n.t("add-books-to-your-wishlist-to-swap-books")}
+                        {i18n.t("add-books-to-your-library-to-swap-books")}
+
             </Text>
           </Center>
         </VStack>

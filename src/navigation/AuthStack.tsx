@@ -1,11 +1,12 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import WelcomeScreen from "../screens/WelcomeScreen";
-import VerificationCode from "../screens/Auth/VerificationCode";
-import Auth from "../screens/Auth";
+import WelcomeScreen from "../screens/Auth/WelcomeScreen";
+import AuthVerificationScreen from "../screens/Auth/AuthVerificationScreen";
+import { useSelector } from "react-redux";
 
 const Stack = createNativeStackNavigator();
 
 export default function AuthStack() {
+  const { confirmationResult, error } = useSelector((state: any) => state.userAuth);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -13,14 +14,13 @@ export default function AuthStack() {
         headerShown: false,
       }}
     >
-      <Stack.Group>
+      {(!confirmationResult && !error )&& (
         <Stack.Screen name="Welcome" component={WelcomeScreen}></Stack.Screen>
-        <Stack.Screen name="Auth" component={Auth}></Stack.Screen>
-        <Stack.Screen
-          name="VerificationCode"
-          component={VerificationCode}
-        ></Stack.Screen>
-      </Stack.Group>
+      )}
+      <Stack.Screen
+        name="AuthVerification"
+        component={AuthVerificationScreen}
+      ></Stack.Screen>
     </Stack.Navigator>
   );
 }

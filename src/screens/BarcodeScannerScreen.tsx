@@ -16,6 +16,7 @@ import {
   IconButton,
   Actionsheet,
   Button,
+  Alert,
 } from "native-base";
 import i18n from "../i18n";
 
@@ -23,6 +24,7 @@ export default function BarcodeScannerScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [edition, setEdition] = useState(null);
+  const [error, setError] = useState(null); 
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
 
   const fetchEditions = async (isbn_13) => {
@@ -40,6 +42,15 @@ export default function BarcodeScannerScreen({ navigation }) {
 
     getBarCodeScannerPermissions();
   }, []);
+  const resetScannedResult = () => {
+    setScanned(false);
+    setError(null);
+  };
+  useEffect(() => {
+    setTimeout(() => {
+      resetScannedResult();
+    }, 3000);
+  });
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
@@ -54,10 +65,16 @@ export default function BarcodeScannerScreen({ navigation }) {
     fetchEditions(data)
       .then((fetchedEditions) => {
         if (fetchedEditions.length == 0) {
-          console.log("Edition not found with this ISBN!");
+          console.log("No book found with this ISBN!");
+          setError("No book found with this ISBN!");
           return;
         } else if (fetchedEditions.length > 1) {
-          console.log("There are more than 1 edition with this ISBN!");
+          console.log(
+            "There are multiple books which match what you're asking for this ISBN."
+          );
+          setError(
+            "There are multiple books which match what you're asking for this ISBN."
+          );
           return;
         }
         const e = fetchedEditions[0];
@@ -71,8 +88,9 @@ export default function BarcodeScannerScreen({ navigation }) {
         setEdition(mappedEdition);
       })
       .catch((error) => {
-        console.error(error);
+        setError("Something went wrong! [ERR_CODE :" + { error } + "]!");
       });
+    setScanned(false);
   };
 
   if (hasPermission === null) {
@@ -85,25 +103,26 @@ export default function BarcodeScannerScreen({ navigation }) {
   const addBookList = () => {
     console.log("Book added!");
     setIsActionSheetOpen(true);
-  };
-  const handleNewBookScan = () => {
     setEdition(null);
-    setScanned(false);
-    setIsActionSheetOpen(false);
   };
+
 
   const { width, height } = Dimensions.get("window");
 
   return (
-    <View width={width} h={height}>
+    <View w={width} h={height}>
       <IconButton
-        onPress={() =>navigation.goBack()}
-        size="40"
-        m={"8px"}
+        onPress={() => navigation.goBack()}
+        size="10"
+        m={"30px"}
         borderRadius="full"
-        bg="#f2f2f2"
+        position="absolute"
+        bg="#dddddd"
+        zIndex={99}
         variant="solid"
-        p="3"
+        _pressed={{
+          bg: "primary.100",
+        }}
         icon={
           <Icon color="black" name={"close"} as={MaterialIcons} size="lg" />
         }
@@ -115,7 +134,7 @@ export default function BarcodeScannerScreen({ navigation }) {
           barCodeTypes={[BarCodeScanner.Constants.BarCodeType.ean13]}
         />
       </Center>
-      {scanned && (
+      {edition && (
         <Center>
           <Box
             width="80"
@@ -124,7 +143,7 @@ export default function BarcodeScannerScreen({ navigation }) {
             backgroundColor="white"
             borderWidth="2"
             borderRadius="15"
-            borderColor="#F1F1F1"
+            borderColor="#ffffff"
             p="2"
             m="2"
             position="absolute"
@@ -144,7 +163,7 @@ export default function BarcodeScannerScreen({ navigation }) {
                 width="60"
                 height="82"
                 roundedRight="6"
-                />
+              />
               <VStack width="40" height="82">
                 <Text color="#8c8c8c" fontSize="xs" letterSpacing="2xl">
                   {edition?.author}
@@ -160,7 +179,7 @@ export default function BarcodeScannerScreen({ navigation }) {
                 bg="primary.50"
                 variant="solid"
                 p="3"
-                size={20}
+                size={10}
                 _pressed={{
                   bg: "primary.100",
                 }}
@@ -178,7 +197,27 @@ export default function BarcodeScannerScreen({ navigation }) {
           <Button onPress={() => setScanned(false)}>Tap to Scan Again</Button>
         </Center>
       )}
-      <Actionsheet isOpen={isActionSheetOpen} onClose={handleNewBookScan}>
+      {error && (
+        <Center>
+          <Alert
+            w="80%"
+            borderRadius="10px"
+            backgroundColor="black.700"
+            mt={5}
+            shadow="9"
+            py="5"
+            position="absolute"
+            zIndex={99}
+            bottom={60}
+          >
+            <Text fontSize="sm" fontWeight="medium" color="#dddddd">
+              {error}
+            </Text>
+            {/* <Button onPress={() => setScanned(false)}>Tap to Scan Again</Button> */}
+          </Alert>
+        </Center>
+      )}
+      <Actionsheet isOpen={isActionSheetOpen} onClose={()=>setIsActionSheetOpen(false)}>
         <Actionsheet.Content>
           <Actionsheet.Item>{i18n.t("the-book-added")}</Actionsheet.Item>
         </Actionsheet.Content>

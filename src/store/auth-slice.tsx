@@ -1,60 +1,91 @@
-import { AnyAction, createSlice, current } from "@reduxjs/toolkit";
-import { signOut, userAuth } from "./auth-actions";
+import { createSlice, current } from "@reduxjs/toolkit";
+import {
+  checkVerificationCode,
+  resendVerificationCode,
+  verifyPhoneNumber,
+} from "./auth-actions";
 
 const initialState = {
   loading: false,
-  user: null,
-  userToken: null, // for storing the JWT
   error: null,
-  success: false,
+  user: { isNewUser: null, firebaseUserId: null },
+  authToken: null,
+  phoneNumber: "",
+  verificationCode: "",
+  confirmationResult: null,
+  isAuthenticated: false,
 };
 
 const authSlice = createSlice({
   name: "userAuth",
   initialState,
   reducers: {
-    addBook: () => {},
+    setUser: (state, action) => {
+      state.user = action.payload;
+      console.log("User:", current(state));
+    },
+    setVerificationCode: (state, action) => {
+      state.verificationCode = action.payload;
+    },
+    setPhoneNumber: (state, action) => {
+      state.phoneNumber = action.payload;
+    },
+    setToken: (state, action) => {
+      state.authToken = action.payload;
+      state.isAuthenticated = true;
+    },
+    signOut: (state) => {
+      state.user = null;
+      state.authToken = null;
+      state.isAuthenticated = false;
+      state.confirmationResult = null; // Can be removed, check it later!
+    },
   },
   extraReducers: (builder) => {
-    //AUTHENTICATE USER
-    builder.addCase(userAuth.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(userAuth.fulfilled, (state, action: AnyAction) => {
-      state.loading = false;
-      state.error = false;
-      state.success = true;
-      state.user = {
-        uid: action.payload.uid,
-        fullName: action.payload.firstName,
-      };
-      state.userToken = "123456";
-      console.log(current(state), action);
-    });
-    builder.addCase(userAuth.rejected, (state, action: AnyAction) => {
-      state.loading = false;
-      state.error = true;
-    });
+    //Authenticate user
+    builder
+      .addCase(verifyPhoneNumber.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyPhoneNumber.fulfilled, (state, action: any) => {
+        state.loading = false;
+        state.confirmationResult = action.payload;
+      })
+      .addCase(verifyPhoneNumber.rejected, (state, action: any) => {
+        state.loading = false;
+        state.error = action.payload;
+        console.log("verifyPhoneNumber:", current(state));
+      })
+      .addCase(checkVerificationCode.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(checkVerificationCode.fulfilled, (state) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+      })
+      .addCase(checkVerificationCode.rejected, (state, action: any) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
-    //SIGN-OUT
-    builder.addCase(signOut.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(signOut.fulfilled, (state, action: AnyAction) => {
-      state.loading = false;
-      state.error = false;
-      state.user = null;
-      state.userToken = null;
-    });
-    builder.addCase(signOut.rejected, (state, action: AnyAction) => {
-      state.loading = false;
-      state.error = true;
-    });
+      //Resend verification code
+      .addCase(resendVerificationCode.fulfilled, (state, action) => {
+        // Handle the result of the resendVerificationCode async thunk
+      })
+      .addCase(resendVerificationCode.rejected, (state, action) => {
+        // Handle the error if needed
+      });
   },
 });
 
-export const selectUser = (state) => state.userAuth.user;
-export const selectUserToken = (state) => state.userAuth.userToken;
-export const selectIsLoading = (state) => state.userAuth.loading;
+export const {
+  setVerificationCode,
+  setPhoneNumber,
+  setUser,
+  setToken,
+  signOut,
+} = authSlice.actions;
 
 export default authSlice.reducer;

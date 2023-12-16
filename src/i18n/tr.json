@@ -46,5 +46,9 @@
   "no-books-in-your-wishlist-yet": "Henüz istek listene eklenmiş kitap yok",
   "add-books-to-your-library-to-swap-books": "İstediğin kitapları takas etmek için şimdi kitaplığına kitap ekle",
   "add-books-to-your-wishlist-to-swap-books": "İstediğin kitapları takas etmek için şimdi istek listene kitap ekle",
-  "ask-for-swap": "Takas iste"
+  "ask-for-swap": "Takas iste",
+  "my-messages": "Mesajlarım",
+  "trading":"Takas",
+  "my-notifications":"Bildirimlerim",
+
 }

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Center,
   Heading,
@@ -9,14 +8,16 @@ import {
   Spacer,
   HStack,
   Text,
-  Divider,
   VStack,
+  Divider,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-
+import { useDispatch, useSelector } from "react-redux";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { VerticalList } from "../../components/shared/VerticalList";
+import { AppDispatch } from "../../store/store";
+import { addBook, removeBook } from "../../store/book-slice";
 
 const DUMMY_BOOKS = [
   {
@@ -55,21 +56,35 @@ const DUMMY_BOOKS = [
   },
 ];
 
-export default function MyLibraryScreen({ navigation }) {
-  const [books, setBooks] = useState([]);
+export default function WishlistScreen({ navigation }) {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const wishlistBookIds = useSelector(
+    (state) => state.bookList.wishlistBookIds
+  );
+
+  const wishlistBooks = DUMMY_BOOKS.filter((book) =>
+    wishlistBookIds.includes(book.id)
+  );
 
   const removeBookHandler = (id) => {
-    setBooks(books.filter((book) => book.id !== id));
+    dispatch(removeBook({ id: id, listType: "wishlist" }));
   };
 
   const addBookHandler = (book) => {
-    setBooks((prevBooks) => {
-      return [book, ...prevBooks];
-    });
-  };
+    dispatch(
+      addBook({
+        id: "28694a0f-3da1-471f-bd96-142456e29d72",
+        listType: "wishlist",
+      })
+    );
 
-  const pressHandler = () => {
-    console.log("press handler");
+    // navigation.navigate("ProfileStack", {
+    //   screen: "BookSearch",
+    //   data: {
+    //     relatedScreen: "Wishlist",
+    //   },
+    // });
   };
 
   const removeBookButton = (id) => (
@@ -102,10 +117,11 @@ export default function MyLibraryScreen({ navigation }) {
           }}
           onPress={() => navigation.goBack()}
         ></Button>
-        <Heading>{i18n.t("my-library")}</Heading>
+        <Heading>{i18n.t("my_wishlist.my_wishlist")}</Heading>
         <Spacer></Spacer>
       </HStack>
-      {books.length === 0 && (
+
+      {wishlistBooks.length === 0 && (
         <VStack width="100%" height={200} mt="100">
           <Center>
             <Icon
@@ -116,22 +132,21 @@ export default function MyLibraryScreen({ navigation }) {
               as={MaterialIcons}
             />
 
-            <Text fontSize="md">{i18n.t("no-books-in-your-library-yet")}</Text>
+            <Text fontSize="md">{i18n.t("no-books-in-your-wishlist-yet")}</Text>
           </Center>
           <Center w="100%">
             <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
 
             <Text textAlign="center" mx="30" fontWeight="200">
-                        {i18n.t("add-books-to-your-library-to-swap-books")}
-
+              {i18n.t("add-books-to-your-wishlist-to-swap-books")}
             </Text>
           </Center>
         </VStack>
       )}
 
-      {books.length > 0 && (
+      {wishlistBooks.length > 0 && (
         <Center>
-          <VerticalList data={books}>{removeBookButton}</VerticalList>
+          <VerticalList data={wishlistBooks}>{removeBookButton}</VerticalList>
         </Center>
       )}
       <Fab

@@ -4,16 +4,16 @@ import authSlice from "./auth-slice";
 import bookSlice from "./book-slice";
 
 const store = configureStore({
-  reducer: { userAuth: authSlice, books: bookSlice },
+  reducer: { userAuth: authSlice, bookList: bookSlice },
 
   middleware: (getDefaultMiddleware) =>
-  getDefaultMiddleware({
-    serializableCheck: {
+    getDefaultMiddleware({
       // Ignore these action types
-      ignoredActions: ['userContent/login/fulfilled'],
-      ignoredPaths: ['userAuth.user']
-    },
-  }),
+      serializableCheck: {
+        ignoredActions: ["userAuth/checkVerificationCode/fulfilled", "userAuth/verifyPhoneNumber/fulfilled"],
+        ignoredPaths: ["userAuth"],
+      },
+    }),
 });
 
 export type AppDispatch = typeof store.dispatch;

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { Provider, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import "expo-dev-client";
 import { useFonts } from "expo-font";
 import { NativeBaseProvider } from "native-base";
 import { Amplify } from "aws-amplify";
@@ -10,9 +12,8 @@ import { listEditionsIncludeOwningUsers } from "./src/graphql/custom-queries";
 import awsExports from "./src/aws-exports";
 import { theme } from "./src/theme";
 import Navigation from "./src/navigation";
-import { Provider, useDispatch } from "react-redux";
 import store, { AppDispatch } from "./src/store/store";
-import "expo-dev-client";
+import { setToken } from "./src/store/auth-slice";
 
 const EDITIONS = [
   {
@@ -265,13 +266,9 @@ const EDITIONS = [
 
 Amplify.configure(awsExports);
 
-
 const initialState = { name: "", profile_photo: "" };
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
-  const [isNewUser, setIsNewUser] = useState<boolean>(false);
-
   const [formState, setFormState] = useState(initialState);
   const [users, setUsers] = useState([]);
 
@@ -358,12 +355,13 @@ export default function App() {
   }
 
   function Root() {
+    const dispatch = useDispatch<AppDispatch>();
+
     useEffect(() => {
       async function fetchToken() {
-        const storedToken = await AsyncStorage.getItem("token");
+        const storedToken = await AsyncStorage.getItem("authToken");
         if (storedToken) {
-          setIsAuthenticated(true);
-          setIsNewUser(false);
+          // dispatch(setToken(storedToken));
         }
       }
       fetchToken();

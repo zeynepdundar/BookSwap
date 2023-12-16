@@ -21,11 +21,11 @@ import { useState } from "react";
 import { AlertDialogBox } from "../../components/AlertDialogBox";
 import { SceneMap, TabView } from "react-native-tab-view";
 import { Dimensions, StatusBar, Animated } from "react-native";
-import OtherLibraryScreen from "./OtherLibraryScreen";
-import OtherWishlistScreen from "./OtherWishlistScreen";
-import OtherSwapHistory from "./OtherSwapHistory";
+import OtherLibraryScreen from "./OtherUserLibraryScreen";
+import OtherWishlistScreen from "./OtherUserWishlistScreen";
+import OtherSwapHistory from "./OtherUserSwapHistory";
 
-export default function OtherProfileScreen({ navigation }) {
+export default function OtherUserProfileScreen({ navigation }) {
   const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
 
   const dispatch = useDispatch<AppDispatch>();

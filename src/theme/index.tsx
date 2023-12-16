@@ -106,7 +106,7 @@ export const theme = extendTheme({
     Heading: {
       baseStyle: ({ }) => {
         return {
-          color: "black.400",
+          color: "coolGray.800",
           fontWeight: "medium",
           fontFamily: "poppins",
         };

@@ -9,15 +9,16 @@ import {
   VStack,
   HStack,
   Flex,
-  AspectRatio,
   Pressable,
   Spacer,
   WarningTwoIcon,
   Center,
+  Icon,
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
 import SearchBar from "../components/shared/SearchBar";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import { API, graphqlOperation } from "aws-amplify";
 import { listEditionsIncludeOwningUsers } from "../graphql/custom-queries";
@@ -26,9 +27,6 @@ import { LoadingOverlay } from "../components/LoadingOverlay";
 export default function BookSearchScreen({ navigation, route = null }) {
   const mode = route?.params?.relatedScreen;
 
-  const importUrl = require("../assets/images/cover_1.png");
-  const wishlistIcon = require("../assets/images/icon/add-wishlist.png");
-  const libraryIcon = require("../assets/images/icon/add-library.png");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
@@ -99,6 +97,14 @@ export default function BookSearchScreen({ navigation, route = null }) {
     console.log("Searching..", enteredBookTitle);
   };
 
+  const changeListStatusHandler = (item) => {
+    const bookIsInList = isSelectedItem(item.id);
+
+    if (bookIsInList) {
+      removeLibraryItemHandler(item.id);
+    } else addLibraryItemHandler(item);
+  };
+
   const pressHandler = () => {
     console.log("Selected Library Items");
     navigation.goBack();
@@ -135,9 +141,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
                 renderItem={({ item }) => (
                   <Pressable
                     onPress={() => {
-                      isSelectedItem(item.id)
-                        ? removeLibraryItemHandler(item.id)
-                        : addLibraryItemHandler(item);
+                      changeListStatusHandler(item);
                     }}
                   >
                     <Box
@@ -203,14 +207,26 @@ export default function BookSearchScreen({ navigation, route = null }) {
                           </Pressable>
                         </VStack>
 
-                        <Box position="absolute" bottom="7" right="5">
-                          <AspectRatio w="100%" ratio={16 / 9}>
-                            {isSelectedItem(item.id) ? (
-                              <Image source={libraryIcon} alt="Library" />
-                            ) : (
-                              <Image source={wishlistIcon} alt="Wishlist" />
-                            )}
-                          </AspectRatio>
+                        <Box position="absolute" bottom="0" right="0">
+                          <Icon
+                            m="2"
+                            ml="3"
+                            size="6"
+                            color={
+                              isSelectedItem(item.id)
+                                ? "primary.50"
+                                : "primary.100"
+                            }
+                            as={
+                              <MaterialIcons
+                                name={
+                                  isSelectedItem(item.id)
+                                    ? "bookmark"
+                                    : "bookmark-outline"
+                                }
+                              />
+                            }
+                          />
                         </Box>
                       </HStack>
                     </Box>

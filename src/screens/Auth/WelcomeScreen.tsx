@@ -1,12 +1,13 @@
 import { Button, Center, Flex, Heading, Image } from "native-base";
-import Screen from "../components/Screen";
-import i18n from "../i18n";
+import Screen from "../../components/Screen";
+import i18n from "../../i18n";
 
 export default function WelcomeScreen({ navigation }) {
-  const importUrl = require("../assets/images/infinite-library.png");
+  const importUrl = require("../../assets/images/infinite-library.png");
 
   const pressHandler = () => {
-    navigation.navigate("Auth");
+    navigation.navigate("AuthStack", { screen: "AuthVerification" })
+
     
   };
 

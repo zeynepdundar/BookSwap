@@ -12,7 +12,7 @@ import {
 import i18n from "../i18n";
 import Screen from "../components/Screen";
 import { HorizontalCoverList } from "../components/shared/HorizontalCoverList";
-import { SearchBar } from "react-native-screens";
+import SearchBar from "../components/shared/SearchBar";
 
 export default function HomeScreen({ navigation }) {
   const jesse = require("../assets/images/jesse-pinkman.png");
@@ -57,19 +57,39 @@ export default function HomeScreen({ navigation }) {
   return (
     <Screen>
       <Flex direction="row" justifyContent="space-between" alignItems="center">
-        <Flex>
-          <Heading color="black.100">{i18n.t("hello")}</Heading>
-          <Text color="black.400" fontWeight="500" fontSize={16}>
+        <Flex my="4">
+          <Heading color="coolGray.800" >{i18n.t("hello")}</Heading>
+          <Text color="coolGray.800" fontWeight="500" fontSize={16}>
             Jesse Pinkman
           </Text>
         </Flex>
-        <Pressable onPress={() => navigation.navigate('MyProfileStack', { screen: 'MyProfile' })}>
+        <Pressable
+          onPress={() =>
+            navigation.navigate("ProfileStack", { screen: "Profile" })
+          }
+        >
           <Image source={jesse} alt="Notification" size={10} />
         </Pressable>
       </Flex>
-      <SearchBar />
+      <SearchBar 
+        onSearchBook={() => {
+          navigation.navigate("BookSearch", {
+            relatedScreen: "",
+          });
+        }}
+        onScanBarcode={() => {
+          navigation.navigate("BarcodeScanner", {
+            relatedScreen: "Wishlist",
+          });
+        }}
+        onFocus={() => {
+          navigation.navigate("BookSearch", {
+            relatedScreen: "Wishlist",
+          });
+        }}
+      />
       {data.length > 0 && (
-        <>
+        <Box mt="6">
           <Text color="black.400" fontWeight="700">
             Recently Added
           </Text>
@@ -77,7 +97,18 @@ export default function HomeScreen({ navigation }) {
           <Center w="100%">
             <HorizontalCoverList data={data} editable={false} />
           </Center>
-        </>
+        </Box>
+      )}
+      {data.length > 0 && (
+        <Box mt="6">
+          <Text color="black.400" fontWeight="700">
+            Most Popular
+          </Text>
+
+          <Center w="100%">
+            <HorizontalCoverList data={data} editable={false} />
+          </Center>
+        </Box>
       )}
     </Screen>
   );

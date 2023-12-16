@@ -1,29 +1,24 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Image } from "native-base";
+import { Icon } from "native-base";
 import HomeScreen from "../screens/HomeScreen";
 import NotificationScreen from "../screens/NotificationScreen";
-import TradeScreen from "../screens/Trading/HistoryScreen";
-import MessageScreen from "../screens/MessageScreen";
+import MessagesScreen from "../screens/Messages";
 import TradingTabs from "./TradingTabs";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const BottomTab = createBottomTabNavigator();
 
 export default function HomeTabs() {
-  const homeIcon = require("../assets/images/icon/home-icon.png");
-  const envelopeIcon = require("../assets/images/icon/envelope-icon.png");
-  const bellIcon = require("../assets/images/icon/bell-icon.png");
-  const tradeIcon = require("../assets/images/icon/trade-icon.png");
 
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
-      screenOptions={{   
+      screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: "#7F3DFF",
-        tabBarInactiveTintColor: "#e1d0ff",
+        tabBarActiveTintColor: "primary.50",
+        tabBarInactiveTintColor: "primary.100",
         tabBarStyle: {
-          position: "absolute",
           backgroundColor: "#fff",
           height: 90,
           paddingHorizontal: 10,
@@ -36,7 +31,11 @@ export default function HomeTabs() {
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Image source={homeIcon} alt="Home" size={5} />
+            <Icon
+              size="8"
+              color={color}
+              as={<MaterialIcons name="home" />}
+            />
           ),
         }}
       />
@@ -45,7 +44,11 @@ export default function HomeTabs() {
         component={NotificationScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Image source={bellIcon} alt="Notification" size={5} />
+            <Icon
+              size="7"
+              color={color}
+              as={<MaterialIcons name="notifications" />}
+            />
           ),
           tabBarBadge: 3,
           tabBarBadgeStyle: { backgroundColor: "#7F3DFF", color: "#fff" },
@@ -56,16 +59,24 @@ export default function HomeTabs() {
         component={TradingTabs}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Image source={tradeIcon} alt="Trade" size={5} />
+            <Icon
+              size="8"
+              color={color}
+              as={<MaterialIcons name="swap-vert" />}
+            />
           ),
         }}
       />
       <BottomTab.Screen
-        name="Message"
-        component={MessageScreen}
+        name="Messages"
+        component={MessagesScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Image source={envelopeIcon} alt="Message" size={5} />
+            <Icon
+              size="6"
+              color={color}
+              as={<MaterialIcons name="mail-outline" />}
+            />
           ),
         }}
       />

@@ -41,7 +41,7 @@ const DUMMY_BOOKS = [
   },
 ];
 
-export default function OtherWishlistScreen() {
+export default function OtherUserWishlistScreen() {
   const [books, setBooks] = useState(DUMMY_BOOKS);
 
 

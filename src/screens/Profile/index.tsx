@@ -17,10 +17,12 @@ import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { signOut } from "../../store/auth-actions";
 import { useState } from "react";
 import { AlertDialogBox } from "../../components/AlertDialogBox";
 import ImagePicker from "../../components/ImagePicker";
+import auth from "@react-native-firebase/auth";
+import { signOut } from "../../store/auth-slice";
+
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../../assets/images/icon/library-icon.png");
@@ -36,7 +38,17 @@ export default function ProfileScreen({ navigation }) {
   const onClose = () => setIsOpen(false);
 
   const signOutHandler = async (): Promise<void> => {
-    dispatch(signOut());
+    try {
+      // Sign out the user from Firebase
+      await auth().signOut();
+
+      // Dispatch the logout action to clear user data in Redux state
+      dispatch(signOut());
+
+      // Other actions after logout...
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
@@ -70,7 +82,7 @@ export default function ProfileScreen({ navigation }) {
         {/* Wishlist */}
         <Pressable
           width={320}
-          onPress={() => navigation.navigate("MyWishlist")}
+          onPress={() => navigation.navigate("Wishlist")}
         >
           <Flex
             direction="row"
@@ -108,7 +120,7 @@ export default function ProfileScreen({ navigation }) {
         </Pressable>
 
         {/* Library */}
-        <Pressable width={320} onPress={() => navigation.navigate("MyLibrary")}>
+        <Pressable width={320} onPress={() => navigation.navigate("Library")}>
           <Flex
             direction="row"
             alignItems="center"

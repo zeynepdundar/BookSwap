@@ -1,13 +1,19 @@
-import { Text } from "native-base";
+import { Heading, HStack, Text } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
 
 export default function NotificationScreen({ navigation }) {
-
-
   return (
     <Screen>
-      <Text>Notification Screen</Text>
+      <HStack
+        alignItems="center"
+        space="20%"
+        justifyContent="center"
+        w="100%"
+        h={16}
+      >
+        <Heading>{i18n.t("my-notifications")}</Heading>
+      </HStack>
     </Screen>
   );
 }
