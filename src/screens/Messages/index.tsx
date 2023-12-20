@@ -66,7 +66,6 @@ export default function MessagesScreen({ navigation }) {
   const [friendId, setFriendId] = useState("");
 
   const handlePress = (name, uid, friendId) => {
-    console.log("User: ", name);
     setUserId(uid);
     setFriendId(friendId);
     navigation.navigate("Chat", { userId: uid, friendId: friendId })

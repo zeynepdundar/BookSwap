@@ -1,10 +1,10 @@
-import { Spinner, Text, Box } from "native-base";
+import { Spinner, Text, Center } from "native-base";
 
-export const LoadingOverlay = ({ message = null }) => {
+export const LoadingOverlay = ({ message =null}) => {
   return (
-    <Box p={5}>
+    <Center p={5} height="100%">
       {message && <Text mb={3}>{message}</Text>}
       <Spinner color="indigo.500" size="sm" />
-    </Box>
+    </Center>
   );
 };

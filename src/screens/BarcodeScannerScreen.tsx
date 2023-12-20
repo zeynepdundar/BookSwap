@@ -100,7 +100,7 @@ export default function BarcodeScannerScreen({ navigation }) {
     return <Text>No access to camera</Text>;
   }
 
-  const addBookList = () => {
+  const addbooks = () => {
     console.log("Book added!");
     setIsActionSheetOpen(true);
     setEdition(null);
@@ -173,7 +173,7 @@ export default function BarcodeScannerScreen({ navigation }) {
                 </Text>
               </VStack>
               <IconButton
-                onPress={addBookList}
+                onPress={addbooks}
                 m={"8px"}
                 borderRadius="11"
                 bg="primary.50"

@@ -11,11 +11,16 @@ import {
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import { setProfileData } from "../../store/profile-slice";
 
 export default function BirthdateInputScreen({ navigation }) {
   const [birthDay, setBirthDay] = useState<any>();
   const [birthMonth, setBirthMonth] = useState<any>();
   const [birthYear, setBirthYear] = useState<any>();
+
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
   //@TODO: Convert date input to db date fomrmat, here is one of the dynamoDB approach.
   // You can use the string data type to represent a date or a timestamp. One way to do this is by using ISO 8601 strings, as shown in these examples:
@@ -24,6 +29,7 @@ export default function BirthdateInputScreen({ navigation }) {
   };
 
   const pressHandler = () => {
+    dispatch(setProfileData({birthdate:mergeDate}));
     navigation.navigate("Gender");
   };
 
@@ -61,7 +67,7 @@ export default function BirthdateInputScreen({ navigation }) {
               color="black.400"
               textAlign="center"
               px="1"
-              onChange={(enteredDay) => {
+              onChangeText={(enteredDay:string) => {
                 setBirthDay(enteredDay);
               }}
             />
@@ -79,9 +85,10 @@ export default function BirthdateInputScreen({ navigation }) {
               color="black.400"
               textAlign="center"
               px="1"
-              onChange={(enteredMonth) => {
+              onChangeText={(enteredMonth:string) => {
                 setBirthMonth(enteredMonth);
               }}
+          
             />
             <Spacer />
             <Input
@@ -97,7 +104,7 @@ export default function BirthdateInputScreen({ navigation }) {
               color="black.400"
               textAlign="center"
               px="0"
-              onChange={(enteredYear) => {
+              onChangeText={(enteredYear:string)=> {
                 setBirthYear(enteredYear);
               }}
             />

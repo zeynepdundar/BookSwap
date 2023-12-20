@@ -1,5 +1,6 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 import {
+  addUserToDatabaseAsync,
   checkVerificationCode,
   resendVerificationCode,
   verifyPhoneNumber,
@@ -17,7 +18,7 @@ const initialState = {
 };
 
 const authSlice = createSlice({
-  name: "userAuth",
+  name: "auth",
   initialState,
   reducers: {
     setUser: (state, action) => {
@@ -55,7 +56,6 @@ const authSlice = createSlice({
       .addCase(verifyPhoneNumber.rejected, (state, action: any) => {
         state.loading = false;
         state.error = action.payload;
-        console.log("verifyPhoneNumber:", current(state));
       })
       .addCase(checkVerificationCode.pending, (state) => {
         state.loading = true;
@@ -70,12 +70,28 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
+      
+
       //Resend verification code
       .addCase(resendVerificationCode.fulfilled, (state, action) => {
         // Handle the result of the resendVerificationCode async thunk
       })
       .addCase(resendVerificationCode.rejected, (state, action) => {
         // Handle the error if needed
+      })
+
+      //Add authenticated user to db
+      .addCase(addUserToDatabaseAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addUserToDatabaseAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.userData = action.payload;
+      })
+      .addCase(addUserToDatabaseAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error;
       });
   },
 });

@@ -34,7 +34,7 @@ export default function AuthVerificationScreen({ navigation }) {
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const { loading, error, confirmationResult, verificationCode } = useSelector(
-    (state: any) => state.userAuth
+    (state: any) => state.auth
   );
 
   const handleVerifyPhoneNumber = () => {
@@ -50,7 +50,7 @@ export default function AuthVerificationScreen({ navigation }) {
     // Check if confirmationResult is available
     if (confirmationResult) {
       // Dispatch the async thunk to resend the verification code
-      dispatch(resendVerificationCode({confirmationResult}));
+      dispatch(resendVerificationCode());
     } else {
       // Handle the case where confirmationResult is not available
       console.error('Confirmation result is not available.');

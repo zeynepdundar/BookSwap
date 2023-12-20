@@ -2,11 +2,18 @@ import { useState } from "react";
 import { Button, Center, Heading, VStack, Input, Spacer } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import { setProfileData } from "../../store/profile-slice";
 
 export default function NameInputScreen({ navigation }) {
   const [name, setName] = useState<string>("");
 
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+
+
   const pressHandler = (event: any) => {
+    dispatch(setProfileData({name:name}));
     navigation.navigate("Birthdate");
   };
 

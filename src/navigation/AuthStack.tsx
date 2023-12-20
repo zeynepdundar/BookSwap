@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 const Stack = createNativeStackNavigator();
 
 export default function AuthStack() {
-  const { confirmationResult, error } = useSelector((state: any) => state.userAuth);
+  const { confirmationResult, error } = useSelector((state: any) => state.auth);
   return (
     <Stack.Navigator
       screenOptions={{

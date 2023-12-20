@@ -1,17 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import authSlice from "./auth-slice";
-import bookSlice from "./book-slice";
+import profileSlice from "./profile-slice";
 
 const store = configureStore({
-  reducer: { userAuth: authSlice, bookList: bookSlice },
+  reducer: { auth: authSlice, profile: profileSlice },
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       // Ignore these action types
       serializableCheck: {
-        ignoredActions: ["userAuth/checkVerificationCode/fulfilled", "userAuth/verifyPhoneNumber/fulfilled"],
-        ignoredPaths: ["userAuth"],
+        ignoredActions: ["auth/checkVerificationCode/fulfilled", "auth/verifyPhoneNumber/fulfilled"],
+        ignoredPaths: ["auth"],
       },
     }),
 });
