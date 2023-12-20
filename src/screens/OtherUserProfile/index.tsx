@@ -16,7 +16,6 @@ import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { signOut } from "../../store/auth-actions";
 import { useState } from "react";
 import { AlertDialogBox } from "../../components/AlertDialogBox";
 import { SceneMap, TabView } from "react-native-tab-view";
@@ -35,7 +34,6 @@ export default function OtherUserProfileScreen({ navigation }) {
   const onClose = () => setIsOpen(false);
 
   const signOutHandler = async (): Promise<void> => {
-    dispatch(signOut());
   };
 
   const [index, setIndex] = useState(0);

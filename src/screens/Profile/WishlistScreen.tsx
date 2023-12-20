@@ -17,7 +17,7 @@ import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { VerticalList } from "../../components/shared/VerticalList";
 import { AppDispatch } from "../../store/store";
-import { addBook, removeBook } from "../../store/book-slice";
+import { addBookToList, removeBookFromList } from "../../store/profile-slice";
 
 const DUMMY_BOOKS = [
   {
@@ -60,7 +60,7 @@ export default function WishlistScreen({ navigation }) {
   const dispatch = useDispatch<AppDispatch>();
 
   const wishlistBookIds = useSelector(
-    (state) => state.bookList.wishlistBookIds
+    (state:any) => state.profile.wishlistBookIds
   );
 
   const wishlistBooks = DUMMY_BOOKS.filter((book) =>
@@ -68,12 +68,12 @@ export default function WishlistScreen({ navigation }) {
   );
 
   const removeBookHandler = (id) => {
-    dispatch(removeBook({ id: id, listType: "wishlist" }));
+    dispatch(removeBookFromList({ id: id, listType: "wishlist" }));
   };
 
   const addBookHandler = (book) => {
     dispatch(
-      addBook({
+      addBookToList({
         id: "28694a0f-3da1-471f-bd96-142456e29d72",
         listType: "wishlist",
       })

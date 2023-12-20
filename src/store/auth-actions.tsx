@@ -3,8 +3,10 @@ import auth from "@react-native-firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setPhoneNumber, setToken, setUser } from "./auth-slice";
 
+const API_ENDPOINT = "http://3.76.204.31:5000";
+
 export const verifyPhoneNumber = createAsyncThunk(
-  "userAuth/verifyPhoneNumber",
+  "auth/verifyPhoneNumber",
   async (phoneNumber: string, thunkAPI) => {
     try {
       const confirmationResult = await auth().signInWithPhoneNumber(
@@ -43,7 +45,7 @@ export const verifyPhoneNumber = createAsyncThunk(
 );
 
 export const checkVerificationCode = createAsyncThunk(
-  "userAuth/checkVerificationCode",
+  "auth/checkVerificationCode",
   async (credentials: any, thunkAPI) => {
     try {
       const { confirmationResult, verificationCode } = credentials;
@@ -57,6 +59,8 @@ export const checkVerificationCode = createAsyncThunk(
           firebaseUserId: userCredential.user.uid,
         })
       );
+
+      if(isNewUser) thunkAPI.dispatch(addUserToDatabaseAsync(user.token));
 
       thunkAPI.dispatch(setToken(user.token));
       await AsyncStorage.setItem("authToken", user.token);
@@ -88,15 +92,17 @@ export const checkVerificationCode = createAsyncThunk(
 
 //Check it later on
 export const resendVerificationCode = createAsyncThunk(
-  "userAuth/resendVerificationCode",
-  async (k:any, { rejectWithValue }) => {
+  "auth/resendVerificationCode",
+  async (_, { getState, rejectWithValue }) => {
     try {
-      const { confirmationResult} = k;
+      const state: any = getState();
+      const confirmationResult = state.auth.confirmationResult;
 
+      if (!confirmationResult) {
+        throw new Error("Confirmation result not available.");
+      }
 
-      // Replace the following with your logic to trigger the resend
-      // e.g., if you have a confirmationResult stored in the state, you can use confirmationResult.resend()
-      // const confirmationResult = getConfirmationResultFromState(); // Implement this function
+      // Perform the resend operation
       await confirmationResult.resend();
 
       // For illustration purposes, assume a simple async operation
@@ -107,6 +113,29 @@ export const resendVerificationCode = createAsyncThunk(
     } catch (error) {
       // If there's an error, you can reject the promise with the error
       return rejectWithValue(error);
+    }
+  }
+);
+
+export const addUserToDatabaseAsync = createAsyncThunk(
+  "auth/addUserToDatabase",
+  async (token) => {
+    try {
+      const response = await fetch(`${API_ENDPOINT}/create_user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create user");
+      }
+      console.log("New user is added to database.")
+      return response.json();
+    } catch (error) {
+      throw error;
     }
   }
 );

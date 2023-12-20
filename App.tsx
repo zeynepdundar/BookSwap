@@ -359,10 +359,12 @@ export default function App() {
 
     useEffect(() => {
       async function fetchToken() {
-        const storedToken = await AsyncStorage.getItem("authToken");
-        if (storedToken) {
-          // dispatch(setToken(storedToken));
-        }
+        // const storedToken = await AsyncStorage.getItem("authToken");
+        //  await AsyncStorage.removeItem("authToken");
+
+        // if (storedToken) {
+        //   // dispatch(setToken(storedToken));
+        // }
       }
       fetchToken();
     }, []);

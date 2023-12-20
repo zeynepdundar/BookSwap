@@ -15,10 +15,9 @@ import ChatScreen from "../screens/Messages/ChatScreen";
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
-  const { loading, user, authToken } = useSelector((state: any) => state.userAuth);
-  const isAuthenticated = useSelector((state:any) => state.userAuth.isAuthenticated);
+  const { loading, user } = useSelector((state: any) => state.auth);
+  const isAuthenticated = useSelector((state:any) => state.auth.isAuthenticated);
 
-  console.log("Loading", user, authToken);
   if (loading) {
     // We haven't finished checking for the token yet
     return <LoadingOverlay></LoadingOverlay>;
@@ -32,7 +31,7 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
-        {isAuthenticated? (
+        {isAuthenticated ?(
           <>
             {user.isNewUser && (
               <>
@@ -64,17 +63,17 @@ export default function Navigation() {
                     name="OtherUserProfile"
                     component={OtherUserProfileScreen}
                   />
-                  <Stack.Screen
+                  {/* <Stack.Screen
                     name="BarcodeScanner"
                     component={BarcodeScannerScreen}
-                  />
+                  /> */}
                 </Stack.Group>
-                <Stack.Group screenOptions={{ presentation: "modal" }}>
+                {/* <Stack.Group screenOptions={{ presentation: "modal" }}>
                   <Stack.Screen
                     name="BookSearch"
                     component={BookSearchScreen}
                   ></Stack.Screen>
-                </Stack.Group>
+                </Stack.Group> */}
               </>
             )}
           </>

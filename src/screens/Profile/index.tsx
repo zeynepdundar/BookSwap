@@ -22,6 +22,7 @@ import { AlertDialogBox } from "../../components/AlertDialogBox";
 import ImagePicker from "../../components/ImagePicker";
 import auth from "@react-native-firebase/auth";
 import { signOut } from "../../store/auth-slice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export default function ProfileScreen({ navigation }) {
@@ -43,7 +44,9 @@ export default function ProfileScreen({ navigation }) {
       await auth().signOut();
 
       // Dispatch the logout action to clear user data in Redux state
+      AsyncStorage.removeItem('authToken')
       dispatch(signOut());
+
 
       // Other actions after logout...
     } catch (error) {
