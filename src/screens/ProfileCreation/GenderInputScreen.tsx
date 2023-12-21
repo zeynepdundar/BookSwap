@@ -13,11 +13,18 @@ import {
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import { setProfileData } from "../../store/profile-slice";
 
 export default function GenderInputScreen({ navigation }) {
   const [gender, setGender] = useState<string>("");
 
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+
+
   const pressHandler = () => {
+    dispatch(setProfileData({gender:gender}));
     navigation.navigate("Photo");
   };
 

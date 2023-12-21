@@ -51,4 +51,6 @@
   "my-messages": "My Messages",
   "trading":"Trading",
   "my-notifications":"My Notifications",
+  "accept": "Accept",
+  "decline": "Decline"
 }

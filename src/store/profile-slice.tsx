@@ -15,12 +15,6 @@ const profileSlice = createSlice({
       state.profile = { ...state.profile, ...action.payload };
       console.log("profileSlice:", current(state));
     },
-    // setUserData: (state, action) => {
-    //   const { name, birthdate, gender } = action.payload;
-    //   state.name = name;
-    //   state.birthdate = birthdate;
-    //   state.gender = gender;
-    // },
     clearProfileData: (state) => {
       state.profile = { name: '', birthdate: '', gender:"", image: null, wishlistBookIds:[], libraryBookIds:[] };
     },

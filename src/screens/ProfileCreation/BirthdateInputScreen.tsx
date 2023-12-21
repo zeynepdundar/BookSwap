@@ -22,14 +22,19 @@ export default function BirthdateInputScreen({ navigation }) {
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
+  const currentYear = new Date().getFullYear();
+  const minYear = currentYear - 150; // Assume a reasonable minimum age
+  const maxYear = currentYear;
+
   //@TODO: Convert date input to db date fomrmat, here is one of the dynamoDB approach.
   // You can use the string data type to represent a date or a timestamp. One way to do this is by using ISO 8601 strings, as shown in these examples:
+  
   const mergeDate = () => {
     return `${birthYear + "-" + birthMonth + "-" + birthDay}`;
   };
 
   const pressHandler = () => {
-    dispatch(setProfileData({birthdate:mergeDate}));
+    dispatch(setProfileData({birthdate:mergeDate()}));
     navigation.navigate("Gender");
   };
 
@@ -67,7 +72,7 @@ export default function BirthdateInputScreen({ navigation }) {
               color="black.400"
               textAlign="center"
               px="1"
-              onChangeText={(enteredDay:string) => {
+              onChange={(enteredDay) => {
                 setBirthDay(enteredDay);
               }}
             />
