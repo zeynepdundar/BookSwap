@@ -10,9 +10,18 @@ import {
 import Screen from "../../components/Screen";
 import i18n from "../../i18n";
 import ImagePicker from "../../components/ImagePicker";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import { setProfileData } from "../../store/profile-slice";
+import { useState } from "react";
 
 export default function PhotoInputScreen({ navigation }) {
+  const [image, setImage] = useState<string>("");
+
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+
   const pressHandler = () => {
+    dispatch(setProfileData({image:image}));
     navigation.navigate("Wishlist");
   };
 
@@ -42,7 +51,7 @@ export default function PhotoInputScreen({ navigation }) {
           justifyItems="center"
           alignItems="center"
         >
-          <ImagePicker />
+          <ImagePicker selectedImage={image}/>
         </Center>
         <Spacer />
         <Center p={4}>

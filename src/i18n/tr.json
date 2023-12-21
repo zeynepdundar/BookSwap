@@ -50,5 +50,6 @@
   "my-messages": "Mesajlarım",
   "trading":"Takas",
   "my-notifications":"Bildirimlerim",
-
+  "accept": "Kabul et",
+  "decline": "Reddet"
 }

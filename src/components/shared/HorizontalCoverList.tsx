@@ -16,7 +16,6 @@ import i18n from "../../i18n";
 export const HorizontalCoverList = ({ data, editable = true }) => {
   const importUrl = require("../../assets/images/cover_2.png");
   data.forEach((item) => {
-    console.log(item);
   });
 
   return (
