@@ -24,7 +24,7 @@ export const Screen: React.FC<Props> = ({ scroll, style, children }) => {
       {children}
     </ScrollView>
   ) : (
-    <View style={[styles.container, style]} >{children}</View>
+    <View style={[styles.container, style]} backgroundColor="#fff" >{children}</View>
   );
 };
 export default Screen;

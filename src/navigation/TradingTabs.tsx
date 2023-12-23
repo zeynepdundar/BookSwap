@@ -19,30 +19,32 @@ export default function TradingTabs() {
         justifyContent="center"
         w="100%"
         h={16}
+        mb="-5"
+        bg="#fff"
       >
         <Heading>{i18n.t("trading")}</Heading>
       </HStack>
-
       <Tab.Navigator
         initialRouteName="Request"
         screenOptions={{
           tabBarActiveTintColor: "#001833",
           tabBarInactiveTintColor: "#D8D8D8",
-          tabBarLabelStyle: { fontSize: 14 },
-          tabBarStyle: { backgroundColor: "transparent" },
-          tabBarAllowFontScaling: true,
+          tabBarLabelStyle: { fontSize: 14, textTransform:"none", marginBottom:-2 },
+          tabBarStyle: { backgroundColor: "#fff", paddingTop:-4},
+          tabBarAllowFontScaling: false,
+          tabBarIndicatorStyle:{ backgroundColor: "#7F3DFF"},
         }}
         initialLayout={{ width: width }}
       >
         <Tab.Screen
           name="Request"
           component={RequestScreen}
-          options={{ tabBarLabel: i18n.t("request") }}
+          options={{ tabBarLabel: i18n.t("received") }}
         />
         <Tab.Screen
           name="Propose"
           component={ProposeScreen}
-          options={{ tabBarLabel: i18n.t("propose") }}
+          options={{ tabBarLabel: i18n.t("sent") }}
         />
         <Tab.Screen
           name="History"

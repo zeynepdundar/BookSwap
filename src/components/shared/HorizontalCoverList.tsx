@@ -25,8 +25,8 @@ export const HorizontalCoverList = ({ data, editable = true }) => {
       horizontal
       showsHorizontalScrollIndicator={false}
       renderItem={({ item }) => (
-        <VStack w="110px" justifyContent="center">
-          <Box h={160} pt={2}>
+        <VStack w="110px" justifyContent="center" mr="6px">
+          <Box h={160} pt={2} >
             <AspectRatio
               ratio={{
                 base: 3 / 4,

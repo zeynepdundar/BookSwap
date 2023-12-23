@@ -2,6 +2,7 @@ import {
   AspectRatio,
   Avatar,
   Box,
+  Button,
   Center,
   Divider,
   FlatList,
@@ -12,13 +13,12 @@ import {
   VStack,
 } from "native-base";
 import i18n from "../../i18n";
-import Screen from "../../components/Screen";
 
-const DUMMY_INCOMING = [
+const DUMMY_RECEIVED = [
   {
     id: "1",
-    senderProfile: { name: "Iriana Saliha", profileUrl: "" },
-    createdAt: "2008-04-30T09:38:13.731961",
+    senderProfile: { name: "Lalo Salamanca", profileUrl: "" },
+    createdAt: "1h ago",
     offeredBook: {
       title: "The World of Yesterday",
       author: "Stefan Zweig",
@@ -31,189 +31,168 @@ const DUMMY_INCOMING = [
       coverUrl: "https://covers.openlibrary.org/b/id/13157680-L.jpg",
     },
   },
+  {
+    id: "2",
+    senderProfile: { name: "Lalo Salamanca", profileUrl: "" },
+    createdAt: "1w ago",
+    offeredBook: {
+      title: "The World of Yesterday",
+      author: "Stefan Zweig",
+      coverUrl: "https://covers.openlibrary.org/b/id/6634325-L.jpg",
+    },
+
+    requestedBook: {
+      title: "What is Man?",
+      author: "Mark Twain",
+      coverUrl: "https://covers.openlibrary.org/b/id/6071484-L.jpg",
+    },
+  },
 ];
 export default function RequestScreen({ navigation }) {
   const tra = require("../../assets/images/icon/Icons.png");
   const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
+  const profilePhoto = require("../../assets/images/lalo-salamanca.png");
 
   return (
     <FlatList
       maxWidth="100%"
+      bg="#fff"
       height="75%"
-      data={DUMMY_INCOMING}
+      data={DUMMY_RECEIVED}
       showsVerticalScrollIndicator={false}
       pt="3"
       renderItem={({ item }) => (
-        <Box>
+        <Box pb="6" overflow="hidden" alignItems="center">
           <Flex
             direction="row"
             justifyContent="space-between"
             w="95%"
             alignSelf="center"
             position="relative"
-            bottom="-10"
+            zIndex={9}
           >
             <Flex direction="row" justifyContent="space-between">
               <Avatar source={otherUserImage} size="44" />
-              <Text
+              {/* <Text
                 onPress={() => navigation.navigate("Library")}
                 color="#161719"
                 fontWeight="medium"
-                fontSize="15px"
+                fontSize="14px"
+                mx="1"
               >
                 {"Jesse Pinkman"}
-              </Text>
+              </Text> */}
             </Flex>
             <Flex direction="row" justifyContent="space-between">
-              <Text
-                onPress={() => navigation.navigate("Library")}
-                color="#161719"
-                fontWeight="medium"
-                fontSize="15px"
-              >
-                {"Jesse Pinkman"}
-              </Text>
-              <Avatar source={otherUserImage} size="44" />
+              <VStack>
+                <Text
+                  onPress={() => navigation.navigate("Library")}
+                  color="#161719"
+                  fontWeight="medium"
+                  fontSize="14px"
+                  mx="1"
+                >
+                  {item.senderProfile.name}
+                </Text>
+                <Text
+                  onPress={() => navigation.navigate("Library")}
+                  color="coolGray.400"
+                  fontSize="12px"
+                  top="-5.5"
+                  mx="1"
+                  textAlign={"right"}
+                >
+                  {item.createdAt}
+                </Text>
+              </VStack>
+              <Avatar source={profilePhoto} size="44" />
             </Flex>
           </Flex>
           <Box
-            borderWidth="0.2"
-            borderRadius="25"
-            borderColor="coolGray.600"
             px="7"
             py="4"
             pt="6"
+            pb="2"
+            borderColor="coolGray.200"
             width="90%"
             alignSelf="center"
-            // height={300}
-            // backgroundColor={isSelectedItem(item.id) ? "primary.200" : "white"}
+            maxW="80"
+            shadow={6}
+            top="-14"
+            borderTopColor={"#transparent"}
+            borderTopWidth="0"
+            rounded="24"
+            overflow="hidden"
+            borderWidth="1"
+            _light={{
+              backgroundColor: "warmGray.50",
+            }}
           >
             <VStack>
-              <HStack justifyContent="space-between" width="100%" space={3}>
+              <HStack justifyContent="space-between" width="100%" space={1}>
                 <VStack width="40%">
                   <AspectRatio
                     ratio={{
-                      base: 6 / 9,
+                      base: 40 / 62,
                     }}
-                    width={100}
+                    width={"100%"}
                   >
                     <Image
                       source={{ uri: item.offeredBook.coverUrl }}
-                      alt={`The book cover of ${item.offeredBook.title}`}
+                      alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
                       roundedRight="6"
                     />
                   </AspectRatio>
-
                   <Text color="#000000" fontSize="14" fontWeight={600}>
                     {item.offeredBook.title}
                   </Text>
                   <Text color="#8c8c8c" fontSize="11">
                     by {item.offeredBook.author}
                   </Text>
-                  {/* <Pressable
-                onPress={() => {
-                  {
-                    event.stopPropagation();
-                    navigation.navigate("UserList");
-                  }
-                }}
-                borderColor="#323232"
-                borderWidth="0.5"
-                borderRadius="9"
-                p="1"
-                width="90px"
-              >
-                <Text alignSelf="center" color="#323232" fontSize="12px">
-                  999 Owner
-                </Text>
-              </Pressable> */}
                 </VStack>
                 <Center height={150}>
                   <Image source={tra} alt="Library icon" />
                 </Center>
                 <VStack width="40%">
                   <AspectRatio
-                    alignSelf="center"
                     ratio={{
-                      base: 6 / 9,
+                      base: 40 / 62,
                     }}
-                    width={100}
+                    width={"100%"}
                   >
                     <Image
                       source={{ uri: item.requestedBook.coverUrl }}
-                      alt={`The book cover of ${item.offeredBook.title}`}
+                      alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
                       roundedRight="6"
                     />
                   </AspectRatio>
-
                   <Text color="#000000" fontSize="14" fontWeight={600}>
                     {item.requestedBook.title}
                   </Text>
                   <Text color="#8c8c8c" fontSize="11">
                     by {item.requestedBook.author}
                   </Text>
-                  {/* <Pressable
-                onPress={() => {
-                  {
-                    event.stopPropagation();
-                    navigation.navigate("UserList");
-                  }
-                }}
-                borderColor="#323232"
-                borderWidth="0.5"
-                borderRadius="9"
-                p="1"
-                width="90px"
-              >
-                <Text alignSelf="center" color="#323232" fontSize="12px">
-                  999 Owner
-                </Text>
-              </Pressable> */}
                 </VStack>
-
-                {/* <Box position="absolute" bottom="0" right="0">
-              <Icon
-                m="2"
-                ml="3"
-                size="6"
-                color={isSelectedItem(item.id) ? "primary.50" : "primary.100"}
-                as={
-                  <MaterialIcons
-                    name={
-                      isSelectedItem(item.id) ? "bookmark" : "bookmark-outline"
-                    }
-                  />
-                }
-              />
-            </Box> */}
               </HStack>
-              <Divider my={3} color="#E5E7F3" thickness="1" />
-              <Flex
-                direction="row"
-                justifyContent="space-between"
-                w="84%"
-                alignSelf="center"
-              >
-                <Box justifyContent="center">
-                  <Text
-                    onPress={() => navigation.navigate("Library")}
-                    color="#9395A4"
-                    fontWeight="medium"
-                    fontSize="15px"
-                  >
-                    {i18n.t("decline")}
-                  </Text>
-                </Box>
-                <Box justifyContent="center">
-                  <Text
-                    onPress={() => navigation.navigate("Library")}
-                    color="#9395A4"
-                    fontWeight="medium"
-                    fontSize="15px"
-                  >
-                    {i18n.t("accept")}
-                  </Text>
-                </Box>
+              {/* <Divider my={3} color="#E5E7F3" thickness="1" /> */}
+              <Flex direction="row" justifyContent="space-between" pt="3">
+                <Button
+                  variant="ghost"
+                  _text={{ color: "#9395A4" }}
+                  onPress={() => navigation.goBack()}
+                >
+                  {i18n.t("decline")}
+                </Button>
+                <Divider
+                  color="#E5E7F3"
+                  thickness="1"
+                  orientation="vertical"
+                  height={6}
+                  marginY="2"
+                />
+                <Button variant="ghost" onPress={() => navigation.goBack()}>
+                  {i18n.t("accept")}
+                </Button>
               </Flex>
             </VStack>
           </Box>

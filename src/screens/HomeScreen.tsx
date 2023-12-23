@@ -73,19 +73,13 @@ export default function HomeScreen({ navigation }) {
       </Flex>
       <SearchBar 
         onSearchBook={() => {
-          navigation.navigate("BookSearch", {
-            relatedScreen: "",
-          });
+          navigation.navigate("BookSearch");
         }}
         onScanBarcode={() => {
-          navigation.navigate("BarcodeScanner", {
-            relatedScreen: "Wishlist",
-          });
+          navigation.navigate("BarcodeScanner");
         }}
         onFocus={() => {
-          navigation.navigate("BookSearch", {
-            relatedScreen: "Wishlist",
-          });
+          navigation.navigate("BookSearch");
         }}
       />
       {data.length > 0 && (

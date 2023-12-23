@@ -25,7 +25,7 @@ import { listEditionsIncludeOwningUsers } from "../graphql/custom-queries";
 import { LoadingOverlay } from "../components/LoadingOverlay";
 
 export default function BookSearchScreen({ navigation, route = null }) {
-  const mode = route?.params?.relatedScreen;
+  const mode = route?.params?.relatedScreen ;
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
