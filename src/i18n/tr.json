@@ -51,5 +51,8 @@
   "trading":"Takas",
   "my-notifications":"Bildirimlerim",
   "accept": "Kabul et",
-  "decline": "Reddet"
+  "decline": "Reddet",
+  "received": "Alınan",
+  "sent": "Gönderilen",
+  "take-back": "Geri Al"
 }

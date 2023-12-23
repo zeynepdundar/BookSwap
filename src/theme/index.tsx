@@ -101,6 +101,18 @@ export const theme = extendTheme({
             },
           };
         },
+        ghost: () => {
+          return {
+            bg: "transparent",
+            borderColor: "primary.50",
+            _text: {
+              color: "primary.50",
+            },
+            _pressed: {
+              backgroundColor:"transparent"
+            },
+          };
+        },
       },
     },
     Heading: {

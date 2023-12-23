@@ -52,5 +52,8 @@
   "trading":"Trading",
   "my-notifications":"My Notifications",
   "accept": "Accept",
-  "decline": "Decline"
+  "decline": "Decline",
+  "received": "Received",
+  "sent": "Sent",
+  "take-back": "Take Back"
 }
