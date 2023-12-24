@@ -28,10 +28,21 @@ export default function BarcodeScannerScreen({ navigation }) {
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
 
   const fetchEditions = async (isbn_13) => {
-    const editionData = await API.graphql(
-      graphqlOperation(SearchEditionsByISBN13, { isbn_13: isbn_13 })
-    );
-    return editionData.data.listEditions.items;
+    // const editionData = await API.graphql(
+    //   graphqlOperation(SearchEditionsByISBN13, { isbn_13: isbn_13 })
+    // );
+    // return editionData.data.listEditions.items;
+    try {
+      console.log('Fetching from API...');
+      const response = await fetch(
+        `http://3.76.204.31:4000/editions/${isbn_13}`,
+        );
+        const json = await response.json();
+        console.log('json: ', json);
+      return json.editions;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -83,7 +94,8 @@ export default function BarcodeScannerScreen({ navigation }) {
           id: e.id,
           title: e.title.slice(0, 30),
           coverUrl: coverUrl,
-          author: e.authors[0].name,
+          //author: e.authors[0].name,
+          author: e.authors["name"],
         };
         setEdition(mappedEdition);
       })

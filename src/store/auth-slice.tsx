@@ -23,7 +23,6 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
-      console.log("User:", current(state));
     },
     setVerificationCode: (state, action) => {
       state.verificationCode = action.payload;
@@ -64,6 +63,8 @@ const authSlice = createSlice({
       .addCase(checkVerificationCode.fulfilled, (state) => {
         state.loading = false;
         state.isAuthenticated = true;
+        console.log("User = ", current(state));
+
       })
       .addCase(checkVerificationCode.rejected, (state, action: any) => {
         state.loading = false;

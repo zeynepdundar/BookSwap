@@ -5,11 +5,12 @@ import i18n from "../../i18n";
 import { useState } from "react";
 
 export default function SearchBar({ onSearchBook, onScanBarcode, onFocus }) {
-  const [value, setValue] =useState("");
-
+  const [value, setValue] = useState("");
 
   const searchHandler = (text) => {
-    onSearchBook(text);
+    if (text.length > 5) {
+      onSearchBook(text);
+    }
   };
 
   return (

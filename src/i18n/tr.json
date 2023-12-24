@@ -48,11 +48,15 @@
   "add-books-to-your-wishlist-to-swap-books": "İstediğin kitapları takas etmek için şimdi istek listene kitap ekle",
   "ask-for-swap": "Takas iste",
   "my-messages": "Mesajlarım",
-  "trading":"Takas",
-  "my-notifications":"Bildirimlerim",
+  "trading": "Takas",
+  "my-notifications": "Bildirimlerim",
   "accept": "Kabul et",
   "decline": "Reddet",
   "received": "Alınan",
   "sent": "Gönderilen",
-  "take-back": "Geri Al"
+  "take-back": "Geri Al",
+  "find-favorite-books": "Favori kitaplarını keşfet",
+  "add-books-to-your-lists-to-start-swap": "İstek listene ya da kitaplığına kitap ekleyerek takas etmeye başla!",
+  "no-results-for": "Aradığın kitap ismi için sonuç bulunamadı: ",
+  "we-do-not-have-the-book-yet": "Henüz bu kitap listemizde bulunmuyor."
 }
