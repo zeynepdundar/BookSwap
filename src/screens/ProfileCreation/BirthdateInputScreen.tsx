@@ -28,13 +28,13 @@ export default function BirthdateInputScreen({ navigation }) {
 
   //@TODO: Convert date input to db date fomrmat, here is one of the dynamoDB approach.
   // You can use the string data type to represent a date or a timestamp. One way to do this is by using ISO 8601 strings, as shown in these examples:
-  
+
   const mergeDate = () => {
     return `${birthYear + "-" + birthMonth + "-" + birthDay}`;
   };
 
   const pressHandler = () => {
-    dispatch(setProfileData({birthdate:mergeDate()}));
+    dispatch(setProfileData({ birthdate: mergeDate() }));
     navigation.navigate("Gender");
   };
 
@@ -58,7 +58,7 @@ export default function BirthdateInputScreen({ navigation }) {
           {i18n.t("my-birthdate")}
         </Heading>
         <Center w="100%" h="20" px={8}>
-          <Flex  direction="row" justifyContent="justify" width={190}>
+          <Flex direction="row" justifyContent="justify" width={190}>
             <Input
               value={birthDay}
               variant="underlined"
@@ -72,7 +72,7 @@ export default function BirthdateInputScreen({ navigation }) {
               color="black.400"
               textAlign="center"
               px="1"
-              onChange={(enteredDay) => {
+              onChangeText={(enteredDay:string) => {
                 setBirthDay(enteredDay);
               }}
             />
@@ -90,10 +90,9 @@ export default function BirthdateInputScreen({ navigation }) {
               color="black.400"
               textAlign="center"
               px="1"
-              onChangeText={(enteredMonth:string) => {
+              onChangeText={(enteredMonth: string) => {
                 setBirthMonth(enteredMonth);
               }}
-          
             />
             <Spacer />
             <Input
@@ -109,7 +108,7 @@ export default function BirthdateInputScreen({ navigation }) {
               color="black.400"
               textAlign="center"
               px="0"
-              onChangeText={(enteredYear:string)=> {
+              onChangeText={(enteredYear: string) => {
                 setBirthYear(enteredYear);
               }}
             />
