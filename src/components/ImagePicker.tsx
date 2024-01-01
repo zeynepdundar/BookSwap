@@ -70,9 +70,41 @@ function ImagePicker(selectedImage) {
     });
 
     if (!result.canceled) {
+      console.log("resul.uri: ", result.assets[0].uri);
       setPickedImage(result.assets[0].uri);
+
+      // send the image file to backend api
+      uploadImageToFlask(result.assets[0].uri);
+
     }
   }
+
+  const uploadImageToFlask = async (imageURI) => {
+    try {
+      let formData = new FormData();
+      formData.append('file', {
+        uri: imageURI,
+        name: 'image.jpg', // Replace with the desired filename
+        type: 'image/jpeg', // Replace with the correct image MIME type
+      });
+  
+      const response = await fetch('http://localhost:5000/upload', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      if (response.ok) {
+        console.log('Image uploaded successfully!');
+      } else {
+        console.log('Image upload failed.');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  };
 
   return (
     <>

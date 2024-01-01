@@ -20,6 +20,10 @@ export default function VerificationCode({ route }) {
       await confirmation.confirm(code);
       dispatch(userAuth(user));
       console.log("Confirmed Successfully!");
+      getIdToken();
+      // Temporarily I will call the store-new-user service from here
+      // To store the user to EC2 -> store-new-user -> PostgreSQL
+      // 
     } catch (error) {
       console.log("Error: ", error.code);
       switch (error.code) {
@@ -50,8 +54,19 @@ export default function VerificationCode({ route }) {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
 
+  const getIdToken = async () => {
+    const token = await auth().currentUser.getIdToken();
+    console.log("id token: ", token);
+  }
+
   // Handle user state changes
   function onAuthStateChanged(user) {
+    console.log("Executing function: onAuthStateChanged()");
+    //console.log("user: ", user);
+    
+    // This function is triggered after sending code to a phone number
+    // And triggered again when the code is confirmed
+    // The user is added to Firebase Authentication Users list just after the confirmation
     setUser(user);
     if (initializing) setInitializing(false);
   }

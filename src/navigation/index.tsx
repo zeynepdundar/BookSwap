@@ -15,6 +15,8 @@ import OtherProfileScreen from "../screens/OtherProfile/OtherProfileScreen";
 import BarcodeScannerScreen from "../screens/BarcodeScannerScreen";
 import ChatScreen from "../screens/ChatScreen";
 import MessagesScreen from "../screens/MessagesScreen";
+import BookSearchScreen from "../screens/BookSearchScreen";
+import PhotoInputScreen from "../screens/ProfileCreation/PhotoInputScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -61,10 +63,12 @@ export default function Navigation() {
           </>
         ) : (
           <>
+            <Stack.Screen name="AuthenticationFlow" component={AuthStack} />
+            <Stack.Screen name="PhotoInput" component={PhotoInputScreen} />
+            <Stack.Screen name="BookSearch" component={BookSearchScreen} />
+            <Stack.Screen name="BarcodeScanner" component={BarcodeScannerScreen} />
             <Stack.Screen name="Messages" component={MessagesScreen} />
             <Stack.Screen name="Chat" component={ChatScreen} />
-            <Stack.Screen name="BarcodeScanner" component={BarcodeScannerScreen} />
-            <Stack.Screen name="AuthenticationFlow" component={AuthStack} />
           </>
         )}
       </Stack.Navigator>
