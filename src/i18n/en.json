@@ -58,6 +58,8 @@
   "take-back": "Take Back",
   "find-favorite-books": "Find favorite books",
   "add-books-to-your-lists-to-start-swap":"Add books to your library and wishlist to start swap",
+  "add-books-to-your-wishlist-to-start-swap":"Add books to your wishlist to start swap",
+  "add-books-to-your-library-to-start-swap":"Add books to your library to start swap",
   "no-results-for": "No Results for",
   "we-do-not-have-the-book-yet":"We don’t have the book yet"
 }

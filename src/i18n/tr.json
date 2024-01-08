@@ -57,6 +57,8 @@
   "take-back": "Geri Al",
   "find-favorite-books": "Favori kitaplarını keşfet",
   "add-books-to-your-lists-to-start-swap": "İstek listene ya da kitaplığına kitap ekleyerek takas etmeye başla!",
+  "add-books-to-your-wishlist-to-start-swap":"İstek listene kitap ekleyerek takas etmeye başla!",
+  "add-books-to-your-library-to-start-swap":"Kitaplığına kitap ekleyerek takas etmeye başla!",
   "no-results-for": "Aradığın kitap ismi için sonuç bulunamadı: ",
   "we-do-not-have-the-book-yet": "Henüz bu kitap listemizde bulunmuyor."
 }

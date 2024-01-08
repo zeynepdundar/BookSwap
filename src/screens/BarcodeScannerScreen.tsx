@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { MaterialIcons } from "@expo/vector-icons";
-import { API, graphqlOperation } from "aws-amplify";
 import { StyleSheet, Dimensions } from "react-native";
-import { SearchEditionsByISBN13 } from "../graphql/custom-queries";
 import {
   Box,
   Center,
@@ -20,25 +18,23 @@ import {
 } from "native-base";
 import i18n from "../i18n";
 
-export default function BarcodeScannerScreen({ navigation }) {
+export default function BarcodeScannerScreen({ navigation, route = null }) {
+  const mode = route?.params?.relatedScreen;
+
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [edition, setEdition] = useState(null);
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
 
   const fetchEditions = async (isbn_13) => {
-    // const editionData = await API.graphql(
-    //   graphqlOperation(SearchEditionsByISBN13, { isbn_13: isbn_13 })
-    // );
-    // return editionData.data.listEditions.items;
     try {
-      console.log('Fetching from API...');
+      console.log("Fetching from API...");
       const response = await fetch(
-        `http://3.76.204.31:4000/editions/${isbn_13}`,
-        );
-        const json = await response.json();
-        console.log('json: ', json);
+        `http://3.76.204.31:4000/editions/${isbn_13}`
+      );
+      const json = await response.json();
+      console.log("json: ", json, isbn_13);
       return json.editions;
     } catch (error) {
       console.error(error);
@@ -117,7 +113,6 @@ export default function BarcodeScannerScreen({ navigation }) {
     setIsActionSheetOpen(true);
     setEdition(null);
   };
-
 
   const { width, height } = Dimensions.get("window");
 
@@ -229,7 +224,10 @@ export default function BarcodeScannerScreen({ navigation }) {
           </Alert>
         </Center>
       )}
-      <Actionsheet isOpen={isActionSheetOpen} onClose={()=>setIsActionSheetOpen(false)}>
+      <Actionsheet
+        isOpen={isActionSheetOpen}
+        onClose={() => setIsActionSheetOpen(false)}
+      >
         <Actionsheet.Content>
           <Actionsheet.Item>{i18n.t("the-book-added")}</Actionsheet.Item>
         </Actionsheet.Content>

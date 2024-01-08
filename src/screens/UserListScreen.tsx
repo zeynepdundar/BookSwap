@@ -2,17 +2,11 @@ import { useEffect, useState } from "react";
 import {
   Button,
   Heading,
-  Image,
   FlatList,
-  Box,
   Text,
   VStack,
   HStack,
-  Flex,
-  AspectRatio,
-  Pressable,
   Spacer,
-  WarningTwoIcon,
   Center,
   ArrowBackIcon,
   Divider,
@@ -20,10 +14,7 @@ import {
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
-import SearchBar from "../components/shared/SearchBar";
-
-import { API, graphqlOperation } from "aws-amplify";
-import { LoadingOverlay } from "../components/LoadingOverlay";
+import { useRoute } from "@react-navigation/native";
 
 const DUMMY_USERS = [
   {
@@ -58,9 +49,11 @@ const DUMMY_USERS = [
 ];
 
 export default function UserListScreen({ navigation }) {
-  const importUrl = require("../assets/images/cover_1.png");
-  const wishlistIcon = require("../assets/images/icon/add-wishlist.png");
-  const libraryIcon = require("../assets/images/icon/add-library.png");
+  const route = useRoute();
+  // const usersTemp = route?.params?.users;
+  console.log("route", route.params);
+    const importUrl = require("../assets/images/cover_1.png");
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
@@ -69,49 +62,14 @@ export default function UserListScreen({ navigation }) {
   const [libraryItems, setLibraryItem] = useState<any>([]);
 
   useEffect(() => {
-    // let fetchedusers = [];
-    // const fetchusers = async () => {
-    //   const editionData = await API.graphql(
-    //     graphqlOperation(listusersIncludeOwningUsers)
-    //   );
-    //   fetchedusers = editionData.data.listusers.items;
-    // };
-    // fetchusers()
-    //   .then(() => {
-    //     const mappedusers = fetchedusers.map((x) => {
-    //       let photoUrl;
-    //       if (x.isbn_13 && x.isbn_13 > 0) {
-    //         const isbn_13 = x.isbn_13[0];
-    //         //prepare uri
-    //         const key = "isbn";
-    //         const value = isbn_13;
-    //         const size = "M";
-    //         photoUrl = `https://covers.openlibrary.org/b/${key}/${value}-${size}.jpg`;
-    //       }
-    //       return {
-    //         id: x.id,
-    //         userName: x.userName.slice(0, 20),
-    //         publisher: x.publishers[0],
-    //         photoUrl: photoUrl,
-    //         author: x.authors[0].name,
-    //       };
-    //     });
 
-    //     setUsers(mappedusers);
-    //     setLoading(false);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //     setError(true);
-    //     setLoading(false);
-    //   });
-    setUsers(DUMMY_USERS);
+    setUsers(usersTemp);
   }, []);
 
   const addLibraryItemHandler = (selectedLibraryItem: any) => {
     setLibraryItem((currentLibraryItems) => [
       ...currentLibraryItems,
-      { id: selectedLibraryItem.id, userName: selectedLibraryItem.userName },
+      { id: selectedLibraryItem.id, userName: selectedLibraryItem.name },
     ]);
   };
 
@@ -179,7 +137,7 @@ export default function UserListScreen({ navigation }) {
                     alignSelf="center"
                     width="105px"
                   >
-                    {item.userName}
+                    {item.name}
                   </Text>
 
                   <Spacer />

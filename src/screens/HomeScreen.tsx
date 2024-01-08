@@ -71,17 +71,23 @@ export default function HomeScreen({ navigation }) {
           <Image source={jesse} alt="Notification" size={10} />
         </Pressable>
       </Flex>
-      <SearchBar 
-        onSearchBook={() => {
-          navigation.navigate("BookSearch");
-        }}
-        onScanBarcode={() => {
-          navigation.navigate("BarcodeScanner");
-        }}
-        onFocus={() => {
-          navigation.navigate("BookSearch");
-        }}
-      />
+      <SearchBar
+            onSearchBook={() => {
+              navigation.navigate("BookSearch", {
+                relatedScreen: "Home",
+              });
+            }}
+            onScanBarcode={() => {
+              navigation.navigate("BarcodeScanner", {
+                relatedScreen: "Home",
+              });
+            }}
+            onFocus={() => {
+              navigation.navigate("BookSearch", {
+                relatedScreen: "Home",
+              });
+            }}
+          />
       {data.length > 0 && (
         <Box mt="6">
           <Text color="black.400" fontWeight="700">

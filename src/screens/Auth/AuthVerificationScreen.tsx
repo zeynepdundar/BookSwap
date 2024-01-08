@@ -53,7 +53,7 @@ export default function AuthVerificationScreen({ navigation }) {
       dispatch(resendVerificationCode());
     } else {
       // Handle the case where confirmationResult is not available
-      console.error('Confirmation result is not available.');
+      console.error("Confirmation result is not available.");
     }
   };
 
@@ -146,6 +146,7 @@ export default function AuthVerificationScreen({ navigation }) {
           <Center>
             <Input
               variant="underlined"
+              keyboardType="numeric" 
               maxLength={6}
               width={200}
               fontSize={20}
@@ -153,15 +154,19 @@ export default function AuthVerificationScreen({ navigation }) {
               borderBottomColor="black.300"
               color="black.300"
               textAlign="center"
-              keyboardType="numeric"
-              onChangeText={(value: string) =>
-                dispatch(setVerificationCode(value))
-              }
+              onChangeText={(enteredText) => {
+                const numericValue = enteredText.replace(/[^0-9]/g, "");
+                dispatch(setVerificationCode(numericValue));
+              }}
             />
             <Center>
-              <Text color="black.300" mt="5"              onPress={() => {
+              <Text
+                color="black.300"
+                mt="5"
+                onPress={() => {
                   handleResendVerificationCode();
-                }}>
+                }}
+              >
                 {i18n.t("resend-code-text-1")}
                 <Text color="primary.50">{i18n.t("resend-code-text-2")}</Text>
               </Text>

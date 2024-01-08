@@ -3,7 +3,7 @@ import auth from "@react-native-firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setPhoneNumber, setToken, setUser } from "./auth-slice";
 
-const API_ENDPOINT = "http://3.76.204.31:5000";
+const API_ENDPOINT = "http://localhost:5001";
 
 export const verifyPhoneNumber = createAsyncThunk(
   "auth/verifyPhoneNumber",
@@ -119,7 +119,8 @@ export const resendVerificationCode = createAsyncThunk(
 
 export const addUserToDatabaseAsync = createAsyncThunk(
   "auth/addUserToDatabase",
-  async (token) => {
+  async (token:string) => {
+
     try {
       const response = await fetch(`${API_ENDPOINT}/create_user`, {
         method: "POST",
@@ -129,12 +130,15 @@ export const addUserToDatabaseAsync = createAsyncThunk(
         },
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to create user");
-      }
-      console.log("New user is added to database.")
-      return response.json();
+      const result = await response.json();
+
+      // if (!response.ok) {
+      //   throw new Error("Failed to create user");
+      // }
+      console.log("New user is added to database with", result.user_id)
+      return result;
     } catch (error) {
+      console.log(error.message)
       throw error;
     }
   }

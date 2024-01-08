@@ -115,19 +115,14 @@ export default function ProposeScreen({ navigation }) {
             pt="6"
             pb="2"
             borderColor="coolGray.200"
+            shadow="2"
             width="90%"
             alignSelf="center"
             maxW="80"
-            shadow={6}
-            top="-14"
-            borderTopColor={"#transparent"}
-            borderTopWidth="0"
+            top="-12"
             rounded="24"
             overflow="hidden"
-            borderWidth="1"
-            _light={{
-              backgroundColor: "warmGray.50",
-            }}
+            borderWidth="0.5"
           >
             <VStack>
               <HStack justifyContent="space-between" width="100%" space={1}>
@@ -176,7 +171,7 @@ export default function ProposeScreen({ navigation }) {
                 </VStack>
               </HStack>
               {/* <Divider my={3} color="#E5E7F3" thickness="1" /> */}
-              <Flex direction="row" justifyContent="" pt="3">
+              <Flex direction="row" marginLeft="auto" pt="3">
                 <Button variant="outline" onPress={() => navigation.goBack()}>
                   {i18n.t("take-back")}
                 </Button>
