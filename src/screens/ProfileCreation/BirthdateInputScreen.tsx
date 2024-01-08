@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   Center,
@@ -16,9 +16,13 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 import { setProfileData } from "../../store/profile-slice";
 
 export default function BirthdateInputScreen({ navigation }) {
-  const [birthDay, setBirthDay] = useState<any>();
-  const [birthMonth, setBirthMonth] = useState<any>();
-  const [birthYear, setBirthYear] = useState<any>();
+  const [birthDay, setBirthDay] = useState<any>('');
+  const [birthMonth, setBirthMonth] = useState<any>('');
+  const [birthYear, setBirthYear] = useState<any>('');
+
+  const dayInputRef = useRef(null);
+  const monthInputRef = useRef(null);
+  const yearInputRef = useRef(null);
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
@@ -26,12 +30,20 @@ export default function BirthdateInputScreen({ navigation }) {
   const minYear = currentYear - 150; // Assume a reasonable minimum age
   const maxYear = currentYear;
 
-  //@TODO: Convert date input to db date fomrmat, here is one of the dynamoDB approach.
-  // You can use the string data type to represent a date or a timestamp. One way to do this is by using ISO 8601 strings, as shown in these examples:
+  const mergeDate = () => `${birthYear}-${birthMonth}-${birthDay}`;
 
-  const mergeDate = () => {
-    return `${birthYear + "-" + birthMonth + "-" + birthDay}`;
-  };
+  useEffect(() => {
+    if (birthDay.length === 2) {
+      monthInputRef.current?.focus();
+    }
+  }, [birthDay]);
+
+  useEffect(() => {
+    if (birthMonth.length === 2) {
+      yearInputRef.current?.focus();
+    }
+  }, [birthMonth]);
+
 
   const pressHandler = () => {
     dispatch(setProfileData({ birthdate: mergeDate() }));
@@ -59,59 +71,34 @@ export default function BirthdateInputScreen({ navigation }) {
         </Heading>
         <Center w="100%" h="20" px={8}>
           <Flex direction="row" justifyContent="justify" width={190}>
-            <Input
-              value={birthDay}
-              variant="underlined"
-              keyboardType="numeric"
-              maxLength={2}
-              width={45}
-              fontSize={20}
-              borderTopColor="none"
-              placeholder="DD"
-              borderBottomColor="black.400"
-              color="black.400"
-              textAlign="center"
-              px="1"
-              onChangeText={(enteredDay:string) => {
-                setBirthDay(enteredDay);
-              }}
-            />
-            <Spacer />
-            <Input
-              value={birthMonth}
-              variant="underlined"
-              keyboardType="numeric"
-              maxLength={2}
-              width={45}
-              fontSize={20}
-              borderTopColor="none"
-              borderBottomColor="black.400"
-              placeholder="MM"
-              color="black.400"
-              textAlign="center"
-              px="1"
-              onChangeText={(enteredMonth: string) => {
-                setBirthMonth(enteredMonth);
-              }}
-            />
-            <Spacer />
-            <Input
-              value={birthYear}
-              variant="underlined"
-              keyboardType="numeric"
-              maxLength={4}
-              width={82}
-              fontSize={20}
-              borderTopColor="none"
-              borderBottomColor="black.400"
-              placeholder="YYYY"
-              color="black.400"
-              textAlign="center"
-              px="0"
-              onChangeText={(enteredYear: string) => {
-                setBirthYear(enteredYear);
-              }}
-            />
+            {[
+            { state: birthDay, setState: setBirthDay, ref: dayInputRef, placeholder: "DD" },
+            { state: birthMonth, setState: setBirthMonth, ref: monthInputRef, placeholder: "MM" },
+            { state: birthYear, setState: setBirthYear, ref: yearInputRef, placeholder: "YYYY" },
+          ].map((input, index) => (
+              <React.Fragment key={index}>
+                <Input
+                  value={input.state}
+                  variant="underlined"
+                  keyboardType="numeric" // Set keyboardType to "numeric"
+                  maxLength={index === 2 ? 4 : 2}
+                  width={index === 2 ? 82 : 45}
+                  fontSize={20}
+                  borderTopColor="none"
+                  borderBottomColor="black.400"
+                  placeholder={input.placeholder}
+                  color="black.400"
+                  textAlign="center"
+                  px={index === 2 ? 0 : 1}
+                  onChangeText={(enteredText) => {
+                    const numericValue = enteredText.replace(/[^0-9]/g, '');
+                    input.setState(numericValue);
+                  }}
+                  ref={input.ref}
+                />
+                {index < 2 && <Spacer />}
+              </React.Fragment>
+            ))}
           </Flex>
         </Center>
         <Spacer />

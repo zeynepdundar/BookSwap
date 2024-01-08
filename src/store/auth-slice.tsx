@@ -9,7 +9,7 @@ import {
 const initialState = {
   loading: false,
   error: null,
-  user: { isNewUser: null, firebaseUserId: null },
+  user: { id:null, isNewUser: null, firebaseUserId: null },
   authToken: null,
   phoneNumber: "",
   verificationCode: "",
@@ -33,6 +33,9 @@ const authSlice = createSlice({
     setToken: (state, action) => {
       state.authToken = action.payload;
       state.isAuthenticated = true;
+    },
+    setIsNewUser: (state, action) => {
+      state.user.isNewUser = action.payload;
     },
     signOut: (state) => {
       state.user = null;
@@ -63,15 +66,12 @@ const authSlice = createSlice({
       .addCase(checkVerificationCode.fulfilled, (state) => {
         state.loading = false;
         state.isAuthenticated = true;
-        console.log("User = ", current(state));
 
       })
       .addCase(checkVerificationCode.rejected, (state, action: any) => {
         state.loading = false;
         state.error = action.payload;
-      })
-
-      
+      }) 
 
       //Resend verification code
       .addCase(resendVerificationCode.fulfilled, (state, action) => {
@@ -88,7 +88,8 @@ const authSlice = createSlice({
       })
       .addCase(addUserToDatabaseAsync.fulfilled, (state, action) => {
         state.loading = false;
-        // state.userData = action.payload;
+        state.user.id = action.payload.user_id;
+
       })
       .addCase(addUserToDatabaseAsync.rejected, (state, action) => {
         state.loading = false;
@@ -103,6 +104,7 @@ export const {
   setUser,
   setToken,
   signOut,
+  setIsNewUser
 } = authSlice.actions;
 
 export default authSlice.reducer;

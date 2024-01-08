@@ -17,10 +17,6 @@ export default function ProfileStack() {
       <Stack.Screen name="Profile" component={ProfileScreen}></Stack.Screen>
       <Stack.Screen name="Wishlist" component={WishlistScreen}></Stack.Screen>
       <Stack.Screen name="Library" component={LibraryScreen}></Stack.Screen>
-      <Stack.Screen
-        name="BookSearch"
-        component={BookSearchScreen}
-      ></Stack.Screen>
     </Stack.Navigator>
   );
 }

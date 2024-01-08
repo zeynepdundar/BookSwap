@@ -8,37 +8,50 @@ import {
   Text,
   Box,
   VStack,
-  Badge,
-  CloseIcon,
-  Image,
-  AspectRatio,
-  FlatList,
   Spacer,
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import SearchBar from "../../components/shared/SearchBar";
+import { HorizontalCoverList } from "../../components/shared/HorizontalCoverList";
+import { useDispatch, useSelector } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import { setProfileData } from "../../store/profile-slice";
+import { updateUserProfileAsync } from "../../store/profile-actions";
+import { LoadingOverlay } from "../../components/LoadingOverlay";
+
 
 export default function LibraryInputScreen({ navigation }) {
-  const importUrl = require("../../assets/images/cover_1.png");
+  const [selectedBooks, setSelectedBooks] = useState([]);
 
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const { profile, loading } = useSelector((state: any) => state.profile);
 
-  const data = [
-    // {
-    //   id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    //   coverUrl:
-    //     "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    // },
-  ];
-
-
-  const pressHandler = () => {
+  const handleAddToLibrary = (data) => {
+    setSelectedBooks(data);
   };
 
+  const handleRemoveFromLibrary = (id) => {
+    setSelectedBooks((currentLibraryItems) =>
+      currentLibraryItems.filter((item) => item.id !== id)
+    );
+  };
+  const pressHandler = () => {
+    console.log(selectedBooks);
+    const idsArray = selectedBooks.map((item) => item.id);
+    dispatch(setProfileData({ libraryBookIds: idsArray }));
+    console.log("Library",profile)
+    dispatch(updateUserProfileAsync(profile));
+    console.log(profile, loading);
+  };
+  if (loading) {
+    // We haven't finished checking for the token yet
+    return <LoadingOverlay></LoadingOverlay>
+  }
   return (
     <Screen>
-      <VStack space={1} alignItems="center"  height={"50%"}>
-        <Center w="100%" height="20" justifyContent="space-between">
+      <VStack space={1} alignItems="center" height={"50%"}>
+        <Center w="100%" h="20" justifyContent="space-between">
           <Flex direction="row" justifyContent="space-between" w="100%" h="10">
             <Button
               backgroundColor="transparent"
@@ -66,53 +79,35 @@ export default function LibraryInputScreen({ navigation }) {
           {i18n.t("add-books-to-library")}
         </Heading>
         <Center w="100%" h="20" px={8}>
-        <SearchBar
+          <SearchBar
             onSearchBook={() => {
-              navigation.navigate("BookSearch", {
+              navigation.navigate("BookSearchOnCreation", {
                 relatedScreen: "Library",
+                onDonePress: handleAddToLibrary,
               });
             }}
             onScanBarcode={() => {
-              navigation.navigate("BarcodeScanner", {
+              navigation.navigate("BarcodeScannerOnProfileCreation", {
                 relatedScreen: "Library",
               });
             }}
             onFocus={() => {
-              navigation.navigate("BookSearch", {
+              navigation.navigate("BookSearchOnCreation", {
                 relatedScreen: "Library",
+                onDonePress: handleAddToLibrary,
               });
             }}
           />
         </Center>
-        {data.length > 0 ? (
-          <Center w="100%" height="180px" px={6}>
-            <FlatList
-              data={data}
-              alignItems="center"
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <Box w="100px" h="110px" justifyContent="center">
-                  <AspectRatio ratio={4 / 3}>
-                    <Image source={importUrl} alt="image base" />
-                  </AspectRatio>
-                  <Badge
-                    rounded="100"
-                    w="7"
-                    h="7"
-                    bg="#F2F2F2"
-                    position="absolute"
-                    right={0}
-                    top={0}
-                  >
-                    <CloseIcon fontSize={10} color="coolGray.800" />
-                  </Badge>
-                </Box>
-              )}
-              keyExtractor={(item) => item.id}
+        {selectedBooks.length > 0 && (
+          <Center w="100%" px={6}>
+            <HorizontalCoverList
+              data={selectedBooks}
+              removeBook={handleRemoveFromLibrary}
             />
           </Center>
-        ): <Spacer/>}
+        )}
+        <Spacer />
         <Center p={4}>
           <Button variant="primary" onPress={pressHandler}>
             {i18n.t("continue")}

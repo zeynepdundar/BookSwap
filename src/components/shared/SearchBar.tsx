@@ -7,22 +7,23 @@ import { useState } from "react";
 export default function SearchBar({ onSearchBook, onScanBarcode, onFocus }) {
   const [value, setValue] = useState("");
 
-  const searchHandler = (text) => {
-    if (text.length > 5) {
-      onSearchBook(text);
-    }
-  };
+  // const searchHandler = (text) => {
+  //   if (text.length > 5) {
+  //     onSearchBook(text);
+  //   }
+  // };
 
   return (
     <Center>
       <Input
         placeholder={i18n.t("search-book-by-title")}
         width="100%"
+        value={value}
         borderRadius="6"
         py="3"
         px="1"
         fontSize="14"
-        onChangeText={(text) => searchHandler(text)}
+        onChangeText={onSearchBook}
         onFocus={onFocus}
         _focus={{
           borderColor: "#EFEFEF",

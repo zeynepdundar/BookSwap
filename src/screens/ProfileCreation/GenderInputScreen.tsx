@@ -58,7 +58,7 @@ export default function GenderInputScreen({ navigation }) {
         <Heading w="100%" h="8" px={6}>
           {i18n.t("my-gender")}
         </Heading>
-        <Center w="100%" h="40" px={8}>
+        <Center w="100%" h="40" px={8} pt="8">
           <Radio.Group
             name="genderRadioGroup"
             defaultValue=""
@@ -68,55 +68,39 @@ export default function GenderInputScreen({ navigation }) {
               setGender(nextValue);
             }}
           >
-            <Box
-              width={{
-                base: 250,
-                lg: 200,
-              }}
-              height={60}
-              alignItems="center"
-              rounded="4px"
-              borderColor={gender === "woman" ? "primary.50" : "black.400"}
-              borderWidth={gender === "woman" ? "2" : "1"}
-              py="12px"
-              mb={5}
-            >
-              <Radio
-                value="woman"
-                my="2"
-                _text={{
-                  color: gender === "woman" ? "primary.50" : "black.400",
-                  textTransform: "uppercase",
-                  fontWeight: "500",
+            {["f", "m"].map((value) => (
+              <Box
+                key={value}
+                width={{
+                  base: 250,
+                  lg: 200,
                 }}
+                height={60}
+                alignItems="center"
+                rounded="4px"
+                borderColor={gender === value ? "primary.50" : "black.400"}
+                borderWidth={gender === value ? "2" : "1"}
+                py="12px"
+                mb={5}
               >
-                {i18n.t("woman")}
-              </Radio>
-            </Box>
-            <Box
-              width={{
-                base: 250,
-                lg: 200,
-              }}
-              height={60}
-              alignItems="center"
-              rounded="4px"
-              borderColor={gender === "man" ? "primary.50" : "black.400"}
-              borderWidth={gender === "man" ? "2" : "1"}
-              py="12px"
-            >
-              <Radio
-                value="man"
-                my="2"
-                _text={{
-                  color: gender === "man" ? "primary.50" : "black.400",
-                  textTransform: "uppercase",
-                  fontWeight: "500",
-                }}
-              >
-                {i18n.t("man")}
-              </Radio>
-            </Box>
+                <Radio
+                  value={value}
+                  my="2"
+                  ml="-5"
+                  borderWidth={0} 
+                  bg="transparent"
+                  icon={<Box boxSize={5} />}
+                  colorScheme="primary"
+                  _text={{
+                    color: gender === value ? "primary.50" : "black.400",
+                    textTransform: "uppercase",
+                    fontWeight: "500",
+                  }}
+                >
+                  {value === "f" ?  i18n.t("woman"): i18n.t("man")}
+                </Radio>
+              </Box>
+            ))}
           </Radio.Group>
         </Center>
         <Spacer />

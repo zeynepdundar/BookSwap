@@ -1,10 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import authSlice from "./auth-slice";
-import profileSlice from "./profile-slice";
+import rootReducer from "./rootReducer";
 
 const store = configureStore({
-  reducer: { auth: authSlice, profile: profileSlice },
+  reducer: rootReducer,
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

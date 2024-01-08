@@ -1,10 +1,18 @@
 import { createSlice, current } from "@reduxjs/toolkit";
-
+import { updateUserProfileAsync } from "./profile-actions";
 
 const initialState = {
   loading: false,
   error: null,
-  profile: { name: "", birthdate: "", gender: "", image: null, wishlistBookIds:[], libraryBookIds:[]},
+  profile: {
+    id:null,
+    name: "",
+    birthdate: "",
+    gender: "",
+    languagePreference: "",
+    wishlistBookIds: [],
+    libraryBookIds: [],
+  },
 };
 
 const profileSlice = createSlice({
@@ -16,7 +24,15 @@ const profileSlice = createSlice({
       console.log("profileSlice:", current(state));
     },
     clearProfileData: (state) => {
-      state.profile = { name: '', birthdate: '', gender:"", image: null, wishlistBookIds:[], libraryBookIds:[] };
+      state.profile = {
+        id:null,
+        name: "",
+        birthdate: "",
+        gender: "",
+        languagePreference: "",
+        wishlistBookIds: [],
+        libraryBookIds: [],
+      };
     },
     addBookToList: (state, action) => {
       if (action.payload.listType === "wishlist")
@@ -38,9 +54,25 @@ const profileSlice = createSlice({
         );
     },
   },
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    builder
+      //Add authenticated user to db
+      .addCase(updateUserProfileAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserProfileAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.userData = action.payload;
+      })
+      .addCase(updateUserProfileAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error;
+      });
+  },
 });
 
-export const { setProfileData, addBookToList, removeBookFromList } = profileSlice.actions;
+export const { setProfileData, addBookToList, removeBookFromList } =
+  profileSlice.actions;
 
 export default profileSlice.reducer;

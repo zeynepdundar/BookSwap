@@ -1,22 +1,16 @@
-import { useState } from "react";
 import {
-  Center,
   FlatList,
   Box,
   AspectRatio,
   Image,
   Badge,
   CloseIcon,
-  HStack,
   VStack,
   Text,
+  Pressable,
 } from "native-base";
-import i18n from "../../i18n";
 
-export const HorizontalCoverList = ({ data, editable = true }) => {
-  const importUrl = require("../../assets/images/cover_2.png");
-  data.forEach((item) => {
-  });
+export const HorizontalCoverList = ({ data, removeBook }) => {
 
   return (
     <FlatList
@@ -24,35 +18,42 @@ export const HorizontalCoverList = ({ data, editable = true }) => {
       data={data}
       horizontal
       showsHorizontalScrollIndicator={false}
+      extraData={data}
       renderItem={({ item }) => (
         <VStack w="110px" justifyContent="center" mr="6px">
-          <Box h={160} pt={2} >
+          <Box pt={2} h="150" w="98">
             <AspectRatio
               ratio={{
-                base: 3 / 4,
-                md: 9 / 10,
+                base: 41 / 62,
               }}
+              h="95%"
             >
-              <Image source={importUrl} alt="image base" />
+              <Image
+                source={{ uri: item.coverUrl }}
+                alt={`Cover of ${item.title} by ${item.author}`}
+              />
             </AspectRatio>
-            {editable && (
-              <Badge
-                rounded="100"
-                w="7"
-                h="7"
-                bg="#F2F2F2"
+            {removeBook && (
+              <Pressable
+                onPress={() => removeBook(item.id)}
                 position="absolute"
                 right={0}
                 top={0}
               >
-                <CloseIcon fontSize={10} color="coolGray.800" />
-              </Badge>
+                <Badge rounded="100" w="7" h="7" bg="#F2F2F2">
+                  <CloseIcon fontSize={10} color="coolGray.800" />
+                </Badge>
+              </Pressable>
             )}
           </Box>
-          {!editable && (
+          {!removeBook && (
             <>
-              <Text p={1} bold fontSize={11}>{item.title}</Text>
-              <Text px={1} fontSize={10} color="#838384">by {item.author}</Text>
+              <Text p={1} bold fontSize={11}>
+                {item.title}
+              </Text>
+              <Text px={1} fontSize={10} color="#838384">
+                by {item.author}
+              </Text>
             </>
           )}
         </VStack>

@@ -115,18 +115,13 @@ export default function RequestScreen({ navigation }) {
             pb="2"
             borderColor="coolGray.200"
             width="90%"
+            shadow="2"
             alignSelf="center"
             maxW="80"
-            shadow={6}
-            top="-14"
-            borderTopColor={"#transparent"}
-            borderTopWidth="0"
+            top="-12"
             rounded="24"
             overflow="hidden"
-            borderWidth="1"
-            _light={{
-              backgroundColor: "warmGray.50",
-            }}
+            borderWidth="0.5"
           >
             <VStack>
               <HStack justifyContent="space-between" width="100%" space={1}>

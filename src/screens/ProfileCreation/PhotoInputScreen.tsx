@@ -20,8 +20,12 @@ export default function PhotoInputScreen({ navigation }) {
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
+  const handleSelectImage = (data) => {
+    setImage(data)
+  };
+
   const pressHandler = () => {
-    dispatch(setProfileData({image:image}));
+    // dispatch(setProfileData({photoFileName:image}));
     navigation.navigate("Wishlist");
   };
 
@@ -51,7 +55,7 @@ export default function PhotoInputScreen({ navigation }) {
           justifyItems="center"
           alignItems="center"
         >
-          <ImagePicker selectedImage={image}/>
+          <ImagePicker selectImage={handleSelectImage}/>
         </Center>
         <Spacer />
         <Center p={4}>

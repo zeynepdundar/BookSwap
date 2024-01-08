@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Button,
   Heading,
@@ -18,54 +18,97 @@ import {
   Input,
   AspectRatio,
 } from "native-base";
-import i18n from "../i18n";
-import Screen from "../components/Screen";
+
 import { MaterialIcons } from "@expo/vector-icons";
-import { LoadingOverlay } from "../components/LoadingOverlay";
+import Screen from "../../components/Screen";
+import i18n from "../../i18n";
+import { LoadingOverlay } from "../../components/LoadingOverlay";
 
-export default function BookSearchScreen({ navigation, route = null }) {
-  const mode = route?.params?.relatedScreen;
+const formatText = (inputText) => {
+  const words = inputText.split(" ");
 
-  console.log("Searching heyhey", mode);
+  const formattedWords = words.map(
+    (word) => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)
+  );
+
+  const formattedText = formattedWords.join(" ");
+
+  return formattedText;
+};
+
+export default function BookSearchOnCreationScreen({
+  navigation,
+  route = null,
+}) {
+  const { relatedScreen, onDonePress } = route.params;
+
+
+  console.log("Searching is it", relatedScreen);
+
+  const importUrl = require("../../assets/images/no-cover-available.png");
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState([]);
-  const [libraryItems, setLibraryItem] = useState<any>([]);
+  const [selectedBooks, setSelectedBooks] = useState([]);
 
-  const addLibraryItemHandler = (selectedLibraryItem: any) => {
-    setLibraryItem((currentLibraryItems) => [
+  // const transformData = async (data) => {
+  //   const transformedData = [];
+
+  //   console.log("neyse", data);
+  //   for (const item of data) {
+  //     let coverUrl = null; // Set coverUrl to null initially
+
+  //     if (item.isbn_13) {
+  //       try {
+  //         // Check if the cover image exists
+  //         const response = await fetch(
+  //           `https://covers.openlibrary.org/b/isbn/${item.isbn_13}-M.jpg`
+  //         );
+
+  //         if (response.ok) {
+  //           coverUrl = `https://covers.openlibrary.org/b/isbn/${item.isbn_13}-M.jpg`;
+  //         } else {
+  //           console.warn(`Cover image not found for ISBN: ${item.isbn_13}`);
+  //         }
+  //       } catch (coverError) {
+  //         console.error("Error fetching cover image:", coverError.message);
+  //       }
+  //       const transformedItem = {
+  //         ...item,
+  //         coverUrl,
+  //       };
+  //       console.log("Transformed cover image", transformedItem);
+
+  //       transformedData.push(transformedItem);
+  //     }
+  //   }
+  //   setSearchResults(transformedData);
+  // };
+
+  const addBookToListHandler = (selectedLibraryItem: any) => {
+    setSelectedBooks((currentLibraryItems) => [
       ...currentLibraryItems,
-      { id: selectedLibraryItem.id, title: selectedLibraryItem.title },
+      { id: selectedLibraryItem.id, coverUrl: selectedLibraryItem?.coverUrl },
     ]);
   };
-  const removeLibraryItemHandler = (id: string) => {
-    setLibraryItem((currentLibraryItems) => {
-      return currentLibraryItems.filter((item) => item.id !== id);
-    });
+
+  const removeBookFromListHandler = (id) => {
+    setSelectedBooks((currentLibraryItems) =>
+      currentLibraryItems.filter((item) => item.id !== id)
+    );
   };
-  const isSelectedItem = (id: string) => {
-    const existingLibraryItemIndex = libraryItems.findIndex(
+
+  const isSelectedBook = (id: string) => {
+    const existingLibraryItemIndex = selectedBooks.findIndex(
       (item) => item.id === id
     );
     return existingLibraryItemIndex !== -1;
   };
-  function transformData(data) {
-    return data.map((item) => ({
-      id: item.id,
-      title: item.title?.slice(0, 20),
-      publisher: item.publishers[0],
-      coverUrl:
-        item.isbn_13 && item.isbn_13 > 0
-          ? `https://covers.openlibrary.org/b/isbn/${item.isbn_13}-M.jpg`
-          : null,
-      author: item.author ? item.author : "",
-      owners: item.users_owning,
-    }));
-  }
+
   const fetchBooks = async (title) => {
-    const apiUrl = `http://localhost:4000/search/titles/${title}?page=1&page_size=1000`;
+    const apiUrl = `http://3.76.204.31:4000/search/titles/${title}?page=1&page_size=1000`;
 
     try {
       setLoading(true);
@@ -78,23 +121,27 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
       const data = await response.json();
 
-      console.log("data", data);
-
       if (!data || !data.editions || !Array.isArray(data.editions)) {
         throw new Error("Invalid or missing data structure from the server.");
       }
-      // if (data === null || data === "") {
-      //   throw new Error("Received null response from the server.");r
-      // }
 
-      const transformedData = transformData(data.editions);
+      const transformedData = data.editions.map((item) => ({
+        id: item.id,
+        title: item.title,
+        publisher: item.publishers ? item.publishers[0] : "",
+        // isbn_13: item.isbn_13 || item.isbn_11,
+        coverUrl:
+          item.isbn_13 && item.isbn_13 > 0
+            ? `https://covers.openlibrary.org/b/isbn/${item.isbn_13}-M.jpg`
+            : null,
+        author: item.author ? item.author : "",
+      }));
 
-      // Update searchResults state with the transformed data
       setSearchResults(transformedData);
       setLoading(false);
-      return data.editions;
+
+      return transformedData;
     } catch (error) {
-      // Check if the error is due to a network failure
       if (
         error instanceof TypeError &&
         error.message === "Network request failed"
@@ -103,7 +150,6 @@ export default function BookSearchScreen({ navigation, route = null }) {
           "Network request failed. Please check your internet connection."
         );
       } else {
-        // Handle other types of errors
         setError(`An error occurred: ${error.message} `);
       }
       console.error("Error fetching books:", error);
@@ -111,43 +157,55 @@ export default function BookSearchScreen({ navigation, route = null }) {
       setLoading(false);
     }
   };
-  const searchBookTitleHandler = (enteredBookTitle) => {
-    fetchBooks(enteredBookTitle);
-  };
-  const changeListStatusHandler = (item) => {
-    const bookIsInList = isSelectedItem(item.id);
+  const inputRef = useRef(null);
 
-    if (bookIsInList) {
-      removeLibraryItemHandler(item.id);
-    } else addLibraryItemHandler(item);
-  };
-  const pressHandler = () => {
-    console.log("Selected Library Items");
-    navigation.goBack();
-  };
-  const searchHandler = (text) => {
-    setSearchQuery(text);
-    setError(null);
-    if (text.length > 5) {
-      searchBookTitleHandler(text);
+
+
+  // useEffect(() => {
+  //   // Focus on the input when the component mounts
+  //   console.log("Entering", inputRef.current?._inputElement);
+  //   inputRef.current?.inputElement?.focus();
+  // }, []);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (searchQuery.length > 5) {
+      const searchTimeout = setTimeout(async () => {
+        try {
+          const a = await fetchBooks(searchQuery);
+        } catch (error) {
+          console.error("Error fetching or transforming data:", error.message);
+        } finally {
+        }
+      }, 500);
+
+      return () => clearTimeout(searchTimeout);
     }
-  };
+  }, [searchQuery]);
+
   const scanBarcodeHandler = () => {
     navigation.navigate("BarcodeScanner", {
       relatedScreen: "Library",
     });
   };
-  function formatText(inputText) {
-    const words = inputText.split(" ");
+  const changeListStatusHandler = (item) => {
+    const bookIsInList = isSelectedBook(item.id);
 
-    const formattedWords = words.map(
-      (word) => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)
-    );
+    if (bookIsInList) {
+      removeBookFromListHandler(item.id);
+    } else {
+      addBookToListHandler(item);
+    }
+  };
 
-    const formattedText = formattedWords.join(" ");
-
-    return formattedText;
-  }
+  const handleDonePress = () => {
+    // Pass selected items to the parent using the callback
+    onDonePress(selectedBooks);
+    navigation.goBack();
+  };
 
   return (
     <Screen>
@@ -159,15 +217,18 @@ export default function BookSearchScreen({ navigation, route = null }) {
           <Input
             placeholder={i18n.t("search-book-by-title")}
             width="100%"
+            value={searchQuery}
+            onChangeText={(text) => setSearchQuery(text)}
             borderRadius="6"
             py="3"
             px="1"
             fontSize="14"
-            onChangeText={searchHandler}
             _focus={{
               borderColor: "#EFEFEF",
               bg: "#F4F4F6",
             }}
+            ref={inputRef}
+
             InputLeftElement={
               <Icon
                 m="2"
@@ -189,7 +250,6 @@ export default function BookSearchScreen({ navigation, route = null }) {
             }
           />
         </Center>
-
         <Box>
           {loading && (
             <Box h="75%" alignItems="center" justifyContent="center">
@@ -204,6 +264,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
                 mx="3"
                 data={searchResults}
                 showsVerticalScrollIndicator={false}
+                extraData={searchResults}
                 renderItem={({ item }) => (
                   <Pressable
                     onPress={() => {
@@ -216,7 +277,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
                       height="130"
                       borderColor="#F1F1F1"
                       backgroundColor={
-                        isSelectedItem(item.id) ? "primary.200" : "white"
+                        isSelectedBook(item.id) ? "primary.200" : "white"
                       }
                       p="3"
                       mx="2"
@@ -229,15 +290,28 @@ export default function BookSearchScreen({ navigation, route = null }) {
                         p={1}
                       >
                         <AspectRatio
+                          w="20%"
                           ratio={{
                             base: 40 / 62,
                           }}
                         >
                           <Image
-                            source={{ uri: item.coverUrl }}
-                            alt={`Cover of: ${item.title} by ${item.author}`}
-                            roundedRight="6"
+                            source={
+                              item.coverUrl
+                                ? { uri: item?.coverUrl }
+                                : importUrl
+                            }
+                            alt={`Cover of ${item.title} by ${item.author}`}
+                            roundedRight="4"
                           />
+
+                          {/* {!item?.coverUrl && (
+                            <Image
+                              source={importUrl}
+                              alt={`Cover of`}
+                              roundedRight="6"
+                            />
+                          )} */}
                         </AspectRatio>
 
                         <VStack width="75%" h="95">
@@ -254,46 +328,20 @@ export default function BookSearchScreen({ navigation, route = null }) {
                           >
                             {formatText(item.publisher)}
                           </Text>
-                          <Spacer></Spacer>
-                          {item.owners.length > 0 && (
-                            <Pressable
-                              onPress={() => {
-                                navigation.navigate("UserList", {
-                                  users: item.owners,
-                                });
-                                console.log("UserList")
-                              }}
-                              borderColor="#323232"
-                              borderWidth="0.5"
-                              borderRadius="9"
-                              p="1"
-                              width="90px"
-                            >
-                              <Text
-                                alignSelf="center"
-                                color="#323232"
-                                fontSize="12px"
-                              >
-                                {item.owners.length + " "}
-                                Owner
-                              </Text>
-                            </Pressable>
-                          )}
                         </VStack>
-
                         <Box position="absolute" bottom="0" right="0">
                           <Icon
                             m="1"
                             size="6"
                             color={
-                              isSelectedItem(item.id)
+                              isSelectedBook(item.id)
                                 ? "primary.50"
                                 : "primary.100"
                             }
                             as={
                               <MaterialIcons
                                 name={
-                                  isSelectedItem(item.id)
+                                  isSelectedBook(item.id)
                                     ? "bookmark"
                                     : "bookmark-outline"
                                 }
@@ -311,7 +359,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
               <Box alignItems="center" justifyContent="center" h="8%" mx="2">
                 <Button
                   variant="outline"
-                  onPress={pressHandler}
+                  onPress={handleDonePress}
                   right={0}
                   position="absolute"
                 >
@@ -327,9 +375,10 @@ export default function BookSearchScreen({ navigation, route = null }) {
               </Center>
               <Center w="100%">
                 <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-
                 <Text textAlign="center" mx="30" fontWeight="200">
-                  {i18n.t("add-books-to-your-lists-to-start-swap")}
+                  {relatedScreen === "Wishlist"
+                    ? i18n.t("add-books-to-your-wishlist-to-start-swap")
+                    : i18n.t("add-books-to-your-library-to-start-swap")}
                 </Text>
               </Center>
             </VStack>

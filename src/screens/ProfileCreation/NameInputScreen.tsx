@@ -35,7 +35,6 @@ export default function NameInputScreen({ navigation }) {
             borderBottomColor="black.400"
             color="black.400"
             textAlign="center"
-            autoCapitalize="none"
             autoCorrect={false}
             onChangeText={(enteredName) => {
               setName(enteredName);

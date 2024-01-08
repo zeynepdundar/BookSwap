@@ -8,50 +8,40 @@ import {
   Text,
   Box,
   VStack,
-  Badge,
-  CloseIcon,
-  Image,
-  AspectRatio,
-  FlatList,
   Spacer,
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import SearchBar from "../../components/shared/SearchBar";
-import {HorizontalCoverList} from "../../components/shared/HorizontalCoverList";
+import { HorizontalCoverList } from "../../components/shared/HorizontalCoverList";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import { setProfileData } from "../../store/profile-slice";
 
 export default function WishlistInputScreen({ navigation }) {
-  const data = [
-    {
-      id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      
-      coverUrl:
-        "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
-    {
-      id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      coverUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU",
-    },
-    {
-      id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      coverUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
-    },
-    {
-      id: "68694a0f-3da1-431f-bd56-142371e29d72",
-      coverUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU",
-    },
-    {
-      id: "28694a0f-3da1-471f-bd96-142456e29d72",
-      coverUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU",
-    },
-  ];
+  const [selectedBooks, setSelectedBooks] = useState([]);
+
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+
+
+  const handleAddToWishlist = (data) => {
+    setSelectedBooks(data);
+  };
+
+  const handleRemoveFromWishlist = (id) => {
+    setSelectedBooks((currentLibraryItems) =>
+      currentLibraryItems.filter((item) => item.id !== id)
+    );
+  };
 
   const pressHandler = () => {
+    console.log(selectedBooks);
+    const idsArray = selectedBooks.map(item => item.id);
+    dispatch(setProfileData({wishlistBookIds:idsArray}));
     navigation.navigate("Library");
   };
+
+
 
   return (
     <Screen>
@@ -86,25 +76,30 @@ export default function WishlistInputScreen({ navigation }) {
         <Center w="100%" h="20" px={8}>
           <SearchBar
             onSearchBook={() => {
-              navigation.navigate("BookSearch", {
+              navigation.navigate("BookSearchOnCreation", {
                 relatedScreen: "Wishlist",
+                onDonePress: handleAddToWishlist,
               });
             }}
             onScanBarcode={() => {
-              navigation.navigate("BarcodeScanner", {
+              navigation.navigate("BarcodeScannerOnProfileCreation", {
                 relatedScreen: "Wishlist",
               });
             }}
             onFocus={() => {
-              navigation.navigate("BookSearch", {
+              navigation.navigate("BookSearchOnCreation", {
                 relatedScreen: "Wishlist",
+                onDonePress: handleAddToWishlist,
               });
             }}
           />
         </Center>
-        {data.length > 0 && (
-          <Center w="100%"  px={6}>
-            <HorizontalCoverList data={data} editable={true}/>
+        {selectedBooks.length > 0 && (
+          <Center w="100%" px={6}>
+            <HorizontalCoverList
+              data={selectedBooks}
+              removeBook={handleRemoveFromWishlist}
+            />
           </Center>
         )}
         <Spacer />

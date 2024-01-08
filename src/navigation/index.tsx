@@ -11,12 +11,15 @@ import BarcodeScannerScreen from "../screens/BarcodeScannerScreen";
 import ProfileStack from "./ProfileStack";
 import OtherUserProfileScreen from "../screens/OtherUserProfile";
 import ChatScreen from "../screens/Messages/ChatScreen";
+import BookSearchOnCreationScreen from "../screens/ProfileCreation/BookSearchOnCreationScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
   const { loading, user } = useSelector((state: any) => state.auth);
-  const isAuthenticated = useSelector((state:any) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector(
+    (state: any) => state.auth.isAuthenticated
+  );
 
   if (loading) {
     // We haven't finished checking for the token yet
@@ -31,7 +34,7 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
-        {isAuthenticated ?(
+        {isAuthenticated ? (
           <>
             {user.isNewUser && (
               <>
@@ -41,14 +44,12 @@ export default function Navigation() {
                     component={ProfileCreationStack}
                   />
                   <Stack.Screen
-                    name="BarcodeScanner"
+                    name="BarcodeScannerOnProfileCreation"
                     component={BarcodeScannerScreen}
                   />
-                </Stack.Group>
-                <Stack.Group screenOptions={{ presentation: "modal" }}>
                   <Stack.Screen
-                    name="BookSearch"
-                    component={BookSearchScreen}
+                    name="BookSearchOnCreation"
+                    component={BookSearchOnCreationScreen}
                   ></Stack.Screen>
                 </Stack.Group>
               </>
@@ -63,17 +64,15 @@ export default function Navigation() {
                     name="OtherUserProfile"
                     component={OtherUserProfileScreen}
                   />
-                  {/* <Stack.Screen
+                  <Stack.Screen
                     name="BarcodeScanner"
                     component={BarcodeScannerScreen}
-                  /> */}
-                </Stack.Group>
-                {/* <Stack.Group screenOptions={{ presentation: "modal" }}>
+                  />
                   <Stack.Screen
                     name="BookSearch"
                     component={BookSearchScreen}
                   ></Stack.Screen>
-                </Stack.Group> */}
+                </Stack.Group>
               </>
             )}
           </>
