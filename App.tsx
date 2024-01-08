@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
 import { Provider, useDispatch } from "react-redux";
+import { useState, useEffect, useRef } from "react";
+import { Platform, Text } from "react-native";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import "expo-dev-client";
 import { useFonts } from "expo-font";
@@ -7,9 +9,107 @@ import { NativeBaseProvider } from "native-base";
 import { theme } from "./src/theme";
 import Navigation from "./src/navigation";
 import store, { AppDispatch } from "./src/store/store";
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
+
+///  PUSH NOTIFICATIONS - START  ///
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = await Notifications.getExpoPushTokenAsync({
+      projectId: Constants.expoConfig.extra.eas.projectId,
+    });
+    console.log("PUSH TOKEN: ", token);
+  } else {
+    alert('Must use physical device for Push Notifications');
+  }
+
+  return token.data;
+}
+
+///  PUSH NOTIFICATIONS - END  ///
+
 
 export default function App() {
+
+  ///  PUSH NOTIFICATIONS - START  ///
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const notificationListener = useRef<Notifications.Subscription | null>(null);
+  const responseListener = useRef<Notifications.Subscription | null>(null);
+  const [notification, setNotification] = useState<Notifications.Notification>();
+
+
   useEffect(() => {}, []);
+
+  const registerForPushNotifications = async () => {
+      try {
+        const token = await registerForPushNotificationsAsync();
+        // Process the token (send to backend, etc.)
+      } catch (error) {
+        console.error('Error while registering for push notifications:', error);
+      }
+
+      notificationListener.current = Notifications.addNotificationReceivedListener(
+        (incomingNotification) => {
+          setNotification(incomingNotification);
+        }
+      );
+
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(
+        (response) => {
+          console.log(response);
+        }
+      );
+    };
+
+  useEffect(() => {
+      registerForPushNotifications();
+  
+      // Cleanup subscriptions when unmounting
+      return () => {
+        if (notificationListener.current) {
+          Notifications.removeNotificationSubscription(notificationListener.current);
+          notificationListener.current = null; // Reset the ref
+        }
+        if (responseListener.current) {
+          Notifications.removeNotificationSubscription(responseListener.current);
+          responseListener.current = null; // Reset the ref
+        }
+      };
+    }, []);
+
+  ///  PUSH NOTIFICATIONS - END  ///
+
 
   const [fontsLoaded] = useFonts({
     "poppins-light": require("./src/assets/fonts/Poppins-Light.ttf"),
