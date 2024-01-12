@@ -25,7 +25,7 @@ export default function PhotoInputScreen({ navigation }) {
   };
 
   const pressHandler = () => {
-    // dispatch(setProfileData({photoFileName:image}));
+    dispatch(setProfileData({imageData:image}));
     navigation.navigate("Wishlist");
   };
 
