@@ -1,8 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { setIsNewUser } from "./auth-slice";
 import { RootState } from "./types";
-import * as Localization from 'expo-localization';
-
+import * as Localization from "expo-localization";
 
 const API_ENDPOINT = "http://3.76.204.31:5001";
 
@@ -12,8 +11,7 @@ export const updateUserProfileAsync = createAsyncThunk(
     try {
       const userId = (getState() as RootState).auth.user.id;
 
-      const deviceLanguage = Localization.locale.split('-')[0];;
-
+      const deviceLanguage = Localization.locale.split("-")[0];
 
       const body = {
         id: userId.toString(), // Use the retrieved user ID
@@ -25,8 +23,6 @@ export const updateUserProfileAsync = createAsyncThunk(
         owned_editions: profileData.libraryBookIds,
         push_tokens: ["ExponentPushToken[iskGN6Io5dqFbfasNwDm4g]"],
       };
-
-      console.log("User", userId, body);
 
       const response = await fetch(`${API_ENDPOINT}/profile`, {
         method: "PUT",
@@ -47,6 +43,41 @@ export const updateUserProfileAsync = createAsyncThunk(
     } catch (error) {
       console.error("Error updating user profile:", error);
       throw error;
+    }
+  }
+);
+
+export const uploadProfileImageAsync = createAsyncThunk(
+  "profile/uploadProfileImage",
+  async (_, { getState }) => {
+    const userId = (getState() as RootState).auth.user.id;
+    const imageData = (getState() as RootState).profile.profile.imageData;
+
+    try {
+      var formdata: any = new FormData();
+      const filename = "idea_keymap_2015-01-20_131810.png"; // replace this with the actual file name
+      formdata.append("file", {
+        uri: imageData.uri,
+        name: filename,
+        type: "image/png", // replace this with the appropriate MIME type if needed
+      });
+
+      var requestOptions: any = {
+        method: "POST",
+        body: formdata,
+        redirect: "follow",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      const response = await fetch(
+        `https://c5c2-46-2-225-160.ngrok-free.app/user/${userId}/upload`,
+        requestOptions
+      );
+      const data = await response.json(); // Assuming the server returns JSON
+    } catch (error) {
+      console.error("Error getting image blob:", error);
     }
   }
 );

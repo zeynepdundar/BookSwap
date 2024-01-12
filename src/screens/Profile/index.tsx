@@ -15,7 +15,7 @@ import {
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { useState } from "react";
 import { AlertDialogBox } from "../../components/AlertDialogBox";
@@ -23,7 +23,7 @@ import ImagePicker from "../../components/ImagePicker";
 import auth from "@react-native-firebase/auth";
 import { signOut } from "../../store/auth-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { setLanguagePreference } from "../../store/profile-slice";
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../../assets/images/icon/library-icon.png");
@@ -32,11 +32,19 @@ export default function ProfileScreen({ navigation }) {
   const feedbackIcon = require("../../assets/images/icon/feedback-icon.png");
   const logoutIcon = require("../../assets/images/icon/logout-icon.png");
 
+  const { name, wishlistBookIds, libraryBookIds, languagePreference } =
+    useSelector((state: any) => state.profile.profile);
+
   const dispatch = useDispatch<AppDispatch>();
 
   const [isOpen, setIsOpen] = useState(false);
 
   const onClose = () => setIsOpen(false);
+
+  const handleLanguageChange = (selectedLanguage) => {
+    dispatch(setLanguagePreference(selectedLanguage));
+    // You can add additional logic if needed
+  };
 
   const signOutHandler = async (): Promise<void> => {
     try {
@@ -44,13 +52,12 @@ export default function ProfileScreen({ navigation }) {
       await auth().signOut();
 
       // Dispatch the logout action to clear user data in Redux state
-      AsyncStorage.removeItem('authToken')
+      AsyncStorage.removeItem("authToken");
       dispatch(signOut());
-
 
       // Other actions after logout...
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error("Error during logout:", error);
     }
   };
 
@@ -78,15 +85,12 @@ export default function ProfileScreen({ navigation }) {
         <Center w="100%" h="215px" px={6}>
           <ImagePicker selectedImage={true} />
           <Heading color="black.100" my={3}>
-            Jesse Pinkman
+            {name}
           </Heading>
         </Center>
 
         {/* Wishlist */}
-        <Pressable
-          width={320}
-          onPress={() => navigation.navigate("Wishlist")}
-        >
+        <Pressable width={320} onPress={() => navigation.navigate("Wishlist")}>
           <Flex
             direction="row"
             alignItems="center"
@@ -117,7 +121,7 @@ export default function ProfileScreen({ navigation }) {
               }}
               bg="primary.50"
             >
-              347
+              {wishlistBookIds.length}
             </Box>
           </Flex>
         </Pressable>
@@ -154,7 +158,7 @@ export default function ProfileScreen({ navigation }) {
               }}
               bg="primary.50"
             >
-              52
+              {libraryBookIds.length}
             </Box>
           </Flex>
         </Pressable>
@@ -193,16 +197,20 @@ export default function ProfileScreen({ navigation }) {
                         color="black.700"
                         letterSpacing="lg"
                       >
-                        EN
+                        {languagePreference.toUpperCase()}
                       </Text>
                     </Pressable>
                   );
                 }}
               >
-                <Menu.Item textValue="tr">Turkish</Menu.Item>
-                <Menu.Item textValue="en" isDisabled>
-                  English
-                </Menu.Item>
+                {[
+                  { code: "tr", lang: i18n.t("turkish")},
+                  { code: "en", lang: i18n.t("english") },
+                ].map((input, index) => (
+                  <Menu.Item key={index} onPress={() => handleLanguageChange(input.code)} disabled={languagePreference === input.code}>
+                    {input.lang}
+                  </Menu.Item>
+                ))}
               </Menu>
             </Box>
           </Flex>

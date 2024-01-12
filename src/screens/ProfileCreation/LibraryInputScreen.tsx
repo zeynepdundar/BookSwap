@@ -17,7 +17,7 @@ import { HorizontalCoverList } from "../../components/shared/HorizontalCoverList
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { setProfileData } from "../../store/profile-slice";
-import { updateUserProfileAsync } from "../../store/profile-actions";
+import { updateUserProfileAsync, uploadProfileImageAsync } from "../../store/profile-actions";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 
 
@@ -40,8 +40,9 @@ export default function LibraryInputScreen({ navigation }) {
     console.log(selectedBooks);
     const idsArray = selectedBooks.map((item) => item.id);
     dispatch(setProfileData({ libraryBookIds: idsArray }));
-    console.log("Library",profile)
     dispatch(updateUserProfileAsync(profile));
+    dispatch(uploadProfileImageAsync());
+
     console.log(profile, loading);
   };
   if (loading) {

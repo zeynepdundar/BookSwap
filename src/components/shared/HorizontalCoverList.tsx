@@ -10,7 +10,7 @@ import {
   Pressable,
 } from "native-base";
 
-export const HorizontalCoverList = ({ data, removeBook }) => {
+export const HorizontalCoverList = ({ data, removeBook=null }) => {
 
   return (
     <FlatList
