@@ -13,9 +13,13 @@ import i18n from "../i18n";
 import Screen from "../components/Screen";
 import { HorizontalCoverList } from "../components/shared/HorizontalCoverList";
 import SearchBar from "../components/shared/SearchBar";
+import { useSelector } from "react-redux";
 
 export default function HomeScreen({ navigation }) {
   const jesse = require("../assets/images/jesse-pinkman.png");
+
+  const { name } = useSelector((state: any) => state.profile.profile);
+
 
   const data = [
     {
@@ -60,7 +64,7 @@ export default function HomeScreen({ navigation }) {
         <Flex my="4">
           <Heading color="coolGray.800" >{i18n.t("hello")}</Heading>
           <Text color="coolGray.800" fontWeight="500" fontSize={16}>
-            Jesse Pinkman
+            {name}
           </Text>
         </Flex>
         <Pressable
@@ -95,7 +99,7 @@ export default function HomeScreen({ navigation }) {
           </Text>
 
           <Center w="100%">
-            <HorizontalCoverList data={data} editable={false} />
+            <HorizontalCoverList data={data}/>
           </Center>
         </Box>
       )}
@@ -106,7 +110,7 @@ export default function HomeScreen({ navigation }) {
           </Text>
 
           <Center w="100%">
-            <HorizontalCoverList data={data} editable={false} />
+            <HorizontalCoverList data={data}  />
           </Center>
         </Box>
       )}

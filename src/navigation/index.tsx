@@ -34,7 +34,7 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
-        {isAuthenticated ? (
+        {isAuthenticated  ? (
           <>
             {user.isNewUser && (
               <>

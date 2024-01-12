@@ -77,7 +77,7 @@ const ImagePicker = ({ selectImage }) => {
 
     if (!result.canceled) {
       setPickedImage(result.assets[0].uri);
-      selectImage(result.assets[0].uri);
+      selectImage(result.assets[0]);
     }
   };
 
