@@ -32,7 +32,7 @@ export default function ProfileScreen({ navigation }) {
   const feedbackIcon = require("../../assets/images/icon/feedback-icon.png");
   const logoutIcon = require("../../assets/images/icon/logout-icon.png");
 
-  const { name, wishlistBookIds, libraryBookIds, languagePreference } =
+  const { name, wishlistBook, libraryBook, languagePreference } =
     useSelector((state: any) => state.profile.profile);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -121,7 +121,7 @@ export default function ProfileScreen({ navigation }) {
               }}
               bg="primary.50"
             >
-              {wishlistBookIds.length}
+              {wishlistBook.length}
             </Box>
           </Flex>
         </Pressable>
@@ -158,7 +158,7 @@ export default function ProfileScreen({ navigation }) {
               }}
               bg="primary.50"
             >
-              {libraryBookIds.length}
+              {libraryBook.length}
             </Box>
           </Flex>
         </Pressable>

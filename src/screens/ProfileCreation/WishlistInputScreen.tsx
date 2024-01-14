@@ -35,9 +35,7 @@ export default function WishlistInputScreen({ navigation }) {
   };
 
   const pressHandler = () => {
-    console.log(selectedBooks);
-    const idsArray = selectedBooks.map(item => item.id);
-    dispatch(setProfileData({wishlistBookIds:idsArray}));
+    dispatch(setProfileData({wishlistBook:selectedBooks}));
     navigation.navigate("Library");
   };
 
@@ -76,6 +74,7 @@ export default function WishlistInputScreen({ navigation }) {
         <Center w="100%" h="20" px={8}>
           <SearchBar
             onSearchBook={() => {
+              
               navigation.navigate("BookSearchOnCreation", {
                 relatedScreen: "Wishlist",
                 onDonePress: handleAddToWishlist,

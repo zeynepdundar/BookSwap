@@ -37,13 +37,10 @@ export default function LibraryInputScreen({ navigation }) {
     );
   };
   const pressHandler = () => {
-    console.log(selectedBooks);
-    const idsArray = selectedBooks.map((item) => item.id);
-    dispatch(setProfileData({ libraryBookIds: idsArray }));
+    dispatch(setProfileData({libraryBook:selectedBooks}));
     dispatch(updateUserProfileAsync(profile));
     dispatch(uploadProfileImageAsync());
-
-    console.log(profile, loading);
+    console.log(profile);
   };
   if (loading) {
     // We haven't finished checking for the token yet

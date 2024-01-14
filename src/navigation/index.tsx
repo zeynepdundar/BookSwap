@@ -34,7 +34,7 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
-        {isAuthenticated  ? (
+        {isAuthenticated ? (
           <>
             {user.isNewUser && (
               <>
@@ -54,7 +54,7 @@ export default function Navigation() {
                 </Stack.Group>
               </>
             )}
-            {!user.isNewUser && (
+            {!user.isNewUser  && (
               <>
                 <Stack.Group>
                   <Stack.Screen name="HomeTabs" component={HomeTabs} />

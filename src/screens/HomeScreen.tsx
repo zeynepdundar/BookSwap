@@ -20,7 +20,6 @@ export default function HomeScreen({ navigation }) {
 
   const { name } = useSelector((state: any) => state.profile.profile);
 
-
   const data = [
     {
       id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -62,7 +61,7 @@ export default function HomeScreen({ navigation }) {
     <Screen>
       <Flex direction="row" justifyContent="space-between" alignItems="center">
         <Flex my="4">
-          <Heading color="coolGray.800" >{i18n.t("hello")}</Heading>
+          <Heading color="coolGray.800">{i18n.t("hello")}</Heading>
           <Text color="coolGray.800" fontWeight="500" fontSize={16}>
             {name}
           </Text>
@@ -76,22 +75,22 @@ export default function HomeScreen({ navigation }) {
         </Pressable>
       </Flex>
       <SearchBar
-            onSearchBook={() => {
-              navigation.navigate("BookSearch", {
-                relatedScreen: "Home",
-              });
-            }}
-            onScanBarcode={() => {
-              navigation.navigate("BarcodeScanner", {
-                relatedScreen: "Home",
-              });
-            }}
-            onFocus={() => {
-              navigation.navigate("BookSearch", {
-                relatedScreen: "Home",
-              });
-            }}
-          />
+        onSearchBook={() => {
+          navigation.navigate("BookSearch", {
+            relatedScreen: "Home",
+          });
+        }}
+        onScanBarcode={() => {
+          navigation.navigate("BarcodeScanner", {
+            relatedScreen: "Home",
+          });
+        }}
+        onFocus={() => {
+          navigation.navigate("BookSearch", {
+            relatedScreen: "Home",
+          });
+        }}
+      />
       {data.length > 0 && (
         <Box mt="6">
           <Text color="black.400" fontWeight="700">
@@ -99,7 +98,7 @@ export default function HomeScreen({ navigation }) {
           </Text>
 
           <Center w="100%">
-            <HorizontalCoverList data={data}/>
+            <HorizontalCoverList data={data} />
           </Center>
         </Box>
       )}
@@ -110,7 +109,7 @@ export default function HomeScreen({ navigation }) {
           </Text>
 
           <Center w="100%">
-            <HorizontalCoverList data={data}  />
+            <HorizontalCoverList data={data} />
           </Center>
         </Box>
       )}

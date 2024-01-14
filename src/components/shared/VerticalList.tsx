@@ -7,61 +7,137 @@ import {
   Text,
   Spacer,
   Divider,
-  Actionsheet,
-  Center,
   Icon,
+  Box,
+  AspectRatio,
 } from "native-base";
-import i18n from "../../i18n";
 import { InfoDialogBox } from "../InfoDialogBox";
 import { MaterialIcons } from "@expo/vector-icons";
+import { ActionSheet } from "../ActionSheet";
+const formatText = (inputText) => {
+  const words = inputText.split(" ");
+  const formattedWords = words.map(
+    (word) => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)
+  );
+  const formattedText = formattedWords.join(" ");
+  return formattedText;
+};
 
-export const VerticalList = ({ data, ...props }) => {
-  const importUrl = require("../../assets/images/cover_2.png");
+interface VerticalListProps {
+  data: any[]; // Replace YourItemType with the actual type of your data items
+  removeBookButton?: (id: string) => void;
+  secondaryAction?: (item: any) => void;
+  // Add other props as needed
+}
 
+export const VerticalList: React.FC<VerticalListProps> = ({
+  data,
+  removeBookButton,
+  secondaryAction,
+  ...props
+}) => {
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedAction, setSelectedAction] = useState(null);
+  const importUrl = require("../../assets/images/cover_2.png");
+  const actions = [
+    {
+      type: "wishlist",
+      label: "add-my-wishlist",
+      onPress: () => handleAction("wishlist"),
+    },
+    {
+      type: "library",
+      label: "add-my-library",
+      onPress: () => handleAction("library"),
+    },
+    { type: "cancel", label: "cancel", onPress: () => closeActionSheet() },
+    // Add more actions as needed
+  ];
 
+  const handleAction = (action) => {
+    secondaryAction({
+      type: action,
+      itemId: selectedItem?.id,
+      title: selectedItem.title,
+      author: selectedItem.author,
+      publisher: selectedItem.publisher,
+      coverUrl: selectedItem.coverUrl,
+    });
+    setSelectedAction(action);
+    console.log("Action", action);
+    closeActionSheet();
+    setIsInfoDialogOpen(true);
+  };
+  const openActionSheet = (item) => {
+    setSelectedItem(item);
+    setIsActionSheetOpen(true);
+  };
+  const closeActionSheet = () => {
+    setSelectedItem(null);
+    setIsActionSheetOpen(false);
+  };
+  const closeInfoDialog = () => {
+    setIsInfoDialogOpen(false);
+  };
 
   return (
     <>
       <FlatList
-        w="325px"
+        maxWidth="100%"
+        mx="3"
         data={data}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <>
-            <Center
-              pl={["3", "4"]}
-              pr={["3", "5"]}
-              py="2"
-              mb="1"
-              justifyContent="center"
+            <Box
+              // pl={["3", "4"]}
+              // pr={["3", "5"]}
+              // py="2"
+              // mb="1"
+              // justifyContent="center"
+              height="120"
+              p="3"
+              mx="2"
+              my="1"
             >
-              <HStack space={[2, 3]} justifyContent="space-between">
-                <Image
-                  source={importUrl}
-                  alt=" Library"
-                  width="74px"
-                  height="96px"
-                  borderRightRadius={9}
-                  shadow="8"
-                />
+              <HStack
+                justifyContent="space-between"
+                width="100%"
+                space={3}
+                p={1}
+              >
+                <AspectRatio
+                  w="20%"
+                  ratio={{
+                    base: 40 / 62,
+                  }}
+                >
+                  <Image
+                    source={item.coverUrl ? { uri: item?.coverUrl } : importUrl}
+                    alt={`Cover of ${item.title} by ${item.author}`}
+                    roundedRight="4"
+                  />
+                </AspectRatio>
                 <VStack>
-                  <Text color="#000000">{item.title}</Text>
-                  <Text color="#8c8c8c" fontSize="xs">
-                    {item.author}
+                  <Text color="#000000" fontSize="16">
+                    {formatText(item.title)}
                   </Text>
-                  <Text color="#8c8c8c" fontSize="9px">
-                    Can Publications
+                  <Text color="#8c8c8c" fontSize="11">
+                    {formatText(item.author)}
+                  </Text>
+                  <Text color="#8c8c8c" fontSize="13" fontWeight="200">
+                    {formatText(item.publisher)}
                   </Text>
                 </VStack>
                 <Spacer />
                 <VStack>
-                  {props.secondaryAction && (
+                  {removeBookButton ? (
+                    removeBookButton(item.id)
+                  ) : (
                     <Icon
-                      onPress={() => {
-                        setIsActionSheetOpen(true);
-                      }}
+                      onPress={() => openActionSheet(item)}
                       name={"more-vert"}
                       variant="solid"
                       size="md"
@@ -69,37 +145,43 @@ export const VerticalList = ({ data, ...props }) => {
                     />
                   )}
                   <Spacer />
-                  {
-                    props.children && props.children(item.id) // <Icon
-                  }
                 </VStack>
               </HStack>
-            </Center>
-            <Divider mt="0" mb="3" mx="3" bg="#EEEEEE" />
+            </Box>
+            <Divider mt="0" mb="3" mx="4" width={"90%"} bg="#EEEEEE" />
           </>
         )}
         keyExtractor={(item) => item.id}
       />
-      <Actionsheet
-        isOpen={isActionSheetOpen}
-        onClose={() => setIsActionSheetOpen(false)}
-      >
-        <Actionsheet.Content>
-          <Actionsheet.Item onPress={() => setIsInfoDialogOpen(true)}>
-            {i18n.t("add-my-wishlist")}
-          </Actionsheet.Item>
-          <Actionsheet.Item onPress={null}>
-            {i18n.t("add-my-library")}
-          </Actionsheet.Item>
-          <Actionsheet.Item onPress={null}>Cancel</Actionsheet.Item>
-        </Actionsheet.Content>
-      </Actionsheet>
+      {secondaryAction && (
+        <ActionSheet
+          isOpen={isActionSheetOpen}
+          onClose={closeActionSheet}
+          actions={actions}
+        />
+      )}
+
+      {/* <InfoDialogBox
+        key={selectedItem?.id}
+        isOpen={isInfoDialogOpen}
+        title={i18n.t("added")}
+        description={
+          selectedItem?.type === "wishlist"
+            ? i18n.t("the-book-added-to-wishlist")
+            : i18n.t("the-book-added-to-library")
+        }
+        confirmButtonLabel={
+          selectedItem?.type === "wishlist"
+            ? i18n.t("see-my-wishlist")
+            : i18n.t("see-my-library")
+        }
+        buttonVariant="outline"
+      /> */}
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
-        onClose={() => setIsInfoDialogOpen(false)}
-        title={i18n.t("logout")}
-        description={i18n.t("are-you-sure-log-out")}
-        confirmButtonLabel={i18n.t("logout")}
+        onClose={closeInfoDialog}
+        actionType={selectedAction}
+        selectedItem={selectedItem}
       />
     </>
   );
