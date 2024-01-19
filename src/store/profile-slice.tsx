@@ -5,7 +5,6 @@ import {
   removeBookFromLibraryAsync,
   removeBookFromWishlistAsync,
   updateUserProfileAsync,
-  uploadProfileImageAsync,
 } from "./profile-actions";
 
 const initialState = {
@@ -20,6 +19,7 @@ const initialState = {
     languagePreference: "tr",
     wishlistBook: [],
     libraryBook: [],
+    pushToken: "",
   },
 };
 
@@ -28,14 +28,14 @@ const profileSlice = createSlice({
   initialState,
   reducers: {
     setProfileData: (state, action) => {
-      if (action.payload && typeof action.payload === 'object') {
+      if (action.payload && typeof action.payload === "object") {
         // Check if action.payload is an object
         state.profile = { ...state.profile, ...action.payload };
       } else {
         // Handle other cases as needed
-        console.error('Invalid payload:', action.payload);
+        console.error("Invalid payload:", action.payload);
       }
-      console.log('profileSlice:', current(state));
+      console.log("profileSlice:", current(state));
     },
     setProfileImage: (state, action) => {
       state.profile.imageData = action.payload; // Assuming 'image' is the key for profile image
@@ -53,19 +53,12 @@ const profileSlice = createSlice({
         languagePreference: "",
         wishlistBook: [],
         libraryBook: [],
+        pushToken: "",
       };
     },
-    // addBookToList: (state, action) => {
-    //   const { listType, ...bookData } = action.payload;
-
-    //   if (listType === "wishlist") {
-    //     state.profile.wishlistBook.push({ ...bookData });
-    //   }
-
-    //   if (listType === "library") {
-    //     state.profile.libraryBook.push({ ...bookData });
-    //   }
-    //     },
+    setPushToken: (state, action) => {
+      state.profile.pushToken = action.payload;
+    },
     removeBookFromList: (state, action) => {
       initialState.profile.wishlistBook.filter((id) => id !== id);
       if (action.payload.listType === "wishlist")
@@ -96,22 +89,6 @@ const profileSlice = createSlice({
         state.error = action.error;
       })
 
-      // .addCase(uploadProfileImageAsync.pending, (state) => {
-      //   state.loading = true;
-      //   state.error = null;
-      // })
-      .addCase(uploadProfileImageAsync.fulfilled, (state, action) => {
-        state.loading = false;
-        state.profile.imageData = action.payload;
-        // Dispatch the action to set the profile image
-        // Assuming action.payload contains the image data or URL
-        // dispatch(setProfileImage(action.payload));
-      })
-      .addCase(uploadProfileImageAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error;
-      })
-
       .addCase(addBookToWishlistAsync.fulfilled, (state, action) => {
         state.profile.wishlistBook.push({ ...action.payload });
       })
@@ -132,14 +109,17 @@ const profileSlice = createSlice({
           state.profile.wishlistBook.indexOf(action.payload),
           1
         );
-      });
+      })
 
-
-      
   },
 });
 
-export const { setProfileData, setLanguagePreference, removeBookFromList } =
-  profileSlice.actions;
+export const {
+  setProfileData,
+  setLanguagePreference,
+  setPushToken,
+  clearProfileData,
+  removeBookFromList,
+} = profileSlice.actions;
 
 export default profileSlice.reducer;

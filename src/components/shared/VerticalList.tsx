@@ -66,7 +66,6 @@ export const VerticalList: React.FC<VerticalListProps> = ({
       coverUrl: selectedItem.coverUrl,
     });
     setSelectedAction(action);
-    console.log("Action", action);
     closeActionSheet();
     setIsInfoDialogOpen(true);
   };

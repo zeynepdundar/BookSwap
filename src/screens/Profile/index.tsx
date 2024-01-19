@@ -23,7 +23,7 @@ import ImagePicker from "../../components/ImagePicker";
 import auth from "@react-native-firebase/auth";
 import { signOut } from "../../store/auth-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setLanguagePreference } from "../../store/profile-slice";
+import { clearProfileData, setLanguagePreference } from "../../store/profile-slice";
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../../assets/images/icon/library-icon.png");
@@ -32,8 +32,9 @@ export default function ProfileScreen({ navigation }) {
   const feedbackIcon = require("../../assets/images/icon/feedback-icon.png");
   const logoutIcon = require("../../assets/images/icon/logout-icon.png");
 
-  const { name, wishlistBook, libraryBook, languagePreference } =
+  const { name, wishlistBook, libraryBook, languagePreference, imageData } =
     useSelector((state: any) => state.profile.profile);
+    
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -50,15 +51,20 @@ export default function ProfileScreen({ navigation }) {
     try {
       // Sign out the user from Firebase
       await auth().signOut();
+      dispatch(clearProfileData())
 
       // Dispatch the logout action to clear user data in Redux state
       AsyncStorage.removeItem("authToken");
       dispatch(signOut());
 
+
       // Other actions after logout...
     } catch (error) {
       console.error("Error during logout:", error);
     }
+  };
+  const handleSelectImage = (data) => {
+    // setImage(data)
   };
 
   return (
@@ -83,7 +89,7 @@ export default function ProfileScreen({ navigation }) {
       </HStack>
       <VStack space={1} alignItems="center" height={"50%"}>
         <Center w="100%" h="215px" px={6}>
-          <ImagePicker selectedImage={true} />
+          {/* <ImagePicker selectedImage={handleSelectImage} initialImage={imageData.uri}/> */}
           <Heading color="black.100" my={3}>
             {name}
           </Heading>

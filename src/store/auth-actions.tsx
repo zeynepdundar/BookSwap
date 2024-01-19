@@ -1,7 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import auth from "@react-native-firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setPhoneNumber, setToken, setUser } from "./auth-slice";
+import { setIsNewUser, setPhoneNumber, setToken, setUser } from "./auth-slice";
+import { fetchUserProfileAsync } from "./profile-actions";
+import { setProfileData } from "./profile-slice";
 
 const API_ENDPOINT = "http://localhost:5001";
 
@@ -50,18 +52,23 @@ export const checkVerificationCode = createAsyncThunk(
     try {
       const { confirmationResult, verificationCode } = credentials;
       const userCredential = await confirmationResult.confirm(verificationCode);
+      const firebaseUserId = userCredential.user.uid;
       const isNewUser = userCredential.additionalUserInfo.isNewUser;
       const user = await auth().currentUser.getIdTokenResult();
 
       thunkAPI.dispatch(
         setUser({
           isNewUser: isNewUser,
-          firebaseUserId: userCredential.user.uid,
+          firebaseUserId: firebaseUserId,
         })
       );
 
-      if(isNewUser) thunkAPI.dispatch(addUserToDatabaseAsync(user.token));
-
+      if (isNewUser) thunkAPI.dispatch(addUserToDatabaseAsync(user.token));
+      else {
+        thunkAPI.dispatch(fetchUserProfileAsync(firebaseUserId));
+        thunkAPI.dispatch(setIsNewUser(false));
+      }
+      
       thunkAPI.dispatch(setToken(user.token));
       await AsyncStorage.setItem("authToken", user.token);
 
@@ -119,8 +126,7 @@ export const resendVerificationCode = createAsyncThunk(
 
 export const addUserToDatabaseAsync = createAsyncThunk(
   "auth/addUserToDatabase",
-  async (token:string) => {
-
+  async (token: string, thunkAPI) => {
     try {
       const response = await fetch(`${API_ENDPOINT}/create_user`, {
         method: "POST",
@@ -135,10 +141,11 @@ export const addUserToDatabaseAsync = createAsyncThunk(
       // if (!response.ok) {
       //   throw new Error("Failed to create user");
       // }
-      console.log("New user is added to database with", result.user_id)
+      console.log("New user is added to database with", result.user_id);
+      thunkAPI.dispatch(setProfileData({id: result.user_id}));
       return result;
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       throw error;
     }
   }

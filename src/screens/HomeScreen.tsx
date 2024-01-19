@@ -18,7 +18,9 @@ import { useSelector } from "react-redux";
 export default function HomeScreen({ navigation }) {
   const jesse = require("../assets/images/jesse-pinkman.png");
 
-  const { name } = useSelector((state: any) => state.profile.profile);
+  const { name, imageData } = useSelector((state: any) => state.profile.profile);
+
+  console.log("HomeScreen", imageData);
 
   const data = [
     {
@@ -71,7 +73,7 @@ export default function HomeScreen({ navigation }) {
             navigation.navigate("ProfileStack", { screen: "Profile" })
           }
         >
-          <Image source={jesse} alt="Notification" size={10} />
+          {/* <Image source={{uri:imageData.uri}} alt="Notification" size={10} rounded="7"/> */}
         </Pressable>
       </Flex>
       <SearchBar
