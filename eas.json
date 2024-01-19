@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 5.6.0"
+    "version": ">= 5.6.0",
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
@@ -14,11 +15,36 @@
       }
     },
     "preview": {
+      "android": {
+        "buildType": "app-bundle"
+      },
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "autoIncrement": true
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./keys/book-swap-2d9a5-905323e61694.json",
+        "track": "internal"
+      },
+      "ios": {
+        "appleId": "isiyok.muhammet@gmail.com",
+        "appleTeamId": "64RAWCZ6SJ"
+      }
+    },
+    "preview": {
+      "android": {
+        "serviceAccountKeyPath": "./keys/book-swap-2d9a5-905323e61694.json",
+        "track": "internal",
+        "releaseStatus": "draft"
+      },
+      "ios": {
+        "appleId": "isiyok.muhammet@gmail.com",
+        "appleTeamId": "64RAWCZ6SJ"
+      }
+    }
   }
 }
