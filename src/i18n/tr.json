@@ -62,5 +62,10 @@
   "no-results-for": "Aradığın kitap ismi için sonuç bulunamadı: ",
   "we-do-not-have-the-book-yet": "Henüz bu kitap listemizde bulunmuyor.",
   "turkish": "Türkçe",
-  "english": "İngilizce"
+  "english": "İngilizce",
+  "the-book-added-to-wishlist":"Kitap istek listene eklendi!",
+  "the-book-added-to-library":"Kitap kitaplığına eklendi!",
+  "see-my-wishlist":"İstek listeme git",
+  "see-my-library":"Kitaplığıma git"
+
 }

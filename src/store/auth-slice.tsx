@@ -1,4 +1,4 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
   addUserToDatabaseAsync,
   checkVerificationCode,
@@ -43,6 +43,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.confirmationResult = null; // Can be removed, check it later!
     },
+
   },
   extraReducers: (builder) => {
     //Authenticate user
@@ -66,7 +67,6 @@ const authSlice = createSlice({
       .addCase(checkVerificationCode.fulfilled, (state) => {
         state.loading = false;
         state.isAuthenticated = true;
-
       })
       .addCase(checkVerificationCode.rejected, (state, action: any) => {
         state.loading = false;
@@ -89,7 +89,6 @@ const authSlice = createSlice({
       .addCase(addUserToDatabaseAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.user.id = action.payload.user_id;
-
       })
       .addCase(addUserToDatabaseAsync.rejected, (state, action) => {
         state.loading = false;

@@ -24,6 +24,7 @@ import Screen from "../../components/Screen";
 import i18n from "../../i18n";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 
+
 const formatText = (inputText) => {
   const words = inputText.split(" ");
 
@@ -41,9 +42,6 @@ export default function BookSearchOnCreationScreen({
   route = null,
 }) {
   const { relatedScreen, onDonePress } = route.params;
-
-
-  console.log("Searching is it", relatedScreen);
 
   const importUrl = require("../../assets/images/no-cover-available.png");
 
@@ -90,9 +88,17 @@ export default function BookSearchOnCreationScreen({
   const addBookToListHandler = (selectedLibraryItem: any) => {
     setSelectedBooks((currentLibraryItems) => [
       ...currentLibraryItems,
-      { id: selectedLibraryItem.id, coverUrl: selectedLibraryItem?.coverUrl },
+      selectedLibraryItem,
     ]);
   };
+
+
+  // const addBookToListHandler = (selectedItem: any) => {
+  //   if (selectedItem.type === "wishlist")
+  //     dispatch(addBookToWishlistAsync(selectedItem));
+  //   else if (selectedItem.type === "library")
+  //     dispatch(addBookToLibraryAsync(selectedItem));
+  // };
 
   const removeBookFromListHandler = (id) => {
     setSelectedBooks((currentLibraryItems) =>
@@ -108,7 +114,7 @@ export default function BookSearchOnCreationScreen({
   };
 
   const fetchBooks = async (title) => {
-    const apiUrl = `http://3.76.204.31:4000/search/titles/${title}?page=1&page_size=1000`;
+    const apiUrl = `http://localhost:4000/search/titles/${title}?page=1&page_size=1000`;
 
     try {
       setLoading(true);

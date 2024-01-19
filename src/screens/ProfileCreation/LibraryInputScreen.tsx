@@ -17,8 +17,9 @@ import { HorizontalCoverList } from "../../components/shared/HorizontalCoverList
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { setProfileData } from "../../store/profile-slice";
-import { updateUserProfileAsync, uploadProfileImageAsync } from "../../store/profile-actions";
+import { updateUserProfileAsync } from "../../store/profile-actions";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
+import { setIsNewUser } from "../../store/auth-slice";
 
 
 export default function LibraryInputScreen({ navigation }) {
@@ -37,13 +38,10 @@ export default function LibraryInputScreen({ navigation }) {
     );
   };
   const pressHandler = () => {
-    console.log(selectedBooks);
-    const idsArray = selectedBooks.map((item) => item.id);
-    dispatch(setProfileData({ libraryBookIds: idsArray }));
+    dispatch(setProfileData({libraryBook:selectedBooks}));
     dispatch(updateUserProfileAsync(profile));
-    dispatch(uploadProfileImageAsync());
-
-    console.log(profile, loading);
+    dispatch(setIsNewUser(false));
+    console.log(profile);
   };
   if (loading) {
     // We haven't finished checking for the token yet
