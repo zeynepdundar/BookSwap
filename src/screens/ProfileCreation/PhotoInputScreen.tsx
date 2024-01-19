@@ -55,7 +55,7 @@ export default function PhotoInputScreen({ navigation }) {
           justifyItems="center"
           alignItems="center"
         >
-          <ImagePicker selectImage={handleSelectImage}/>
+          <ImagePicker selectedImage={handleSelectImage}/>
         </Center>
         <Spacer />
         <Center p={4}>

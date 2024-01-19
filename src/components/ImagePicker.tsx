@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Actionsheet,
   AddIcon,
@@ -17,8 +17,8 @@ import i18n from "../i18n";
 
 const avatarImage = require("../assets/images/avatar.png");
 
-const ImagePicker = ({ selectImage }) => {
-  const [pickedImage, setPickedImage] = useState("");
+const ImagePicker = ({ selectedImage, initialImage }: { selectedImage: (data: any) => void; initialImage?: any }) => {
+  const [pickedImage, setPickedImage] = useState(initialImage || "");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
@@ -57,7 +57,7 @@ const ImagePicker = ({ selectImage }) => {
 
     if (!image.canceled) {
       setPickedImage(image.assets[0].uri);
-      selectImage(image.assets[0].uri);
+      selectedImage(image.assets[0].uri);
     }
   };
 
@@ -77,9 +77,14 @@ const ImagePicker = ({ selectImage }) => {
 
     if (!result.canceled) {
       setPickedImage(result.assets[0].uri);
-      selectImage(result.assets[0]);
+      selectedImage(result.assets[0]);
     }
   };
+
+  useEffect(() => {
+    // Set the initial image when the initialImage prop changes
+    setPickedImage(initialImage || "");
+  }, [initialImage]);
 
   return (
     <>

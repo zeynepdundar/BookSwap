@@ -63,6 +63,11 @@
   "no-results-for": "No Results for",
   "we-do-not-have-the-book-yet":"We don’t have the book yet",
   "turkish": "Turkish",
-  "english": "English"
+  "english": "English",
+  "the-book-added-to-wishlist":"The book has been added to your wishlist successfully!",
+  "the-book-added-to-library":"The book has been added to your library successfully!",
+  "see-my-wishlist":"See my wishlist",
+  "see-my-library":"See my library"
+
 
 }
