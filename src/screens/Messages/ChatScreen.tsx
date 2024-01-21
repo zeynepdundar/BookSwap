@@ -36,25 +36,29 @@ export default function ChatScreen({ navigation, route }) {
     const subscriber = firestore()
       .collection("Conversations")
       .doc(conversationId)
-      .collection("messages");
-    // .orderBy("createdAt", "desc")
-    // .onSnapshot((querySnapshot) => {
-    //   console.log("querySnapshot: ");
-    // setMessages(
-    //   querySnapshot.docs.map((doc) => ({
-    //     _id: doc.id,
-    //     createdAt: doc.data().createdAt.toDate(),
-    //     text: doc.data().text,
-    //     user: {
-    //       _id: doc.data().senderId,
-    //     },
-    //   }))
-    // );
-    // });
+      .collection("messages")
+    .orderBy("createdAt", "desc")
+    .onSnapshot((querySnapshot) => {
+      console.log("querySnapshot: ", querySnapshot);
+    setMessages(
+      querySnapshot.docs.map((doc) => ({
+        _id: doc.id,
+        createdAt: doc.data().createdAt.toDate(),
+        text: doc.data().text,
+        user: {
+          _id: doc.data().senderId,
+        },
+      }))
+    );
+    },
+    (error) => {
+      console.error("Error getting documents: ", error);
+    }
+    );
 
     console.log("querySnapshot: ", subscriber);
     // Stop listening for updates when no longer required
-    // return () => subscriber();
+    return () => subscriber();
   }, []);
 
   const onSend = useCallback((messages = []) => {
