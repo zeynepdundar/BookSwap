@@ -37,10 +37,6 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
-                          <Stack.Screen
-                    name="ProfileCreation"
-                    component={ProfileCreationStack}
-                  />
         {isAuthenticated ? (
           <>
             {user.isNewUser && (
