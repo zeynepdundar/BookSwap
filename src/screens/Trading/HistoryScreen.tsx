@@ -16,6 +16,7 @@ import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { useState } from "react";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
+import { EditionEndpoints } from "../../api-endpoints";
 
 const data = [
   {
@@ -55,8 +56,8 @@ export default function HistoryScreen({ navigation }) {
       setLoading(true);
       setError(null);
       const response = await fetch(
-        `http:/localhost:3000/search/titles/${title}?page=1&page_size=10`
-      );
+        EditionEndpoints.FETCH_EDITION_BY_TITLE(title)
+        );
 
       if (!response.ok) {
         throw new Error(`HTTP request failed with status ${response.status}`);

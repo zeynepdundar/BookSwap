@@ -16,7 +16,7 @@ import { setProfileData } from "../../store/profile-slice";
 import { useState } from "react";
 
 export default function PhotoInputScreen({ navigation }) {
-  const [image, setImage] = useState<string>("");
+  const [image, setImage] = useState<any>("");
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
@@ -25,7 +25,7 @@ export default function PhotoInputScreen({ navigation }) {
   };
 
   const pressHandler = () => {
-    dispatch(setProfileData({imageData:image}));
+    dispatch(setProfileData({imageData:image.uri}));
     navigation.navigate("Wishlist");
   };
 

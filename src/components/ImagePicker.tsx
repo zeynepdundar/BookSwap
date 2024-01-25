@@ -94,13 +94,20 @@ const ImagePicker = ({ selectedImage, initialImage }: { selectedImage: (data: an
         height="120px"
         borderRadius="full"
       >
-        <Image
+{ pickedImage &&       <Image
           width="100%"
           height="100%"
           borderRadius="full"
-          source={pickedImage ? { uri: pickedImage } : avatarImage}
-          alt="image base"
-        />
+          source={{ uri: pickedImage }}
+          alt="Profile Image"
+        />}
+{   !pickedImage &&             <Image
+          width="100%"
+          height="100%"
+          borderRadius="full"
+          source={ avatarImage}
+          alt="Profile Image"
+        />}
         <Badge
           rounded="100"
           w="7"

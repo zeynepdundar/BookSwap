@@ -9,13 +9,25 @@ import {
 const initialState = {
   loading: false,
   error: null,
-  user: { id:null, isNewUser: null, firebaseUserId: null },
+  user: { id:null, isNewUser: false, firebaseUserId: null },
   authToken: null,
   phoneNumber: "",
   verificationCode: "",
   confirmationResult: null,
   isAuthenticated: false,
 };
+
+
+// const initialState = {
+//   loading: false,
+//   error: null,
+//   user: { id:"47", isNewUser: false, firebaseUserId: "7iEawsf0XagejdilXIWsxaobtBj1" },
+//   authToken: null,
+//   phoneNumber: "",
+//   verificationCode: "",
+//   confirmationResult: null,
+//   isAuthenticated: true,
+// };
 
 const authSlice = createSlice({
   name: "auth",

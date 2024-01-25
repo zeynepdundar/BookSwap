@@ -10,11 +10,12 @@ import {
   Icon,
   Box,
   AspectRatio,
+  Pressable,
 } from "native-base";
 import { InfoDialogBox } from "../InfoDialogBox";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ActionSheet } from "../ActionSheet";
-const formatText = (inputText) => {
+export const formatText = (inputText) => {
   const words = inputText.split(" ");
   const formattedWords = words.map(
     (word) => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)
@@ -27,13 +28,13 @@ interface VerticalListProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
   removeBookButton?: (id: string) => void;
   secondaryAction?: (item: any) => void;
-  // Add other props as needed
+  onNavigateList?: (item: any) => void;
 }
-
 export const VerticalList: React.FC<VerticalListProps> = ({
   data,
   removeBookButton,
   secondaryAction,
+  onNavigateList,
   ...props
 }) => {
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
@@ -129,12 +130,34 @@ export const VerticalList: React.FC<VerticalListProps> = ({
                   <Text color="#8c8c8c" fontSize="13" fontWeight="200">
                     {formatText(item.publisher)}
                   </Text>
+                  {item?.usersOwning && (
+                    <>
+                      <Spacer></Spacer>
+                      <Pressable
+                        onPress={() => {
+                          onNavigateList(item);
+                        }}
+                        borderColor="#323232"
+                        borderWidth="0.5"
+                        borderRadius="9"
+                        p="1"
+                        width="90px"
+                      >
+                        <Text
+                          alignSelf="center"
+                          color="#323232"
+                          fontSize="12px"
+                        >
+                          {item.usersOwning.length} Owner
+                        </Text>
+                      </Pressable>
+                    </>
+                  )}
                 </VStack>
                 <Spacer />
                 <VStack>
-                  {removeBookButton ? (
-                    removeBookButton(item.id)
-                  ) : (
+                  {removeBookButton && removeBookButton(item.id)}
+                  {!removeBookButton && (
                     <Icon
                       onPress={() => openActionSheet(item)}
                       name={"more-vert"}
@@ -143,6 +166,7 @@ export const VerticalList: React.FC<VerticalListProps> = ({
                       as={MaterialIcons}
                     />
                   )}
+
                   <Spacer />
                 </VStack>
               </HStack>
@@ -159,23 +183,6 @@ export const VerticalList: React.FC<VerticalListProps> = ({
           actions={actions}
         />
       )}
-
-      {/* <InfoDialogBox
-        key={selectedItem?.id}
-        isOpen={isInfoDialogOpen}
-        title={i18n.t("added")}
-        description={
-          selectedItem?.type === "wishlist"
-            ? i18n.t("the-book-added-to-wishlist")
-            : i18n.t("the-book-added-to-library")
-        }
-        confirmButtonLabel={
-          selectedItem?.type === "wishlist"
-            ? i18n.t("see-my-wishlist")
-            : i18n.t("see-my-library")
-        }
-        buttonVariant="outline"
-      /> */}
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
         onClose={closeInfoDialog}

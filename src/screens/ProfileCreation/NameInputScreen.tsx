@@ -8,9 +8,15 @@ import { setProfileData } from "../../store/profile-slice";
 
 export default function NameInputScreen({ navigation }) {
   const [name, setName] = useState<string>("");
+  const [isButtonDisabled, setButtonDisabled] = useState(true);
+
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
+  const handleNameChange = (newName: string) => {
+    setName(newName);
+    setButtonDisabled(newName.length <= 2);
+  };
 
   const pressHandler = (event: any) => {
     dispatch(setProfileData({name:name}));
@@ -36,14 +42,12 @@ export default function NameInputScreen({ navigation }) {
             color="black.400"
             textAlign="center"
             autoCorrect={false}
-            onChangeText={(enteredName) => {
-              setName(enteredName);
-            }}
+            onChangeText={handleNameChange}
           />
         </Center>
         <Spacer />
         <Center p={4}>
-          <Button variant="primary" onPress={pressHandler}>
+          <Button variant={isButtonDisabled ? 'disabled' : 'primary'} isDisabled={isButtonDisabled} onPress={pressHandler}>
             {i18n.t("continue")}
           </Button>
         </Center>

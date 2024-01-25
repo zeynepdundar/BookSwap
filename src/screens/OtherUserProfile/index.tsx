@@ -6,11 +6,11 @@ import {
   Spacer,
   ArrowBackIcon,
   Box,
-  Pressable,
   VStack,
   HStack,
-  useColorModeValue,
   Avatar,
+  Pressable,
+  useColorModeValue,
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
@@ -24,7 +24,11 @@ import OtherLibraryScreen from "./OtherUserLibraryScreen";
 import OtherWishlistScreen from "./OtherUserWishlistScreen";
 import OtherSwapHistory from "./OtherUserSwapHistory";
 
-export default function OtherUserProfileScreen({ navigation }) {
+export default function OtherUserProfileScreen({ navigation, route }) {
+
+  const userTemp = route?.params?.user;
+  console.log("UserTemp: " ,userTemp)
+
   const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
 
   const dispatch = useDispatch<AppDispatch>();
@@ -88,7 +92,6 @@ export default function OtherUserProfileScreen({ navigation }) {
               alignItems="center"
               p="3"
               mx="2"
-              cursor="pointer"
             >
               <Pressable
             

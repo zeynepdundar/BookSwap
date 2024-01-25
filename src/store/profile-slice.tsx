@@ -2,24 +2,64 @@ import { createSlice, current } from "@reduxjs/toolkit";
 import {
   addBookToLibraryAsync,
   addBookToWishlistAsync,
+  fetchReceivedOfferAsync,
+  fetchUserProfileAsync,
   removeBookFromLibraryAsync,
   removeBookFromWishlistAsync,
-  updateUserProfileAsync,
 } from "./profile-actions";
 
-const initialState = {
+// const initialState = {
+//   loading: false,
+//   error: null,
+//   profile: {
+//     id: "47",
+//     name: "Zeynep47",
+//     birthdate: "",
+//     imageData: null,
+//     gender: "",
+//     languagePreference: "tr",
+//     wishlistBook: [],
+//     libraryBook: [],
+//     pushToken: "",
+
+//     receivedOfferIds: [], // Add this line for received trade ids
+//     sentOfferIds: [], // Add this line for sent trade ids
+//   },
+// };
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  birthdate: string;
+  imageData: string | null;
+  gender: string;
+  languagePreference: string;
+  wishlistBook: any[];
+  libraryBook: any[];
+  receivedOffer?;
+  sentOffer?;
+}
+interface ProfileState {
+  loading: boolean;
+  error: null | Error;
+  profile?: UserProfile;
+}
+const initialState: ProfileState = {
   loading: false,
-  error: null,
+  error: null as { name: string; message: string } | null,
+  // profile: null as UserProfile | null,
   profile: {
-    id: null,
-    name: "Zeynep Dündar",
+    id: "",
+    name: "",
     birthdate: "",
     imageData: null,
     gender: "",
-    languagePreference: "tr",
+    languagePreference: "",
     wishlistBook: [],
     libraryBook: [],
-    pushToken: "",
+
+    receivedOffer: [], // Add this line for received trade ids
+    sentOffer: [], // Add this line for sent trade ids
   },
 };
 
@@ -53,11 +93,9 @@ const profileSlice = createSlice({
         languagePreference: "",
         wishlistBook: [],
         libraryBook: [],
-        pushToken: "",
+        receivedOffer: [],
+        sentOffer: [],
       };
-    },
-    setPushToken: (state, action) => {
-      state.profile.pushToken = action.payload;
     },
     removeBookFromList: (state, action) => {
       initialState.profile.wishlistBook.filter((id) => id !== id);
@@ -76,26 +114,13 @@ const profileSlice = createSlice({
   extraReducers: (builder) => {
     builder
       //Add authenticated user to db
-      .addCase(updateUserProfileAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateUserProfileAsync.fulfilled, (state, action) => {
-        state.loading = false;
-        // state.userData = action.payload;
-      })
-      .addCase(updateUserProfileAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error;
-      })
-
       .addCase(addBookToWishlistAsync.fulfilled, (state, action) => {
         state.profile.wishlistBook.push({ ...action.payload });
       })
 
       .addCase(addBookToLibraryAsync.fulfilled, (state, action) => {
         state.profile.libraryBook.push({ ...action.payload });
-        console.log("addBookToLibraryAsync:", current(state.profile));
+        // console.log("addBookToLibraryAsync:", current(state.profile));
       })
 
       .addCase(removeBookFromLibraryAsync.fulfilled, (state, action) => {
@@ -111,13 +136,34 @@ const profileSlice = createSlice({
         );
       })
 
+      .addCase(fetchReceivedOfferAsync.fulfilled, (state, action) => {
+        state.profile.receivedOffer = action.payload;
+        console.log("fetchReceivedOfferAsync:", current(state.profile));
+
+      })
+      .addCase(fetchUserProfileAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserProfileAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.profile = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchUserProfileAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as {
+          name: string;
+          message: string;
+        } | null;
+        state.profile = null;
+      });
   },
 });
 
 export const {
   setProfileData,
   setLanguagePreference,
-  setPushToken,
   clearProfileData,
   removeBookFromList,
 } = profileSlice.actions;

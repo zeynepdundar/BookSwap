@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Center,
@@ -17,17 +17,18 @@ import { HorizontalCoverList } from "../../components/shared/HorizontalCoverList
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { setProfileData } from "../../store/profile-slice";
-import { updateUserProfileAsync } from "../../store/profile-actions";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import { setIsNewUser } from "../../store/auth-slice";
+import { updateUserProfileData } from "../../apiService";
 
 
 export default function LibraryInputScreen({ navigation }) {
   const [selectedBooks, setSelectedBooks] = useState([]);
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
-  const { profile, loading } = useSelector((state: any) => state.profile);
-
+  const { loading: authLoading } = useSelector((state: any) => state.auth);
+  const { profile } = useSelector((state: any) => state.profile);
+  
   const handleAddToLibrary = (data) => {
     setSelectedBooks(data);
   };
@@ -39,11 +40,13 @@ export default function LibraryInputScreen({ navigation }) {
   };
   const pressHandler = () => {
     dispatch(setProfileData({libraryBook:selectedBooks}));
-    dispatch(updateUserProfileAsync(profile));
-    dispatch(setIsNewUser(false));
-    console.log(profile);
+    updateUserProfileData(profile)
+    dispatch(setIsNewUser(false))
   };
-  if (loading) {
+
+
+  
+  if (authLoading ) {
     // We haven't finished checking for the token yet
     return <LoadingOverlay></LoadingOverlay>
   }

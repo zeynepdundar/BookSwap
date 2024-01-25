@@ -2,7 +2,7 @@ import { AlertDialog, Button } from "native-base";
 
 export const AlertDialogBox = ({ isOpen, onConfirm, onClose, cancelButtonLabel, confirmButtonLabel, title, description }) => {
   return (
-    <AlertDialog leastDestructiveRef={null} isOpen={isOpen} onClose={onClose}>
+    <AlertDialog leastDestructiveRef={null} isOpen={isOpen} onClose={onClose} w="435px" alignSelf="center">
       <AlertDialog.Content>
         <AlertDialog.CloseButton />
         <AlertDialog.Header

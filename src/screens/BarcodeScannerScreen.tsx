@@ -17,6 +17,7 @@ import {
   Alert,
 } from "native-base";
 import i18n from "../i18n";
+import { EditionEndpoints } from "../api-endpoints";
 
 export default function BarcodeScannerScreen({ navigation, route = null }) {
   const mode = route?.params?.relatedScreen;
@@ -30,8 +31,7 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
   const fetchEditions = async (isbn_13) => {
     try {
       console.log("Fetching from API...");
-      const response = await fetch(
-        `http://3.76.204.31:4000/editions/${isbn_13}`
+      const response = await fetch(EditionEndpoints.FETCH_EDITION_BY_ISBN(isbn_13)
       );
       const json = await response.json();
       console.log("json: ", json, isbn_13);
@@ -67,7 +67,7 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
     const key = "isbn";
     const value = isbn_13;
     const size = "M";
-    let coverUrl = `https://covers.openlibrary.org/b/${key}/${value}-${size}.jpg`;
+    let coverUrl = EditionEndpoints.FETCH_COVER(key, value, size);
 
     fetchEditions(data)
       .then((fetchedEditions) => {
