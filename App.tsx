@@ -12,7 +12,7 @@ import store, { AppDispatch } from "./src/store/store";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
-import { setPushToken } from "./src/store/profile-slice";
+import { setToken } from "./src/store/auth-slice";
 
 ///  PUSH NOTIFICATIONS - START  ///
 
@@ -63,7 +63,6 @@ export async function registerForPushNotificationsAsync() {
 
 export default function App() {
   ///  PUSH NOTIFICATIONS - START  ///
-  const [expoPushToken, setExpoPushToken] = useState("");
   const notificationListener = useRef<Notifications.Subscription | null>(null);
   const responseListener = useRef<Notifications.Subscription | null>(null);
   const [notification, setNotification] =
@@ -126,14 +125,15 @@ export default function App() {
   }
 
   function Root() {
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
       async function fetchToken() {
-        // const storedToken = await AsyncStorage.getItem("authToken");
-        //  await AsyncStorage.removeItem("authToken");
-        // if (storedToken) {
-        //   // dispatch(setToken(storedToken));
-        // }
+        const storedToken = await AsyncStorage.getItem("authToken");
+         await AsyncStorage.removeItem("authToken");
+        if (storedToken) {
+          dispatch(setToken(storedToken));
+        }
       }
       fetchToken();
     }, []);

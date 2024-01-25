@@ -19,8 +19,8 @@ import { VerticalList } from "../../components/shared/VerticalList";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { removeBookFromLibraryAsync } from "../../store/profile-actions";
-import { useNavigationState } from '@react-navigation/native';
-
+import { useNavigationState } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 
 export const RemoveBookButton = ({ onPress }) => (
   <Icon
@@ -34,21 +34,34 @@ export const RemoveBookButton = ({ onPress }) => (
 );
 
 export default function LibraryScreen({ navigation }) {
-  const { libraryBook } = useSelector((state: any) => state.profile.profile);
-
   const dispatch = useDispatch<AppDispatch>();
   const navigationState = useNavigationState((state) => state);
 
 
-  const showFab =
-  navigationState.routes[navigationState.index - 1]?.name === 'Profile';
+  const { libraryBook } = useSelector((state: any) => state.profile.profile);
+  const [selectedBooks, setSelectedBooks] = useState(libraryBook);
 
+  const showFab =
+    navigationState.routes[navigationState.index - 1]?.name === "Profile";
 
   const removeBookButton = (id) => (
     <RemoveBookButton
       onPress={() => dispatch(removeBookFromLibraryAsync(id))}
     />
   );
+
+  const handleAddToLibrary = (books) => {
+    setSelectedBooks((prevList) => [...prevList, ...books]);
+  };
+
+  useEffect(() => {
+    return () => {
+      // Cleanup or additional actions when the component is unmounted
+      // Make your API call to update user libraryBook here
+      // For example, you can dispatch an action to update the libraryBook in Redux
+      dispatch(updateLibraryBookAsync(selectedBooks));
+    };
+  }, [dispatch, selectedBooks]);
 
   return (
     <Screen>
@@ -70,7 +83,7 @@ export default function LibraryScreen({ navigation }) {
         <Heading>{i18n.t("my-library")}</Heading>
         <Spacer></Spacer>
       </HStack>
-      {libraryBook.length === 0 && (
+      {selectedBooks.length === 0 && (
         <VStack width="100%" height={200} mt="100">
           <Center>
             <Icon
@@ -93,19 +106,25 @@ export default function LibraryScreen({ navigation }) {
         </VStack>
       )}
 
-      {libraryBook.length > 0 && (
+      {selectedBooks.length > 0 && (
         <Center>
           <VerticalList
-            data={libraryBook}
+            data={selectedBooks}
             removeBookButton={removeBookButton}
           />
         </Center>
       )}
-      {showFab && (
+      {true && (
         <Fab
+          // onPress={() =>
+          //   navigation.navigate('BookSearch', {
+          //     relatedScreen: 'Library',
+          //   })
+          // }
           onPress={() =>
-            navigation.navigate('BookSearch', {
-              relatedScreen: 'Library',
+            navigation.navigate("BookSearchFromList", {
+              relatedScreen: "Library",
+              onDonePress: handleAddToLibrary,
             })
           }
           renderInPortal={false}

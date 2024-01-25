@@ -16,9 +16,9 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 import { setProfileData } from "../../store/profile-slice";
 
 export default function BirthdateInputScreen({ navigation }) {
-  const [birthDay, setBirthDay] = useState<any>('');
-  const [birthMonth, setBirthMonth] = useState<any>('');
-  const [birthYear, setBirthYear] = useState<any>('');
+  const [birthDay, setBirthDay] = useState<any>("");
+  const [birthMonth, setBirthMonth] = useState<any>("");
+  const [birthYear, setBirthYear] = useState<any>("");
 
   const dayInputRef = useRef(null);
   const monthInputRef = useRef(null);
@@ -31,6 +31,7 @@ export default function BirthdateInputScreen({ navigation }) {
   const maxYear = currentYear;
 
   const mergeDate = () => `${birthYear}-${birthMonth}-${birthDay}`;
+  const isInputProvided = birthDay && birthMonth && birthYear;
 
   useEffect(() => {
     if (birthDay.length === 2) {
@@ -43,7 +44,6 @@ export default function BirthdateInputScreen({ navigation }) {
       yearInputRef.current?.focus();
     }
   }, [birthMonth]);
-
 
   const pressHandler = () => {
     dispatch(setProfileData({ birthdate: mergeDate() }));
@@ -72,10 +72,25 @@ export default function BirthdateInputScreen({ navigation }) {
         <Center w="100%" h="20" px={8}>
           <Flex direction="row" justifyContent="justify" width={190}>
             {[
-            { state: birthDay, setState: setBirthDay, ref: dayInputRef, placeholder: "DD" },
-            { state: birthMonth, setState: setBirthMonth, ref: monthInputRef, placeholder: "MM" },
-            { state: birthYear, setState: setBirthYear, ref: yearInputRef, placeholder: "YYYY" },
-          ].map((input, index) => (
+              {
+                state: birthDay,
+                setState: setBirthDay,
+                ref: dayInputRef,
+                placeholder: "DD",
+              },
+              {
+                state: birthMonth,
+                setState: setBirthMonth,
+                ref: monthInputRef,
+                placeholder: "MM",
+              },
+              {
+                state: birthYear,
+                setState: setBirthYear,
+                ref: yearInputRef,
+                placeholder: "YYYY",
+              },
+            ].map((input, index) => (
               <React.Fragment key={index}>
                 <Input
                   value={input.state}
@@ -91,7 +106,7 @@ export default function BirthdateInputScreen({ navigation }) {
                   textAlign="center"
                   px={index === 2 ? 0 : 1}
                   onChangeText={(enteredText) => {
-                    const numericValue = enteredText.replace(/[^0-9]/g, '');
+                    const numericValue = enteredText.replace(/[^0-9]/g, "");
                     input.setState(numericValue);
                   }}
                   ref={input.ref}
@@ -103,7 +118,11 @@ export default function BirthdateInputScreen({ navigation }) {
         </Center>
         <Spacer />
         <Center p={4}>
-          <Button variant="primary" onPress={pressHandler}>
+          <Button
+            variant={isInputProvided ? "primary" : "disabled"}
+            isDisabled={!isInputProvided}
+            onPress={pressHandler}
+          >
             {i18n.t("continue")}
           </Button>
         </Center>

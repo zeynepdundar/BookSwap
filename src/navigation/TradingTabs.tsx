@@ -4,8 +4,8 @@ import { Dimensions } from "react-native";
 import Screen from "../components/Screen";
 import i18n from "../i18n";
 import HistoryScreen from "../screens/Trading/HistoryScreen";
-import ProposeScreen from "../screens/Trading/ProposeScreen";
-import RequestScreen from "../screens/Trading/RequestScreen";
+import SentScreen from "../screens/Trading/SentScreen";
+import ReceivedScreen from "../screens/Trading/ReceivedScreen";
 
 const Tab = createMaterialTopTabNavigator();
 const { width, height } = Dimensions.get("window");
@@ -38,12 +38,12 @@ export default function TradingTabs() {
       >
         <Tab.Screen
           name="Request"
-          component={RequestScreen}
+          component={ReceivedScreen}
           options={{ tabBarLabel: i18n.t("received") }}
         />
         <Tab.Screen
           name="Propose"
-          component={ProposeScreen}
+          component={SentScreen}
           options={{ tabBarLabel: i18n.t("sent") }}
         />
         <Tab.Screen

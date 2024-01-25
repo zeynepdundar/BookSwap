@@ -103,7 +103,7 @@ export default function OtherUserWishlistScreen() {
   return (
     <Screen>
       <Center>
-        <VerticalList data={data} secondaryAction>{sendOfferButton}</VerticalList>
+        <VerticalList data={[]} secondaryAction>{sendOfferButton}</VerticalList>
       </Center>
     </Screen>
   );

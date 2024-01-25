@@ -65,7 +65,7 @@ export default function OtherUserLibraryScreen() {
   return (
     <Screen>
       <Center>
-        <VerticalList data={books} secondaryAction>{sendOfferButton}</VerticalList>
+        <VerticalList data={[]} secondaryAction>{sendOfferButton}</VerticalList>
       </Center>
     </Screen>
   );

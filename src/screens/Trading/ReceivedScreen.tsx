@@ -1,3 +1,4 @@
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import {
   AspectRatio,
   Avatar,
@@ -12,9 +13,12 @@ import {
   Text,
   VStack,
 } from "native-base";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import i18n from "../../i18n";
+import { fetchReceivedOfferAsync } from "../../store/profile-actions";
 
-const DUMMY_SENT = [
+const DUMMY_RECEIVED = [
   {
     id: "1",
     senderProfile: { name: "Lalo Salamanca", profileUrl: "" },
@@ -48,18 +52,60 @@ const DUMMY_SENT = [
     },
   },
 ];
-
-export default function ProposeScreen({ navigation }) {
+[
+  {
+      "created_at": "Tue, 26 Dec 2023 10:31:36 GMT",
+      "id": 3,
+      "offered_editions": [
+          {
+              "author": "Selçuk Demirel",
+              "cover_id": null,
+              "isbn_10": [
+                  "906252592X"
+              ],
+              "isbn_13": null,
+              "title": "Moumouk and the letters."
+          }
+      ],
+      "receiver_id": 1,
+      "receiver_user_name": "Luxian",
+      "requested_editions": [
+          {
+              "author": "Cengiz Abbasgil",
+              "cover_id": null,
+              "isbn_10": [
+                  "9753670168"
+              ],
+              "isbn_13": null,
+              "title": "İş hukukunda bütün yönleriyle kıdem tazminatı ve uygulaması"
+          }
+      ],
+      "sender_id": 2,
+      "sender_user_name": "Lucian"
+  }
+]
+export default function ReceivedScreen({ navigation }) {
   const tra = require("../../assets/images/icon/Icons.png");
   const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
+  const receivedOffers = useSelector((state:any) => state.profile);
+
+
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+
+
+  useEffect(() => {
+    // Fetch received offers when the component mounts
+    // dispatch(fetchReceivedOfferAsync("1"));
+    console.log("Received offers",receivedOffers);
+  }, [receivedOffers]);
 
   return (
     <FlatList
       maxWidth="100%"
       bg="#fff"
       height="75%"
-      data={DUMMY_SENT}
+      data={receivedOffers}
       showsVerticalScrollIndicator={false}
       pt="3"
       renderItem={({ item }) => (
@@ -93,7 +139,7 @@ export default function ProposeScreen({ navigation }) {
                   fontSize="14px"
                   mx="1"
                 >
-                  {item.senderProfile.name}
+                  {item.receiverUser.name}
                 </Text>
                 <Text
                   onPress={() => navigation.navigate("Library")}
@@ -115,8 +161,8 @@ export default function ProposeScreen({ navigation }) {
             pt="6"
             pb="2"
             borderColor="coolGray.200"
-            shadow="2"
             width="90%"
+            shadow="2"
             alignSelf="center"
             maxW="80"
             top="-12"
@@ -133,11 +179,11 @@ export default function ProposeScreen({ navigation }) {
                     }}
                     width={"100%"}
                   >
-                    <Image
+                    {/* <Image
                       source={{ uri: item.offeredBook.coverUrl }}
                       alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
                       roundedRight="6"
-                    />
+                    /> */}
                   </AspectRatio>
                   <Text color="#000000" fontSize="14" fontWeight={600}>
                     {item.offeredBook.title}
@@ -156,11 +202,11 @@ export default function ProposeScreen({ navigation }) {
                     }}
                     width={"100%"}
                   >
-                    <Image
+                    {/* <Image
                       source={{ uri: item.requestedBook.coverUrl }}
                       alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
                       roundedRight="6"
-                    />
+                    /> */}
                   </AspectRatio>
                   <Text color="#000000" fontSize="14" fontWeight={600}>
                     {item.requestedBook.title}
@@ -171,9 +217,23 @@ export default function ProposeScreen({ navigation }) {
                 </VStack>
               </HStack>
               {/* <Divider my={3} color="#E5E7F3" thickness="1" /> */}
-              <Flex direction="row" marginLeft="auto" pt="3">
-                <Button variant="outline" onPress={() => navigation.goBack()}>
-                  {i18n.t("take-back")}
+              <Flex direction="row" justifyContent="space-between" pt="3">
+                <Button
+                  variant="ghost"
+                  _text={{ color: "#9395A4" }}
+                  onPress={() => navigation.goBack()}
+                >
+                  {i18n.t("decline")}
+                </Button>
+                <Divider
+                  color="#E5E7F3"
+                  thickness="1"
+                  orientation="vertical"
+                  height={6}
+                  marginY="2"
+                />
+                <Button variant="ghost" onPress={() => navigation.goBack()}>
+                  {i18n.t("accept")}
                 </Button>
               </Flex>
             </VStack>

@@ -14,7 +14,7 @@ import {
 } from "native-base";
 import i18n from "../../i18n";
 
-const DUMMY_RECEIVED = [
+const DUMMY_SENT = [
   {
     id: "1",
     senderProfile: { name: "Lalo Salamanca", profileUrl: "" },
@@ -48,7 +48,8 @@ const DUMMY_RECEIVED = [
     },
   },
 ];
-export default function RequestScreen({ navigation }) {
+
+export default function SentScreen({ navigation }) {
   const tra = require("../../assets/images/icon/Icons.png");
   const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
@@ -58,7 +59,7 @@ export default function RequestScreen({ navigation }) {
       maxWidth="100%"
       bg="#fff"
       height="75%"
-      data={DUMMY_RECEIVED}
+      data={DUMMY_SENT}
       showsVerticalScrollIndicator={false}
       pt="3"
       renderItem={({ item }) => (
@@ -114,8 +115,8 @@ export default function RequestScreen({ navigation }) {
             pt="6"
             pb="2"
             borderColor="coolGray.200"
-            width="90%"
             shadow="2"
+            width="90%"
             alignSelf="center"
             maxW="80"
             top="-12"
@@ -170,23 +171,9 @@ export default function RequestScreen({ navigation }) {
                 </VStack>
               </HStack>
               {/* <Divider my={3} color="#E5E7F3" thickness="1" /> */}
-              <Flex direction="row" justifyContent="space-between" pt="3">
-                <Button
-                  variant="ghost"
-                  _text={{ color: "#9395A4" }}
-                  onPress={() => navigation.goBack()}
-                >
-                  {i18n.t("decline")}
-                </Button>
-                <Divider
-                  color="#E5E7F3"
-                  thickness="1"
-                  orientation="vertical"
-                  height={6}
-                  marginY="2"
-                />
-                <Button variant="ghost" onPress={() => navigation.goBack()}>
-                  {i18n.t("accept")}
+              <Flex direction="row" marginLeft="auto" pt="3">
+                <Button variant="outline" onPress={() => navigation.goBack()}>
+                  {i18n.t("take-back")}
                 </Button>
               </Flex>
             </VStack>

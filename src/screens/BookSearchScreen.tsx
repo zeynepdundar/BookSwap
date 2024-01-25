@@ -30,6 +30,7 @@ import {
   addBookToLibraryAsync,
   addBookToWishlistAsync,
 } from "../store/profile-actions";
+import { EditionEndpoints } from "../api-endpoints";
 
 export default function BookSearchScreen({ navigation, route = null }) {
   const { relatedScreen, onDonePress } = route.params;
@@ -50,14 +51,18 @@ export default function BookSearchScreen({ navigation, route = null }) {
     else if (selectedItem.type === "library")
       dispatch(addBookToLibraryAsync(selectedItem));
   };
+  const navigateUserList = (item) => {
+    console.log("navigateUserList", item);
+    navigation.navigate("UserList", {
+      data: item,
+    });  };
 
   const fetchBooks = async (title) => {
-    const apiUrl = `http://localhost:4000/search/titles/${title}?page=1&page_size=1000`;
 
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(apiUrl);
+      const response = await fetch(EditionEndpoints.FETCH_EDITION_BY_TITLE(title));
 
       if (!response.ok) {
         throw new Error(`HTTP request failed with status ${response.status}`);
@@ -76,11 +81,13 @@ export default function BookSearchScreen({ navigation, route = null }) {
         // isbn_13: item.isbn_13 || item.isbn_11,
         coverUrl:
           item.isbn_13 && item.isbn_13 > 0
-            ? `https://covers.openlibrary.org/b/isbn/${item.isbn_13}-M.jpg`
+            ? EditionEndpoints.FETCH_COVER(undefined,item.isbn_13)
             : null,
         author: item.author ? item.author : "",
+        usersOwning: item.users_owning,
       }));
 
+      console.log("Transformed data", data);
       setSearchResults(transformedData);
       setLoading(false);
 
@@ -282,6 +289,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
               <VerticalList
                 data={searchResults}
                 secondaryAction={addBookToListHandler}
+                onNavigateList={navigateUserList}
               ></VerticalList>
             </>
           )}

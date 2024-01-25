@@ -57,15 +57,19 @@
   "take-back": "Geri Al",
   "find-favorite-books": "Favori kitaplarını keşfet",
   "add-books-to-your-lists-to-start-swap": "İstek listene ya da kitaplığına kitap ekleyerek takas etmeye başla!",
-  "add-books-to-your-wishlist-to-start-swap":"İstek listene kitap ekleyerek takas etmeye başla!",
-  "add-books-to-your-library-to-start-swap":"Kitaplığına kitap ekleyerek takas etmeye başla!",
+  "add-books-to-your-wishlist-to-start-swap": "İstek listene kitap ekleyerek takas etmeye başla!",
+  "add-books-to-your-library-to-start-swap": "Kitaplığına kitap ekleyerek takas etmeye başla!",
   "no-results-for": "Aradığın kitap ismi için sonuç bulunamadı: ",
   "we-do-not-have-the-book-yet": "Henüz bu kitap listemizde bulunmuyor.",
   "turkish": "Türkçe",
   "english": "İngilizce",
-  "the-book-added-to-wishlist":"Kitap istek listene eklendi!",
-  "the-book-added-to-library":"Kitap kitaplığına eklendi!",
-  "see-my-wishlist":"İstek listeme git",
-  "see-my-library":"Kitaplığıma git"
-
+  "the-book-added-to-wishlist": "Kitap istek listene eklendi!",
+  "the-book-added-to-library": "Kitap kitaplığına eklendi!",
+  "see-my-wishlist": "İstek listeme git",
+  "see-my-library": "Kitaplığıma git",
+  "trade-proposal": "Takas Teklifi",
+  "book-you-will-give": "Vereceğin kitap",
+  "book-you-will-receive": "Alacağın kitap",
+  "library-empty": "Kitaplığın Boş",
+  "add-books-to-your-library-before-sending-an-offer": "Takas isteği göndermeden önce kitaplığına kitap ekle"
 }

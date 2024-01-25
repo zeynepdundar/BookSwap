@@ -12,6 +12,9 @@ import ProfileStack from "./ProfileStack";
 import OtherUserProfileScreen from "../screens/OtherUserProfile";
 import ChatScreen from "../screens/Messages/ChatScreen";
 import BookSearchOnCreationScreen from "../screens/ProfileCreation/BookSearchOnCreationScreen";
+import TradeProposal from "../screens/TradeProposal";
+import LibraryScreen from "../screens/Profile/LibraryScreen";
+import OtherLibraryScreen from "../screens/OtherLibraryScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +37,10 @@ export default function Navigation() {
           headerShown: false,
         }}
       >
+                          <Stack.Screen
+                    name="ProfileCreation"
+                    component={ProfileCreationStack}
+                  />
         {isAuthenticated ? (
           <>
             {user.isNewUser && (
@@ -54,7 +61,7 @@ export default function Navigation() {
                 </Stack.Group>
               </>
             )}
-            {!user.isNewUser  && (
+            {!user.isNewUser && (
               <>
                 <Stack.Group>
                   <Stack.Screen name="HomeTabs" component={HomeTabs} />
@@ -68,10 +75,22 @@ export default function Navigation() {
                     name="BarcodeScanner"
                     component={BarcodeScannerScreen}
                   />
+                    <Stack.Screen
+                    name="BookSearchFromList"
+                    component={BookSearchOnCreationScreen}
+                  ></Stack.Screen>
                   <Stack.Screen
                     name="BookSearch"
                     component={BookSearchScreen}
                   ></Stack.Screen>
+                  <Stack.Screen
+                    name="TradeProposal"
+                    component={TradeProposal}
+                  ></Stack.Screen>
+                  <Stack.Screen
+                    name="OtherLibrary"
+                    component={OtherLibraryScreen}
+                  />
                 </Stack.Group>
               </>
             )}

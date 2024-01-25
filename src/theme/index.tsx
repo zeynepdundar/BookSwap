@@ -113,6 +113,15 @@ export const theme = extendTheme({
             },
           };
         },
+        disabled: () => {
+          return {
+            bg: "primary.50",
+            borderColor: "primary.50",
+            _text: {
+              color: "#fff",
+            },
+          };
+        },
       },
     },
     Heading: {

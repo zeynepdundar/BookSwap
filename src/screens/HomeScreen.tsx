@@ -14,13 +14,14 @@ import Screen from "../components/Screen";
 import { HorizontalCoverList } from "../components/shared/HorizontalCoverList";
 import SearchBar from "../components/shared/SearchBar";
 import { useSelector } from "react-redux";
+import { LoadingOverlay } from "../components/LoadingOverlay";
 
 export default function HomeScreen({ navigation }) {
   const jesse = require("../assets/images/jesse-pinkman.png");
 
-  const { name, imageData } = useSelector((state: any) => state.profile.profile);
+  const { profile, loading: profileLoading  } = useSelector((state: any) => state.profile);
 
-  console.log("HomeScreen", imageData);
+  console.log("Loading profile",profile);
 
   const data = [
     {
@@ -58,14 +59,18 @@ export default function HomeScreen({ navigation }) {
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU",
     },
   ];
-
+  
+  if (profileLoading ) {
+    // We haven't finished checking for the token yet
+    return <LoadingOverlay></LoadingOverlay>
+  }
   return (
     <Screen>
       <Flex direction="row" justifyContent="space-between" alignItems="center">
         <Flex my="4">
           <Heading color="coolGray.800">{i18n.t("hello")}</Heading>
           <Text color="coolGray.800" fontWeight="500" fontSize={16}>
-            {name}
+            {profile.name}
           </Text>
         </Flex>
         <Pressable
@@ -73,7 +78,7 @@ export default function HomeScreen({ navigation }) {
             navigation.navigate("ProfileStack", { screen: "Profile" })
           }
         >
-          {/* <Image source={{uri:imageData.uri}} alt="Notification" size={10} rounded="7"/> */}
+          <Image source={{uri:profile.imageData}} alt="Profile Image" size={10} rounded="7"/>
         </Pressable>
       </Flex>
       <SearchBar

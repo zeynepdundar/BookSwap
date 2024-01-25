@@ -23,6 +23,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Screen from "../../components/Screen";
 import i18n from "../../i18n";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
+import { EditionEndpoints } from "../../api-endpoints";
 
 
 const formatText = (inputText) => {
@@ -114,12 +115,11 @@ export default function BookSearchOnCreationScreen({
   };
 
   const fetchBooks = async (title) => {
-    const apiUrl = `http://localhost:4000/search/titles/${title}?page=1&page_size=1000`;
-
+    
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(apiUrl);
+      const response = await fetch(EditionEndpoints.FETCH_EDITION_BY_TITLE(title));
 
       if (!response.ok) {
         throw new Error(`HTTP request failed with status ${response.status}`);
@@ -138,8 +138,8 @@ export default function BookSearchOnCreationScreen({
         // isbn_13: item.isbn_13 || item.isbn_11,
         coverUrl:
           item.isbn_13 && item.isbn_13 > 0
-            ? `https://covers.openlibrary.org/b/isbn/${item.isbn_13}-M.jpg`
-            : null,
+          ? EditionEndpoints.FETCH_COVER(undefined,item.isbn_13)
+          : null,
         author: item.author ? item.author : "",
       }));
 

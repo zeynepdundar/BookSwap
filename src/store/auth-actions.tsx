@@ -4,8 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setIsNewUser, setPhoneNumber, setToken, setUser } from "./auth-slice";
 import { fetchUserProfileAsync } from "./profile-actions";
 import { setProfileData } from "./profile-slice";
-
-const API_ENDPOINT = "http://localhost:5001";
+import { AuthEndpoints } from "../api-endpoints";
 
 export const verifyPhoneNumber = createAsyncThunk(
   "auth/verifyPhoneNumber",
@@ -66,7 +65,6 @@ export const checkVerificationCode = createAsyncThunk(
       if (isNewUser) thunkAPI.dispatch(addUserToDatabaseAsync(user.token));
       else {
         thunkAPI.dispatch(fetchUserProfileAsync(firebaseUserId));
-        thunkAPI.dispatch(setIsNewUser(false));
       }
       
       thunkAPI.dispatch(setToken(user.token));
@@ -128,7 +126,7 @@ export const addUserToDatabaseAsync = createAsyncThunk(
   "auth/addUserToDatabase",
   async (token: string, thunkAPI) => {
     try {
-      const response = await fetch(`${API_ENDPOINT}/create_user`, {
+      const response = await fetch(AuthEndpoints.ADD_USER_TO_DATABASE, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -138,14 +136,14 @@ export const addUserToDatabaseAsync = createAsyncThunk(
 
       const result = await response.json();
 
-      // if (!response.ok) {
-      //   throw new Error("Failed to create user");
-      // }
+      if (!response.ok) {
+        throw new Error("Failed to create user");
+      }
       console.log("New user is added to database with", result.user_id);
       thunkAPI.dispatch(setProfileData({id: result.user_id}));
       return result;
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
       throw error;
     }
   }
