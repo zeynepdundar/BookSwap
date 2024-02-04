@@ -46,11 +46,11 @@ export default function AuthVerificationScreen({ navigation }) {
     // setPhoneNumber("");
   };
 
+  //Check if later, now not seem to be working on firebase
   const handleResendVerificationCode = () => {
     // Check if confirmationResult is available
     if (confirmationResult) {
       // Dispatch the async thunk to resend the verification code
-      dispatch(resendVerificationCode());
     } else {
       // Handle the case where confirmationResult is not available
       console.error("Confirmation result is not available.");
@@ -102,7 +102,7 @@ export default function AuthVerificationScreen({ navigation }) {
                   }}
                   offset={20}
                   textProps={{
-                    maxLength: 20,
+                    maxLength:17,
                   }}
                   autoFormat={true}
                 />
@@ -159,7 +159,7 @@ export default function AuthVerificationScreen({ navigation }) {
                 dispatch(setVerificationCode(numericValue));
               }}
             />
-            <Center>
+            {/* <Center>
               <Text
                 color="black.300"
                 mt="5"
@@ -168,9 +168,9 @@ export default function AuthVerificationScreen({ navigation }) {
                 }}
               >
                 {i18n.t("resend-code-text-1")}
-                <Text color="primary.50">{i18n.t("resend-code-text-2")}</Text>
+                <Text color="primary.50"> {i18n.t("resend-code-text-2")}</Text>
               </Text>
-            </Center>
+            </Center> */}
             <Center mt={10}>
               <Button
                 variant="primary"

@@ -18,9 +18,9 @@ import Screen from "../../components/Screen";
 import { VerticalList } from "../../components/shared/VerticalList";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import {  removeBookFromWishlistAsync } from "../../store/profile-actions";
-import { useNavigationState } from '@react-navigation/native';
-
+import { removeBookFromListAsync } from "../../store/profile-actions";
+import { useNavigationState } from "@react-navigation/native";
+import { WISHLIST } from "../../store/profile-slice";
 
 export const RemoveBookButton = ({ onPress }) => (
   <Icon
@@ -37,17 +37,17 @@ export default function WishlistScreen({ navigation }) {
   const { wishlistBook } = useSelector((state: any) => state.profile.profile);
 
   const dispatch = useDispatch<AppDispatch>();
-  
+
   const navigationState = useNavigationState((state) => state);
 
-
   const showFab =
-  navigationState.routes[navigationState.index - 1]?.name === 'Profile';
+    navigationState.routes[navigationState.index - 1]?.name === "Profile";
 
-
-  const removeBookButton = (id) => (
+  const removeBookButton = (book) => (
     <RemoveBookButton
-      onPress={() => dispatch(removeBookFromWishlistAsync(id))}
+      onPress={() =>
+        dispatch(removeBookFromListAsync({ ...book, listType: WISHLIST }))
+      }
     />
   );
 
@@ -105,8 +105,8 @@ export default function WishlistScreen({ navigation }) {
       {showFab && (
         <Fab
           onPress={() =>
-            navigation.navigate('BookSearch', {
-              relatedScreen: 'Wishlist',
+            navigation.navigate("BookSearch", {
+              relatedScreen: "Wishlist",
             })
           }
           renderInPortal={false}

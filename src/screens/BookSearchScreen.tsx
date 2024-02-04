@@ -1,22 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  Button,
   Heading,
-  Image,
-  FlatList,
   Box,
   Text,
   VStack,
-  HStack,
   Flex,
-  Pressable,
-  Spacer,
   WarningTwoIcon,
   Center,
   Icon,
   Divider,
   Input,
-  AspectRatio,
 } from "native-base";
 
 import { MaterialIcons } from "@expo/vector-icons";
@@ -26,16 +19,11 @@ import { LoadingOverlay } from "../components/LoadingOverlay";
 import { VerticalList } from "../components/shared/VerticalList";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store/store";
-import {
-  addBookToLibraryAsync,
-  addBookToWishlistAsync,
-} from "../store/profile-actions";
-import { EditionEndpoints } from "../api-endpoints";
+import { fetchBooksByTitle } from "../api/service";
+import { addBookToListAsync } from "../store/profile-actions";
 
 export default function BookSearchScreen({ navigation, route = null }) {
   const { relatedScreen, onDonePress } = route.params;
-
-  const importUrl = require("../assets/images/no-cover-available.png");
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,69 +32,28 @@ export default function BookSearchScreen({ navigation, route = null }) {
   const [selectedBooks, setSelectedBooks] = useState([]);
 
   const dispatch = useDispatch<AppDispatch>();
-
   const addBookToListHandler = (selectedItem: any) => {
-    if (selectedItem.type === "wishlist")
-      dispatch(addBookToWishlistAsync(selectedItem));
-    else if (selectedItem.type === "library")
-      dispatch(addBookToLibraryAsync(selectedItem));
+     dispatch(addBookToListAsync(selectedItem));
   };
   const navigateUserList = (item) => {
     console.log("navigateUserList", item);
     navigation.navigate("UserList", {
       data: item,
-    });  };
+    });
+  };
 
   const fetchBooks = async (title) => {
-
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch(EditionEndpoints.FETCH_EDITION_BY_TITLE(title));
-
-      if (!response.ok) {
-        throw new Error(`HTTP request failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (!data || !data.editions || !Array.isArray(data.editions)) {
-        throw new Error("Invalid or missing data structure from the server.");
-      }
-
-      const transformedData = data.editions.map((item) => ({
-        id: item.id,
-        title: item.title,
-        publisher: item.publishers ? item.publishers[0] : "",
-        // isbn_13: item.isbn_13 || item.isbn_11,
-        coverUrl:
-          item.isbn_13 && item.isbn_13 > 0
-            ? EditionEndpoints.FETCH_COVER(undefined,item.isbn_13)
-            : null,
-        author: item.author ? item.author : "",
-        usersOwning: item.users_owning,
-      }));
-
-      console.log("Transformed data", data);
-      setSearchResults(transformedData);
-      setLoading(false);
-
-      return transformedData;
-    } catch (error) {
-      if (
-        error instanceof TypeError &&
-        error.message === "Network request failed"
-      ) {
-        setError(
-          "Network request failed. Please check your internet connection."
-        );
-      } else {
-        setError(`An error occurred: ${error.message} `);
-      }
-      console.error("Error fetching books:", error);
-    } finally {
-      setLoading(false);
-    }
+    fetchBooksByTitle(title)
+      .then((books) => {
+        setSearchResults(books);
+        setError(null);
+      })
+      .catch((err) => {
+        setError(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const inputRef = useRef(null);
 
@@ -124,7 +71,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
     if (searchQuery.length > 11) {
       const searchTimeout = setTimeout(async () => {
         try {
-          const a = await fetchBooks(searchQuery);
+          await fetchBooks(searchQuery);
         } catch (error) {
           console.error("Error fetching or transforming data:", error.message);
         } finally {

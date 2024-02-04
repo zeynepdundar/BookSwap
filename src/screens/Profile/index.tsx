@@ -17,13 +17,18 @@ import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { useState } from "react";
-import { AlertDialogBox } from "../../components/AlertDialogBox";
+import { useEffect, useState } from "react";
+import { AlertDialogBox } from "../../components/Modal/AlertDialogBox";
 import ImagePicker from "../../components/ImagePicker";
 import auth from "@react-native-firebase/auth";
 import { signOut } from "../../store/auth-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { clearProfileData, setLanguagePreference } from "../../store/profile-slice";
+import {
+  clearProfileData,
+  setLanguagePreference,
+  setProfileData,
+} from "../../store/profile-slice";
+import { updateUserProfileData } from "../../api/service";
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../../assets/images/icon/library-icon.png");
@@ -32,9 +37,11 @@ export default function ProfileScreen({ navigation }) {
   const feedbackIcon = require("../../assets/images/icon/feedback-icon.png");
   const logoutIcon = require("../../assets/images/icon/logout-icon.png");
 
+  const profileData = useSelector((state: any) => state.profile.profile);
+
+  // Destructure specific attributes from the profileData
   const { name, wishlistBook, libraryBook, languagePreference, imageData } =
-    useSelector((state: any) => state.profile.profile);
-    
+    profileData;
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -43,29 +50,29 @@ export default function ProfileScreen({ navigation }) {
   const onClose = () => setIsOpen(false);
 
   const handleLanguageChange = (selectedLanguage) => {
-    dispatch(setLanguagePreference(selectedLanguage));
-    // You can add additional logic if needed
+    dispatch(setProfileData({ languagePreference: selectedLanguage }));
+  };
+  const handleImageUpload = (data) => {
+    // setImage(data)
   };
 
   const signOutHandler = async (): Promise<void> => {
     try {
       // Sign out the user from Firebase
       await auth().signOut();
-      dispatch(clearProfileData())
+      dispatch(clearProfileData());
 
       // Dispatch the logout action to clear user data in Redux state
       AsyncStorage.removeItem("authToken");
       dispatch(signOut());
-
-
-      // Other actions after logout...
     } catch (error) {
       console.error("Error during logout:", error);
     }
   };
-  const handleSelectImage = (data) => {
-    // setImage(data)
-  };
+
+  useEffect(() => {
+    updateUserProfileData(profileData);
+  }, [profileData]);
 
   return (
     <Screen>
@@ -89,7 +96,10 @@ export default function ProfileScreen({ navigation }) {
       </HStack>
       <VStack space={1} alignItems="center" height={"50%"}>
         <Center w="100%" h="215px" px={6}>
-          <ImagePicker selectedImage={handleSelectImage} initialImage={imageData}/>
+          <ImagePicker
+            selectedImage={handleImageUpload}
+            initialImage={imageData}
+          />
           <Heading color="black.100" my={3}>
             {name}
           </Heading>
@@ -210,10 +220,14 @@ export default function ProfileScreen({ navigation }) {
                 }}
               >
                 {[
-                  { code: "tr", lang: i18n.t("turkish")},
+                  { code: "tr", lang: i18n.t("turkish") },
                   { code: "en", lang: i18n.t("english") },
                 ].map((input, index) => (
-                  <Menu.Item key={index} onPress={() => handleLanguageChange(input.code)} disabled={languagePreference === input.code}>
+                  <Menu.Item
+                    key={index}
+                    onPress={() => handleLanguageChange(input.code)}
+                    disabled={languagePreference === input.code}
+                  >
                     {input.lang}
                   </Menu.Item>
                 ))}

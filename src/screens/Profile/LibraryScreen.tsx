@@ -18,9 +18,10 @@ import Screen from "../../components/Screen";
 import { VerticalList } from "../../components/shared/VerticalList";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { removeBookFromLibraryAsync } from "../../store/profile-actions";
+import { removeBookFromListAsync } from "../../store/profile-actions";
 import { useNavigationState } from "@react-navigation/native";
 import { useEffect, useState } from "react";
+import { LIBRARY } from "../../store/profile-slice";
 
 export const RemoveBookButton = ({ onPress }) => (
   <Icon
@@ -37,16 +38,17 @@ export default function LibraryScreen({ navigation }) {
   const dispatch = useDispatch<AppDispatch>();
   const navigationState = useNavigationState((state) => state);
 
-
   const { libraryBook } = useSelector((state: any) => state.profile.profile);
   const [selectedBooks, setSelectedBooks] = useState(libraryBook);
 
   const showFab =
     navigationState.routes[navigationState.index - 1]?.name === "Profile";
 
-  const removeBookButton = (id) => (
+  const removeBookButton = (book) => (
     <RemoveBookButton
-      onPress={() => dispatch(removeBookFromLibraryAsync(id))}
+      onPress={() =>
+        dispatch(removeBookFromListAsync({ ...book, listType: LIBRARY }))
+      }
     />
   );
 
@@ -59,9 +61,21 @@ export default function LibraryScreen({ navigation }) {
       // Cleanup or additional actions when the component is unmounted
       // Make your API call to update user libraryBook here
       // For example, you can dispatch an action to update the libraryBook in Redux
-      dispatch(updateLibraryBookAsync(selectedBooks));
+      // dispatch(updateLibraryBookAsync(selectedBooks));
     };
   }, [dispatch, selectedBooks]);
+  // useEffect(() => {
+  //   return () => {
+  //     // Make your API call or dispatch an action when the component is unmounted
+  //     // For example, you can dispatch an action to update the libraryBook in Redux
+  //     dispatch(updateLibraryBookAsync(selectedBooks));
+  //   };
+  // }, [dispatch, selectedBooks]);
+
+  useEffect(() => {
+    // Update the local state when libraryBook changes
+    setSelectedBooks(libraryBook);
+  }, [libraryBook]);
 
   return (
     <Screen>
@@ -114,7 +128,7 @@ export default function LibraryScreen({ navigation }) {
           />
         </Center>
       )}
-      {true && (
+      {showFab && (
         <Fab
           // onPress={() =>
           //   navigation.navigate('BookSearch', {

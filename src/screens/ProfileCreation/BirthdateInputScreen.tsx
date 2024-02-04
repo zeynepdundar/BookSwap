@@ -31,7 +31,7 @@ export default function BirthdateInputScreen({ navigation }) {
   const maxYear = currentYear;
 
   const mergeDate = () => `${birthYear}-${birthMonth}-${birthDay}`;
-  const isInputProvided = birthDay && birthMonth && birthYear;
+  const isInputProvided = birthDay && birthMonth && birthYear && birthYear.length === 4;
 
   useEffect(() => {
     if (birthDay.length === 2) {

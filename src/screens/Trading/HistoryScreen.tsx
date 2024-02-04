@@ -16,7 +16,7 @@ import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { useState } from "react";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
-import { EditionEndpoints } from "../../api-endpoints";
+import { EditionEndpoints } from "../../api/endpoints";
 
 const data = [
   {

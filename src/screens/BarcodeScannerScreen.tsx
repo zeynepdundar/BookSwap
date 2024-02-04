@@ -17,7 +17,7 @@ import {
   Alert,
 } from "native-base";
 import i18n from "../i18n";
-import { EditionEndpoints } from "../api-endpoints";
+import { EditionEndpoints } from "../api/endpoints";
 
 export default function BarcodeScannerScreen({ navigation, route = null }) {
   const mode = route?.params?.relatedScreen;
@@ -67,7 +67,7 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
     const key = "isbn";
     const value = isbn_13;
     const size = "M";
-    let coverUrl = EditionEndpoints.FETCH_COVER(key, value, size);
+    let coverUrl = EditionEndpoints.FETCH_COVER_OL(key, value, size);
 
     fetchEditions(data)
       .then((fetchedEditions) => {

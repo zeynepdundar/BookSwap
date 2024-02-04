@@ -71,5 +71,8 @@
   "book-you-will-give": "Vereceğin kitap",
   "book-you-will-receive": "Alacağın kitap",
   "library-empty": "Kitaplığın Boş",
-  "add-books-to-your-library-before-sending-an-offer": "Takas isteği göndermeden önce kitaplığına kitap ekle"
+  "add-books-to-your-library-before-sending-an-offer": "Takas isteği göndermeden önce kitaplığına kitap ekle",
+  "recently-added":"Son Eklenenler",
+  "most-popular":"En popüler"
+
 }

@@ -12,9 +12,10 @@ import {
   AspectRatio,
   Pressable,
 } from "native-base";
-import { InfoDialogBox } from "../InfoDialogBox";
+import { InfoDialogBox } from "../Modal/InfoDialogBox";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ActionSheet } from "../ActionSheet";
+import { LIBRARY, WISHLIST } from "../../store/profile-slice";
 export const formatText = (inputText) => {
   const words = inputText.split(" ");
   const formattedWords = words.map(
@@ -41,17 +42,17 @@ export const VerticalList: React.FC<VerticalListProps> = ({
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
-  const importUrl = require("../../assets/images/cover_2.png");
+  const importUrl = require("../../assets/images/no-cover-available.png");
   const actions = [
     {
-      type: "wishlist",
+      type: WISHLIST,
       label: "add-my-wishlist",
-      onPress: () => handleAction("wishlist"),
+      onPress: () => handleAction(WISHLIST),
     },
     {
-      type: "library",
+      type: LIBRARY,
       label: "add-my-library",
-      onPress: () => handleAction("library"),
+      onPress: () => handleAction(LIBRARY),
     },
     { type: "cancel", label: "cancel", onPress: () => closeActionSheet() },
     // Add more actions as needed
@@ -60,7 +61,7 @@ export const VerticalList: React.FC<VerticalListProps> = ({
   const handleAction = (action) => {
     secondaryAction({
       type: action,
-      itemId: selectedItem?.id,
+      id: selectedItem?.id,
       title: selectedItem.title,
       author: selectedItem.author,
       publisher: selectedItem.publisher,
@@ -101,6 +102,7 @@ export const VerticalList: React.FC<VerticalListProps> = ({
               p="3"
               mx="2"
               my="1"
+              
             >
               <HStack
                 justifyContent="space-between"
@@ -156,7 +158,7 @@ export const VerticalList: React.FC<VerticalListProps> = ({
                 </VStack>
                 <Spacer />
                 <VStack>
-                  {removeBookButton && removeBookButton(item.id)}
+                  {removeBookButton && removeBookButton(item)}
                   {!removeBookButton && (
                     <Icon
                       onPress={() => openActionSheet(item)}
