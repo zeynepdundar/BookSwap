@@ -1,10 +1,10 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, AsyncThunkOptions } from "@reduxjs/toolkit";
 import auth from "@react-native-firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setIsNewUser, setPhoneNumber, setToken, setUser } from "./auth-slice";
+import { setPhoneNumber, setToken, setUser } from "./auth-slice";
 import { fetchUserProfileAsync } from "./profile-actions";
 import { setProfileData } from "./profile-slice";
-import { AuthEndpoints } from "../api-endpoints";
+import { AuthEndpoints } from "../api/endpoints";
 
 export const verifyPhoneNumber = createAsyncThunk(
   "auth/verifyPhoneNumber",
@@ -66,7 +66,7 @@ export const checkVerificationCode = createAsyncThunk(
       else {
         thunkAPI.dispatch(fetchUserProfileAsync(firebaseUserId));
       }
-      
+
       thunkAPI.dispatch(setToken(user.token));
       await AsyncStorage.setItem("authToken", user.token);
 
@@ -95,33 +95,6 @@ export const checkVerificationCode = createAsyncThunk(
   }
 );
 
-//Check it later on
-export const resendVerificationCode = createAsyncThunk(
-  "auth/resendVerificationCode",
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const state: any = getState();
-      const confirmationResult = state.auth.confirmationResult;
-
-      if (!confirmationResult) {
-        throw new Error("Confirmation result not available.");
-      }
-
-      // Perform the resend operation
-      await confirmationResult.resend();
-
-      // For illustration purposes, assume a simple async operation
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // If successful, you can return any data you need
-      return { success: true };
-    } catch (error) {
-      // If there's an error, you can reject the promise with the error
-      return rejectWithValue(error);
-    }
-  }
-);
-
 export const addUserToDatabaseAsync = createAsyncThunk(
   "auth/addUserToDatabase",
   async (token: string, thunkAPI) => {
@@ -140,7 +113,7 @@ export const addUserToDatabaseAsync = createAsyncThunk(
         throw new Error("Failed to create user");
       }
       console.log("New user is added to database with", result.user_id);
-      thunkAPI.dispatch(setProfileData({id: result.user_id}));
+      thunkAPI.dispatch(setProfileData({ id: result.user_id }));
       return result;
     } catch (error) {
       console.error(error.message);

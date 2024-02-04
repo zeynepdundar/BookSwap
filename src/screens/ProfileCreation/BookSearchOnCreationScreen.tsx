@@ -23,7 +23,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Screen from "../../components/Screen";
 import i18n from "../../i18n";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
-import { EditionEndpoints } from "../../api-endpoints";
+import { EditionEndpoints } from "../../api/endpoints";
 
 
 const formatText = (inputText) => {
@@ -138,7 +138,7 @@ export default function BookSearchOnCreationScreen({
         // isbn_13: item.isbn_13 || item.isbn_11,
         coverUrl:
           item.isbn_13 && item.isbn_13 > 0
-          ? EditionEndpoints.FETCH_COVER(undefined,item.isbn_13)
+          ? EditionEndpoints.FETCH_COVER_OL(undefined,item.isbn_13)
           : null,
         author: item.author ? item.author : "",
       }));
@@ -405,7 +405,7 @@ export default function BookSearchOnCreationScreen({
               </Center>
             </VStack>
           )}
-          {error && (
+          {error &&  searchQuery?.length > 4 && (
             <Box h="75%" alignItems="center" justifyContent="center">
               <WarningTwoIcon size="5" mt="0.5" mx="2" color="error.500" />
               <Text

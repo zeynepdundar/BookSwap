@@ -19,7 +19,9 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 import { setProfileData } from "../../store/profile-slice";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import { setIsNewUser } from "../../store/auth-slice";
-import { updateUserProfileData } from "../../apiService";
+import { updateUserProfileData } from "../../api/service";
+import * as Localization from "expo-localization";
+
 
 
 export default function LibraryInputScreen({ navigation }) {
@@ -28,9 +30,12 @@ export default function LibraryInputScreen({ navigation }) {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const { loading: authLoading } = useSelector((state: any) => state.auth);
   const { profile } = useSelector((state: any) => state.profile);
-  
+
+  const deviceLanguage = Localization.locale.split("-")[0];
+
+
   const handleAddToLibrary = (data) => {
-    setSelectedBooks(data);
+    setSelectedBooks((prevSelectedBooks) => [...prevSelectedBooks, ...data]);
   };
 
   const handleRemoveFromLibrary = (id) => {
@@ -38,17 +43,26 @@ export default function LibraryInputScreen({ navigation }) {
       currentLibraryItems.filter((item) => item.id !== id)
     );
   };
-  const pressHandler = () => {
-    dispatch(setProfileData({libraryBook:selectedBooks}));
-    updateUserProfileData(profile)
-    dispatch(setIsNewUser(false))
+  const handleProfileUpdate = (specificAction) => {
+    // Additional logic based on the specific action
+    if (specificAction === "pressContinue") {
+      dispatch(setProfileData({ libraryBook: selectedBooks ,languagePreference: deviceLanguage}));
+    }
+    updateUserProfileData(profile);
+    dispatch(setIsNewUser(false));
   };
 
+  const pressContinueHandler = () => {
+    handleProfileUpdate("pressContinue");
+  };
 
-  
-  if (authLoading ) {
+  const pressSkipHandler = () => {
+    handleProfileUpdate("pressSkip");
+  };
+
+  if (authLoading) {
     // We haven't finished checking for the token yet
-    return <LoadingOverlay></LoadingOverlay>
+    return <LoadingOverlay></LoadingOverlay>;
   }
   return (
     <Screen>
@@ -66,7 +80,7 @@ export default function LibraryInputScreen({ navigation }) {
             ></Button>
             <Box justifyContent="center">
               <Text
-                onPress={() => navigation.navigate("Library")}
+                onPress={pressSkipHandler}
                 color="#969696"
                 fontWeight="500"
                 fontSize="14px"
@@ -111,7 +125,7 @@ export default function LibraryInputScreen({ navigation }) {
         )}
         <Spacer />
         <Center p={4}>
-          <Button variant="primary" onPress={pressHandler}>
+          <Button variant="primary" onPress={pressContinueHandler}>
             {i18n.t("continue")}
           </Button>
         </Center>

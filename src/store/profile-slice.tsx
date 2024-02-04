@@ -1,31 +1,35 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 import {
-  addBookToLibraryAsync,
-  addBookToWishlistAsync,
-  fetchReceivedOfferAsync,
+  addBookToListAsync,
   fetchUserProfileAsync,
-  removeBookFromLibraryAsync,
-  removeBookFromWishlistAsync,
+  removeBookFromListAsync,
 } from "./profile-actions";
 
 // const initialState = {
 //   loading: false,
 //   error: null,
 //   profile: {
-//     id: "47",
-//     name: "Zeynep47",
+//     id: "11",
+//     name: "Zeynep11",
 //     birthdate: "",
 //     imageData: null,
-//     gender: "",
-//     languagePreference: "tr",
+//     gender: "f",
+//     languagePreference: "en",
 //     wishlistBook: [],
 //     libraryBook: [],
-//     pushToken: "",
 
-//     receivedOfferIds: [], // Add this line for received trade ids
-//     sentOfferIds: [], // Add this line for sent trade ids
+//     receivedOffer: [], // Add this line for received trade ids
+//     sentOffer: [], // Add this line for sent trade ids
 //   },
 // };
+
+export const ListTypes = {
+  WISHLIST: "WISHLIST",
+  LIBRARY: "LIBRARY",
+};
+
+export const WISHLIST = ListTypes.WISHLIST;
+export const LIBRARY = ListTypes.LIBRARY;
 
 export interface UserProfile {
   id: string;
@@ -75,7 +79,6 @@ const profileSlice = createSlice({
         // Handle other cases as needed
         console.error("Invalid payload:", action.payload);
       }
-      console.log("profileSlice:", current(state));
     },
     setProfileImage: (state, action) => {
       state.profile.imageData = action.payload; // Assuming 'image' is the key for profile image
@@ -99,12 +102,12 @@ const profileSlice = createSlice({
     },
     removeBookFromList: (state, action) => {
       initialState.profile.wishlistBook.filter((id) => id !== id);
-      if (action.payload.listType === "wishlist")
+      if (action.payload.listType === WISHLIST)
         state.profile.wishlistBook.splice(
           state.profile.wishlistBook.indexOf(action.payload.id),
           1
         );
-      if (action.payload.listType === "library")
+      if (action.payload.listType === LIBRARY)
         state.profile.libraryBook.splice(
           state.profile.libraryBook.indexOf(action.payload.id),
           1
@@ -113,39 +116,36 @@ const profileSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      //Add authenticated user to db
-      .addCase(addBookToWishlistAsync.fulfilled, (state, action) => {
-        state.profile.wishlistBook.push({ ...action.payload });
+      .addCase(addBookToListAsync.fulfilled, (state, action: any) => {
+        if (action.payload.listType === WISHLIST)
+          state.profile.wishlistBook.push({ ...action.payload.book });
+
+        if (action.payload.listType === LIBRARY)
+          state.profile.libraryBook.push({ ...action.payload.book });
       })
 
-      .addCase(addBookToLibraryAsync.fulfilled, (state, action) => {
-        state.profile.libraryBook.push({ ...action.payload });
-        // console.log("addBookToLibraryAsync:", current(state.profile));
+      .addCase(removeBookFromListAsync.fulfilled, (state, action: any) => {
+        if (action.payload.listType === WISHLIST) {
+          state.profile.wishlistBook = state.profile.wishlistBook.filter(
+            (book) => book.id !== action.payload.id
+          );
+        }
+        if (action.payload.listType === LIBRARY) {
+          state.profile.libraryBook = state.profile.libraryBook.filter(
+            (book) => book.id !== action.payload.id
+          );
+        }
       })
 
-      .addCase(removeBookFromLibraryAsync.fulfilled, (state, action) => {
-        state.profile.libraryBook.splice(
-          state.profile.libraryBook.indexOf(action.payload),
-          1
-        );
-      })
-      .addCase(removeBookFromWishlistAsync.fulfilled, (state, action) => {
-        state.profile.wishlistBook.splice(
-          state.profile.wishlistBook.indexOf(action.payload),
-          1
-        );
-      })
-
-      .addCase(fetchReceivedOfferAsync.fulfilled, (state, action) => {
-        state.profile.receivedOffer = action.payload;
-        console.log("fetchReceivedOfferAsync:", current(state.profile));
-
-      })
+      // .addCase(fetchReceivedOfferAsync.fulfilled, (state, action) => {
+      //   state.profile.receivedOffer = action.payload;
+      //   console.log("fetchReceivedOfferAsync:", current(state.profile));
+      // })
       .addCase(fetchUserProfileAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchUserProfileAsync.fulfilled, (state, action) => {
+      .addCase(fetchUserProfileAsync.fulfilled, (state, action: any) => {
         state.loading = false;
         state.profile = action.payload;
         state.error = null;

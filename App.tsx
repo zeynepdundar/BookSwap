@@ -128,14 +128,14 @@ export default function App() {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-      async function fetchToken() {
-        const storedToken = await AsyncStorage.getItem("authToken");
-         await AsyncStorage.removeItem("authToken");
-        if (storedToken) {
-          dispatch(setToken(storedToken));
-        }
-      }
-      fetchToken();
+      // async function fetchToken() {
+      //   const storedToken = await AsyncStorage.getItem("authToken");
+      //    await AsyncStorage.removeItem("authToken");
+      //   if (storedToken) {
+      //     dispatch(setToken(storedToken));
+      //   }
+      // }
+      // fetchToken();
     }, []);
 
     return <Navigation />;

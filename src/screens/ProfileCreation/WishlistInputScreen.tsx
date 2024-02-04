@@ -25,7 +25,8 @@ export default function WishlistInputScreen({ navigation }) {
 
 
   const handleAddToWishlist = (data) => {
-    setSelectedBooks(data);
+    setSelectedBooks((prevSelectedBooks) => [...prevSelectedBooks, ...data]);
+    
   };
 
   const handleRemoveFromWishlist = (id) => {

@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { AlertDialog, Button, Center, CheckCircleIcon } from "native-base";
 import React, { useEffect, useState } from "react";
-import i18n from "../i18n";
+import i18n from "../../i18n";
 
 type MyStackParamList = {
   Home: undefined;
@@ -34,7 +34,6 @@ export const InfoDialogBox = ({
   }
 
   useEffect(() => {
-    console.log("isOpen", isOpen);
     setIsAlertDialogOpen(isOpen);
   }, [isOpen]);
 

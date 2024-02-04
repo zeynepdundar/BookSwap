@@ -17,7 +17,7 @@ import Screen from "../../components/Screen";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { useState } from "react";
-import { AlertDialogBox } from "../../components/AlertDialogBox";
+import { AlertDialogBox } from "../../components/Modal/AlertDialogBox";
 import { SceneMap, TabView } from "react-native-tab-view";
 import { Dimensions, StatusBar, Animated } from "react-native";
 import OtherLibraryScreen from "./OtherUserLibraryScreen";

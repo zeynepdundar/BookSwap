@@ -10,7 +10,8 @@ import {
   Pressable,
 } from "native-base";
 
-export const HorizontalCoverList = ({ data, removeBook=null }) => {
+export const HorizontalCoverList = ({ data, removeBook = null }) => {
+  const importUrl = require("../../assets/images/no-cover-available.png");
 
   return (
     <FlatList
@@ -29,7 +30,7 @@ export const HorizontalCoverList = ({ data, removeBook=null }) => {
               h="95%"
             >
               <Image
-                source={{ uri: item.coverUrl }}
+                source={item.coverUrl ? { uri: item?.coverUrl } : importUrl}
                 alt={`Cover of ${item.title} by ${item.author}`}
               />
             </AspectRatio>

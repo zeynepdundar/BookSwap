@@ -16,7 +16,7 @@ import i18n from "../i18n";
 import Screen from "../components/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { AlertDialogBox } from "../components/AlertDialogBox";
+import { AlertDialogBox } from "../components/Modal/AlertDialogBox";
 
 export default function UserListScreen({ navigation, route }) {
   const usersTemp = route?.params?.data?.usersOwning;

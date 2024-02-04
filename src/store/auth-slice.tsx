@@ -1,8 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 import {
   addUserToDatabaseAsync,
   checkVerificationCode,
-  resendVerificationCode,
   verifyPhoneNumber,
 } from "./auth-actions";
 
@@ -21,9 +20,9 @@ const initialState = {
 // const initialState = {
 //   loading: false,
 //   error: null,
-//   user: { id:"47", isNewUser: false, firebaseUserId: "7iEawsf0XagejdilXIWsxaobtBj1" },
-//   authToken: null,
-//   phoneNumber: "",
+//   user: { id:"11", isNewUser: false, firebaseUserId: "owcuOlURGYXd7tMOzpdeeg4Adbn2" },
+//   authToken: "null",
+//   phoneNumber: "+15556662222",
 //   verificationCode: "",
 //   confirmationResult: null,
 //   isAuthenticated: true,
@@ -55,7 +54,6 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.confirmationResult = null; // Can be removed, check it later!
     },
-
   },
   extraReducers: (builder) => {
     //Authenticate user
@@ -84,14 +82,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       }) 
-
-      //Resend verification code
-      .addCase(resendVerificationCode.fulfilled, (state, action) => {
-        // Handle the result of the resendVerificationCode async thunk
-      })
-      .addCase(resendVerificationCode.rejected, (state, action) => {
-        // Handle the error if needed
-      })
 
       //Add authenticated user to db
       .addCase(addUserToDatabaseAsync.pending, (state) => {
