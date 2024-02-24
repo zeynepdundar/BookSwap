@@ -1,7 +1,7 @@
 import { Box, Flex, Heading, Image, Pressable, Text } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
-import { HorizontalCoverList } from "../components/shared/HorizontalCoverList";
+import { CoverListHorizontal } from "../components/shared/CoverListHorizontal";
 import SearchBar from "../components/shared/SearchBar";
 import { useSelector } from "react-redux";
 import { LoadingOverlay } from "../components/LoadingOverlay";
@@ -69,7 +69,7 @@ export default function HomeScreen({ navigation }) {
           <Text color="black.400" fontWeight="700">
             {i18n.t("recently-added")}
           </Text>
-          <HorizontalCoverList data={books} />
+          <CoverListHorizontal data={books} />
         </Box>
       )}
       {books.length > 0 && (
@@ -77,7 +77,7 @@ export default function HomeScreen({ navigation }) {
           <Text color="black.400" fontWeight="700">
             {i18n.t("most-popular")}
           </Text>
-          <HorizontalCoverList data={books} />
+          <CoverListHorizontal data={books} />
         </Box>
       )}
     </Screen>

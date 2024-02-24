@@ -114,6 +114,7 @@ export const addUserToDatabaseAsync = createAsyncThunk(
       }
       console.log("New user is added to database with", result.user_id);
       thunkAPI.dispatch(setProfileData({ id: result.user_id }));
+      // thunkAPI.dispatch(setUser({ id: result.user_id }));
       return result;
     } catch (error) {
       console.error(error.message);

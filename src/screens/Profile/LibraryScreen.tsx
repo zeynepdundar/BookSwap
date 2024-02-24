@@ -15,7 +15,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
-import { VerticalList } from "../../components/shared/VerticalList";
+import { BookListVertical } from "../../components/shared/BookListVertical";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { removeBookFromListAsync } from "../../store/profile-actions";
@@ -47,7 +47,7 @@ export default function LibraryScreen({ navigation }) {
   const removeBookButton = (book) => (
     <RemoveBookButton
       onPress={() =>
-        dispatch(removeBookFromListAsync({ ...book, listType: LIBRARY }))
+        dispatch(removeBookFromListAsync({ ...book, type: LIBRARY }))
       }
     />
   );
@@ -122,7 +122,7 @@ export default function LibraryScreen({ navigation }) {
 
       {selectedBooks.length > 0 && (
         <Center>
-          <VerticalList
+          <BookListVertical
             data={selectedBooks}
             removeBookButton={removeBookButton}
           />
@@ -136,9 +136,9 @@ export default function LibraryScreen({ navigation }) {
           //   })
           // }
           onPress={() =>
-            navigation.navigate("BookSearchFromList", {
+            navigation.navigate("BookSearch", {
               relatedScreen: "Library",
-              onDonePress: handleAddToLibrary,
+              // onDonePress: handleAddToLibrary,
             })
           }
           renderInPortal={false}

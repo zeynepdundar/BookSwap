@@ -16,7 +16,7 @@ import {
 
 import { useState } from "react";
 import Screen from "../components/Screen";
-import { formatText, VerticalList } from "../components/shared/VerticalList";
+import { formatText, BookListVertical } from "../components/shared/BookListVertical";
 import i18n from "../i18n";
 
 const DUMMY_BOOKS = [

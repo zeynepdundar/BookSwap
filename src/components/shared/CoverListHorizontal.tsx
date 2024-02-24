@@ -10,7 +10,7 @@ import {
   Pressable,
 } from "native-base";
 
-export const HorizontalCoverList = ({ data, removeBook = null }) => {
+export const CoverListHorizontal = ({ data, removeBook = null }) => {
   const importUrl = require("../../assets/images/no-cover-available.png");
 
   return (

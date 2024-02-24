@@ -16,89 +16,26 @@ import {
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import i18n from "../../i18n";
-import { fetchReceivedOfferAsync } from "../../store/profile-actions";
+import { acceptOfferAsync, rejectOfferAsync } from "../../store/profile-actions";
 
-const DUMMY_RECEIVED = [
-  {
-    id: "1",
-    senderProfile: { name: "Lalo Salamanca", profileUrl: "" },
-    createdAt: "1h ago",
-    offeredBook: {
-      title: "The World of Yesterday",
-      author: "Stefan Zweig",
-      coverUrl: "https://covers.openlibrary.org/b/id/6634325-L.jpg",
-    },
-
-    requestedBook: {
-      title: "Boleyn Girl",
-      author: "Plippa Gregory",
-      coverUrl: "https://covers.openlibrary.org/b/id/13157680-L.jpg",
-    },
-  },
-  {
-    id: "2",
-    senderProfile: { name: "Lalo Salamanca", profileUrl: "" },
-    createdAt: "1w ago",
-    offeredBook: {
-      title: "The World of Yesterday",
-      author: "Stefan Zweig",
-      coverUrl: "https://covers.openlibrary.org/b/id/6634325-L.jpg",
-    },
-
-    requestedBook: {
-      title: "What is Man?",
-      author: "Mark Twain",
-      coverUrl: "https://covers.openlibrary.org/b/id/6071484-L.jpg",
-    },
-  },
-];
-[
-  {
-      "created_at": "Tue, 26 Dec 2023 10:31:36 GMT",
-      "id": 3,
-      "offered_editions": [
-          {
-              "author": "Selçuk Demirel",
-              "cover_id": null,
-              "isbn_10": [
-                  "906252592X"
-              ],
-              "isbn_13": null,
-              "title": "Moumouk and the letters."
-          }
-      ],
-      "receiver_id": 1,
-      "receiver_user_name": "Luxian",
-      "requested_editions": [
-          {
-              "author": "Cengiz Abbasgil",
-              "cover_id": null,
-              "isbn_10": [
-                  "9753670168"
-              ],
-              "isbn_13": null,
-              "title": "İş hukukunda bütün yönleriyle kıdem tazminatı ve uygulaması"
-          }
-      ],
-      "sender_id": 2,
-      "sender_user_name": "Lucian"
-  }
-]
 export default function ReceivedScreen({ navigation }) {
   const tra = require("../../assets/images/icon/Icons.png");
   const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
-  const receivedOffers = useSelector((state:any) => state.profile);
-
+  const receivedOffers = useSelector(
+    (state: any) => state.profile.profile.receivedOffer
+  );
+  const importUrl = require("../../assets/images/no-cover-available.png");
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
+  const acceptOfferHandler = (offerId: string) => {
+    dispatch(acceptOfferAsync(offerId))
+  };
 
-  useEffect(() => {
-    // Fetch received offers when the component mounts
-    // dispatch(fetchReceivedOfferAsync("1"));
-    console.log("Received offers",receivedOffers);
-  }, [receivedOffers]);
+  const rejectOfferHandler = (offerId: string) => {
+    dispatch(rejectOfferAsync(offerId))
+  };
 
   return (
     <FlatList
@@ -139,7 +76,7 @@ export default function ReceivedScreen({ navigation }) {
                   fontSize="14px"
                   mx="1"
                 >
-                  {item.receiverUser.name}
+                  {item.participantProfile.name}
                 </Text>
                 <Text
                   onPress={() => navigation.navigate("Library")}
@@ -166,53 +103,71 @@ export default function ReceivedScreen({ navigation }) {
             alignSelf="center"
             maxW="80"
             top="-12"
-            rounded="24"
+            rounded="10"
             overflow="hidden"
             borderWidth="0.5"
           >
             <VStack>
               <HStack justifyContent="space-between" width="100%" space={1}>
-                <VStack width="40%">
+                <VStack flex={1} alignItems="center">
                   <AspectRatio
+                    w="70%"
                     ratio={{
-                      base: 40 / 62,
+                      base: 45 / 68,
                     }}
-                    width={"100%"}
                   >
-                    {/* <Image
-                      source={{ uri: item.offeredBook.coverUrl }}
+                    <Image
+                      source={
+                        item.offeredBook.coverUrl
+                          ? { uri: item.offeredBook.coverUrl }
+                          : importUrl
+                      }
                       alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
                       roundedRight="6"
-                    /> */}
+                    />
                   </AspectRatio>
-                  <Text color="#000000" fontSize="14" fontWeight={600}>
+                  <Text
+                    color="#000000"
+                    fontSize="12"
+                    fontWeight={500}
+                    numberOfLines={3}
+                  >
                     {item.offeredBook.title}
                   </Text>
                   <Text color="#8c8c8c" fontSize="11">
-                    by {item.offeredBook.author}
+                    {item.offeredBook.author}
                   </Text>
                 </VStack>
-                <Center height={150}>
+                <Center height={110}>
                   <Image source={tra} alt="Library icon" />
                 </Center>
-                <VStack width="40%">
+                <VStack flex={1} alignItems="center">
                   <AspectRatio
+                    w="70%"
                     ratio={{
-                      base: 40 / 62,
+                      base: 45 / 68,
                     }}
-                    width={"100%"}
                   >
-                    {/* <Image
-                      source={{ uri: item.requestedBook.coverUrl }}
-                      alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
+                    <Image
+                      source={
+                        item.requestedBook.coverUrl
+                          ? { uri: item.requestedBook.coverUrl }
+                          : importUrl
+                      }
+                      alt={`Cover of: ${item.requestedBook.title} by ${item.requestedBook.author}`}
                       roundedRight="6"
-                    /> */}
+                    />
                   </AspectRatio>
-                  <Text color="#000000" fontSize="14" fontWeight={600}>
+                  <Text
+                    color="#000000"
+                    fontSize="12"
+                    fontWeight={500}
+                    numberOfLines={3}
+                  >
                     {item.requestedBook.title}
                   </Text>
                   <Text color="#8c8c8c" fontSize="11">
-                    by {item.requestedBook.author}
+                    {item.requestedBook.author}
                   </Text>
                 </VStack>
               </HStack>
@@ -221,7 +176,7 @@ export default function ReceivedScreen({ navigation }) {
                 <Button
                   variant="ghost"
                   _text={{ color: "#9395A4" }}
-                  onPress={() => navigation.goBack()}
+                  onPress={() => rejectOfferHandler(item.id)}
                 >
                   {i18n.t("decline")}
                 </Button>
@@ -232,7 +187,10 @@ export default function ReceivedScreen({ navigation }) {
                   height={6}
                   marginY="2"
                 />
-                <Button variant="ghost" onPress={() => navigation.goBack()}>
+                <Button
+                  variant="ghost"
+                  onPress={() => acceptOfferHandler(item.id)}
+                >
                   {i18n.t("accept")}
                 </Button>
               </Flex>

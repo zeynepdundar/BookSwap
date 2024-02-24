@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Center } from "native-base";
 import Screen from "../../components/Screen";
-import { VerticalList } from "../../components/shared/VerticalList";
+import { BookListVertical } from "../../components/shared/BookListVertical";
 import i18n from "../../i18n";
 
 const DUMMY_BOOKS = [
@@ -103,7 +103,7 @@ export default function OtherUserWishlistScreen() {
   return (
     <Screen>
       <Center>
-        <VerticalList data={[]} secondaryAction>{sendOfferButton}</VerticalList>
+        <BookListVertical data={[]} secondaryAction>{sendOfferButton}</BookListVertical>
       </Center>
     </Screen>
   );

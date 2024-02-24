@@ -29,13 +29,19 @@ const ProfileEndpoints = {
   //Wishlist - Library
   ADD_BOOK_TO_WISLIST: (userId: string) =>
     `${BASE_URL}:${PORT}/core/user/${userId}/wished_editions`,
-      //Wishlist - Library
+  //Wishlist - Library
   ADD_BOOK_TO_LIBRARY: (userId: string) =>
-  `${BASE_URL}:${PORT}/core/user/${userId}/wished_editions`,
+    `${BASE_URL}:${PORT}/core/user/${userId}/owned_editions`,
 
   //Trade
   FETCH_RECEIVED_OFFER: (userId: string) =>
-    `${BASE_URL}:${PORT}/users/${userId}/received-offers`,
+    `${BASE_URL}:${PORT}/core/users/${userId}/received-offers`,
+  FETCH_SENT_OFFER: (userId: string) =>
+    `${BASE_URL}:${PORT}/core/users/${userId}/sent-offers`,
+  ACCEPT_OFFER: `${BASE_URL}:${PORT}/core/offer/accept`,
+  REJECT_OFFER: `${BASE_URL}:${PORT}/core/offer/reject`,
+  TAKE_BACK_OFFER: `${BASE_URL}:${PORT}/core/offer/takeback`,
+
 };
 
 export { AuthEndpoints, EditionEndpoints, ProfileEndpoints };

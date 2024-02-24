@@ -2,12 +2,14 @@ import { useNavigation } from "@react-navigation/native";
 import { AlertDialog, Button, Center, CheckCircleIcon } from "native-base";
 import React, { useEffect, useState } from "react";
 import i18n from "../../i18n";
+import { LIBRARY, WISHLIST } from "../../store/profile-slice";
 
 type MyStackParamList = {
   Home: undefined;
   Profile: undefined;
   Library: undefined;
   Wishlist: undefined;
+
 };
 
 export const InfoDialogBox = ({
@@ -21,12 +23,12 @@ export const InfoDialogBox = ({
   const navigation = useNavigation();
 
   let title, description, buttonVariant, confirmButtonLabel;
-  if (actionType === "wishlist") {
+  if (actionType === WISHLIST) {
     title = i18n.t("added");
     description = i18n.t("the-book-added-to-wishlist");
     buttonVariant = "outline";
     confirmButtonLabel = i18n.t("see-my-wishlist");
-  } else if (actionType === "library") {
+  } else if (actionType === LIBRARY) {
     title = i18n.t("added");
     description = i18n.t("the-book-added-to-library");
     buttonVariant = "outline";
@@ -37,20 +39,23 @@ export const InfoDialogBox = ({
     setIsAlertDialogOpen(isOpen);
   }, [isOpen]);
 
-  const navigateToScreen = (screenName: keyof MyStackParamList) => {
+  const navigateToScreen = (screenName: keyof MyStackParamList ) => {
     navigation.navigate("ProfileStack", {
-      screen: screenName as keyof MyStackParamList,
+      screen: screenName,
     }); // Error here
   };
+
+  const WISHLIST_SCREEN: keyof MyStackParamList = "Wishlist";
+  const LIBRARY_SCREEN: keyof MyStackParamList = "Library";
 
   const handleClose = () => {
     setIsAlertDialogOpen(false);
     onClose && onClose(); // Call onClose if it is provided
 
-    if (actionType === "wishlist") {
-      navigateToScreen("Wishlist" as keyof MyStackParamList);
-    } else if (actionType === "library") {
-      navigateToScreen("Library" as keyof MyStackParamList);
+    if (actionType === WISHLIST) {
+      navigateToScreen(WISHLIST_SCREEN);
+    } else if (actionType === LIBRARY) {
+      navigateToScreen(LIBRARY_SCREEN);
     }
   };
 

@@ -20,7 +20,7 @@ const initialState = {
 // const initialState = {
 //   loading: false,
 //   error: null,
-//   user: { id:"11", isNewUser: false, firebaseUserId: "owcuOlURGYXd7tMOzpdeeg4Adbn2" },
+//   user: { id:"22", isNewUser: false, firebaseUserId: "CK8XeBlakSVO0IEA0GFJzfackH42" },
 //   authToken: "null",
 //   phoneNumber: "+15556662222",
 //   verificationCode: "",
