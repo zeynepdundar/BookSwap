@@ -13,7 +13,7 @@ import {
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import SearchBar from "../../components/shared/SearchBar";
-import { HorizontalCoverList } from "../../components/shared/HorizontalCoverList";
+import { CoverListHorizontal } from "../../components/shared/CoverListHorizontal";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { setProfileData } from "../../store/profile-slice";
@@ -48,6 +48,7 @@ export default function LibraryInputScreen({ navigation }) {
     if (specificAction === "pressContinue") {
       dispatch(setProfileData({ libraryBook: selectedBooks ,languagePreference: deviceLanguage}));
     }
+    console.log("Created profile", profile)
     updateUserProfileData(profile);
     dispatch(setIsNewUser(false));
   };
@@ -117,7 +118,7 @@ export default function LibraryInputScreen({ navigation }) {
         </Center>
         {selectedBooks.length > 0 && (
           <Center w="100%" px={6}>
-            <HorizontalCoverList
+            <CoverListHorizontal
               data={selectedBooks}
               removeBook={handleRemoveFromLibrary}
             />

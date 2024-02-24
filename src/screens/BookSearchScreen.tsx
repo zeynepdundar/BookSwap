@@ -16,11 +16,16 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Screen from "../components/Screen";
 import i18n from "../i18n";
 import { LoadingOverlay } from "../components/LoadingOverlay";
-import { VerticalList } from "../components/shared/VerticalList";
+import { BookListVertical } from "../components/shared/BookListVertical";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store/store";
 import { fetchBooksByTitle } from "../api/service";
 import { addBookToListAsync } from "../store/profile-actions";
+import {
+  getFocusedRouteNameFromRoute,
+  useNavigationState,
+} from "@react-navigation/native";
+import { BorderedBookListVertical } from "../components/shared/BorderedBookListVertical";
 
 export default function BookSearchScreen({ navigation, route = null }) {
   const { relatedScreen, onDonePress } = route.params;
@@ -28,12 +33,18 @@ export default function BookSearchScreen({ navigation, route = null }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [listType, setListType] = useState<string>("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
 
   const dispatch = useDispatch<AppDispatch>();
   const addBookToListHandler = (selectedItem: any) => {
-     dispatch(addBookToListAsync(selectedItem));
+    dispatch(addBookToListAsync(selectedItem));
+  };
+
+  const pressDoneHandler = (selectedItem: any) => {
+    dispatch(addBookToListAsync(selectedItem));
+    navigation.goBack();
   };
   const navigateUserList = (item) => {
     console.log("navigateUserList", item);
@@ -41,6 +52,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
       data: item,
     });
   };
+  const navigationState = useNavigationState((state) => state);
 
   const fetchBooks = async (title) => {
     fetchBooksByTitle(title)
@@ -65,6 +77,10 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
   useEffect(() => {
     inputRef.current?.focus();
+    const type = getFocusedRouteNameFromRoute(
+      navigationState.routes[navigationState.index - 1]
+    )?.toLocaleUpperCase();
+    setListType(type);
   }, []);
 
   useEffect(() => {
@@ -233,11 +249,24 @@ export default function BookSearchScreen({ navigation, route = null }) {
                 )}
                 keyExtractor={(item) => item.id}
               /> */}
-              <VerticalList
-                data={searchResults}
-                secondaryAction={addBookToListHandler}
-                onNavigateList={navigateUserList}
-              ></VerticalList>
+
+              {/* For specific book list (wishlist/library) search result*/}
+              {listType && (
+                <BorderedBookListVertical
+                  data={searchResults}
+                  onDonePress={pressDoneHandler}
+                  listType={listType}
+                ></BorderedBookListVertical>
+              )}
+
+              {/* For general search result */}
+              {!listType && (
+                <BookListVertical
+                  data={searchResults}
+                  secondaryAction={addBookToListHandler}
+                  onNavigateList={navigateUserList}
+                ></BookListVertical>
+              )}
             </>
           )}
           {searchQuery.length < 5 && (

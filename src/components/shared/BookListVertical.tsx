@@ -15,7 +15,7 @@ import {
 import { InfoDialogBox } from "../Modal/InfoDialogBox";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ActionSheet } from "../ActionSheet";
-import { LIBRARY, WISHLIST } from "../../store/profile-slice";
+import { LIBRARY, WISHLIST, ListTypes } from "../../store/profile-slice";
 export const formatText = (inputText) => {
   const words = inputText.split(" ");
   const formattedWords = words.map(
@@ -25,13 +25,13 @@ export const formatText = (inputText) => {
   return formattedText;
 };
 
-interface VerticalListProps {
+interface BookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
   removeBookButton?: (id: string) => void;
   secondaryAction?: (item: any) => void;
   onNavigateList?: (item: any) => void;
 }
-export const VerticalList: React.FC<VerticalListProps> = ({
+export const BookListVertical: React.FC<BookListVerticalProps> = ({
   data,
   removeBookButton,
   secondaryAction,
@@ -41,7 +41,9 @@ export const VerticalList: React.FC<VerticalListProps> = ({
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedAction, setSelectedAction] = useState(null);
+  const [selectedAction, setSelectedAction] = useState<typeof ListTypes | null>(
+    null
+  );
   const importUrl = require("../../assets/images/no-cover-available.png");
   const actions = [
     {
@@ -58,16 +60,16 @@ export const VerticalList: React.FC<VerticalListProps> = ({
     // Add more actions as needed
   ];
 
-  const handleAction = (action) => {
+  const handleAction = (actionType) => {
     secondaryAction({
-      type: action,
+      type: actionType,
       id: selectedItem?.id,
       title: selectedItem.title,
       author: selectedItem.author,
       publisher: selectedItem.publisher,
       coverUrl: selectedItem.coverUrl,
     });
-    setSelectedAction(action);
+    setSelectedAction(actionType);
     closeActionSheet();
     setIsInfoDialogOpen(true);
   };
@@ -102,7 +104,6 @@ export const VerticalList: React.FC<VerticalListProps> = ({
               p="3"
               mx="2"
               my="1"
-              
             >
               <HStack
                 justifyContent="space-between"
@@ -129,9 +130,20 @@ export const VerticalList: React.FC<VerticalListProps> = ({
                   <Text color="#8c8c8c" fontSize="11">
                     {formatText(item.author)}
                   </Text>
-                  <Text color="#8c8c8c" fontSize="13" fontWeight="200">
-                    {formatText(item.publisher)}
-                  </Text>
+
+                  {/* Backend den publishers şeklinde gelen array , handle etmek için */}
+                  {item.publisher ||
+                  (Array.isArray(item.publishers) &&
+                    item.publishers.length > 0) ? (
+                    <Text color="#8c8c8c" fontSize="13" fontWeight="200">
+                      {Array.isArray(item.publishers) &&
+                      item.publishers.length > 0
+                        ? formatText(item.publishers[0])
+                        : formatText(item.publisher)}
+                    </Text>
+                  ) : // Render something else or nothing when both item.publisher and item.publishers are null or empty
+                  null}
+
                   {item?.usersOwning && (
                     <>
                       <Spacer></Spacer>

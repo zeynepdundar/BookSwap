@@ -24,19 +24,8 @@ import Screen from "../../components/Screen";
 import i18n from "../../i18n";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import { EditionEndpoints } from "../../api/endpoints";
+import { formatText } from "../../utils/helper";
 
-
-const formatText = (inputText) => {
-  const words = inputText.split(" ");
-
-  const formattedWords = words.map(
-    (word) => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)
-  );
-
-  const formattedText = formattedWords.join(" ");
-
-  return formattedText;
-};
 
 export default function BookSearchOnCreationScreen({
   navigation,

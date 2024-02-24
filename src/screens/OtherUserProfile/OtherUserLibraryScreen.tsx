@@ -1,7 +1,7 @@
 import { Button, Center, Text } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
-import { VerticalList } from "../../components/shared/VerticalList";
+import { BookListVertical } from "../../components/shared/BookListVertical";
 import { useState } from "react";
 
 const DUMMY_BOOKS = [
@@ -65,7 +65,7 @@ export default function OtherUserLibraryScreen() {
   return (
     <Screen>
       <Center>
-        <VerticalList data={[]} secondaryAction>{sendOfferButton}</VerticalList>
+        <BookListVertical data={[]} secondaryAction>{sendOfferButton}</BookListVertical>
       </Center>
     </Screen>
   );

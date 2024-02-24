@@ -15,12 +15,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
-import { VerticalList } from "../../components/shared/VerticalList";
+import { BookListVertical } from "../../components/shared/BookListVertical";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { removeBookFromListAsync } from "../../store/profile-actions";
 import { useNavigationState } from "@react-navigation/native";
 import { WISHLIST } from "../../store/profile-slice";
+import { useEffect, useState } from "react";
 
 export const RemoveBookButton = ({ onPress }) => (
   <Icon
@@ -35,6 +36,8 @@ export const RemoveBookButton = ({ onPress }) => (
 
 export default function WishlistScreen({ navigation }) {
   const { wishlistBook } = useSelector((state: any) => state.profile.profile);
+  const [selectedBooks, setSelectedBooks] = useState(wishlistBook);
+
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -42,14 +45,28 @@ export default function WishlistScreen({ navigation }) {
 
   const showFab =
     navigationState.routes[navigationState.index - 1]?.name === "Profile";
-
+    useEffect(() => {
+      return () => {
+        // Cleanup or additional actions when the component is unmounted
+        // Make your API call to update user libraryBook here
+        // For example, you can dispatch an action to update the libraryBook in Redux
+        // dispatch(updateLibraryBookAsync(selectedBooks));
+      };
+    }, [dispatch, selectedBooks]);
   const removeBookButton = (book) => (
+    
     <RemoveBookButton
       onPress={() =>
-        dispatch(removeBookFromListAsync({ ...book, listType: WISHLIST }))
+        dispatch(removeBookFromListAsync({ ...book, type: WISHLIST }))
       }
     />
   );
+  useEffect(() => {
+    // Update the local state when libraryBook changes
+    setSelectedBooks(wishlistBook);
+  }, [wishlistBook]);
+
+  
 
   return (
     <Screen>
@@ -71,7 +88,7 @@ export default function WishlistScreen({ navigation }) {
         <Heading>{i18n.t("my-wishlist")}</Heading>
         <Spacer></Spacer>
       </HStack>
-      {wishlistBook.length === 0 && (
+      {selectedBooks.length === 0 && (
         <VStack width="100%" height={200} mt="100">
           <Center>
             <Icon
@@ -94,10 +111,10 @@ export default function WishlistScreen({ navigation }) {
         </VStack>
       )}
 
-      {wishlistBook.length > 0 && (
+      {selectedBooks.length > 0 && (
         <Center>
-          <VerticalList
-            data={wishlistBook}
+          <BookListVertical
+            data={selectedBooks}
             removeBookButton={removeBookButton}
           />
         </Center>

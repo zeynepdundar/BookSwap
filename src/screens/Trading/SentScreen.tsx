@@ -1,3 +1,4 @@
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import {
   AspectRatio,
   Avatar,
@@ -12,54 +13,34 @@ import {
   Text,
   VStack,
 } from "native-base";
+import { useDispatch, useSelector } from "react-redux";
 import i18n from "../../i18n";
+import { takeBackOfferAsync } from "../../store/profile-actions";
 
-const DUMMY_SENT = [
-  {
-    id: "1",
-    senderProfile: { name: "Lalo Salamanca", profileUrl: "" },
-    createdAt: "1h ago",
-    offeredBook: {
-      title: "The World of Yesterday",
-      author: "Stefan Zweig",
-      coverUrl: "https://covers.openlibrary.org/b/id/6634325-L.jpg",
-    },
-
-    requestedBook: {
-      title: "Boleyn Girl",
-      author: "Plippa Gregory",
-      coverUrl: "https://covers.openlibrary.org/b/id/13157680-L.jpg",
-    },
-  },
-  {
-    id: "2",
-    senderProfile: { name: "Lalo Salamanca", profileUrl: "" },
-    createdAt: "1w ago",
-    offeredBook: {
-      title: "The World of Yesterday",
-      author: "Stefan Zweig",
-      coverUrl: "https://covers.openlibrary.org/b/id/6634325-L.jpg",
-    },
-
-    requestedBook: {
-      title: "What is Man?",
-      author: "Mark Twain",
-      coverUrl: "https://covers.openlibrary.org/b/id/6071484-L.jpg",
-    },
-  },
-];
 
 export default function SentScreen({ navigation }) {
   const tra = require("../../assets/images/icon/Icons.png");
   const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
 
+  const sentOffers = useSelector(
+    (state: any) => state.profile.profile.sentOffer
+  );
+
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+
+
+  const takeBackOfferHandler = (offerId: string) => {
+    dispatch(takeBackOfferAsync(offerId))
+    
+  };
+
   return (
     <FlatList
       maxWidth="100%"
       bg="#fff"
       height="75%"
-      data={DUMMY_SENT}
+      data={sentOffers}
       showsVerticalScrollIndicator={false}
       pt="3"
       renderItem={({ item }) => (
@@ -93,7 +74,7 @@ export default function SentScreen({ navigation }) {
                   fontSize="14px"
                   mx="1"
                 >
-                  {item.senderProfile.name}
+                  {item.participantProfile.name}
                 </Text>
                 <Text
                   onPress={() => navigation.navigate("Library")}
@@ -120,59 +101,77 @@ export default function SentScreen({ navigation }) {
             alignSelf="center"
             maxW="80"
             top="-12"
-            rounded="24"
+            rounded="10"
             overflow="hidden"
             borderWidth="0.5"
           >
             <VStack>
               <HStack justifyContent="space-between" width="100%" space={1}>
-                <VStack width="40%">
+                <VStack flex={1} alignItems="center">
                   <AspectRatio
+                    w="70%"
                     ratio={{
-                      base: 40 / 62,
+                      base: 45 / 68,
                     }}
-                    width={"100%"}
                   >
                     <Image
-                      source={{ uri: item.offeredBook.coverUrl }}
+                      source={
+                        item.offeredBook.coverUrl
+                          ? { uri: item.offeredBook.coverUrl }
+                          : importUrl
+                      }
                       alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
                       roundedRight="6"
                     />
                   </AspectRatio>
-                  <Text color="#000000" fontSize="14" fontWeight={600}>
+                  <Text
+                    color="#000000"
+                    fontSize="12"
+                    fontWeight={500}
+                    numberOfLines={3}
+                  >
                     {item.offeredBook.title}
                   </Text>
                   <Text color="#8c8c8c" fontSize="11">
-                    by {item.offeredBook.author}
+                    {item.offeredBook.author}
                   </Text>
                 </VStack>
                 <Center height={150}>
                   <Image source={tra} alt="Library icon" />
                 </Center>
-                <VStack width="40%">
-                  <AspectRatio
+                <VStack flex={1} alignItems="center">
+                <AspectRatio
+                    w="70%"
                     ratio={{
-                      base: 40 / 62,
+                      base: 45 / 68,
                     }}
-                    width={"100%"}
                   >
                     <Image
-                      source={{ uri: item.requestedBook.coverUrl }}
-                      alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
+                      source={
+                        item.requestedBook.coverUrl
+                          ? { uri: item.requestedBook.coverUrl }
+                          : importUrl
+                      }
+                      alt={`Cover of: ${item.requestedBook.title} by ${item.requestedBook.author}`}
                       roundedRight="6"
                     />
                   </AspectRatio>
-                  <Text color="#000000" fontSize="14" fontWeight={600}>
+                  <Text
+                    color="#000000"
+                    fontSize="12"
+                    fontWeight={500}
+                    numberOfLines={3}
+                  >
                     {item.requestedBook.title}
                   </Text>
                   <Text color="#8c8c8c" fontSize="11">
-                    by {item.requestedBook.author}
+                    {item.requestedBook.author}
                   </Text>
                 </VStack>
               </HStack>
               {/* <Divider my={3} color="#E5E7F3" thickness="1" /> */}
               <Flex direction="row" marginLeft="auto" pt="3">
-                <Button variant="outline" onPress={() => navigation.goBack()}>
+                <Button variant="outline" onPress={() => takeBackOfferHandler(item.id)}>
                   {i18n.t("take-back")}
                 </Button>
               </Flex>

@@ -1,27 +1,12 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 import {
+  acceptOfferAsync,
   addBookToListAsync,
   fetchUserProfileAsync,
+  rejectOfferAsync,
   removeBookFromListAsync,
+  takeBackOfferAsync,
 } from "./profile-actions";
-
-// const initialState = {
-//   loading: false,
-//   error: null,
-//   profile: {
-//     id: "11",
-//     name: "Zeynep11",
-//     birthdate: "",
-//     imageData: null,
-//     gender: "f",
-//     languagePreference: "en",
-//     wishlistBook: [],
-//     libraryBook: [],
-
-//     receivedOffer: [], // Add this line for received trade ids
-//     sentOffer: [], // Add this line for sent trade ids
-//   },
-// };
 
 export const ListTypes = {
   WISHLIST: "WISHLIST",
@@ -67,6 +52,25 @@ const initialState: ProfileState = {
   },
 };
 
+// const initialState: ProfileState = {
+//   loading: false,
+//   error: null as { name: string; message: string } | null,
+//   // profile: null as UserProfile | null,
+//   profile: {
+//     id: "22",
+//     name: "Zeynep 22",
+//     birthdate: "",
+//     imageData: null,
+//     gender: "f",
+//     languagePreference: "en",
+//     wishlistBook: [],
+//     libraryBook: [],
+
+//     receivedOffer: [], // Add this line for received trade ids
+//     sentOffer: [], // Add this line for sent trade ids
+//   },
+// };
+
 const profileSlice = createSlice({
   name: "profile",
   initialState,
@@ -101,7 +105,6 @@ const profileSlice = createSlice({
       };
     },
     removeBookFromList: (state, action) => {
-      initialState.profile.wishlistBook.filter((id) => id !== id);
       if (action.payload.listType === WISHLIST)
         state.profile.wishlistBook.splice(
           state.profile.wishlistBook.indexOf(action.payload.id),
@@ -117,11 +120,18 @@ const profileSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addBookToListAsync.fulfilled, (state, action: any) => {
-        if (action.payload.listType === WISHLIST)
-          state.profile.wishlistBook.push({ ...action.payload.book });
+        console.log(action.payload);
+        const booksToAdd = Array.isArray(action.payload.book)
+          ? action.payload.book
+          : [action.payload.book];
 
-        if (action.payload.listType === LIBRARY)
-          state.profile.libraryBook.push({ ...action.payload.book });
+        if (action.payload.listType === WISHLIST) {
+          state.profile.wishlistBook.push(...booksToAdd);
+        }
+
+        if (action.payload.listType === LIBRARY) {
+          state.profile.libraryBook.push(...booksToAdd);
+        }
       })
 
       .addCase(removeBookFromListAsync.fulfilled, (state, action: any) => {
@@ -137,10 +147,21 @@ const profileSlice = createSlice({
         }
       })
 
-      // .addCase(fetchReceivedOfferAsync.fulfilled, (state, action) => {
-      //   state.profile.receivedOffer = action.payload;
-      //   console.log("fetchReceivedOfferAsync:", current(state.profile));
-      // })
+      .addCase(acceptOfferAsync.fulfilled, (state, action) => {
+        state.profile.receivedOffer = state.profile.receivedOffer.filter(
+          (offer) => offer.id !== action.payload
+        );
+      })
+      .addCase(rejectOfferAsync.fulfilled, (state, action) => {
+        state.profile.receivedOffer = state.profile.receivedOffer.filter(
+          (offer) => offer.id !== action.payload
+        );
+      })
+      .addCase(takeBackOfferAsync.fulfilled, (state, action) => {
+        state.profile.sentOffer = state.profile.sentOffer.filter(
+          (offer) => offer.id !== action.payload
+        );
+      })
       .addCase(fetchUserProfileAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
