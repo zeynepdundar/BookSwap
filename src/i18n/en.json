@@ -48,9 +48,9 @@
   "add-books-to-your-library-to-swap-books": "Add books to you library to swap of books you’d like to exchange",
   "add-books-to-your-wishlist-to-swap-books": "Add books to you wishlist to swap of books you’d like to exchange",
   "ask-for-swap": "Ask for Swap",
-  "my-messages": "My Messages",
+  "messages": "Messages",
   "trading": "Trading",
-  "my-notifications": "My Notifications",
+  "notifications": "Notifications",
   "accept": "Accept",
   "decline": "Decline",
   "received": "Received",
@@ -74,5 +74,15 @@
   "library-empty": "Library Empty",
   "add-books-to-your-library-before-sending-an-offer": "Please add books to your library before sending an offer.",
   "recently-added":"Recently Added",
-  "most-popular":"Most Popular"
+  "most-popular":"Most Popular",
+  "the-offer-sent": "The offer has been sent successfully!",
+  "see-sent-offers-description": "You can see offfers you've made under 'Sent' tab",
+  "see-my-offers": "See my offers",
+  "start-searching-for-new-books":"Start searching for new books",
+  "you-have-not-received-any-offer-yet":"You have’t received new offer, yet",
+  "you-have-not-sent-any-offer-yet":"You have’t sent an offer, yet",
+  "you-have-accepted-the-request":"You have accepted the request",
+  "send-message": "Send Message"
+
+
 }

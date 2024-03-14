@@ -1,3 +1,5 @@
+import { LIBRARY, WISHLIST } from "../store/profile-slice";
+
 export const getCoverUrl = (bookData) => {
   const isbn = bookData.isbn_13 || bookData.isbn_10;
 
@@ -7,7 +9,6 @@ export const getCoverUrl = (bookData) => {
     return null;
   }
 };
-
 export const createBookData = (books) => {
   if (Array.isArray(books)) {
     // If books is an array, map over it and apply createBookData for each item
@@ -28,17 +29,19 @@ export const createBookData = (books) => {
         : books.author || null,
   };
 };
-
-export const createOffer = (offers, type) => {
+export const structureOfferData = (offers, type) => {
   if (Array.isArray(offers)) {
-    return offers.map((offers) => createOffer(offers, type));
+    return offers.map((offers) => structureOfferData(offers, type));
   }
 
   return {
     id: offers.id,
     participantProfile: {
       id: type === "received" ? offers.sender_id : offers.receiver_id,
-      name: type === "received"? offers.sender_user_name: offers.receiver_user_name,
+      name:
+        type === "received"
+          ? offers.sender_user_name
+          : offers.receiver_user_name,
     },
     createdAt: timeAgo(offers.created_at),
     offeredBook: {
@@ -59,7 +62,6 @@ export const createOffer = (offers, type) => {
     },
   };
 };
-
 export const timeAgo = (date) => {
   const currentDate = new Date();
   const targetDate = new Date(date);
@@ -84,8 +86,10 @@ export const timeAgo = (date) => {
     return `${seconds} ${seconds === 1 ? "second" : "seconds"} ago`;
   }
 };
-
 export const formatText = (inputText) => {
+  if (!inputText) {
+    return ""; // Return an empty string or handle other falsy values as needed
+  }
   const words = inputText.split(" ");
 
   const formattedWords = words.map(
@@ -96,3 +100,60 @@ export const formatText = (inputText) => {
 
   return formattedText;
 };
+export const formatLastMessageTime = (timestamp) => {
+  const messageDate = new Date(timestamp);
+  const currentDate = new Date();
+
+  // Check if the message was sent on the same day
+  const isSameDay =
+    messageDate.getDate() === currentDate.getDate() &&
+    messageDate.getMonth() === currentDate.getMonth() &&
+    messageDate.getFullYear() === currentDate.getFullYear();
+
+  // Format the time
+  let formattedTime;
+  if (isSameDay) {
+    // If the message was sent on the same day, format as 'h:mm A' (e.g., 1:30 PM)
+    formattedTime = messageDate.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      hour12: true,
+    });
+  } else {
+    // If the message was sent on a different day, format as 'MMM d, h:mm A' (e.g., Mar 10, 1:30 PM)
+    formattedTime =
+      messageDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }) +
+      ", " +
+      messageDate.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+  }
+
+  return formattedTime;
+};
+export const truncateText = (text, maxLength = 100) => {
+  if (text.length <= maxLength) {
+    return text;
+  } else {
+    return text.slice(0, maxLength) + "...";
+  }
+};
+
+export   const generateActions = (handleAction, closeActionSheet) => [
+  {
+    type: WISHLIST,
+    label: "add-my-wishlist",
+    onPress: () => handleAction(WISHLIST),
+  },
+  {
+    type: LIBRARY,
+    label: "add-my-library",
+    onPress: () => handleAction(LIBRARY),
+  },
+  { type: "cancel", label: "cancel", onPress: closeActionSheet },
+  // Add more actions as needed
+];

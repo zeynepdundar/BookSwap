@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 
 import Screen from "../../components/Screen";
 import {
@@ -15,95 +15,37 @@ import {
   VStack,
 } from "native-base";
 import i18n from "../../i18n";
-
-const DUMMY_USERS = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    fullName: "Afreen Khan",
-    timeStamp: "12:47 PM",
-    recentText: "Good Day!",
-    avatarUrl:
-      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    fullName: "Sujita Mathur",
-    timeStamp: "11:11 PM",
-    recentText: "Cheer up, there!",
-    avatarUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    fullName: "Anci Barroco",
-    timeStamp: "6:22 PM",
-    recentText: "Good Day!",
-    avatarUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
-  },
-  {
-    id: "68694a0f-3da1-431f-bd56-142371e29d72",
-    fullName: "Aniket Kumar",
-    timeStamp: "8:56 PM",
-    recentText: "All the best",
-    avatarUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU",
-  },
-  {
-    id: "28694a0f-3da1-471f-bd96-142456e29d72",
-    fullName: "Kiara",
-    timeStamp: "12:47 PM",
-    recentText: "I will call today.",
-    avatarUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU",
-  },
-];
+import { useSelector } from "react-redux";
+import { useMessageSubscription } from "../../hooks/use-message-subscription";
+import { LoadingOverlay } from "../../components/LoadingOverlay";
+import { formatLastMessageTime, truncateText } from "../../utils/helper";
 
 export default function MessagesScreen({ navigation }) {
-  const [users, setUsers] = useState(DUMMY_USERS);
+  const { id, firebaseUserId } = useSelector((state: any) => state.auth.user);
+  const [messages, setMessages] = useState([]);
 
-
-  const [userId, setUserId] = useState("");
-  const [friendId, setFriendId] = useState("");
-
-  const handlePress = (name, uid, friendId) => {
-    setUserId(uid);
-    setFriendId(friendId);
-    navigation.navigate("Chat", { userId: uid, friendId: friendId })
+  const handlePress = (friendId) => {
+    navigation.navigate("ChatScreen", {
+      userId: firebaseUserId,
+      friendId: friendId,
+    });
   };
+
+  const { subscribeToMessages, isLoading } = useMessageSubscription(
+    firebaseUserId,
+    setMessages
+  );
+
+  useLayoutEffect(() => {
+    const unsubscribe = subscribeToMessages();
+
+    return () => unsubscribe();
+  }, [firebaseUserId, setMessages]);
+
+  const profilePhoto = require("../../assets/images/lalo-salamanca.png");
 
   return (
     <Screen>
-      {/* <Text>Who are you</Text> */}
-      {/* <Button
-        bg="primary.100"
-        m="7"
-        _text={{
-          color: "primary.50",
-        }}
-        onPress={() => handlePress("Alex", "hNYjBXSZEpAdAuReEvbr", "AhAiD1dxrrCCXvrCOE1N")}
-      >
-        Alex
-      </Button>
-      <Button
-        bg="primary.100"
-        m="7"
-        _text={{
-          color: "primary.50",
-        }}
-        onPress={() => handlePress("Tomas", "AhAiD1dxrrCCXvrCOE1N", "hNYjBXSZEpAdAuReEvbr")}
-      >
-        Tomas
-      </Button>
-      <Button
-        bg="primary.300"
-        m="7"
-        _text={{ 
-          color: "primary.50",
-        }}
-        onPress={() => navigation.navigate("Chat", { userId: userId, friendId: friendId })}
-      >
-        Start
-      </Button> */}
       <HStack
         alignItems="center"
         space="20%"
@@ -111,30 +53,40 @@ export default function MessagesScreen({ navigation }) {
         w="100%"
         h={16}
       >
-        <Heading>{i18n.t("my-messages")}</Heading>
+        <Heading>{i18n.t("messages")}</Heading>
       </HStack>
-
-      {users.length > 0 && (
+      {isLoading && (
+        <Box h="75%" alignItems="center" justifyContent="center">
+          <LoadingOverlay />
+        </Box>
+      )}
+      {messages.length > 0 && !isLoading && (
         <FlatList
           w="100%"
-          data={users}
+          data={messages}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <Pressable onPress={() => handlePress("Alex", "hNYjBXSZEpAdAuReEvbr", "AhAiD1dxrrCCXvrCOE1N")}>
+            <Pressable
+              onPress={() =>
+                handlePress(item.userId)
+              }
+            >
               <Box pl="4" pr="5" py="2">
                 <HStack alignItems="center" space={3}>
-                  <Avatar
+                  {/* <Avatar
                     size="48px"
                     source={{
                       uri: item.avatarUrl,
                     }}
-                  />
+                  /> */}
+                  <Avatar source={profilePhoto} size="48px" />
+
                   <VStack>
                     <Text color="coolGray.800" fontSize="md">
-                      {item.fullName}
+                      {/* {item.fullName} */} Lalo Salamanco
                     </Text>
                     <Text color="coolGray.500" fontSize="sm">
-                      {item.recentText}
+                      {truncateText(item.lastMessageText, 20)}
                     </Text>
                   </VStack>
                   <Spacer />
@@ -144,27 +96,29 @@ export default function MessagesScreen({ navigation }) {
                       color="coolGray.500"
                       alignSelf="flex-start"
                     >
-                      {item.timeStamp}
+                      {formatLastMessageTime(item.lastMessageTime)}
                     </Text>
-                    <Badge 
-                      bg="primary.50"
-                      rounded="5"
-                      zIndex={1}
-                      variant="solid"
-                      alignSelf="flex-end"
-                      _text={{
-                        fontSize: 12,
-                      }}
-                    >
-                      2
-                    </Badge>
+                    {item.unseenCount > 0 && (
+                      <Badge
+                        bg="primary.50"
+                        rounded="5"
+                        zIndex={1}
+                        variant="solid"
+                        alignSelf="flex-end"
+                        _text={{
+                          fontSize: 12,
+                        }}
+                      >
+                        {item.unseenCount}
+                      </Badge>
+                    )}
                   </VStack>
                 </HStack>
                 <Divider my="2"></Divider>
               </Box>
             </Pressable>
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.conversationId}
         />
       )}
     </Screen>

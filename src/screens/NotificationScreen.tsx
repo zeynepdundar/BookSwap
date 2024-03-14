@@ -12,7 +12,7 @@ export default function NotificationScreen({ navigation }) {
         w="100%"
         h={16}
       >
-        <Heading>{i18n.t("my-notifications")}</Heading>
+        <Heading>{i18n.t("notifications")}</Heading>
       </HStack>
     </Screen>
   );

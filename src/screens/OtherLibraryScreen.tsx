@@ -136,7 +136,7 @@ export default function OtherLibraryScreen({navigation, route}) {
                     </AspectRatio>
 
                     <VStack width="75%" h="95">
-                      <Text color="#000000" fontSize="16">
+                      <Text color="#000000" fontSize="15">
                         {formatText(item.title)}
                       </Text>
                       <Text color="#8c8c8c" fontSize="11">

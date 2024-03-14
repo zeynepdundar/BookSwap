@@ -38,6 +38,7 @@ const ProfileEndpoints = {
     `${BASE_URL}:${PORT}/core/users/${userId}/received-offers`,
   FETCH_SENT_OFFER: (userId: string) =>
     `${BASE_URL}:${PORT}/core/users/${userId}/sent-offers`,
+  SENT_OFFER: `${BASE_URL}:${PORT}/core/offer/send`,
   ACCEPT_OFFER: `${BASE_URL}:${PORT}/core/offer/accept`,
   REJECT_OFFER: `${BASE_URL}:${PORT}/core/offer/reject`,
   TAKE_BACK_OFFER: `${BASE_URL}:${PORT}/core/offer/takeback`,

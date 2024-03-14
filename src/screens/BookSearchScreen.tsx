@@ -47,7 +47,6 @@ export default function BookSearchScreen({ navigation, route = null }) {
     navigation.goBack();
   };
   const navigateUserList = (item) => {
-    console.log("navigateUserList", item);
     navigation.navigate("UserList", {
       data: item,
     });
@@ -84,7 +83,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
   }, []);
 
   useEffect(() => {
-    if (searchQuery.length > 11) {
+    if (searchQuery.length > 3) {
       const searchTimeout = setTimeout(async () => {
         try {
           await fetchBooks(searchQuery);
@@ -100,7 +99,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
   const scanBarcodeHandler = () => {
     navigation.navigate("BarcodeScanner", {
-      relatedScreen: "Library",
+      relatedScreen: relatedScreen,
     });
   };
 
@@ -160,116 +159,23 @@ export default function BookSearchScreen({ navigation, route = null }) {
           )}
           {!loading && !error && searchResults?.length > 0 && (
             <>
-              {/* <FlatList
-                maxWidth="100%"
-                height="75%"
-                mx="3"
-                data={}
-                showsVerticalScrollIndicator={false}
-                extraData={searchResults}
-                renderItem={({ item }) => (
-                  <Pressable
-                    onPress={() => {
-                      changeListStatusHandler(item);
-                    }}
-                  >
-                    <Box
-                      borderWidth="1"
-                      borderRadius="15"
-                      height="130"
-                      borderColor="#F1F1F1"
-                      backgroundColor={
-                        isSelectedBook(item.id) ? "primary.200" : "white"
-                      }
-                      p="3"
-                      mx="2"
-                      my="1"
-                    >
-                      <HStack
-                        justifyContent="space-between"
-                        width="100%"
-                        space={3}
-                        p={1}
-                      >
-                        <AspectRatio
-                          w="20%"
-                          ratio={{
-                            base: 40 / 62,
-                          }}
-                        >
-                          <Image
-                            source={
-                              item.coverUrl
-                                ? { uri: item?.coverUrl }
-                                : importUrl
-                            }
-                            alt={`Cover of ${item.title} by ${item.author}`}
-                            roundedRight="4"
-                          />
-                        </AspectRatio>
-
-                        <VStack width="75%" h="95">
-                          <Text color="#000000" fontSize="16">
-                            {formatText(item.title)}
-                          </Text>
-                          <Text color="#8c8c8c" fontSize="11">
-                            {formatText(item.author)}
-                          </Text>
-                          <Text
-                            color="#000000"
-                            fontSize="13px"
-                            fontWeight="200"
-                          >
-                            {formatText(item.publisher)}
-                          </Text>
-                        </VStack>
-                        <Box position="absolute" bottom="0" right="0">
-                          <Icon
-                            m="1"
-                            size="6"
-                            color={
-                              isSelectedBook(item.id)
-                                ? "primary.50"
-                                : "primary.100"
-                            }
-                            as={
-                              <MaterialIcons
-                                name={
-                                  isSelectedBook(item.id)
-                                    ? "bookmark"
-                                    : "bookmark-outline"
-                                }
-                              />
-                            }
-                          />
-                        </Box>
-                      </HStack>
-                    </Box>
-                  </Pressable>
-                )}
-                keyExtractor={(item) => item.id}
-              /> */}
-
               {/* For specific book list (wishlist/library) search result*/}
-              {listType && (
+              {listType && listType !== "HOME" ? (
                 <BorderedBookListVertical
                   data={searchResults}
                   onDonePress={pressDoneHandler}
                   listType={listType}
-                ></BorderedBookListVertical>
-              )}
-
-              {/* For general search result */}
-              {!listType && (
+                />
+              ) : (
                 <BookListVertical
                   data={searchResults}
                   secondaryAction={addBookToListHandler}
                   onNavigateList={navigateUserList}
-                ></BookListVertical>
+                />
               )}
             </>
           )}
-          {searchQuery.length < 5 && (
+          {searchQuery.length < 3 && (
             <VStack width="100%" height={200} mt="100">
               <Center>
                 <Text fontSize="md">{i18n.t("find-favorite-books")}</Text>
@@ -284,7 +190,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
               </Center>
             </VStack>
           )}
-          {!error && searchResults.length === 0 && searchQuery.length > 4 && (
+          {!error && searchResults.length === 0 && searchQuery.length > 3 && (
             <VStack width="100%" height={200} mt="100">
               <Center>
                 <Text fontSize="md">

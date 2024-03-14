@@ -21,42 +21,32 @@ import Screen from "../../components/Screen";
 export default function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([]);
 
-  const uid = route.params.userId;
-  const friendId = route.params.friendId;
-
-  // this value will come from the Messages screen
-  const conversationId = "nMllpV37qtjaJFjEyrzS";
-  const userId = uid;
-  const friendUserId = friendId;
+  const { userId, friendId } = route.params;
+  const conversationId =`${friendId}_${userId}`
 
   useLayoutEffect(() => {
-    console.log("userId: ", userId);
-    console.log("friendId: ", friendId);
-
     const subscriber = firestore()
       .collection("Conversations")
       .doc(conversationId)
       .collection("messages")
-    .orderBy("createdAt", "desc")
-    .onSnapshot((querySnapshot) => {
-      console.log("querySnapshot: ", querySnapshot);
-    setMessages(
-      querySnapshot.docs.map((doc) => ({
-        _id: doc.id,
-        createdAt: doc.data().createdAt.toDate(),
-        text: doc.data().text,
-        user: {
-          _id: doc.data().senderId,
+      .orderBy("createdAt", "desc")
+      .onSnapshot(
+        (querySnapshot) => {
+          setMessages(
+            querySnapshot.docs.map((doc) => ({
+              _id: doc.id,
+              createdAt: doc.data().createdAt.toDate(),
+              text: doc.data().text,
+              user: {
+                _id: doc.data().senderId,
+              },
+            }))
+          );
         },
-      }))
-    );
-    },
-    (error) => {
-      console.error("Error getting documents: ", error);
-    }
-    );
-
-    console.log("querySnapshot: ", subscriber);
+        (error) => {
+          console.error("Error getting documents: ", error);
+        }
+      );
     // Stop listening for updates when no longer required
     return () => subscriber();
   }, []);
@@ -65,19 +55,16 @@ export default function ChatScreen({ navigation, route }) {
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
     );
-    //   firestore()
-    //     .collection("Conversations")
-    //     .doc(conversationId)
-    //     .collection("messages")
-    //     .add({
-    //       createdAt: firestore.Timestamp.now(),
-    //       text: messages[0].text,
-    //       senderId: userId,
-    //     })
-    //     .then(() => {
-    //       console.log("Message sent!");
-    //     })
-    //     .catch(err => console.log("errorrrrrr",err));
+    firestore()
+      .collection("Conversations")
+      .doc(conversationId)
+      .collection("messages")
+      .add({
+        createdAt: firestore.Timestamp.now(),
+        text: messages[0].text,
+        senderId: userId,
+      })
+      .catch((err) => console.log("Failed to send message", err));
   }, []);
   const renderComposer = (props) => (
     <Composer
@@ -86,6 +73,7 @@ export default function ChatScreen({ navigation, route }) {
         color: "#222B45",
         backgroundColor: "transparent",
         paddingTop: 8.5,
+        marginTop: 0,
         paddingHorizontal: 12,
         marginLeft: 0,
       }}
@@ -96,10 +84,9 @@ export default function ChatScreen({ navigation, route }) {
       <InputToolbar
         {...props}
         containerStyle={{
-          backgroundColor: "#ededed",
+          backgroundColor: "white",
           borderTopColor: "#E8E8E8",
           borderTopWidth: 1,
-          borderRadius: 10,
           padding: 8,
         }}
       />
@@ -110,10 +97,8 @@ export default function ChatScreen({ navigation, route }) {
       {...props}
       disabled={!props.text}
       containerStyle={{
-        width: 44,
-        height: 44,
         backgroundColor: "transparent",
-        marginHorizontal: 14,
+        justifyContent: "center",
       }}
     >
       <Icon
@@ -125,6 +110,13 @@ export default function ChatScreen({ navigation, route }) {
       />
     </Send>
   );
+  // const renderSend = useCallback((props: SendProps<IMessage>) => {
+  //   return (
+  //     <Send {...props} containerStyle={{ justifyContent: 'center' }}>
+  //       <MaterialIcons size={30} color={'tomato'} name={'send'} />
+  //     </Send>
+  //   )
+  // }, [])
   const customSystemMessage = (props) => {
     return (
       <View bg="amber.200" {...props} style={{ bg: "amber.100" }}>
@@ -139,28 +131,27 @@ export default function ChatScreen({ navigation, route }) {
   const renderBubble = (props) => (
     <Bubble
       {...props}
-      renderTime={() => <Text>Time</Text>}
-      renderTicks={() => <Text>Ticks</Text>}
+      // renderTime={() => <Text>Time</Text>}
+      // renderTicks={() => <Text>Ticks</Text>}
       containerStyle={{
-        left: { borderColor: "teal", borderWidth: 8 },
-        right: {},
+        left: { borderColor: "teal", borderWidth: 0, marginLeft: -50 },
+        right: { borderColor: "teal", borderWidth: 0 },
       }}
       wrapperStyle={{
-        left: { borderColor: "pink", borderWidth: 4 },
+        left: { borderWidth: 0 },
+        right: { borderWidth: 0 },
       }}
       bottomContainerStyle={{
-        left: { borderColor: "black", borderWidth: 4 },
-        right: {},
+        left: { borderWidth: 0, backgroundColor: "white" },
+        right: { borderWidth: 0, backgroundColor: "white" },
       }}
-      tickStyle={{}}
-      usernameStyle={{ color: "green", fontWeight: "100" }}
       containerToNextStyle={{
-        right: { backgroundColor: "transparent" },
+        right: { backgroundColor: "#7F3DFF" },
         left: { backgroundColor: "#EDEDED" },
       }}
       containerToPreviousStyle={{
-        left: { borderColor: "mediumorchid", borderWidth: 4 },
-        right: {},
+        left: { borderColor: "transparent", borderWidth: 4 },
+        right: { borderColor: "#7F3DFF", borderWidth: 4 },
       }}
     />
   );
@@ -168,7 +159,7 @@ export default function ChatScreen({ navigation, route }) {
   const renderSystemMessage = (props) => (
     <SystemMessage
       {...props}
-      containerStyle={{ backgroundColor: "pink" }}
+      containerStyle={{ backgroundColor: "green" }}
       wrapperStyle={{ borderWidth: 10, borderColor: "white" }}
       textStyle={{ color: "crimson", fontWeight: "900" }}
     />
@@ -185,17 +176,17 @@ export default function ChatScreen({ navigation, route }) {
     <MessageText
       {...props}
       containerStyle={{
-        right: { backgroundColor: "#7F3DFF" },
+        right: { backgroundColor: "#7F3DFF", borderRadius: 0 },
         left: { backgroundColor: "#EDEDED" },
       }}
       textStyle={{
-        left: { color: "#505050" },
+        left: { color: "#505066" },
         right: { color: "#FFFFFF" },
       }}
-      linkStyle={{
-        left: { color: "orange" },
-        right: { color: "orange" },
-      }}
+      // linkStyle={{
+      //   left: { color: "orange" },
+      //   right: { color: "orange" },
+      // }}
       customTextStyle={{ fontSize: 14, lineHeight: 24 }}
     />
   );
@@ -214,7 +205,6 @@ export default function ChatScreen({ navigation, route }) {
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}
-
         renderInputToolbar={(props) => customtInputToolbar(props)}
         renderSystemMessage={renderSystemMessage}
         renderMessage={renderMessage}
@@ -223,13 +213,17 @@ export default function ChatScreen({ navigation, route }) {
         messagesContainerStyle={{ backgroundColor: "#FFFFFF" }}
         renderComposer={renderComposer}
         renderSend={renderSend}
-        bottomOffset={26}
+        bottomOffset={0}
+        scrollToBottom
         user={{
           _id: userId,
-          name: 'Aaron',
-          avatar: 'https://placeimg.com/150/150/any',
         }}
         renderAvatarOnTop
+        infiniteScroll
+        timeTextStyle={{
+          left: { color: "#505066" },
+          right: { color: "#505066" },
+        }}
       />
     </Screen>
   );

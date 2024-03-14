@@ -12,12 +12,15 @@ import {
   Text,
   Icon,
   IconButton,
-  Actionsheet,
   Button,
   Alert,
 } from "native-base";
-import i18n from "../i18n";
-import { EditionEndpoints } from "../api/endpoints";
+import { fetchBooksByISBN } from "../api/service";
+import { generateActions } from "../utils/helper";
+import { ActionSheet } from "../components/ActionSheet";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store/store";
+import { addBookToListAsync } from "../store/profile-actions";
 
 export default function BarcodeScannerScreen({ navigation, route = null }) {
   const mode = route?.params?.relatedScreen;
@@ -26,20 +29,8 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
   const [scanned, setScanned] = useState(false);
   const [edition, setEdition] = useState(null);
   const [error, setError] = useState(null);
-  const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
-
-  const fetchEditions = async (isbn_13) => {
-    try {
-      console.log("Fetching from API...");
-      const response = await fetch(EditionEndpoints.FETCH_EDITION_BY_ISBN(isbn_13)
-      );
-      const json = await response.json();
-      console.log("json: ", json, isbn_13);
-      return json.editions;
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
+  const [actions, setActions] = useState([]);
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -49,56 +40,34 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
 
     getBarCodeScannerPermissions();
   }, []);
-  const resetScannedResult = () => {
-    setScanned(false);
-    setError(null);
-  };
+
   useEffect(() => {
-    setTimeout(() => {
+    const resetScannedResult = () => {
+      setScanned(false);
+      setError(null);
+    };
+
+    const timer = setTimeout(() => {
       resetScannedResult();
     }, 3000);
-  });
 
-  const handleBarCodeScanned = ({ type, data }) => {
-    setScanned(true);
+    return () => clearTimeout(timer);
+  }, [scanned]);
 
-    const isbn_13 = data;
-    //prepare uri
-    const key = "isbn";
-    const value = isbn_13;
-    const size = "M";
-    let coverUrl = EditionEndpoints.FETCH_COVER_OL(key, value, size);
-
-    fetchEditions(data)
-      .then((fetchedEditions) => {
-        if (fetchedEditions.length == 0) {
-          console.log("No book found with this ISBN!");
-          setError("No book found with this ISBN!");
-          return;
-        } else if (fetchedEditions.length > 1) {
-          console.log(
-            "There are multiple books which match what you're asking for this ISBN."
-          );
-          setError(
-            "There are multiple books which match what you're asking for this ISBN."
-          );
-          return;
-        }
-        const e = fetchedEditions[0];
-
-        let mappedEdition = {
-          id: e.id,
-          title: e.title.slice(0, 30),
-          coverUrl: coverUrl,
-          //author: e.authors[0].name,
-          author: e.authors["name"],
-        };
-        setEdition(mappedEdition);
-      })
-      .catch((error) => {
-        setError("Something went wrong! [ERR_CODE :" + { error } + "]!");
-      });
-    setScanned(false);
+  const handleBarCodeScanned = async ({ type, data }) => {
+    try {
+      setScanned(true);
+      const fetchedEditions = await fetchBooksByISBN(data);
+      if (fetchedEditions.length === 0) {
+        setError("No book found with this ISBN!");
+      } else if (fetchedEditions.length > 1) {
+        setError("Multiple books found with this ISBN.");
+      } else {
+        setEdition(fetchedEditions[0]);
+      }
+    } catch (error) {
+      setError("Error fetching editions. Please try again later.");
+    }
   };
 
   if (hasPermission === null) {
@@ -109,12 +78,31 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
   }
 
   const addbooks = () => {
-    console.log("Book added!");
     setIsActionSheetOpen(true);
-    setEdition(null);
+    if (mode === "Wishlist" || mode === "Library") {
+      dispatch(
+        addBookToListAsync({ ...edition, type: mode.toLocaleUpperCase() })
+      );
+      setEdition(null);
+      closeActionSheet();
+
+    } else {
+      let actions = generateActions(handleAction, closeActionSheet);
+      setActions(actions);
+    }
   };
+  const closeActionSheet = () => {
+    setIsActionSheetOpen(false);
+  };
+  const dispatch = useDispatch<AppDispatch>();
 
   const { width, height } = Dimensions.get("window");
+  const handleAction = (actionType) => {
+    dispatch(addBookToListAsync({ ...edition, type: actionType }));
+    setEdition(null);
+
+    closeActionSheet();
+  };
 
   return (
     <View w={width} h={height}>
@@ -178,6 +166,9 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
                 <Text color="#494949" fontSize="16">
                   {edition?.title}
                 </Text>
+                <Text color="#494949" fontSize="11">
+                  {edition?.publisher}
+                </Text>
               </VStack>
               <IconButton
                 onPress={addbooks}
@@ -224,14 +215,15 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
           </Alert>
         </Center>
       )}
-      <Actionsheet
+
+      <ActionSheet
         isOpen={isActionSheetOpen}
-        onClose={() => setIsActionSheetOpen(false)}
-      >
-        <Actionsheet.Content>
-          <Actionsheet.Item>{i18n.t("the-book-added")}</Actionsheet.Item>
-        </Actionsheet.Content>
-      </Actionsheet>
+        onClose={closeActionSheet}
+        actions={actions}
+        defaultLabel={
+          mode === "Wishlist" || mode === "Library" ? "the-book-added" : null
+        }
+      />
     </View>
   );
 }

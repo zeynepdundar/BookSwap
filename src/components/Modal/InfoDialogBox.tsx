@@ -34,6 +34,12 @@ export const InfoDialogBox = ({
     buttonVariant = "outline";
     confirmButtonLabel = i18n.t("see-my-library");
   }
+  else if (actionType === "TRADE") {
+    title = i18n.t("the-offer-sent");
+    description = i18n.t("see-sent-offers-description");
+    buttonVariant = "outline";
+    confirmButtonLabel = i18n.t("see-my-offers");
+  }
 
   useEffect(() => {
     setIsAlertDialogOpen(isOpen);
@@ -56,6 +62,9 @@ export const InfoDialogBox = ({
       navigateToScreen(WISHLIST_SCREEN);
     } else if (actionType === LIBRARY) {
       navigateToScreen(LIBRARY_SCREEN);
+    }
+    else if (actionType === "TRADE") {
+      navigation.navigate("Trading", { screen: "Sent" })
     }
   };
 

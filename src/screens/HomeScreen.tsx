@@ -9,6 +9,8 @@ import { fetchMostPopularBooks } from "../api/service";
 import { useEffect, useState } from "react";
 
 export default function HomeScreen({ navigation }) {
+  const importUrl = require("../assets/images/avatar.png");
+
   const [books, setBooks] = useState([]);
 
   const { profile, loading: profileLoading } = useSelector(
@@ -40,7 +42,7 @@ export default function HomeScreen({ navigation }) {
           }
         >
           <Image
-            source={{ uri: profile.imageData }}
+            source={profile.imageData ? { uri: profile.imageData } : importUrl}
             alt="Profile Image"
             size={10}
             rounded="7"

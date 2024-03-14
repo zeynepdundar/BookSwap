@@ -25,7 +25,7 @@ export default function TradingTabs() {
         <Heading>{i18n.t("trading")}</Heading>
       </HStack>
       <Tab.Navigator
-        initialRouteName="Request"
+        initialRouteName="Received"
         screenOptions={{
           tabBarActiveTintColor: "#001833",
           tabBarInactiveTintColor: "#D8D8D8",
@@ -37,12 +37,12 @@ export default function TradingTabs() {
         initialLayout={{ width: width }}
       >
         <Tab.Screen
-          name="Request"
+          name="Received"
           component={ReceivedScreen}
           options={{ tabBarLabel: i18n.t("received") }}
         />
         <Tab.Screen
-          name="Propose"
+          name="Sent"
           component={SentScreen}
           options={{ tabBarLabel: i18n.t("sent") }}
         />

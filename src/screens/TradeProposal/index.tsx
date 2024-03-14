@@ -21,68 +21,42 @@ import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { useState } from "react";
+import {  useState } from "react";
 
 import { MaterialIcons } from "@expo/vector-icons";
+import { InfoDialogBox } from "../../components/Modal/InfoDialogBox";
+import { sendOfferAsync } from "../../store/profile-actions";
 
-import auth from "@react-native-firebase/auth";
-import { signOut } from "../../store/auth-slice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  clearProfileData,
-  setLanguagePreference,
-} from "../../store/profile-slice";
 interface TradeProposal {
   receiverId: string;
   offeredBook: any;
   requestedBook: any;
 }
 export default function TradeProposal({ navigation, route }) {
+  const user = route?.params?.data?.user;
+  const book = route?.params?.data?.book;
 
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
 
-  const { name, wishlistBook, libraryBook, languagePreference, imageData } =
-    useSelector((state: any) => state.profile.profile);
-    const user = route?.params?.data?.user;
-    const book = route?.params?.data?.book;
-    console.log("TradeProposal: ", route?.params)
+  const initialState: TradeProposal = {
+    receiverId: user.id,
+    offeredBook: null,
+    requestedBook: book,
+  };
 
-    const initialState:TradeProposal ={  receiverId: "5",
-      offeredBook: null,
-      requestedBook: book}
-
-
-  const [sentPropasal, setSentProposal] = useState<TradeProposal | null>(initialState);
+  const [sentPropasal, setSentProposal] = useState<TradeProposal | null>(
+    initialState
+  );
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const [isOpen, setIsOpen] = useState(false);
 
-  const onClose = () => setIsOpen(false);
+  const proposeTradeHandler = async (): Promise<void> => {
+    dispatch(sendOfferAsync(sentPropasal));
+    setIsInfoDialogOpen(true);
 
-  const handleLanguageChange = (selectedLanguage) => {
-    dispatch(setLanguagePreference(selectedLanguage));
-    // You can add additional logic if needed
   };
 
-  const signOutHandler = async (): Promise<void> => {
-    try {
-      // Sign out the user from Firebase
-      await auth().signOut();
-      dispatch(clearProfileData());
-
-      // Dispatch the logout action to clear user data in Redux state
-      AsyncStorage.removeItem("authToken");
-      dispatch(signOut());
-
-      // Other actions after logout...
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  };
-  const handleSelectImage = (data) => {
-    // setImage(data)
-  };
-  const importUrl = require("../../assets/images/cover_2.png");
   const tradeIcon = require("../../assets/images/icon/trade-icon.png");
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
 
@@ -91,7 +65,10 @@ export default function TradeProposal({ navigation, route }) {
       ...prevProposal,
       requestedBook: data,
     }));
-    console.log("Add to Received Book", data, sentPropasal);
+  };
+
+  const closeInfoDialog = () => {
+    setIsInfoDialogOpen(false);
   };
 
   return (
@@ -139,12 +116,12 @@ export default function TradeProposal({ navigation, route }) {
               height="180"
               overflow="hidden"
             >
-              {sentPropasal?.offeredBook &&
+              {sentPropasal?.offeredBook && (
                 <>
                   <Box width="100" p="2" mt="0">
                     <AspectRatio ratio={41 / 62}>
                       <Image
-                        source={importUrl}
+                        source={{ uri: sentPropasal.offeredBook.coverUrl }}
                         alt={`Cover of`}
                         w="90px"
                         h="130px"
@@ -173,12 +150,22 @@ export default function TradeProposal({ navigation, route }) {
                   </Box>
                   <Text fontSize={11}>{sentPropasal.offeredBook.title}</Text>
                 </>
-              }
-              {!sentPropasal?.offeredBook && (
+              )}
+              {!sentPropasal.offeredBook && (
                 <Fab
-                  onPress={() =>
-                    navigation.navigate("ProfileStack", { screen: "Library" })
-                  }
+                  onPress={() => {
+                    navigation.navigate("ProfileStack", {
+                      screen: "Library",
+                      params: {
+                        data: "TradeProposal",
+                        onDataReceived: (data) =>
+                          setSentProposal((prevProposal) => ({
+                            ...prevProposal,
+                            offeredBook: data,
+                          })),
+                      },
+                    });
+                  }}
                   renderInPortal={false}
                   shadow={2}
                   size="9"
@@ -228,7 +215,7 @@ export default function TradeProposal({ navigation, route }) {
                   <Box width="100" p="2" mt="0">
                     <AspectRatio ratio={41 / 62}>
                       <Image
-                        source={importUrl}
+                        source={{ uri: sentPropasal?.requestedBook.coverUrl }}
                         alt={`Cover of`}
                         w="90px"
                         h="130px"
@@ -312,9 +299,15 @@ export default function TradeProposal({ navigation, route }) {
           {i18n.t("send-offer")}
         </Button> */}
       </VStack>
-      <Button m="7" variant="primary" onPress={null}>
+      <Button m="7" variant="primary" onPress={proposeTradeHandler}>
         {i18n.t("send-offer")}
       </Button>
+      <InfoDialogBox
+        isOpen={isInfoDialogOpen}
+        onClose={closeInfoDialog}
+        actionType={"TRADE"}
+        selectedItem={null}
+      />
     </Screen>
   );
 }

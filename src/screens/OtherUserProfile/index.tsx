@@ -27,7 +27,6 @@ import OtherSwapHistory from "./OtherUserSwapHistory";
 export default function OtherUserProfileScreen({ navigation, route }) {
 
   const userTemp = route?.params?.user;
-  console.log("UserTemp: " ,userTemp)
 
   const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
 
@@ -96,7 +95,6 @@ export default function OtherUserProfileScreen({ navigation, route }) {
               <Pressable
             
                 onPress={() => {
-                  console.log(i);
                   setIndex(i);
                 }}
               >

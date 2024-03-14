@@ -5,6 +5,7 @@ import {
   fetchUserProfileAsync,
   rejectOfferAsync,
   removeBookFromListAsync,
+  sendOfferAsync,
   takeBackOfferAsync,
 } from "./profile-actions";
 
@@ -57,8 +58,8 @@ const initialState: ProfileState = {
 //   error: null as { name: string; message: string } | null,
 //   // profile: null as UserProfile | null,
 //   profile: {
-//     id: "22",
-//     name: "Zeynep 22",
+//     id: "28",
+//     name: "Zeynep28",
 //     birthdate: "",
 //     imageData: null,
 //     gender: "f",
@@ -120,7 +121,6 @@ const profileSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addBookToListAsync.fulfilled, (state, action: any) => {
-        console.log(action.payload);
         const booksToAdd = Array.isArray(action.payload.book)
           ? action.payload.book
           : [action.payload.book];
@@ -146,7 +146,9 @@ const profileSlice = createSlice({
           );
         }
       })
-
+      .addCase(sendOfferAsync.fulfilled, (state, action) => {
+        state.profile.sentOffer=action.payload
+      })
       .addCase(acceptOfferAsync.fulfilled, (state, action) => {
         state.profile.receivedOffer = state.profile.receivedOffer.filter(
           (offer) => offer.id !== action.payload

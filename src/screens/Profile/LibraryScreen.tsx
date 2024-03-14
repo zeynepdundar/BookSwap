@@ -20,10 +20,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { removeBookFromListAsync } from "../../store/profile-actions";
 import { useNavigationState } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LIBRARY } from "../../store/profile-slice";
 
-export const RemoveBookButton = ({ onPress }) => (
+const RemoveBookButton = ({ onPress }) => (
   <Icon
     onPress={onPress}
     name={"delete-forever"}
@@ -34,15 +34,49 @@ export const RemoveBookButton = ({ onPress }) => (
   />
 );
 
-export default function LibraryScreen({ navigation }) {
-  const dispatch = useDispatch<AppDispatch>();
+const AddBookToProposalButton = ({ onPress }) => (
+  <Icon
+    onPress={onPress}
+    name={"add-circle"}
+    variant="solid"
+    size="md"
+    color="primary.100"
+    as={MaterialIcons}
+  />
+);
+
+export default function LibraryScreen({ navigation, route }) {
   const navigationState = useNavigationState((state) => state);
 
+
+  const { params } = route;
+  const onDataReceived = params?.onDataReceived;
+  const addBookToProposalButton = (book) => (
+    <AddBookToProposalButton
+      onPress={() => {        
+        if (onDataReceived && typeof onDataReceived === "function") {
+          onDataReceived(book);
+        }
+        navigation.goBack();
+      }}
+    />
+  );
   const { libraryBook } = useSelector((state: any) => state.profile.profile);
+
+  const dispatch = useDispatch<AppDispatch>();
+
   const [selectedBooks, setSelectedBooks] = useState(libraryBook);
 
   const showFab =
-    navigationState.routes[navigationState.index - 1]?.name === "Profile";
+  navigationState.routes[navigationState.index - 1]?.name === "Profile";
+  useEffect(() => {
+    return () => {
+      // Cleanup or additional actions when the component is unmounted
+      // Make your API call to update user libraryBook here
+      // For example, you can dispatch an action to update the libraryBook in Redux
+      // dispatch(updateLibraryBookAsync(selectedBooks));
+    };
+  }, [dispatch, selectedBooks]);
 
   const removeBookButton = (book) => (
     <RemoveBookButton
@@ -51,6 +85,9 @@ export default function LibraryScreen({ navigation }) {
       }
     />
   );
+  const selectedBooksAction = useMemo(() => {
+    return showFab ? removeBookButton : addBookToProposalButton;
+  }, [showFab]);
 
   const handleAddToLibrary = (books) => {
     setSelectedBooks((prevList) => [...prevList, ...books]);
@@ -121,12 +158,10 @@ export default function LibraryScreen({ navigation }) {
       )}
 
       {selectedBooks.length > 0 && (
-        <Center>
           <BookListVertical
             data={selectedBooks}
-            removeBookButton={removeBookButton}
+            primaryActionButton={selectedBooksAction}
           />
-        </Center>
       )}
       {showFab && (
         <Fab
