@@ -48,7 +48,6 @@ export default function LibraryInputScreen({ navigation }) {
     if (specificAction === "pressContinue") {
       dispatch(setProfileData({ libraryBook: selectedBooks ,languagePreference: deviceLanguage}));
     }
-    console.log("Created profile", profile)
     updateUserProfileData(profile);
     dispatch(setIsNewUser(false));
   };

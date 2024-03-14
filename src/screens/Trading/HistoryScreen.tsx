@@ -63,15 +63,11 @@ export default function HistoryScreen({ navigation }) {
         throw new Error(`HTTP request failed with status ${response.status}`);
       }
 
-      console.log("dgsdg", response);
-
       const data = await response.json();
 
       if (data === null || data === "") {
         throw new Error("Received null response from the server.");
       }
-
-      console.log("dgsdg", data);
 
       // const transformedData = data.editions.map((item) => ({
       //   id: item.id,

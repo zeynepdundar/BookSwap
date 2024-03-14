@@ -25,46 +25,18 @@ export default function UserListScreen({ navigation, route }) {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
   const { libraryBook } = useSelector((state: any) => state.profile.profile);
-  console.log("book", route?.params?.data);
-  console.log("usersTemp", usersTemp);
-
-  const [users, setUsers] = useState<any>(usersTemp);
 
   const [libraryItems, setLibraryItem] = useState<any>([]);
 
-  const addLibraryItemHandler = (selectedLibraryItem: any) => {
-    setLibraryItem((currentLibraryItems) => [
-      ...currentLibraryItems,
-      { id: selectedLibraryItem.id, name: selectedLibraryItem.name },
-    ]);
-  };
 
-  const removeLibraryItemHandler = (id: string) => {
-    setLibraryItem((currentLibraryItems) => {
-      return currentLibraryItems.filter((item) => item.id !== id);
-    });
-  };
-
-  const isSelectedItem = (id: string) => {
-    const existingLibraryItemIndex = libraryItems.findIndex(
-      (item) => item.id === id
-    );
-    return existingLibraryItemIndex !== -1;
-  };
-
-  const searchBooknameHandler = (enteredBookname) => {
-    console.log("Searching..", enteredBookname);
-  };
   const [isOpen, setIsOpen] = useState(false);
 
   const pressHandler = (data) => {
     if (libraryBook.length === 0) {
       // Library is empty, show an alert
       setIsOpen(true);
-      console.log("Pressing", libraryBook);
     } else {
       // Library is not empty, proceed with navigation
-      console.log("Selected Library Items", data);
       navigation.navigate("TradeProposal", { data });
     }
   };
@@ -74,7 +46,6 @@ export default function UserListScreen({ navigation, route }) {
     navigation.navigate("ProfileStack", { screen: "Library" });
     onClose();
   };
-  const signOutHandler = async (): Promise<void> => {};
   const avatarImage = require("../assets/images/avatar.png");
 
   return (

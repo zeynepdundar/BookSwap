@@ -47,9 +47,9 @@
   "add-books-to-your-library-to-swap-books": "İstediğin kitapları takas etmek için şimdi kitaplığına kitap ekle",
   "add-books-to-your-wishlist-to-swap-books": "İstediğin kitapları takas etmek için şimdi istek listene kitap ekle",
   "ask-for-swap": "Takas iste",
-  "my-messages": "Mesajlarım",
+  "messages": "Mesajlarım",
   "trading": "Takas",
-  "my-notifications": "Bildirimlerim",
+  "notifications": "Bildirimlerim",
   "accept": "Kabul et",
   "decline": "Reddet",
   "received": "Alınan",
@@ -73,6 +73,13 @@
   "library-empty": "Kitaplığın Boş",
   "add-books-to-your-library-before-sending-an-offer": "Takas isteği göndermeden önce kitaplığına kitap ekle",
   "recently-added":"Son Eklenenler",
-  "most-popular":"En popüler"
-
+  "most-popular":"En popüler",
+  "the-offer-sent": "Takas teklifin gönderildi!",
+  "see-sent-offers-description": "Gönderdiğin takas tekliflerini 'Gönderilen' sekmesi altında bulabilirsin",
+  "see-my-offers": "Gönderilen teklifleri gör",
+  "start-searching-for-new-books":"Yeni kitaplar ara ve takas tekliflerine başla",
+  "you-have-not-received-any-offer-yet":"Henüz bir teklif alınmadı",
+  "you-have-not-sent-any-offer-yet":"Henüz bir teklif gönderilmedi",
+  "you-have-accepted-the-request":"Takas teklifini kabul ettin",
+  "send-message": "Mesaj gönder"
 }

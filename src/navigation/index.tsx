@@ -15,6 +15,7 @@ import BookSearchOnCreationScreen from "../screens/ProfileCreation/BookSearchOnC
 import TradeProposal from "../screens/TradeProposal";
 import LibraryScreen from "../screens/Profile/LibraryScreen";
 import OtherLibraryScreen from "../screens/OtherLibraryScreen";
+import TradeOfferAcceptedScreen from "../screens/TradeOfferAcceptedScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -71,7 +72,7 @@ export default function Navigation() {
                     name="BarcodeScanner"
                     component={BarcodeScannerScreen}
                   />
-                    <Stack.Screen
+                  <Stack.Screen
                     name="BookSearchFromList"
                     component={BookSearchOnCreationScreen}
                   ></Stack.Screen>
@@ -84,8 +85,16 @@ export default function Navigation() {
                     component={TradeProposal}
                   ></Stack.Screen>
                   <Stack.Screen
+                    name="TradeOfferAcceptedScreen"
+                    component={TradeOfferAcceptedScreen}
+                  ></Stack.Screen>
+                  <Stack.Screen
                     name="OtherLibrary"
                     component={OtherLibraryScreen}
+                  />
+                                    <Stack.Screen
+                    name="ChatScreen"
+                    component={ChatScreen}
                   />
                 </Stack.Group>
               </>

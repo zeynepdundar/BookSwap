@@ -20,10 +20,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { removeBookFromListAsync } from "../../store/profile-actions";
 import { useNavigationState } from "@react-navigation/native";
-import { WISHLIST } from "../../store/profile-slice";
 import { useEffect, useState } from "react";
+import { WISHLIST } from "../../store/profile-slice";
 
-export const RemoveBookButton = ({ onPress }) => (
+const RemoveBookButton = ({ onPress }) => (
   <Icon
     onPress={onPress}
     name={"delete-forever"}
@@ -112,12 +112,10 @@ export default function WishlistScreen({ navigation }) {
       )}
 
       {selectedBooks.length > 0 && (
-        <Center>
           <BookListVertical
             data={selectedBooks}
-            removeBookButton={removeBookButton}
+            primaryActionButton={removeBookButton}
           />
-        </Center>
       )}
       {showFab && (
         <Fab

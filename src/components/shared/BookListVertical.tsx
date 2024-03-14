@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -16,24 +16,16 @@ import { InfoDialogBox } from "../Modal/InfoDialogBox";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ActionSheet } from "../ActionSheet";
 import { LIBRARY, WISHLIST, ListTypes } from "../../store/profile-slice";
-export const formatText = (inputText) => {
-  const words = inputText.split(" ");
-  const formattedWords = words.map(
-    (word) => word.charAt(0).toUpperCase() + word.toLowerCase().slice(1)
-  );
-  const formattedText = formattedWords.join(" ");
-  return formattedText;
-};
-
+import { formatText, generateActions, truncateText } from "../../utils/helper";
 interface BookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
-  removeBookButton?: (id: string) => void;
+  primaryActionButton?: (id: string) => void;
   secondaryAction?: (item: any) => void;
   onNavigateList?: (item: any) => void;
 }
 export const BookListVertical: React.FC<BookListVerticalProps> = ({
   data,
-  removeBookButton,
+  primaryActionButton,
   secondaryAction,
   onNavigateList,
   ...props
@@ -45,20 +37,8 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
     null
   );
   const importUrl = require("../../assets/images/no-cover-available.png");
-  const actions = [
-    {
-      type: WISHLIST,
-      label: "add-my-wishlist",
-      onPress: () => handleAction(WISHLIST),
-    },
-    {
-      type: LIBRARY,
-      label: "add-my-library",
-      onPress: () => handleAction(LIBRARY),
-    },
-    { type: "cancel", label: "cancel", onPress: () => closeActionSheet() },
-    // Add more actions as needed
-  ];
+
+
 
   const handleAction = (actionType) => {
     secondaryAction({
@@ -84,6 +64,8 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);
   };
+
+  const actions = generateActions(handleAction, closeActionSheet);
 
   return (
     <>
@@ -123,14 +105,14 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                     roundedRight="4"
                   />
                 </AspectRatio>
-                <VStack>
-                  <Text color="#000000" fontSize="16">
-                    {formatText(item.title)}
+                <VStack width={173}>
+                  <Text color="#000000" fontSize="15" numberOfLines={2}>
+                    {truncateText(formatText(item.title),44)}
                   </Text>
-                  <Text color="#8c8c8c" fontSize="11">
-                    {formatText(item.author)}
-                  </Text>
+                  <Text color="#8c8c8c" fontSize="11"  numberOfLines={1}>
+                    {truncateText(formatText(item.author),30)}
 
+                  </Text>
                   {/* Backend den publishers şeklinde gelen array , handle etmek için */}
                   {item.publisher ||
                   (Array.isArray(item.publishers) &&
@@ -170,8 +152,8 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                 </VStack>
                 <Spacer />
                 <VStack>
-                  {removeBookButton && removeBookButton(item)}
-                  {!removeBookButton && (
+                  {primaryActionButton && primaryActionButton(item)}
+                  {!primaryActionButton && (
                     <Icon
                       onPress={() => openActionSheet(item)}
                       name={"more-vert"}

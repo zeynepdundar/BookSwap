@@ -2,10 +2,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "./types";
 import {
   addBookToList,
+  fetchSentOffer,
   fetchUserProfileData,
   removeBookFromList,
+  sendOffer,
 } from "../api/service";
 import { ProfileEndpoints } from "../api/endpoints";
+import { structureOfferData } from "../utils/helper";
 
 export const fetchUserProfileAsync = createAsyncThunk(
   "profile/fetchUserProfile",
@@ -58,6 +61,21 @@ export const removeBookFromListAsync = createAsyncThunk(
   }
 );
 
+export const sendOfferAsync = createAsyncThunk(
+  "profile/sendOffer",
+  async (createdOffer: any, { getState }) => {
+    try {
+      const userId = (getState() as RootState).profile.profile.id;
+      await sendOffer(userId, createdOffer);
+      const allSentOffers= await fetchSentOffer(userId);
+      return allSentOffers
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+);
+
 export const acceptOfferAsync = createAsyncThunk(
   "profile/acceptOffer",
   async (offerId: any, { getState }) => {
@@ -82,6 +100,7 @@ export const acceptOfferAsync = createAsyncThunk(
       if (!response.ok) {
         throw new Error("Failed to accept offer");
       }
+      console.log("The offer was successfully accepted, offerId: ", offerId);
       return offerId
     } catch (error) {
       console.error(error);
@@ -138,6 +157,7 @@ export const takeBackOfferAsync = createAsyncThunk(
       if (!response.ok) {
         throw new Error("Failed to take back offer");
       }
+      console.log("The offer was successfully taken back, offerId: ", offerId);
       return offerId
     } catch (error) {
       console.error(error);
