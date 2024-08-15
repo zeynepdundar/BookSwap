@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import {
   Button,
   Text,
@@ -7,10 +8,11 @@ import {
   Box,
   AspectRatio,
   Pressable,
+  Badge,
+  CloseIcon,
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
-import { useSelector } from "react-redux";
 
 export default function TradeOfferAcceptedScreen({ navigation, route }) {
   const { userId, receivedBook, offeredBook } = route.params;
@@ -39,6 +41,16 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
               alt={`Cover of`}
             />
           </AspectRatio>
+          <Pressable
+                onPress={() => {}}
+                position="absolute"
+                right={0}
+                top={0}
+              >
+                <Badge rounded="100" w="7" h="7" bg="#F2F2F2">
+                  <CloseIcon fontSize={10} color="coolGray.800" />
+                </Badge>
+              </Pressable>
           <Text fontSize={11}>{receivedBook.title}</Text>
         </Box>
         <Box width="100" p="2" bg="#fff"  mt="9">

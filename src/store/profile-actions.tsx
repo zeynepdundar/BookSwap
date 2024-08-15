@@ -36,10 +36,12 @@ export const addBookToListAsync = createAsyncThunk(
   async (book: any, { getState }) => {
     try {
       const userId = (getState() as RootState).profile.profile.id;
-      const addedBook = await addBookToList(userId, book);
+      const response = await addBookToList(userId, book);
       const bookType = Array.isArray(book) ? book[0].type : book.type;
-
-      return { book: addedBook, listType: bookType };
+      if (response.status === "error") {
+        return response; // Return the error response
+      }
+      return { book: response, listType: bookType };
     } catch (error) {
       console.error(error);
       throw error;
@@ -67,8 +69,8 @@ export const sendOfferAsync = createAsyncThunk(
     try {
       const userId = (getState() as RootState).profile.profile.id;
       await sendOffer(userId, createdOffer);
-      const allSentOffers= await fetchSentOffer(userId);
-      return allSentOffers
+      const allSentOffers = await fetchSentOffer(userId);
+      return allSentOffers;
     } catch (error) {
       console.error(error);
       throw error;
@@ -82,7 +84,6 @@ export const acceptOfferAsync = createAsyncThunk(
     try {
       const uid = (getState() as RootState).auth.user.firebaseUserId;
       const id = (getState() as RootState).profile.profile.id;
-
 
       const response = await fetch(ProfileEndpoints.ACCEPT_OFFER, {
         method: "POST",
@@ -101,7 +102,7 @@ export const acceptOfferAsync = createAsyncThunk(
         throw new Error("Failed to accept offer");
       }
       console.log("The offer was successfully accepted, offerId: ", offerId);
-      return offerId
+      return offerId;
     } catch (error) {
       console.error(error);
     }
@@ -129,7 +130,7 @@ export const rejectOfferAsync = createAsyncThunk(
       if (!response.ok) {
         throw new Error("Failed to reject offer");
       }
-      return offerId
+      return offerId;
     } catch (error) {
       console.error(error);
     }
@@ -158,7 +159,7 @@ export const takeBackOfferAsync = createAsyncThunk(
         throw new Error("Failed to take back offer");
       }
       console.log("The offer was successfully taken back, offerId: ", offerId);
-      return offerId
+      return offerId;
     } catch (error) {
       console.error(error);
     }

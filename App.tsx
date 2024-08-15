@@ -1,17 +1,16 @@
-import { Provider, useDispatch } from "react-redux";
 import { useState, useEffect, useRef } from "react";
 import { Platform, Text } from "react-native";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Provider, useDispatch } from "react-redux";
+import AsyncStore from "./src/utils/AsyncStore";
 import "expo-dev-client";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
+import Constants from "expo-constants";
 import { useFonts } from "expo-font";
 import { NativeBaseProvider } from "native-base";
 import { theme } from "./src/theme";
 import Navigation from "./src/navigation";
 import store, { AppDispatch } from "./src/store/store";
-import * as Notifications from "expo-notifications";
-import * as Device from "expo-device";
-import Constants from "expo-constants";
 import { setToken } from "./src/store/auth-slice";
 
 ///  PUSH NOTIFICATIONS - START  ///
@@ -75,7 +74,7 @@ export default function App() {
       const pushToken = await registerForPushNotificationsAsync();
 
       if (pushToken) {
-        await AsyncStorage.setItem("pushToken", pushToken);
+        await AsyncStore.setItem("pushToken", pushToken);
       }
     } catch (error) {
       console.error("Error while registering for push notifications:", error);

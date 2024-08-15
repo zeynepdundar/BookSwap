@@ -17,7 +17,13 @@ import i18n from "../i18n";
 
 const avatarImage = require("../assets/images/avatar.png");
 
-const ImagePicker = ({ selectedImage, initialImage }: { selectedImage: (data: any) => void; initialImage?: any }) => {
+const ImagePicker = ({
+  selectedImage,
+  initialImage,
+}: {
+  selectedImage: (data: any) => void;
+  initialImage?: any;
+}) => {
   const [pickedImage, setPickedImage] = useState(initialImage || "");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cameraPermissionInformation, requestPermission] =
@@ -84,6 +90,7 @@ const ImagePicker = ({ selectedImage, initialImage }: { selectedImage: (data: an
   useEffect(() => {
     // Set the initial image when the initialImage prop changes
     setPickedImage(initialImage || "");
+    console.log("setPickedImage", initialImage);
   }, [initialImage]);
 
   return (
@@ -94,20 +101,12 @@ const ImagePicker = ({ selectedImage, initialImage }: { selectedImage: (data: an
         height="120px"
         borderRadius="full"
       >
-{ pickedImage &&       <Image
-          width="100%"
-          height="100%"
-          borderRadius="full"
-          source={{ uri: pickedImage }}
+        <Image
+          source={pickedImage ? { uri: initialImage } : avatarImage}
           alt="Profile Image"
-        />}
-{   !pickedImage &&             <Image
-          width="100%"
-          height="100%"
-          borderRadius="full"
-          source={ avatarImage}
-          alt="Profile Image"
-        />}
+          size={10}
+          rounded="7"
+        />
         <Badge
           rounded="100"
           w="7"

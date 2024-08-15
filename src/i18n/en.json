@@ -82,7 +82,13 @@
   "you-have-not-received-any-offer-yet":"You have’t received new offer, yet",
   "you-have-not-sent-any-offer-yet":"You have’t sent an offer, yet",
   "you-have-accepted-the-request":"You have accepted the request",
-  "send-message": "Send Message"
-
-
+  "send-message": "Send Message",
+  "days-ago":"%{count}d ago",
+  "hours-ago":"%{count}h ago",
+  "minutes-ago":"%{count}m ago",
+  "seconds-ago":"%{count}s ago",
+  "just-now":"just now",
+  "already-have-book":"You already have this book in your list",
+  "something-went-wrong": "Something went wrong",
+  "block-and-report":"Block & Report"
 }

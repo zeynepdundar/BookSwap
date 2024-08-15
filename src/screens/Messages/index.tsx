@@ -22,7 +22,7 @@ import { formatLastMessageTime, truncateText } from "../../utils/helper";
 
 export default function MessagesScreen({ navigation }) {
   const { id, firebaseUserId } = useSelector((state: any) => state.auth.user);
-  const [messages, setMessages] = useState([]);
+  // const [messages, setMessages] = useState([]);
 
   const handlePress = (friendId) => {
     navigation.navigate("ChatScreen", {
@@ -31,16 +31,17 @@ export default function MessagesScreen({ navigation }) {
     });
   };
 
-  const { subscribeToMessages, isLoading } = useMessageSubscription(
+  const { messages,  loading:isLoading } = useMessageSubscription(
     firebaseUserId,
-    setMessages
   );
 
-  useLayoutEffect(() => {
-    const unsubscribe = subscribeToMessages();
 
-    return () => unsubscribe();
-  }, [firebaseUserId, setMessages]);
+  // useLayoutEffect(() => {
+  //   const unsubscribe = subscribeToMessages();
+  //   console.log("messages",messages)
+
+  //   return () => unsubscribe();
+  // }, [firebaseUserId, setMessages]);
 
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
 
@@ -60,7 +61,7 @@ export default function MessagesScreen({ navigation }) {
           <LoadingOverlay />
         </Box>
       )}
-      {messages.length > 0 && !isLoading && (
+      {messages?.length > 0 && !isLoading && (
         <FlatList
           w="100%"
           data={messages}

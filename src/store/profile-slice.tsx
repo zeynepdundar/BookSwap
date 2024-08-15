@@ -28,6 +28,7 @@ export interface UserProfile {
   libraryBook: any[];
   receivedOffer?;
   sentOffer?;
+  historyList?;
 }
 interface ProfileState {
   loading: boolean;
@@ -50,6 +51,7 @@ const initialState: ProfileState = {
 
     receivedOffer: [], // Add this line for received trade ids
     sentOffer: [], // Add this line for sent trade ids
+    historyList: [], // Add this line for history
   },
 };
 
@@ -103,6 +105,7 @@ const profileSlice = createSlice({
         libraryBook: [],
         receivedOffer: [],
         sentOffer: [],
+        historyList: [],
       };
     },
     removeBookFromList: (state, action) => {

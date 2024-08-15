@@ -38,32 +38,42 @@ export const updateUserProfileData = async (profileData) => {
     throw new Error("Failed to update profile");
   }
 };
-export const fetchProfileImage = async (userId) => {
-  // try {
-  //   const response: any = await fetch(
-  //     ProfileEndpoints.FETCH_USER_PHOTO(userId),
-  //     {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //         Authorization: `Bearer ${"eyJhbGciOiJSUzI1NiIsImtpZCI6IjAzMmNjMWNiMjg5ZGQ0NjI2YTQzNWQ3Mjk4OWFlNDMyMTJkZWZlNzgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm9vay1zd2FwLTJkOWE1IiwiYXVkIjoiYm9vay1zd2FwLTJkOWE1IiwiYXV0aF90aW1lIjoxNzAzMjQ4MjUwLCJ1c2VyX2lkIjoiMnZXNFJhRUpCc1RCYVI0VTloTHpudUtsTzZJMiIsInN1YiI6IjJ2VzRSYUVKQnNUQmFSNFU5aEx6bnVLbE82STIiLCJpYXQiOjE3MDM0MjU0MzMsImV4cCI6MTcwMzQyOTAzMywicGhvbmVfbnVtYmVyIjoiKzE1NTU2NjYxMjM0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrMTU1NTY2NjEyMzQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwaG9uZSJ9fQ.p4gFmzGQKYv22zrsbo-zatwMeTs8WhbrFn6FFTkLY76PsfF2flZyEQ3hLFfDU3zy0BmS8SFgLyA6DQVp4uDGebtYNfxdCkHc6AB1Ni0fAF7FXoI_J3jQ8dUDA2cUQ9wQOzjaVcboiciX89Begp_GtM19EcOoK045Q1DIw-cWta0NGY-BjngJ11jWEYDJb1pzexsjTZiA6CuQghhq8sTZsvstwueCdhre4gwQzARJaXVzEQMfHWMekUacGqjkDa90onwNChlMzQtxdOu0KDrpgsZj7-8Oi5EQODnFl6xHp5g42vB64HNS2Kc2_frgQA1yxyxNeYaKVMB1ia6y_QmuOw"}`, // Replace with your actual access token
-  //       },
-  //     }
-  //   );
-  //   if (!response.ok) {
-  //     throw new Error(
-  //       "Failed to fetch user profile image from db [fetchProfileImage]"
-  //     );
-  //   }
-  //   console.log("User profile image", response.bodyBlob._data.blobId);
-  //   const imageBlob = await response.blob();
-  //   console.log("imageBlob", imageBlob);
-  //   const uri = URL.createObjectURL(imageBlob);
-  //   console.log("uri", uri);
-  //   return `data:image/jpeg;base64,${response.bodyBlob._data.blobId}`;
-  // } catch (err) {
-  //   console.log(err.message);
-  // }
+export const fetchProfileImage = async (userId: string) => {
+  try {
+    const response: any = await fetch(
+      ProfileEndpoints.FETCH_USER_PHOTO(userId),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          // Authorization: `Bearer ${"eyJhbGciOiJSUzI1NiIsImtpZCI6IjAzMmNjMWNiMjg5ZGQ0NjI2YTQzNWQ3Mjk4OWFlNDMyMTJkZWZlNzgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm9vay1zd2FwLTJkOWE1IiwiYXVkIjoiYm9vay1zd2FwLTJkOWE1IiwiYXV0aF90aW1lIjoxNzAzMjQ4MjUwLCJ1c2VyX2lkIjoiMnZXNFJhRUpCc1RCYVI0VTloTHpudUtsTzZJMiIsInN1YiI6IjJ2VzRSYUVKQnNUQmFSNFU5aEx6bnVLbE82STIiLCJpYXQiOjE3MDM0MjU0MzMsImV4cCI6MTcwMzQyOTAzMywicGhvbmVfbnVtYmVyIjoiKzE1NTU2NjYxMjM0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrMTU1NTY2NjEyMzQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwaG9uZSJ9fQ.p4gFmzGQKYv22zrsbo-zatwMeTs8WhbrFn6FFTkLY76PsfF2flZyEQ3hLFfDU3zy0BmS8SFgLyA6DQVp4uDGebtYNfxdCkHc6AB1Ni0fAF7FXoI_J3jQ8dUDA2cUQ9wQOzjaVcboiciX89Begp_GtM19EcOoK045Q1DIw-cWta0NGY-BjngJ11jWEYDJb1pzexsjTZiA6CuQghhq8sTZsvstwueCdhre4gwQzARJaXVzEQMfHWMekUacGqjkDa90onwNChlMzQtxdOu0KDrpgsZj7-8Oi5EQODnFl6xHp5g42vB64HNS2Kc2_frgQA1yxyxNeYaKVMB1ia6y_QmuOw"}`, // Replace with your actual access token
+        },
+      }
+    );
+    console.log("Response status:", response.status);
+    console.log("Response headers:", response.headers);
+    if (!response.ok) {
+      throw new Error(
+        "Failed to fetch user profile image from db [fetchProfileImage]"
+      );
+    }
+
+    // Ensure that the response is in the expected format
+    const contentType = response.headers.get("Content-Type");
+    if (!contentType || !contentType.includes("image")) {
+      throw new Error("Invalid content type");
+    }
+
+    const imageBlob = await response.blob();
+    console.log("imageBlob", imageBlob);
+
+    const uri = URL.createObjectURL(imageBlob);
+    console.log("uri", uri);
+
+    return uri;
+  } catch (err) {
+    console.error("Error fetching profile image:", err.message);
+  }
 };
 export const uploadProfileImage = async (userId, imageUri) => {
   const formdata: any = new FormData();
@@ -120,23 +130,25 @@ export const fetchUserProfileData = async (firebaseUserId: string) => {
     );
   }
 
-  // const imageUri = await fetchProfileImage(result.id);
+  const imageUri = await fetchProfileImage(result.id);
+
   const receivedOffers = await fetchReceivedOffer(result.id);
   const sentOffers = await fetchSentOffer(result.id);
+  const historyList = await fetchHistory(result.id);
 
   const profile: UserProfile = {
     id: result.id,
     name: result.name,
     birthdate: result.birthdate,
-    imageData: null,
+    imageData: imageUri,
     gender: result.gender,
     languagePreference: result.language_preference,
     wishlistBook: createBookData(result.wished_editions),
     libraryBook: createBookData(result.owned_editions),
     receivedOffer: receivedOffers,
     sentOffer: sentOffers,
+    historyList: historyList,
   };
-  // console.log("Resulttt", sentOffers);
 
   return profile;
 };
@@ -185,39 +197,27 @@ export const fetchSentOffer = async (userId) => {
     return []; // Return an empty array in case of an error
   }
 };
-// export const transformBookData = (editions) => {
-//   if (Array.isArray(editions)) {
-//     return editions.map((item) => ({
-//       id: item.id,
-//       title: item.title,
-//       publisher: item.publishers?.[0] || null,
-//       coverUrl:
-//         item.isbn_13 && item.isbn_13 > 0
-//           ? `https://covers.openlibrary.org/b/${"isbn"}/${
-//               item.isbn_13
-//             }-${"M"}.jpg`
-//           : null,
-//       author: item.authors ? item.authors[0]?.name : null,
-//     }));
-//   } else if (typeof editions === "object" && editions !== null) {
-//     return {
-//       id: editions.id,
-//       title: editions.title,
-//       publisher: editions.publishers?.[0] || null,
-//       coverUrl:
-//         editions.isbn_13 && editions.isbn_13 > 0
-//           ? `https://covers.openlibrary.org/b/${"isbn"}/${
-//               editions.isbn_13
-//             }-${"M"}.jpg`
-//           : null,
-//       author: editions.authors ? editions.authors[0]?.name : null,
-//     };
-//   } else {
-//     // Handle other cases or throw an error if needed
-//     return null;
-//   }
-// };
+export const fetchHistory = async (userId) => {
+  try {
+    const response = await fetch(ProfileEndpoints.FETCH_HISTORY(userId), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${"your_access_token"}`, // Replace with your actual access token
+      },
+    });
 
+    if (!response.ok) {
+      throw new Error("Failed to fetch history");
+    }
+
+    const result = await response.json();
+    return structureOfferData(result, "history");
+  } catch (error) {
+    console.error(error);
+    return []; // Return an empty array in case of an error
+  }
+};
 export const addBookToList = async (userId, bookData) => {
   const editionIds = Array.isArray(bookData)
     ? bookData.map((book) => book.id)
@@ -238,7 +238,19 @@ export const addBookToList = async (userId, bookData) => {
     body: JSON.stringify({ edition_ids: editionIds }),
   });
 
+  const responseData = await response.json();
+
+
   if (!response.ok) {
+    if (responseData.status === "error" && responseData.message) {
+      // Handle the specific error message
+      console.error(responseData.message);
+      return {
+        status: responseData.status,
+        message: responseData.message,
+        existingEditionIds: responseData.existing_edition_ids,
+      };
+    }
     throw new Error("Failed to add book to list [addBookToList]");
   }
   const addedBooks = Array.isArray(bookData) ? bookData : [bookData];

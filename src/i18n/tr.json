@@ -81,5 +81,13 @@
   "you-have-not-received-any-offer-yet":"Henüz bir teklif alınmadı",
   "you-have-not-sent-any-offer-yet":"Henüz bir teklif gönderilmedi",
   "you-have-accepted-the-request":"Takas teklifini kabul ettin",
-  "send-message": "Mesaj gönder"
+  "send-message": "Mesaj gönder",
+  "days-ago":"%{count} gün önce",
+  "hours-ago":"%{count} sa önce",
+  "minutes-ago":"%{count} dk önce",
+  "seconds-ago":"%{count} sn önce",
+  "just-now":"şimdi",
+  "already-have-book":"Bu kitap listende zaten mevcut",
+  "something-went-wrong": "Bir şeyler ters gitti",
+  "block-and-report":"Engelle & Rapor et"
 }

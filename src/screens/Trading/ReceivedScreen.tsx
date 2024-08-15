@@ -102,6 +102,7 @@ export default function ReceivedScreen({ navigation }) {
                     >
                       {item.participantProfile.name}
                     </Text>
+
                     <Text
                       onPress={() => navigation.navigate("Library")}
                       color="coolGray.400"

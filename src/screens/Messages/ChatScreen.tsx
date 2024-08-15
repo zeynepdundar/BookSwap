@@ -6,7 +6,6 @@ import {
   Send,
 } from "react-native-gifted-chat";
 import {
-  Avatar,
   Bubble,
   SystemMessage,
   Message,
@@ -15,14 +14,30 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 
 import firestore from "@react-native-firebase/firestore";
-import { Icon, Image, Text, View } from "native-base";
+import {
+  ArrowBackIcon,
+  Avatar,
+  Button,
+  Heading,
+  Icon,
+  Text,
+  View,
+  Box,
+  HStack,
+} from "native-base";
 import Screen from "../../components/Screen";
+import { ActionSheet } from "../../components/ActionSheet";
+import { generateModalActions } from "../../utils/helper";
+import { AlertDialogBox } from "../../components/Modal/AlertDialogBox";
+import i18n from "../../i18n";
+import BlockUserModal from "../../components/Modal/BlockUserModal";
 
 export default function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([]);
+  const [actions, setActions] = useState([]);
 
   const { userId, friendId } = route.params;
-  const conversationId =`${friendId}_${userId}`
+  const conversationId = `${friendId}_${userId}`;
 
   useLayoutEffect(() => {
     const subscriber = firestore()
@@ -138,8 +153,8 @@ export default function ChatScreen({ navigation, route }) {
         right: { borderColor: "teal", borderWidth: 0 },
       }}
       wrapperStyle={{
-        left: { borderWidth: 0 },
-        right: { borderWidth: 0 },
+        left: { borderWidth: 0, backgroundColor: "transparent" },
+        right: { borderWidth: 0, backgroundColor: "transparent" },
       }}
       bottomContainerStyle={{
         left: { borderWidth: 0, backgroundColor: "white" },
@@ -176,8 +191,20 @@ export default function ChatScreen({ navigation, route }) {
     <MessageText
       {...props}
       containerStyle={{
-        right: { backgroundColor: "#7F3DFF", borderRadius: 0 },
-        left: { backgroundColor: "#EDEDED" },
+        right: {
+          backgroundColor: "#7F31FF",
+          borderTopLeftRadius: 12,
+          borderTopRightRadius: 12,
+          borderBottomRightRadius: 3,
+          borderBottomLeftRadius: 12,
+        },
+        left: {
+          backgroundColor: "#EDEDED",
+          borderTopLeftRadius: 12,
+          borderTopRightRadius: 12,
+          borderBottomRightRadius: 12,
+          borderBottomLeftRadius: 3,
+        },
       }}
       textStyle={{
         left: { color: "#505066" },
@@ -200,31 +227,134 @@ export default function ChatScreen({ navigation, route }) {
       <Text>From CustomView</Text>
     </View>
   );
+  const avatarImage = require("../../assets/images/avatar.png");
+  const [isBlockUserModalOpen, setIsBlockUserModalOpen] =
+    useState<boolean>(false);
+
+  const ChatHeaderBar = ({ title, avatarUri, onBackPress, onOptionsPress }) => {
+    return (
+      <Box
+        h="85px"
+        backgroundColor="#ffff"
+        shadow={3}
+        borderBottomWidth={2} // Add top border
+        borderBottomColor="#f5f5f5"
+        px="4"
+        pt="5"
+        justifyContent="center"
+      >
+        <HStack alignItems="center" justifyContent="space-between">
+          <Button
+            backgroundColor="transparent"
+            variant="ghost"
+            leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+            _pressed={{ bg: "transparent" }}
+            onPress={onBackPress}
+          />
+          <Avatar borderRadius="full" source={avatarImage} size="40px" />
+          <Heading fontSize="18px" pl="5" flex={1}>
+            {title}
+          </Heading>
+          <Button
+            backgroundColor="transparent"
+            variant="ghost"
+            leftIcon={<MaterialIcons name="remove-circle-outline" size={24} />}
+            _pressed={{
+              bg: "transparent",
+            }}
+            onPress={onOptionsPress}
+          ></Button>
+        </HStack>
+      </Box>
+    );
+  };
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
+  const handleAction = async (actionType) => {
+    // const response = await dispatch(
+    //   addBookToListAsync({ ...edition, type: actionType })
+    // );
+    // const payload = response.payload;
+
+    // if (payload?.status === "error") {
+    //   if (payload.existingEditionIds?.length > 0) {
+    //     setError(i18n.t("already-have-book"));
+    //   } else {
+    //     setError(payload.message);
+    //   }
+    //   setTimeout(() => {
+    //     setError(null);
+    //   }, 8000);
+    // }
+    // closeActionSheet();
+  };
+  const handleOptionsPress = () => {
+    setIsBlockUserModalOpen(true);
+    let actions = [
+      { type: "WISHLIST", label: "inappropiate-message" },
+      { type: "LIBRARY", label: "spam-message" },
+      { type: "other", label: "other" },
+    ];
+    setActions(generateModalActions(actions, handleAction, closeBlockUserModal));
+  };
+  const closeBlockUserModal = () => {
+    setIsBlockUserModalOpen(false);
+  };
+
   return (
-    <Screen>
-      <GiftedChat
-        messages={messages}
-        onSend={(messages) => onSend(messages)}
-        renderInputToolbar={(props) => customtInputToolbar(props)}
-        renderSystemMessage={renderSystemMessage}
-        renderMessage={renderMessage}
-        renderMessageText={renderMessageText}
-        renderBubble={renderBubble}
-        messagesContainerStyle={{ backgroundColor: "#FFFFFF" }}
-        renderComposer={renderComposer}
-        renderSend={renderSend}
-        bottomOffset={0}
-        scrollToBottom
-        user={{
-          _id: userId,
-        }}
-        renderAvatarOnTop
-        infiniteScroll
-        timeTextStyle={{
-          left: { color: "#505066" },
-          right: { color: "#505066" },
-        }}
+    <>
+      <ChatHeaderBar
+        title="John Smith"
+        avatarUri="https://example.com/avatar.jpg" // Replace with your avatar URL
+        onBackPress={handleBackPress}
+        onOptionsPress={handleOptionsPress}
       />
-    </Screen>
+      <Screen>
+        <GiftedChat
+          messages={messages}
+          onSend={(messages) => onSend(messages)}
+          renderInputToolbar={(props) => customtInputToolbar(props)}
+          renderSystemMessage={renderSystemMessage}
+          renderMessage={renderMessage}
+          renderMessageText={renderMessageText}
+          renderBubble={renderBubble}
+          messagesContainerStyle={{ backgroundColor: "#FFFFFF" }}
+          renderComposer={renderComposer}
+          renderSend={renderSend}
+          bottomOffset={0}
+          scrollToBottom
+          user={{
+            _id: userId,
+          }}
+          infiniteScroll
+          timeTextStyle={{
+            left: { color: "#505066" },
+            right: { color: "#505066" },
+          }}
+        />
+        {/* <ActionSheet
+          isOpen={isBlockUserModalOpen}
+          onClose={closeBlockUserModal}
+          actions={actions}
+        /> */}
+              {/* <AlertDialogBox
+        isOpen={isBlockUserModalOpen}
+        onClose={closeBlockUserModal}
+        onConfirm={handleAction}
+        title={i18n.t("library-empty")}
+        description={i18n.t(
+          "add-books-to-your-library-before-sending-an-offer"
+        )}
+        cancelButtonLabel={i18n.t("cancel")}
+        confirmButtonLabel={i18n.t("see-my-library")}
+      ></AlertDialogBox> */}
+            <BlockUserModal
+        isOpen={isBlockUserModalOpen}
+        onClose={closeBlockUserModal}
+      />
+      </Screen>
+    </>
   );
 }
