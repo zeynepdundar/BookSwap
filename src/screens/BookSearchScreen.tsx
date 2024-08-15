@@ -5,7 +5,6 @@ import {
   Text,
   VStack,
   Flex,
-  WarningTwoIcon,
   Center,
   Icon,
   Divider,
@@ -26,26 +25,65 @@ import {
   useNavigationState,
 } from "@react-navigation/native";
 import { BorderedBookListVertical } from "../components/shared/BorderedBookListVertical";
+import { ErrorAlert } from "./BarcodeScannerScreen";
 
 export default function BookSearchScreen({ navigation, route = null }) {
   const { relatedScreen, onDonePress } = route.params;
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [listType, setListType] = useState<string>("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
+  const [listError, setListError] = useState<string | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
-  const addBookToListHandler = (selectedItem: any) => {
-    dispatch(addBookToListAsync(selectedItem));
+  const addBookToListHandler = async (selectedItem: any) => {
+    try {
+      const response = await dispatch(addBookToListAsync(selectedItem));
+      const payload = response.payload;
+
+      console.log("payload", payload);
+
+      if (payload?.status === "error") {
+        if (payload.existingEditionIds?.length > 0) {
+          setListError(i18n.t("already-have-book"));
+        } else {
+          setListError(payload.message);
+        }
+        setTimeout(() => {
+          setListError(null);
+        }, 5000);
+
+        return { success: false, message: payload.message };
+      }
+      return { success: true };
+    } catch (error) {
+      setListError(i18n.t("something-went-wrong"));
+      setTimeout(() => {
+        setListError(null);
+      }, 5000);
+
+      return { success: false, message: i18n.t("something-went-wrong") };
+    }
   };
 
-  const pressDoneHandler = (selectedItem: any) => {
-    dispatch(addBookToListAsync(selectedItem));
-    navigation.goBack();
+  const pressDoneHandler = async (selectedItem: any) => {
+    let result;
+
+    if (Array.isArray(selectedItem) && selectedItem.length > 0) {
+      result = await addBookToListHandler(selectedItem);
+    } else {
+      result = await addBookToListHandler([selectedItem]);
+    }
+
+    if (result.success) {
+      navigation.goBack();
+    } else {
+    }
   };
+
   const navigateUserList = (item) => {
     navigation.navigate("UserList", {
       data: item,
@@ -57,10 +95,10 @@ export default function BookSearchScreen({ navigation, route = null }) {
     fetchBooksByTitle(title)
       .then((books) => {
         setSearchResults(books);
-        setError(null);
+        setSearchError(null);
       })
       .catch((err) => {
-        setError(err);
+        setSearchError(err);
       })
       .finally(() => {
         setLoading(false);
@@ -101,12 +139,6 @@ export default function BookSearchScreen({ navigation, route = null }) {
     navigation.navigate("BarcodeScanner", {
       relatedScreen: relatedScreen,
     });
-  };
-
-  const handleDonePress = () => {
-    // Pass selected items to the parent using the callback
-    onDonePress(selectedBooks);
-    navigation.goBack();
   };
 
   return (
@@ -157,7 +189,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
               <LoadingOverlay />
             </Box>
           )}
-          {!loading && !error && searchResults?.length > 0 && (
+          {!loading && !searchError && searchResults?.length > 0 && (
             <>
               {/* For specific book list (wishlist/library) search result*/}
               {listType && listType !== "HOME" ? (
@@ -190,35 +222,30 @@ export default function BookSearchScreen({ navigation, route = null }) {
               </Center>
             </VStack>
           )}
-          {!error && searchResults.length === 0 && searchQuery.length > 3 && (
-            <VStack width="100%" height={200} mt="100">
-              <Center>
-                <Text fontSize="md">
-                  {i18n.t("no-results-for")} "{searchQuery}"
-                </Text>
-              </Center>
-              <Center w="100%">
-                <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
+          {!searchError &&
+            searchResults.length === 0 &&
+            searchQuery.length > 3 && (
+              <VStack width="100%" height={200} mt="100">
+                <Center>
+                  <Text fontSize="md">
+                    {i18n.t("no-results-for")} "{searchQuery}"
+                  </Text>
+                </Center>
+                <Center w="100%">
+                  <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
 
-                <Text textAlign="center" mx="30" fontWeight="200">
-                  {i18n.t("we-do-not-have-the-book-yet")}
-                </Text>
-              </Center>
-            </VStack>
-          )}
-          {error && (
-            <Box h="75%" alignItems="center" justifyContent="center">
-              <WarningTwoIcon size="5" mt="0.5" mx="2" color="error.500" />
-              <Text
-                mt={2}
-                px={5}
-                fontSize="xs"
-                color="error.500"
-                textAlign="center"
-              >
-                {error}
-              </Text>
-            </Box>
+                  <Text textAlign="center" mx="30" fontWeight="200">
+                    {i18n.t("we-do-not-have-the-book-yet")}
+                  </Text>
+                </Center>
+              </VStack>
+            )}
+
+          {listError && (
+            <>
+              <ErrorAlert message={listError} />
+              {/* <Button onPress={() => setScanned(false)}>Tap to Scan Again</Button> */}
+            </>
           )}
         </Box>
       </Flex>

@@ -1,9 +1,11 @@
 import * as Localization from "expo-localization";
 import { I18n } from "i18n-js";
+import en from "./en.json";
+import tr from "./tr.json";
 
 const i18n = new I18n({
-  en: require("./en.json"),
-  tr: require("./tr.json"),
+  en,
+  tr,
 });
 
 i18n.locale = Localization.locale;

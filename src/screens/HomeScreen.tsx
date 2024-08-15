@@ -23,6 +23,30 @@ export default function HomeScreen({ navigation }) {
       setBooks(data);
     })();
   }, []);
+  const [imageUri, setImageUri] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchBlob = async () => {
+      try {
+        const response = await fetch(
+          "blob:1D3F3FB6-E0D4-414A-8D2B-5F5101501437?offset=0&size=829956"
+        );
+        const blob = await response.blob();
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImageUri(reader.result);
+          setLoading(false);
+        };
+        reader.readAsDataURL(blob);
+      } catch (error) {
+        console.error("Error fetching blob:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchBlob();
+  }, []);
 
   if (profileLoading) {
     return <LoadingOverlay></LoadingOverlay>;
@@ -42,7 +66,7 @@ export default function HomeScreen({ navigation }) {
           }
         >
           <Image
-            source={profile.imageData ? { uri: profile.imageData } : importUrl}
+            source={profile.imageData ? { uri: imageUri } : importUrl}
             alt="Profile Image"
             size={10}
             rounded="7"

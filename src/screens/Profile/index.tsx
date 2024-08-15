@@ -100,7 +100,7 @@ export default function ProfileScreen({ navigation }) {
             selectedImage={handleImageUpload}
             initialImage={imageData}
           />
-          <Heading color="black.100" my={3}>
+        <Heading color="black.100" my={3}>
             {name}
           </Heading>
         </Center>

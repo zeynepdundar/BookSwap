@@ -17,6 +17,7 @@ import Screen from "../../components/Screen";
 import { useState } from "react";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import { EditionEndpoints } from "../../api/endpoints";
+import { useSelector } from "react-redux";
 
 const data = [
   {
@@ -49,61 +50,10 @@ export default function HistoryScreen({ navigation }) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [historyList, setHistoryList] = useState<any>(data);
-
-  const fetchHistory = async (title) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch(
-        EditionEndpoints.FETCH_EDITION_BY_TITLE(title)
-        );
-
-      if (!response.ok) {
-        throw new Error(`HTTP request failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data === null || data === "") {
-        throw new Error("Received null response from the server.");
-      }
-
-      // const transformedData = data.editions.map((item) => ({
-      //   id: item.id,
-      //   title: item.title?.slice(0, 20),
-      //   publisher: item.publishers[0],
-      //   coverUrl:
-      //     item.isbn_13 && item.isbn_13 > 0
-      //       ? `https://covers.openlibrary.org/b/${"isbn"}/${
-      //           item.isbn_13
-      //         }-${"M"}.jpg`
-      //       : null,
-      //   author: item.authors ? item.authors["name"] : null,
-      // }));
-
-      // Update searchResults state with the transformed data
-      // setSearchResults(transformedData);
-      setLoading(false);
-      return data.editions;
-    } catch (error) {
-      // Check if the error is due to a network failure
-      if (
-        error instanceof TypeError &&
-        error.message === "Network request failed"
-      ) {
-        setError(
-          "Network request failed. Please check your internet connection."
-        );
-      } else {
-        // Handle other types of errors
-        setError(`An error occurred: ${error.message} `);
-      }
-      console.error("Error fetching books:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const historyList = useSelector(
+    (state: any) => state.profile.profile.historyList
+  );
+  console.log("fsfs", historyList);
 
   return (
     <Screen>
@@ -113,7 +63,7 @@ export default function HistoryScreen({ navigation }) {
             <LoadingOverlay />
           </Box>
         )}
-        {!loading && !error && historyList?.length > 0 && (
+        {!loading && !error && data?.length > 0 && (
           <FlatList
             w="100%"
             data={data}

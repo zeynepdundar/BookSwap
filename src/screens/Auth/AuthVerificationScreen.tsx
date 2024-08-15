@@ -19,7 +19,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   checkVerificationCode,
-  resendVerificationCode,
+  // resendVerificationCode,
   verifyPhoneNumber,
 } from "../../store/auth-actions";
 import { ThunkDispatch } from "@reduxjs/toolkit";

@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 import { LIBRARY, WISHLIST } from "../store/profile-slice";
 
 export const getCoverUrl = (bookData) => {
@@ -30,8 +31,20 @@ export const createBookData = (books) => {
   };
 };
 export const structureOfferData = (offers, type) => {
+  if (type === "history") {
+    const receivedOffers = offers.received_offers.map((offer) =>
+      structureOfferData(offer, "received")
+    );
+    const sentOffers = offers.sent_offers.map((offer) =>
+      structureOfferData(offer, "sent")
+    );
+    // Combine received and sent offers into a single array
+
+    return [...receivedOffers, ...sentOffers];
+  }
+
   if (Array.isArray(offers)) {
-    return offers.map((offers) => structureOfferData(offers, type));
+    return offers.reverse().map((offer) => structureOfferData(offer, type));
   }
 
   return {
@@ -75,15 +88,23 @@ export const timeAgo = (date) => {
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
+  const months = Math.floor(days / 30);
 
-  if (days > 0) {
-    return `${days} ${days === 1 ? "day" : "days"} ago`;
+  if (months > 1) {
+    const formattedDate = `${
+      targetDate.getMonth() + 1
+    }/${targetDate.getDate()}/${targetDate.getFullYear()}`;
+    return formattedDate;
+  } else if (days > 0) {
+    return i18n.t("days-ago", { count: days });
   } else if (hours > 0) {
-    return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+    return i18n.t("hours-ago", { count: hours });
   } else if (minutes > 0) {
-    return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+    return i18n.t("minutes-ago", { count: minutes });
   } else {
-    return `${seconds} ${seconds === 1 ? "second" : "seconds"} ago`;
+    return seconds > 0
+      ? i18n.t("seconds-ago", { count: seconds })
+      : i18n.t("just now");
   }
 };
 export const formatText = (inputText) => {
@@ -142,8 +163,7 @@ export const truncateText = (text, maxLength = 100) => {
     return text.slice(0, maxLength) + "...";
   }
 };
-
-export   const generateActions = (handleAction, closeActionSheet) => [
+export const generateActions = (handleAction, closeActionSheet) => [
   {
     type: WISHLIST,
     label: "add-my-wishlist",
@@ -157,3 +177,11 @@ export   const generateActions = (handleAction, closeActionSheet) => [
   { type: "cancel", label: "cancel", onPress: closeActionSheet },
   // Add more actions as needed
 ];
+
+export const generateModalActions = (actions, handleAction, closeModal) => {
+  return actions.map((action) => ({
+      type: action.type,
+      label: action.label,
+      onPress: () => action.type === "cancel" ? closeModal() : handleAction(action.type),
+    }));
+  };

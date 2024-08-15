@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   FlatList,
   Image,
@@ -38,10 +38,8 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   );
   const importUrl = require("../../assets/images/no-cover-available.png");
 
-
-
-  const handleAction = (actionType) => {
-    secondaryAction({
+  const handleAction = async (actionType) => {
+    const result = await secondaryAction({
       type: actionType,
       id: selectedItem?.id,
       title: selectedItem.title,
@@ -49,9 +47,16 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
       publisher: selectedItem.publisher,
       coverUrl: selectedItem.coverUrl,
     });
-    setSelectedAction(actionType);
+
+    if (!result.success) {
+      // Handle the error message if action failed
+    } else {
+      // Handle success if needed
+      // e.g., show a success message or navigate
+      setSelectedAction(actionType);
+      setIsInfoDialogOpen(true);
+    }
     closeActionSheet();
-    setIsInfoDialogOpen(true);
   };
   const openActionSheet = (item) => {
     setSelectedItem(item);
@@ -107,11 +112,10 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                 </AspectRatio>
                 <VStack width={173}>
                   <Text color="#000000" fontSize="15" numberOfLines={2}>
-                    {truncateText(formatText(item.title),44)}
+                    {truncateText(formatText(item.title), 44)}
                   </Text>
-                  <Text color="#8c8c8c" fontSize="11"  numberOfLines={1}>
-                    {truncateText(formatText(item.author),30)}
-
+                  <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
+                    {truncateText(formatText(item.author), 30)}
                   </Text>
                   {/* Backend den publishers şeklinde gelen array , handle etmek için */}
                   {item.publisher ||
@@ -120,8 +124,8 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                     <Text color="#8c8c8c" fontSize="13" fontWeight="200">
                       {Array.isArray(item.publishers) &&
                       item.publishers.length > 0
-                        ? formatText(item.publishers[0])
-                        : formatText(item.publisher)}
+                        ? truncateText(formatText(item.publishers[0]), 30)
+                        : truncateText(formatText(item.publisher), 50)}
                     </Text>
                   ) : // Render something else or nothing when both item.publisher and item.publishers are null or empty
                   null}
