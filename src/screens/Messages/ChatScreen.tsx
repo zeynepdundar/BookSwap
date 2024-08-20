@@ -269,7 +269,10 @@ export default function ChatScreen({ navigation, route }) {
     );
   };
   const handleBackPress = () => {
-    navigation.goBack();
+    // if (navigation.canGoBack()) {
+    //   navigation.goBack();
+    // } else 
+    navigation.navigate("Messages");
   };
 
   const handleAction = async (actionType) => {
@@ -277,7 +280,6 @@ export default function ChatScreen({ navigation, route }) {
     //   addBookToListAsync({ ...edition, type: actionType })
     // );
     // const payload = response.payload;
-
     // if (payload?.status === "error") {
     //   if (payload.existingEditionIds?.length > 0) {
     //     setError(i18n.t("already-have-book"));
@@ -297,7 +299,9 @@ export default function ChatScreen({ navigation, route }) {
       { type: "LIBRARY", label: "spam-message" },
       { type: "other", label: "other" },
     ];
-    setActions(generateModalActions(actions, handleAction, closeBlockUserModal));
+    setActions(
+      generateModalActions(actions, handleAction, closeBlockUserModal)
+    );
   };
   const closeBlockUserModal = () => {
     setIsBlockUserModalOpen(false);
@@ -339,7 +343,7 @@ export default function ChatScreen({ navigation, route }) {
           onClose={closeBlockUserModal}
           actions={actions}
         /> */}
-              {/* <AlertDialogBox
+        {/* <AlertDialogBox
         isOpen={isBlockUserModalOpen}
         onClose={closeBlockUserModal}
         onConfirm={handleAction}
@@ -350,10 +354,10 @@ export default function ChatScreen({ navigation, route }) {
         cancelButtonLabel={i18n.t("cancel")}
         confirmButtonLabel={i18n.t("see-my-library")}
       ></AlertDialogBox> */}
-            <BlockUserModal
-        isOpen={isBlockUserModalOpen}
-        onClose={closeBlockUserModal}
-      />
+        <BlockUserModal
+          isOpen={isBlockUserModalOpen}
+          onClose={closeBlockUserModal}
+        />
       </Screen>
     </>
   );

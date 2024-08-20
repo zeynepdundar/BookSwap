@@ -22,8 +22,6 @@ import { setIsNewUser } from "../../store/auth-slice";
 import { updateUserProfileData } from "../../api/service";
 import * as Localization from "expo-localization";
 
-
-
 export default function LibraryInputScreen({ navigation }) {
   const [selectedBooks, setSelectedBooks] = useState([]);
 
@@ -33,9 +31,16 @@ export default function LibraryInputScreen({ navigation }) {
 
   const deviceLanguage = Localization.locale.split("-")[0];
 
-
   const handleAddToLibrary = (data) => {
-    setSelectedBooks((prevSelectedBooks) => [...prevSelectedBooks, ...data]);
+    setSelectedBooks((prevSelectedBooks) => {
+      const newItemIds = data.map((item) => item.id);
+      const filteredData = data.filter(
+        (item) =>
+          !prevSelectedBooks.some((selectedItem) => selectedItem.id === item.id)
+      );
+      const updatedSelectedBooks = [...prevSelectedBooks, ...filteredData];
+      return updatedSelectedBooks;
+    });
   };
 
   const handleRemoveFromLibrary = (id) => {
@@ -46,7 +51,12 @@ export default function LibraryInputScreen({ navigation }) {
   const handleProfileUpdate = (specificAction) => {
     // Additional logic based on the specific action
     if (specificAction === "pressContinue") {
-      dispatch(setProfileData({ libraryBook: selectedBooks ,languagePreference: deviceLanguage}));
+      dispatch(
+        setProfileData({
+          libraryBook: selectedBooks,
+          languagePreference: deviceLanguage,
+        })
+      );
     }
     updateUserProfileData(profile);
     dispatch(setIsNewUser(false));
@@ -105,6 +115,8 @@ export default function LibraryInputScreen({ navigation }) {
             onScanBarcode={() => {
               navigation.navigate("BarcodeScannerOnProfileCreation", {
                 relatedScreen: "Library",
+                onAddBook: handleAddToLibrary
+
               });
             }}
             onFocus={() => {

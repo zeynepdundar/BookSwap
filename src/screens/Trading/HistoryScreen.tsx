@@ -12,62 +12,59 @@ import {
   Flex,
   WarningTwoIcon,
 } from "native-base";
-import i18n from "../../i18n";
 import Screen from "../../components/Screen";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
-import { EditionEndpoints } from "../../api/endpoints";
-import { useSelector } from "react-redux";
-
-const data = [
-  {
-    id: "1",
-    senderUserName: "Lalo Salamanca",
-    profilPhotoUrl: "../../assets/images/icon/logout-icon.png",
-    requestedBookCover: "",
-    offeredBookCover: "../../assets/images/cover_2.png",
-    requestedBookTitle: "The Path Made Clear",
-    offeredBookTitle: "The Path Made Clear",
-    acceptedDate: "",
-  },
-  {
-    id: "2",
-    senderUserName: "Lalo Salamanca",
-    profilPhotoUrl: "../../assets/images/icon/logout-icon.png",
-    requestedBookCover: "",
-    offeredBookCover: "../../assets/images/cover_2.png",
-    requestedBookTitle: "The Path Made Clear",
-    offeredBookTitle: "The Path Made Clear",
-    acceptedDate: "",
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTradeHistoryAsync } from "../../store/profile-actions";
+import { ThunkDispatch } from "@reduxjs/toolkit";
 
 export default function HistoryScreen({ navigation }) {
   const tradeIcon = require("../../assets/images/icon/trade-in.png");
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
   const importUrl = require("../../assets/images/cover_2.png");
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const historyList = useSelector(
     (state: any) => state.profile.profile.historyList
   );
-  console.log("fsfs", historyList);
+  const { loading, profile } = useSelector((state: any) => state.profile);
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    dispatch(fetchTradeHistoryAsync(profile.id)) // Replace with your API call action
+      .finally(() => setRefreshing(false));
+  }, [dispatch]);
+
+  if (loading && !refreshing) {
+    return <LoadingOverlay />;
+  }
   return (
     <Screen>
       <Center>
-        {loading && (
-          <Box h="75%" alignItems="center" justifyContent="center">
-            <LoadingOverlay />
-          </Box>
-        )}
-        {!loading && !error && data?.length > 0 && (
+           {/* {!historyList || historyList.length===0 && (
+        <VStack width="100%" height="100%" pt="100" bg="#fff">
+          <Center>
+            <Text fontSize="md">{i18n.t("start-searching-for-new-books")}</Text>
+          </Center>
+          <Center w="100%">
+            <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
+            <Text textAlign="center" mx="30" fontWeight="200">
+            {  i18n.t("you-have-not-received-any-offer-yet")}
+            </Text>
+          </Center>
+        </VStack>
+      )} */}
+        { !error && historyList && historyList?.length > 0 && (
           <FlatList
             w="100%"
-            data={data}
+            data={historyList}
             showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
             renderItem={({ item }) => (
               <Box
                 p="1.5"
@@ -80,12 +77,16 @@ export default function HistoryScreen({ navigation }) {
               >
                 <HStack space="0.8" alignItems="center" h={151}>
                   <VStack w="85px" h={140} alignItems="center" pt={3}>
-                    <Image
-                      source={importUrl}
-                      alt=" Library"
-                      width="60"
-                      height="82"
-                      borderRightRadius={10}
+                  <Image
+                         source={
+                          item.requestedBook.coverUrl
+                            ? { uri: item.requestedBook.coverUrl }
+                            : importUrl
+                        }                    
+                        alt="Library"
+                        roundedRight="6"
+                        width="60"
+                        height="82"
                     />
                     <Text
                       color="#06070D"
@@ -93,17 +94,21 @@ export default function HistoryScreen({ navigation }) {
                       mt="1"
                       textAlign="center"
                     >
-                      {item.requestedBookTitle}
+                      {item.requestedBook.title}
                     </Text>
                   </VStack>
                   <Image source={tradeIcon} alt=" Library" />
                   <VStack w="85px" h={140} alignItems="center" pt={3}>
                     <Image
-                      source={importUrl}
-                      alt=" Library"
-                      width="60"
-                      height="82"
-                      borderRightRadius={10}
+                         source={
+                          item.offeredBook.coverUrl
+                            ? { uri: item.offeredBook.coverUrl }
+                            : {uri:"https://store.bookbaby.com/bookshop/OnePageBookCoverImage.jpg?BookID=BK00009510&abOnly=False"}
+                        }                    
+                        alt=" Library"
+                        width="60"
+                        height="82"
+                        roundedRight="6"
                     />
                     <Text
                       color="#06070D"
@@ -111,7 +116,7 @@ export default function HistoryScreen({ navigation }) {
                       mt="1"
                       textAlign="center"
                     >
-                      {item.offeredBookTitle}
+                      {item.offeredBook.title}
                     </Text>
                   </VStack>
                   <Spacer></Spacer>
@@ -131,7 +136,7 @@ export default function HistoryScreen({ navigation }) {
                         textAlign="center"
                         pt="1"
                       >
-                        with <Text> {item.senderUserName}</Text>
+                        with <Text> {item.participantProfile.name}</Text>
                       </Text>
                     </Flex>
                   </VStack>

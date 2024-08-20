@@ -2,6 +2,9 @@ import { createSlice, current } from "@reduxjs/toolkit";
 import {
   acceptOfferAsync,
   addBookToListAsync,
+  fetchReceivedOffersAsync,
+  fetchSentOffersAsync,
+  fetchTradeHistoryAsync,
   fetchUserProfileAsync,
   rejectOfferAsync,
   removeBookFromListAsync,
@@ -150,7 +153,7 @@ const profileSlice = createSlice({
         }
       })
       .addCase(sendOfferAsync.fulfilled, (state, action) => {
-        state.profile.sentOffer=action.payload
+        state.profile.sentOffer = action.payload;
       })
       .addCase(acceptOfferAsync.fulfilled, (state, action) => {
         state.profile.receivedOffer = state.profile.receivedOffer.filter(
@@ -161,11 +164,23 @@ const profileSlice = createSlice({
         state.profile.receivedOffer = state.profile.receivedOffer.filter(
           (offer) => offer.id !== action.payload
         );
+        state.loading = false;
+      })
+      .addCase(rejectOfferAsync.pending, (state, action) => {
+        state.profile.receivedOffer = state.profile.receivedOffer.filter(
+          (offer) => offer.id !== action.payload
+        );
+        state.loading = true;
       })
       .addCase(takeBackOfferAsync.fulfilled, (state, action) => {
         state.profile.sentOffer = state.profile.sentOffer.filter(
           (offer) => offer.id !== action.payload
         );
+        state.loading = false;
+      })
+      .addCase(takeBackOfferAsync.pending, (state, action) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(fetchUserProfileAsync.pending, (state) => {
         state.loading = true;
@@ -175,6 +190,42 @@ const profileSlice = createSlice({
         state.loading = false;
         state.profile = action.payload;
         state.error = null;
+      })
+      .addCase(fetchReceivedOffersAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchReceivedOffersAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.profile.receivedOffer = action.payload;
+      })
+      .addCase(fetchReceivedOffersAsync.rejected, (state, action) => {
+        state.loading = false;
+        // state.error = action.payload;
+      })
+      .addCase(fetchSentOffersAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSentOffersAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.profile.sentOffer = action.payload;
+      })
+      .addCase(fetchSentOffersAsync.rejected, (state, action) => {
+        state.loading = false;
+        // state.error = action.payload;
+      })
+      .addCase(fetchTradeHistoryAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchTradeHistoryAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.profile.historyList = action.payload;
+      })
+      .addCase(fetchTradeHistoryAsync.rejected, (state, action) => {
+        state.loading = false;
+        // state.error = action.payload;
       })
       .addCase(fetchUserProfileAsync.rejected, (state, action) => {
         state.loading = false;

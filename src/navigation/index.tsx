@@ -16,6 +16,7 @@ import TradeProposal from "../screens/TradeProposal";
 import LibraryScreen from "../screens/Profile/LibraryScreen";
 import OtherLibraryScreen from "../screens/OtherLibraryScreen";
 import TradeOfferAcceptedScreen from "../screens/TradeOfferAcceptedScreen";
+import MessagesScreen from "../screens/Messages";
 
 const Stack = createNativeStackNavigator();
 
@@ -92,10 +93,11 @@ export default function Navigation() {
                     name="OtherLibrary"
                     component={OtherLibraryScreen}
                   />
-                                    <Stack.Screen
-                    name="ChatScreen"
-                    component={ChatScreen}
-                  />
+                  {/*                    
+                  TODO: These screens are already registered in the
+                  BottomTabNavigator. // Verify adding them here in the
+                  Stack.Navigator is necessary. */}
+                  <Stack.Screen name="ChatScreen" component={ChatScreen} />
                 </Stack.Group>
               </>
             )}
