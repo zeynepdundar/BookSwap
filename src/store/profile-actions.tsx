@@ -2,6 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "./types";
 import {
   addBookToList,
+  fetchHistory,
+  fetchReceivedOffer,
   fetchSentOffer,
   fetchUserProfileData,
   removeBookFromList,
@@ -165,20 +167,39 @@ export const takeBackOfferAsync = createAsyncThunk(
     }
   }
 );
-// export const fetchReceivedOfferAsync = createAsyncThunk(
-//   "profile/fetchReceivedOfferAsync",
-//   async (userId: string, { dispatch }) => {
-//     try {
-//       const receivedOffers = await fetchReceivedOffer(userId);
-//       console.log("Fetching user profile", receivedOffers);
-//       // dispatch(setProfileData(profile));
-//       return receivedOffer;
-//     } catch (error) {
-//       console.error(
-//         "Failed to fetch user profile [fetchReceivedOfferAsync]:",
-//         error
-//       );
-//       throw error;
-//     }
-//   }
-// );
+
+export const fetchReceivedOffersAsync = createAsyncThunk(
+  "profile/fetchReceivedOffers",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const offers = await fetchReceivedOffer(userId);
+      return offers;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchSentOffersAsync = createAsyncThunk(
+  "profile/fetchSentOffers",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const offers = await fetchSentOffer(userId);
+      return offers;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const fetchTradeHistoryAsync = createAsyncThunk(
+  "profile/fetchTradeHistory",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const offers = await fetchHistory(userId);
+      return offers;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);

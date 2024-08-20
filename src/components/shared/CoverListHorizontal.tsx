@@ -11,8 +11,7 @@ import {
 } from "native-base";
 
 export const CoverListHorizontal = ({ data, removeBook = null }) => {
-  const importUrl = require("../../assets/images/no-cover-available.png");
-
+  const noCoverUrl = require("../../assets/images/no-cover.jpg");
   return (
     <FlatList
       maxH="250px"
@@ -21,17 +20,20 @@ export const CoverListHorizontal = ({ data, removeBook = null }) => {
       showsHorizontalScrollIndicator={false}
       extraData={data}
       renderItem={({ item }) => (
-        <VStack w="110px" justifyContent="center" mr="6px">
-          <Box pt={2} h="150" w="98">
-            <AspectRatio
-              ratio={{
-                base: 41 / 62,
-              }}
-              h="95%"
-            >
+        <VStack w="120px" justifyContent="center" mr="1">
+          <Box pt={2} h="160px" w="100%">
+            <AspectRatio ratio={2 / 3} w="90%" h="100%">
               <Image
-                source={item.coverUrl ? { uri: item?.coverUrl } : importUrl}
+                source={
+                  item.coverUrl
+                    ? { uri: item.coverUrl }
+                    : {
+                        //TODO Use the static import URL here
+                        uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                      }
+                }
                 alt={`Cover of ${item.title} by ${item.author}`}
+                resizeMode="cover"
               />
             </AspectRatio>
             {removeBook && (
@@ -49,11 +51,26 @@ export const CoverListHorizontal = ({ data, removeBook = null }) => {
           </Box>
           {!removeBook && (
             <>
-              <Text p={1} bold fontSize={11}>
-                {item.title}
-              </Text>
-              <Text px={1} fontSize={10} color="#838384">
-                by {item.author}
+              <Box h="50px" justifyContent="center">
+                <Text
+                  p={1}
+                  bold
+                  fontSize={12}
+                  numberOfLines={2}
+                  mt={1}
+                  maxH="60px"
+                >
+                  {item.title}
+                </Text>
+              </Box>
+              <Text
+                px={1}
+                color="#838384"
+                fontSize={11}
+                numberOfLines={1}
+                mt="-1"
+              >
+                {item.author}
               </Text>
             </>
           )}

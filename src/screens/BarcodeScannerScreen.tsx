@@ -24,10 +24,15 @@ import { addBookToListAsync } from "../store/profile-actions";
 import { LIBRARY, WISHLIST } from "../store/profile-slice";
 import i18n from "../i18n";
 
-export default function BarcodeScannerScreen({ navigation, route = null }) {
+export default function BarcodeScannerScreen({
+  navigation,
+  route = null,
+  onAddBook,
+}) {
   const dispatch = useDispatch<AppDispatch>();
 
   const mode = route?.params?.relatedScreen;
+  onAddBook = onAddBook || route?.params?.onAddBook;
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -80,9 +85,15 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
-
-  const openActionSheet = () => {
-    if (mode === "Wishlist" || mode === "Library") {
+  const handleAddBook = () => {
+    //For profile creation flow library/wishlist add book
+    if (onAddBook) {
+      onAddBook([edition]);
+      setEdition(null);
+      navigation.goBack();
+      
+      //TODO : Refactor to handle Wishlist and Library cases generically using a function passed as a prop.
+    } else if (mode === "Wishlist" || mode === "Library") {
       dispatch(addBookToListAsync({ ...edition, type: mode.toUpperCase() }));
       closeActionSheet();
       navigation.navigate(mode);
@@ -96,6 +107,7 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
       setIsActionSheetOpen(true);
     }
   };
+
   const closeActionSheet = () => {
     setIsActionSheetOpen(false);
     setEdition(null);
@@ -148,7 +160,7 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
       </Center>
       {edition && (
         <Center>
-          <BookInfoBox edition={edition} onAddBooks={openActionSheet} />
+          <BookInfoBox edition={edition} onAddBooks={handleAddBook} />
           {/* <Button onPress={() => setScanned(false)}>Tap to Scan Again</Button> */}
         </Center>
       )}

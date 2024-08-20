@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import {
   Button,
   Center,
@@ -14,8 +16,6 @@ import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import SearchBar from "../../components/shared/SearchBar";
 import { CoverListHorizontal } from "../../components/shared/CoverListHorizontal";
-import { useDispatch } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
 import { setProfileData } from "../../store/profile-slice";
 
 export default function WishlistInputScreen({ navigation }) {
@@ -23,10 +23,16 @@ export default function WishlistInputScreen({ navigation }) {
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
-
   const handleAddToWishlist = (data) => {
-    setSelectedBooks((prevSelectedBooks) => [...prevSelectedBooks, ...data]);
-    
+    setSelectedBooks((prevSelectedBooks) => {
+      const newItemIds = data.map((item) => item.id);
+      const filteredData = data.filter(
+        (item) =>
+          !prevSelectedBooks.some((selectedItem) => selectedItem.id === item.id)
+      );
+      const updatedSelectedBooks = [...prevSelectedBooks, ...filteredData];
+      return updatedSelectedBooks;
+    });
   };
 
   const handleRemoveFromWishlist = (id) => {
@@ -36,11 +42,9 @@ export default function WishlistInputScreen({ navigation }) {
   };
 
   const pressHandler = () => {
-    dispatch(setProfileData({wishlistBook:selectedBooks}));
+    dispatch(setProfileData({ wishlistBook: selectedBooks }));
     navigation.navigate("Library");
   };
-
-
 
   return (
     <Screen>
@@ -75,7 +79,6 @@ export default function WishlistInputScreen({ navigation }) {
         <Center w="100%" h="20" px={8}>
           <SearchBar
             onSearchBook={() => {
-              
               navigation.navigate("BookSearchOnCreation", {
                 relatedScreen: "Wishlist",
                 onDonePress: handleAddToWishlist,
@@ -84,6 +87,7 @@ export default function WishlistInputScreen({ navigation }) {
             onScanBarcode={() => {
               navigation.navigate("BarcodeScannerOnProfileCreation", {
                 relatedScreen: "Wishlist",
+                onAddBook: handleAddToWishlist
               });
             }}
             onFocus={() => {

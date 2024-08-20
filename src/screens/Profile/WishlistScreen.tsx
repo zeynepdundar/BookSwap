@@ -18,7 +18,9 @@ import Screen from "../../components/Screen";
 import { BookListVertical } from "../../components/shared/BookListVertical";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { removeBookFromListAsync } from "../../store/profile-actions";
+import {
+  removeBookFromListAsync,
+} from "../../store/profile-actions";
 import { useNavigationState } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { WISHLIST } from "../../store/profile-slice";
@@ -38,23 +40,24 @@ export default function WishlistScreen({ navigation }) {
   const { wishlistBook } = useSelector((state: any) => state.profile.profile);
   const [selectedBooks, setSelectedBooks] = useState(wishlistBook);
 
-
   const dispatch = useDispatch<AppDispatch>();
 
   const navigationState = useNavigationState((state) => state);
 
   const showFab =
     navigationState.routes[navigationState.index - 1]?.name === "Profile";
-    useEffect(() => {
-      return () => {
-        // Cleanup or additional actions when the component is unmounted
-        // Make your API call to update user libraryBook here
-        // For example, you can dispatch an action to update the libraryBook in Redux
-        // dispatch(updateLibraryBookAsync(selectedBooks));
-      };
-    }, [dispatch, selectedBooks]);
+
+  useEffect(() => {
+    return () => {
+      // Cleanup or additional actions when the component is unmounted
+      // Make your API call to update user libraryBook here
+      // For example, you can dispatch an action to update the libraryBook in Redux
+      // dispatch(updateLibraryBookAsync(selectedBooks));
+    };
+  }, [dispatch, selectedBooks]);
+
+
   const removeBookButton = (book) => (
-    
     <RemoveBookButton
       onPress={() =>
         dispatch(removeBookFromListAsync({ ...book, type: WISHLIST }))
@@ -62,11 +65,9 @@ export default function WishlistScreen({ navigation }) {
     />
   );
   useEffect(() => {
-    // Update the local state when libraryBook changes
+    // Update the local state when wishlistBook changes
     setSelectedBooks(wishlistBook);
   }, [wishlistBook]);
-
-  
 
   return (
     <Screen>
@@ -112,10 +113,10 @@ export default function WishlistScreen({ navigation }) {
       )}
 
       {selectedBooks.length > 0 && (
-          <BookListVertical
-            data={selectedBooks}
-            primaryActionButton={removeBookButton}
-          />
+        <BookListVertical
+          data={selectedBooks}
+          primaryActionButton={removeBookButton}
+        />
       )}
       {showFab && (
         <Fab

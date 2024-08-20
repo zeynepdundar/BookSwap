@@ -13,11 +13,13 @@ import {
   Text,
   VStack,
 } from "native-base";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { LoadingOverlay } from "../../components/LoadingOverlay";
 import i18n from "../../i18n";
 import {
   acceptOfferAsync,
+  fetchReceivedOffersAsync,
   rejectOfferAsync,
 } from "../../store/profile-actions";
 
@@ -28,6 +30,9 @@ export default function ReceivedScreen({ navigation }) {
   const receivedOffers = useSelector(
     (state: any) => state.profile.profile.receivedOffer
   );
+  const [refreshing, setRefreshing] = useState(false);
+  const { loading, profile } = useSelector((state: any) => state.profile);
+
   const importUrl = require("../../assets/images/no-cover-available.png");
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
@@ -35,7 +40,7 @@ export default function ReceivedScreen({ navigation }) {
   const acceptOfferHandler = (offer: any) => {
     dispatch(acceptOfferAsync(offer.id));
     navigation.navigate("TradeOfferAcceptedScreen", {
-      userId:offer.participantProfile.id,
+      userId: offer.participantProfile.id,
       receivedBook: offer.requestedBook,
       offeredBook: offer.offeredBook,
     });
@@ -45,21 +50,34 @@ export default function ReceivedScreen({ navigation }) {
     dispatch(rejectOfferAsync(offerId));
   };
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    dispatch(fetchReceivedOffersAsync(profile.id)) // Replace with your API call action
+      .finally(() => setRefreshing(false));
+  }, [dispatch]);
+
+  if (loading && !refreshing) {
+    return <LoadingOverlay />;
+  }
+
   return (
     <>
-      {!receivedOffers || receivedOffers.length===0 && (
-        <VStack width="100%" height="100%" pt="100" bg="#fff">
-          <Center>
-            <Text fontSize="md">{i18n.t("start-searching-for-new-books")}</Text>
-          </Center>
-          <Center w="100%">
-            <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-            <Text textAlign="center" mx="30" fontWeight="200">
-            {  i18n.t("you-have-not-received-any-offer-yet")}
-            </Text>
-          </Center>
-        </VStack>
-      )}
+      {!receivedOffers ||
+        (receivedOffers.length === 0 && (
+          <VStack width="100%" height="100%" pt="100" bg="#fff">
+            <Center>
+              <Text fontSize="md">
+                {i18n.t("start-searching-for-new-books")}
+              </Text>
+            </Center>
+            <Center w="100%">
+              <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
+              <Text textAlign="center" mx="30" fontWeight="200">
+                {i18n.t("you-have-not-received-any-offer-yet")}
+              </Text>
+            </Center>
+          </VStack>
+        ))}
 
       {receivedOffers && receivedOffers.length > 0 && (
         <FlatList
@@ -69,6 +87,8 @@ export default function ReceivedScreen({ navigation }) {
           data={receivedOffers}
           showsVerticalScrollIndicator={false}
           pt="3"
+          refreshing={refreshing}
+          onRefresh={onRefresh}
           renderItem={({ item }) => (
             <Box pb="6" overflow="hidden" alignItems="center">
               <Flex

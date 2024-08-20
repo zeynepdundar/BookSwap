@@ -96,10 +96,10 @@ export default function ProfileScreen({ navigation }) {
       </HStack>
       <VStack space={1} alignItems="center" height={"50%"}>
         <Center w="100%" h="215px" px={6}>
-          <ImagePicker
+          {/* <ImagePicker
             selectedImage={handleImageUpload}
             initialImage={imageData}
-          />
+          /> */}
         <Heading color="black.100" my={3}>
             {name}
           </Heading>

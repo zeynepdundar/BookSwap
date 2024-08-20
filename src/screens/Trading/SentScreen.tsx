@@ -10,29 +10,49 @@ import {
   Flex,
   HStack,
   Image,
+  Spinner,
   Text,
   VStack,
 } from "native-base";
+import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { LoadingOverlay } from "../../components/LoadingOverlay";
 import i18n from "../../i18n";
-import { takeBackOfferAsync } from "../../store/profile-actions";
+import {
+  fetchSentOffersAsync,
+  takeBackOfferAsync,
+} from "../../store/profile-actions";
 
 export default function SentScreen({ navigation }) {
   const tra = require("../../assets/images/icon/Icons.png");
   const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
   const importUrl = require("../../assets/images/no-cover-available.png");
+  const [refreshing, setRefreshing] = useState(false);
 
   const sentOffers = useSelector(
     (state: any) => state.profile.profile.sentOffer
   );
 
+  const { loading, profile } = useSelector((state: any) => state.profile);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
   const takeBackOfferHandler = (offerId: string) => {
     dispatch(takeBackOfferAsync(offerId));
   };
 
+  // TODO: This is coded for providing asynchronous data fetching from the database.
+  // Profile fetching happens when logged in. The API should ideally use sockets.
+  // Remove this when the socket-based implementation is ready.
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    dispatch(fetchSentOffersAsync(profile.id))
+      .finally(() => setRefreshing(false));
+  }, [dispatch]);
+
+  if (loading && !refreshing) {
+    return <LoadingOverlay />;
+  }
   return (
     <>
       {!sentOffers ||
@@ -59,6 +79,8 @@ export default function SentScreen({ navigation }) {
           data={sentOffers}
           showsVerticalScrollIndicator={false}
           pt="3"
+          refreshing={refreshing}
+          onRefresh={onRefresh}
           renderItem={({ item }) => (
             <Box pb="6" overflow="hidden" alignItems="center">
               <Flex

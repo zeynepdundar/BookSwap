@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 import {
   Button,
   Heading,
@@ -19,7 +20,6 @@ import {
   AspectRatio,
 } from "native-base";
 
-import { MaterialIcons } from "@expo/vector-icons";
 import Screen from "../../components/Screen";
 import i18n from "../../i18n";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
@@ -41,39 +41,7 @@ export default function BookSearchOnCreationScreen({
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
 
-  // const transformData = async (data) => {
-  //   const transformedData = [];
-
-  //   console.log("neyse", data);
-  //   for (const item of data) {
-  //     let coverUrl = null; // Set coverUrl to null initially
-
-  //     if (item.isbn_13) {
-  //       try {
-  //         // Check if the cover image exists
-  //         const response = await fetch(
-  //           `https://covers.openlibrary.org/b/isbn/${item.isbn_13}-M.jpg`
-  //         );
-
-  //         if (response.ok) {
-  //           coverUrl = `https://covers.openlibrary.org/b/isbn/${item.isbn_13}-M.jpg`;
-  //         } else {
-  //           console.warn(`Cover image not found for ISBN: ${item.isbn_13}`);
-  //         }
-  //       } catch (coverError) {
-  //         console.error("Error fetching cover image:", coverError.message);
-  //       }
-  //       const transformedItem = {
-  //         ...item,
-  //         coverUrl,
-  //       };
-  //       console.log("Transformed cover image", transformedItem);
-
-  //       transformedData.push(transformedItem);
-  //     }
-  //   }
-  //   setSearchResults(transformedData);
-  // };
+ 
 
   const addBookToListHandler = (selectedLibraryItem: any) => {
     setSelectedBooks((currentLibraryItems) => [
@@ -82,13 +50,6 @@ export default function BookSearchOnCreationScreen({
     ]);
   };
 
-
-  // const addBookToListHandler = (selectedItem: any) => {
-  //   if (selectedItem.type === "wishlist")
-  //     dispatch(addBookToWishlistAsync(selectedItem));
-  //   else if (selectedItem.type === "library")
-  //     dispatch(addBookToLibraryAsync(selectedItem));
-  // };
 
   const removeBookFromListHandler = (id) => {
     setSelectedBooks((currentLibraryItems) =>

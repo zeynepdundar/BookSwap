@@ -54,7 +54,6 @@ export default function TradeProposal({ navigation, route }) {
   const proposeTradeHandler = async (): Promise<void> => {
     dispatch(sendOfferAsync(sentPropasal));
     setIsInfoDialogOpen(true);
-
   };
 
   const tradeIcon = require("../../assets/images/icon/trade-icon.png");

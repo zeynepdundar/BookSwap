@@ -104,7 +104,7 @@ export const timeAgo = (date) => {
   } else {
     return seconds > 0
       ? i18n.t("seconds-ago", { count: seconds })
-      : i18n.t("just now");
+      : i18n.t("just-now");
   }
 };
 export const formatText = (inputText) => {

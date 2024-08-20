@@ -142,6 +142,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                         borderRadius="9"
                         p="1"
                         width="90px"
+                        disabled={item.usersOwning.length===0}
                       >
                         <Text
                           alignSelf="center"
