@@ -140,7 +140,6 @@ import { setError, setLoading, setMessages } from "./messages-slice";
                 unseenCount: doc.data().unseenCount,
                 userId: doc.data().userId,
               }));
-              console.log("User msg",messages)
               dispatch(setMessages(messages));
               dispatch(setLoading(false));
             },

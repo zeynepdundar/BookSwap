@@ -87,7 +87,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
               // py="2"
               // mb="1"
               // justifyContent="center"
-              height="120"
+              height="135"
               p="3"
               mx="2"
               my="1"
@@ -105,7 +105,13 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                   }}
                 >
                   <Image
-                    source={item.coverUrl ? { uri: item?.coverUrl } : importUrl}
+                    source={
+                      item.coverUrl
+                        ? { uri: item?.coverUrl }
+                        : {
+                            uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                          }
+                    }
                     alt={`Cover of ${item.title} by ${item.author}`}
                     roundedRight="4"
                   />
@@ -121,14 +127,14 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                   {item.publisher ||
                   (Array.isArray(item.publishers) &&
                     item.publishers.length > 0) ? (
-                    <Text color="#8c8c8c" fontSize="13" fontWeight="200">
+                    <Text color="#8c8c8c" fontSize="13" fontWeight="200" numberOfLines={item?.usersOwning ? 1:2}>
                       {Array.isArray(item.publishers) &&
                       item.publishers.length > 0
                         ? truncateText(formatText(item.publishers[0]), 30)
                         : truncateText(formatText(item.publisher), 50)}
                     </Text>
                   ) : // Render something else or nothing when both item.publisher and item.publishers are null or empty
-                  null}
+                  ""}
 
                   {item?.usersOwning && (
                     <>
@@ -142,7 +148,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                         borderRadius="9"
                         p="1"
                         width="90px"
-                        disabled={item.usersOwning.length===0}
+                        disabled={item.usersOwning.length === 0}
                       >
                         <Text
                           alignSelf="center"

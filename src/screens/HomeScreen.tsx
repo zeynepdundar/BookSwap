@@ -1,12 +1,13 @@
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Box, Flex, Heading, Image, Pressable, Text } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
 import { CoverListHorizontal } from "../components/shared/CoverListHorizontal";
 import SearchBar from "../components/shared/SearchBar";
-import { useSelector } from "react-redux";
 import { LoadingOverlay } from "../components/LoadingOverlay";
 import { fetchMostPopularBooks } from "../api/service";
-import { useEffect, useState } from "react";
+
 
 export default function HomeScreen({ navigation }) {
   const importUrl = require("../assets/images/avatar.png");

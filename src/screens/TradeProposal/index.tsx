@@ -1,3 +1,6 @@
+import {  useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { MaterialIcons } from "@expo/vector-icons";
 import {
   Button,
   Center,
@@ -19,11 +22,7 @@ import {
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
-import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import {  useState } from "react";
-
-import { MaterialIcons } from "@expo/vector-icons";
 import { InfoDialogBox } from "../../components/Modal/InfoDialogBox";
 import { sendOfferAsync } from "../../store/profile-actions";
 
@@ -37,6 +36,8 @@ export default function TradeProposal({ navigation, route }) {
   const book = route?.params?.data?.book;
 
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
+  const [isButtonDisabled, setButtonDisabled] = useState(true);
+
 
   const initialState: TradeProposal = {
     receiverId: user.id,
@@ -68,7 +69,17 @@ export default function TradeProposal({ navigation, route }) {
 
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);
+    navigation.navigate("Home")
   };
+
+  useEffect(() => {
+    // Check if either offeredBook or requestedBook is null
+    if (sentPropasal?.offeredBook && sentPropasal?.requestedBook) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [sentPropasal]);
 
   return (
     <Screen>
@@ -244,6 +255,7 @@ export default function TradeProposal({ navigation, route }) {
                   <Text fontSize={11}>{sentPropasal.requestedBook.title}</Text>
                 </>
               )}
+             {/* TODO: Fetch other's library data, no api implemented yet */}
               {!sentPropasal?.requestedBook && (
                 <Fab
                   onPress={() =>
@@ -298,7 +310,7 @@ export default function TradeProposal({ navigation, route }) {
           {i18n.t("send-offer")}
         </Button> */}
       </VStack>
-      <Button m="7" variant="primary" onPress={proposeTradeHandler}>
+      <Button m="7" variant={isButtonDisabled ? 'disabled' : 'primary'} isDisabled={isButtonDisabled} onPress={proposeTradeHandler}>
         {i18n.t("send-offer")}
       </Button>
       <InfoDialogBox
@@ -310,5 +322,3 @@ export default function TradeProposal({ navigation, route }) {
     </Screen>
   );
 }
-// "book-you-will-give": "Vereceğin kitap",
-// "book-you-will-receive": "Alacağın kitap",

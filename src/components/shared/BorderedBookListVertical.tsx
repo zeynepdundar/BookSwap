@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -15,7 +15,7 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { LIBRARY, WISHLIST, ListTypes } from "../../store/profile-slice";
 import i18n from "../../i18n";
-import { formatText } from "../../utils/helper";
+import { formatText, truncateText } from "../../utils/helper";
 
 interface BorderedBookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
@@ -26,6 +26,7 @@ export const BorderedBookListVertical: React.FC<
   BorderedBookListVerticalProps
 > = ({ data, onDonePress, listType, ...props }) => {
   const [selectedBooks, setSelectedBooks] = useState([]);
+  const [isButtonDisabled, setButtonDisabled] = useState(true);
 
   const importUrl = require("../../assets/images/no-cover-available.png");
 
@@ -76,6 +77,14 @@ export const BorderedBookListVertical: React.FC<
     return existingLibraryItemIndex !== -1;
   };
 
+  useEffect(() => {
+    if (selectedBooks && selectedBooks.length > 0) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [selectedBooks]);
+
   return (
     <>
       <FlatList
@@ -83,6 +92,7 @@ export const BorderedBookListVertical: React.FC<
         height="75%"
         mx="3"
         data={data}
+        keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         extraData={data}
         renderItem={({ item }) => (
@@ -102,6 +112,7 @@ export const BorderedBookListVertical: React.FC<
               p="3"
               mx="2"
               my="1"
+              overflow="hidden"
             >
               <HStack
                 justifyContent="space-between"
@@ -116,7 +127,13 @@ export const BorderedBookListVertical: React.FC<
                   }}
                 >
                   <Image
-                    source={item.coverUrl ? { uri: item?.coverUrl } : importUrl}
+                    source={
+                      item.coverUrl
+                        ? { uri: item?.coverUrl }
+                        : {
+                            uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                          }
+                    }
                     alt={`Cover of ${item.title} by ${item.author}`}
                     roundedRight="4"
                   />
@@ -131,14 +148,14 @@ export const BorderedBookListVertical: React.FC<
                 </AspectRatio>
 
                 <VStack width="75%" h="95">
-                  <Text color="#000000" fontSize="15">
-                    {formatText(item.title)}
+                  <Text color="#000000" fontSize="15" numberOfLines={2}>
+                    {truncateText(formatText(item.title), 60)}
                   </Text>
                   <Text color="#8c8c8c" fontSize="11">
-                    {formatText(item.author)}
+                    {truncateText(formatText(item.author), 40)}
                   </Text>
                   <Text color="#000000" fontSize="13px" fontWeight="200">
-                    {formatText(item.publisher)}
+                    {truncateText(formatText(item.publisher), 26)}
                   </Text>
                 </VStack>
                 <Box position="absolute" bottom="0" right="0">
@@ -163,12 +180,11 @@ export const BorderedBookListVertical: React.FC<
             </Box>
           </Pressable>
         )}
-        keyExtractor={(item) => item.id}
       />
-      <Spacer />
-      <Box alignItems="center" justifyContent="center" h="8%" mx="2">
+      <Box alignItems="center" justifyContent="center" h="9%" mx="2">
         <Button
-          variant="outline"
+          variant={isButtonDisabled ? "disabledOutline" : "outline"}
+          isDisabled={isButtonDisabled}
           onPress={handleDonePress}
           right={0}
           position="absolute"
