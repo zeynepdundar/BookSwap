@@ -44,8 +44,6 @@ export default function BookSearchScreen({ navigation, route = null }) {
       const response = await dispatch(addBookToListAsync(selectedItem));
       const payload = response.payload;
 
-      console.log("payload", payload);
-
       if (payload?.status === "error") {
         if (payload.existingEditionIds?.length > 0) {
           setListError(i18n.t("already-have-book"));

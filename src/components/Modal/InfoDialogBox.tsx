@@ -56,15 +56,19 @@ export const InfoDialogBox = ({
 
   const handleClose = () => {
     setIsAlertDialogOpen(false);
-    onClose && onClose(); // Call onClose if it is provided
-
+    
+    if (onClose) {
+      onClose();
+      return;
+    }
+  
+    // Perform navigation based on the action type if onClose is not provided
     if (actionType === WISHLIST) {
       navigateToScreen(WISHLIST_SCREEN);
     } else if (actionType === LIBRARY) {
       navigateToScreen(LIBRARY_SCREEN);
-    }
-    else if (actionType === "TRADE") {
-      navigation.navigate("Trading", { screen: "Sent" })
+    } else if (actionType === "TRADE") {
+      navigation.navigate("Trading", { screen: "Sent" });
     }
   };
 

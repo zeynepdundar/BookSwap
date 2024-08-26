@@ -109,7 +109,7 @@ export const theme = extendTheme({
               color: "primary.50",
             },
             _pressed: {
-              backgroundColor:"transparent"
+              backgroundColor: "transparent",
             },
           };
         },
@@ -122,10 +122,20 @@ export const theme = extendTheme({
             },
           };
         },
+        disabledOutline: () => {
+          return {
+            bg: "transparent",
+            //TODO: Border color is not applying correctly, need to fix this.
+            borderColor: "black.700",
+            _text: {
+              color: "black.700",
+            },
+          };
+        },
       },
     },
     Heading: {
-      baseStyle: ({ }) => {
+      baseStyle: ({}) => {
         return {
           color: "coolGray.800",
           fontWeight: "medium",

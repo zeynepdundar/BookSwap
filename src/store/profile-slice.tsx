@@ -29,6 +29,8 @@ export interface UserProfile {
   languagePreference: string;
   wishlistBook: any[];
   libraryBook: any[];
+
+  //TODO: CreatE separate slices for receivedOffer, sentOffer, and historyList, good approach to manage their state independently
   receivedOffer?;
   sentOffer?;
   historyList?;

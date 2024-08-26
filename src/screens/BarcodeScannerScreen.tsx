@@ -17,7 +17,7 @@ import {
   Alert,
 } from "native-base";
 import { fetchBooksByISBN } from "../api/service";
-import { generateModalActions } from "../utils/helper";
+import { formatText, generateModalActions, truncateText } from "../utils/helper";
 import { ActionSheet } from "../components/ActionSheet";
 import { AppDispatch } from "../store/store";
 import { addBookToListAsync } from "../store/profile-actions";
@@ -73,6 +73,7 @@ export default function BarcodeScannerScreen({
         setError("Multiple books found with this ISBN.");
       } else {
         setEdition(fetchedEditions[0]);
+        console.log(" book found with this ISBN",fetchedEditions[0])
       }
     } catch (error) {
       setError("Error fetching editions. Please try again later.");
@@ -85,7 +86,7 @@ export default function BarcodeScannerScreen({
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
-  const handleAddBook = () => {
+  const handleAddBook =async () => {
     //For profile creation flow library/wishlist add book
     if (onAddBook) {
       onAddBook([edition]);
@@ -94,9 +95,23 @@ export default function BarcodeScannerScreen({
       
       //TODO : Refactor to handle Wishlist and Library cases generically using a function passed as a prop.
     } else if (mode === "Wishlist" || mode === "Library") {
-      dispatch(addBookToListAsync({ ...edition, type: mode.toUpperCase() }));
+      const response = await dispatch(
+        addBookToListAsync({ ...edition, type: mode.toUpperCase() })
+      );
+      const payload = response.payload;
+
+      if (payload?.status === "error") {
+        if (payload.existingEditionIds?.length > 0) {
+          setError(i18n.t("already-have-book"));
+        } else {
+          setError(payload.message);
+        }
+        setTimeout(() => {
+          setError(null);
+        }, 8000);
+      }
+      else navigation.navigate(mode);
       closeActionSheet();
-      navigation.navigate(mode);
     } else {
       const actions = [
         { type: WISHLIST, label: "add-my-wishlist" },
@@ -212,13 +227,14 @@ const BookInfoBox = ({ edition, onAddBooks }) => (
       />
       <VStack width="40" height="82">
         <Text color="#8c8c8c" fontSize="xs" letterSpacing="2xl">
-          {edition?.author}
+          {truncateText(formatText(edition?.author), 19)}
+
         </Text>
         <Text color="#494949" fontSize="16">
-          {edition?.title}
+        {truncateText(formatText(edition?.title), 36)}
         </Text>
         <Text color="#494949" fontSize="11">
-          {edition?.publisher}
+          {truncateText(formatText(edition?.publisher), 23)}
         </Text>
       </VStack>
       <IconButton

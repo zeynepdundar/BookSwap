@@ -28,7 +28,6 @@ export default function UserListScreen({ navigation, route }) {
 
   const [libraryItems, setLibraryItem] = useState<any>([]);
 
-
   const [isOpen, setIsOpen] = useState(false);
 
   const pressHandler = (data) => {
@@ -95,13 +94,13 @@ export default function UserListScreen({ navigation, route }) {
             <>
               <Center mx="3" mb="1" justifyContent="center" h="76">
                 <HStack space={[4, 6]} justifyContent="space-between">
-                  {item.photo_file_name  && (
+                  {item.photo_file_name && (
                     <Avatar
                       borderRadius="full"
                       source={{ uri: item.photo_file_name }}
                     />
                   )}
-                  {!item.photo_file_name  && (
+                  {!item.photo_file_name && (
                     <Avatar borderRadius="full" source={avatarImage} />
                   )}
                   <Text
@@ -109,15 +108,14 @@ export default function UserListScreen({ navigation, route }) {
                     fontSize="16"
                     alignSelf="center"
                     width="105px"
+                    numberOfLines={1}
                   >
                     {item.name}
                   </Text>
 
                   <Spacer />
                   <Button
-                    onPress={() =>
-                      pressHandler( { book: book, user: item } )
-                    }
+                    onPress={() => pressHandler({ book: book, user: item })}
                     variant="primary"
                     right={0}
                     bottom="0"
