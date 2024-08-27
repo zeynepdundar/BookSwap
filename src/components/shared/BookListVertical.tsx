@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -11,23 +11,30 @@ import {
   Box,
   AspectRatio,
   Pressable,
+  Button,
 } from "native-base";
 import { InfoDialogBox } from "../Modal/InfoDialogBox";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ActionSheet } from "../ActionSheet";
 import { LIBRARY, WISHLIST, ListTypes } from "../../store/profile-slice";
 import { formatText, generateActions, truncateText } from "../../utils/helper";
+import i18n from "../../i18n";
+import { useSelector } from "react-redux";
 interface BookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
-  primaryActionButton?: (id: string) => void;
-  secondaryAction?: (item: any) => void;
+  onPrimaryAction?: (id: string) => void;
+  onSecondaryAction?: (item: any) => void;
   onNavigateList?: (item: any) => void;
+  onSendOffer?: (id: any) => void;
+  showSendOfferButton?: boolean;
 }
 export const BookListVertical: React.FC<BookListVerticalProps> = ({
   data,
-  primaryActionButton,
-  secondaryAction,
+  onPrimaryAction,
+  onSecondaryAction,
   onNavigateList,
+  onSendOffer,
+  showSendOfferButton,
   ...props
 }) => {
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
@@ -37,9 +44,10 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
     null
   );
   const importUrl = require("../../assets/images/no-cover-available.png");
+  const { id: userId } = useSelector((state: any) => state.profile.profile);
 
   const handleAction = async (actionType) => {
-    const result = await secondaryAction({
+    const result = await onSecondaryAction({
       type: actionType,
       id: selectedItem?.id,
       title: selectedItem.title,
@@ -127,35 +135,58 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                   {item.publisher ||
                   (Array.isArray(item.publishers) &&
                     item.publishers.length > 0) ? (
-                    <Text color="#8c8c8c" fontSize="13" fontWeight="200" numberOfLines={item?.usersOwning ? 1:2}>
+                    <Text
+                      color="#8c8c8c"
+                      fontSize="13"
+                      fontWeight="200"
+                      numberOfLines={item?.usersOwning ? 1 : 2}
+                    >
                       {Array.isArray(item.publishers) &&
                       item.publishers.length > 0
                         ? truncateText(formatText(item.publishers[0]), 30)
                         : truncateText(formatText(item.publisher), 50)}
                     </Text>
-                  ) : // Render something else or nothing when both item.publisher and item.publishers are null or empty
-                  ""}
+                  ) : (
+                    // Render something else or nothing when both item.publisher and item.publishers are null or empty
+                    ""
+                  )}
 
                   {item?.usersOwning && (
                     <>
                       <Spacer></Spacer>
                       <Pressable
                         onPress={() => {
-                          onNavigateList(item);
+                          const filteredOwners = item.usersOwning.filter(
+                            (owner) => owner.id !== userId
+                          );
+                          const newItem = {
+                            ...item,
+                            usersOwning: filteredOwners,
+                          };
+                          onNavigateList(newItem);
                         }}
                         borderColor="#323232"
                         borderWidth="0.5"
                         borderRadius="9"
                         p="1"
                         width="90px"
-                        disabled={item.usersOwning.length === 0}
+                        disabled={
+                          item.usersOwning.filter(
+                            (owner) => owner.id !== userId
+                          ).length === 0
+                        }
                       >
                         <Text
                           alignSelf="center"
                           color="#323232"
                           fontSize="12px"
                         >
-                          {item.usersOwning.length} Owner
+                          {
+                            item.usersOwning.filter(
+                              (owner) => owner.id !== userId
+                            ).length
+                          }{" "}
+                          Owner
                         </Text>
                       </Pressable>
                     </>
@@ -163,8 +194,8 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                 </VStack>
                 <Spacer />
                 <VStack>
-                  {primaryActionButton && primaryActionButton(item)}
-                  {!primaryActionButton && (
+                  {onPrimaryAction && onPrimaryAction(item)}
+                  {!onPrimaryAction && (
                     <Icon
                       onPress={() => openActionSheet(item)}
                       name={"more-vert"}
@@ -172,6 +203,32 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                       size="md"
                       as={MaterialIcons}
                     />
+                  )}
+                  {onSendOffer && (
+                    // <Pressable
+                    //   onPress={() => onSendOffer(item.id)}
+                    //   borderColor="#007BFF"
+                    //   borderWidth="1"
+                    //   borderRadius="9"
+                    //   p="2"
+                    //   width="90px"
+                    // >
+                    //   <Text alignSelf="center" color="#007BFF" fontSize="12px">
+                    //     Send Offer
+                    //   </Text>
+                    // </Pressable>
+                    <Button
+                      onPress={() => onSendOffer({ item })}
+                      variant="primary"
+                      right={2}
+                      bottom="-14"
+                      position="absolute"
+                      py={2}
+                      px={0}
+                      width={126}
+                    >
+                      {i18n.t("send-offer")}
+                    </Button>
                   )}
 
                   <Spacer />
@@ -183,7 +240,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
         )}
         keyExtractor={(item) => item.id}
       />
-      {secondaryAction && (
+      {onSecondaryAction && (
         <ActionSheet
           isOpen={isActionSheetOpen}
           onClose={closeActionSheet}

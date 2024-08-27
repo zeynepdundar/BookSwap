@@ -141,7 +141,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
   return (
     <Screen>
-      <Flex h="100%">
+      <Flex h="80%">
         <Heading p={2}>{i18n.t("keep-exploring")}</Heading>
 
         {/* Search Bar Section */}
@@ -199,7 +199,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
               ) : (
                 <BookListVertical
                   data={searchResults}
-                  secondaryAction={addBookToListHandler}
+                  onSecondaryAction={addBookToListHandler}
                   onNavigateList={navigateUserList}
                 />
               )}
