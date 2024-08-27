@@ -112,46 +112,64 @@ export const uploadProfileImage = async (userId, imageUri) => {
   }
 };
 export const fetchUserProfileData = async (firebaseUserId: string) => {
-  const response = await fetch(
-    ProfileEndpoints.FETCH_USER_DATA(firebaseUserId),
-    {
+  try {
+    // Fetch the main profile data first
+    const profileResponse = await fetch(ProfileEndpoints.FETCH_USER_DATA(firebaseUserId), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${"eyJhbGciOiJSUzI1NiIsImtpZCI6ImQxNjg5NDE1ZWMyM2EzMzdlMmJiYWE1ZTNlNjhiNjZkYzk5MzY4ODQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm9vay1zd2FwLTJkOWE1IiwiYXVkIjoiYm9vay1zd2FwLTJkOWE1IiwiYXV0aF90aW1lIjoxNzA0NjMzMDU0LCJ1c2VyX2lkIjoiVUxSRkp3WVZLdlNCR2V1RDZKWmcwRTRrOEJGMiIsInN1YiI6IlVMUkZKd1lWS3ZTQkdldUQ2SlpnMEU0azhCRjIiLCJpYXQiOjE3MDQ2MzMwNTQsImV4cCI6MTcwNDYzNjY1NCwicGhvbmVfbnVtYmVyIjoiKzE1NTU2NjYxMjM0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrMTU1NTY2NjEyMzQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwaG9uZSJ9fQ.AwcM4gpbryzgZTKAlc-VvGwAWWoW2Qiqhn3RrhiNp7ShRQ8T9QxnS6ZdyRUhInkz6yOhTf-BPZ2SlMlTvfENpgjUnOda4P6OWVwXpObbkS2RFQ2zQp00o_7-pCYQ6PgbbDH1pApd6F0ujk_yChhw4QSCuv7eQ6hD7zWW7akaR5aM6e_UO1RcMNXN_jrmE3cBtBOsf0ci-Emf9YbYBcyQa4OWTExelhHn2p11KjrML4KZytiHU17Q9VUzDCxPwLu5P4uMJwpXM9J_kMhvPxBJXXWAZl9cCGDCslXYVdWWiWqwx8uLgyX4vI0jzQPZHjO5-rT9XekiulOpRN-M02iODA"}`, // Replace with your actual access token
+        Authorization: `Bearer ${"YOUR_ACCESS_TOKEN"}`, // Replace with your actual access token
       },
+    });
+
+    const result = await profileResponse.json();
+
+    if (!profileResponse.ok) {
+      throw new Error("Failed to fetch user profile from db [fetchUserProfileData]");
     }
-  );
-  const result = await response.json();
 
-  if (!response.ok) {
-    throw new Error(
-      "Failed to fetch user profile from db [fetchUserProfileData]"
-    );
+    // Once we have the result, we can fetch other related data in parallel
+    const [imageUri, receivedOffers, sentOffers, historyList] = await Promise.all([
+      fetchProfileImage(result.id).catch((error) => {
+        console.warn("Error fetching profile image:", error);
+        return null; // Fallback value
+      }),
+      fetchReceivedOffer(result.id).catch((error) => {
+        console.warn("Error fetching received offers:", error);
+        return []; // Fallback value
+      }),
+      fetchSentOffer(result.id).catch((error) => {
+        console.warn("Error fetching sent offers:", error);
+        return []; // Fallback value
+      }),
+      fetchHistory(result.id).catch((error) => {
+        console.warn("Error fetching history:", error);
+        return []; // Fallback value
+      }),
+    ]);
+
+    // Construct the user profile object
+    const profile: UserProfile = {
+      id: result.id,
+      name: result.name,
+      birthdate: result.birthdate,
+      imageData: imageUri,
+      gender: result.gender,
+      languagePreference: result.language_preference,
+      wishlistBook: createBookData(result.wished_editions),
+      libraryBook: createBookData(result.owned_editions),
+      receivedOffer: receivedOffers,
+      sentOffer: sentOffers,
+      historyList: historyList,
+    };
+
+    return profile;
+  } catch (error) {
+    console.error("Error fetching user profile data:", error);
+    throw error;
   }
-
-  const imageUri = await fetchProfileImage(result.id);
-
-  const receivedOffers = await fetchReceivedOffer(result.id);
-  const sentOffers = await fetchSentOffer(result.id);
-  const historyList = await fetchHistory(result.id);
-
-  const profile: UserProfile = {
-    id: result.id,
-    name: result.name,
-    birthdate: result.birthdate,
-    imageData: imageUri,
-    gender: result.gender,
-    languagePreference: result.language_preference,
-    wishlistBook: createBookData(result.wished_editions),
-    libraryBook: createBookData(result.owned_editions),
-    receivedOffer: receivedOffers,
-    sentOffer: sentOffers,
-    historyList: historyList,
-  };
-
-  return profile;
 };
+
 export const fetchReceivedOffer = async (userId) => {
   try {
     const response = await fetch(

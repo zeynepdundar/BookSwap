@@ -11,6 +11,7 @@ import {
   ArrowBackIcon,
   Divider,
   Avatar,
+  Pressable,
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
@@ -30,7 +31,7 @@ export default function UserListScreen({ navigation, route }) {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const pressHandler = (data) => {
+  const sendOfferHandler = (data) => {
     if (libraryBook.length === 0) {
       // Library is empty, show an alert
       setIsOpen(true);
@@ -41,6 +42,13 @@ export default function UserListScreen({ navigation, route }) {
   };
   const onClose = () => setIsOpen(false);
 
+  const onNavigateProfile = (selectedUser) =>{
+    navigation.navigate("OtherUserProfile", {
+      user: selectedUser,
+    });
+  };
+
+
   const addBookHandler = () => {
     navigation.navigate("ProfileStack", { screen: "Library" });
     onClose();
@@ -50,22 +58,6 @@ export default function UserListScreen({ navigation, route }) {
   return (
     <Screen>
       <VStack space={1} alignItems="center">
-        {/* <Center w="100%" h="20" justifyContent="space-between">
-          <Flex direction="row" justifyContent="space-between" w="100%" h="10">
-            <Button
-              backgroundColor="transparent"
-              variant="ghost"
-              leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
-              _pressed={{
-                bg: "transparent",
-              }}
-              onPress={() => navigation.goBack()}
-            ></Button>
-            <Center>
-              <Heading w="145">{i18n.t("ask-for-swap")}</Heading>
-            </Center>{" "}
-          </Flex>
-        </Center> */}
         <HStack
           alignItems="center"
           justifyContent="space-between"
@@ -92,30 +84,41 @@ export default function UserListScreen({ navigation, route }) {
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <>
-              <Center mx="3" mb="1" justifyContent="center" h="76">
+              <Center mx="3" mb="1" justifyContent="center" h="76" key={item.id}>
                 <HStack space={[4, 6]} justifyContent="space-between">
-                  {item.photo_file_name && (
+                  <Pressable
+                    onPress={() => {
+                      onNavigateProfile(item);
+                    }}
+                    flexDirection="row" 
+                    padding="1"
+
+                  >     
+                   {item.photo_file_name && (            
                     <Avatar
                       borderRadius="full"
                       source={{ uri: item.photo_file_name }}
+                      mr="3"
                     />
                   )}
                   {!item.photo_file_name && (
-                    <Avatar borderRadius="full" source={avatarImage} />
+                    <Avatar borderRadius="full" source={avatarImage}  mr="3"/>
                   )}
                   <Text
                     color="#000000"
                     fontSize="16"
                     alignSelf="center"
-                    width="105px"
                     numberOfLines={1}
                   >
                     {item.name}
                   </Text>
 
+                  </Pressable>
+
+
                   <Spacer />
                   <Button
-                    onPress={() => pressHandler({ book: book, user: item })}
+                    onPress={() => sendOfferHandler({ book: book, user: item })}
                     variant="primary"
                     right={0}
                     bottom="0"

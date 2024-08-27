@@ -14,30 +14,60 @@ import {
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AlertDialogBox } from "../../components/Modal/AlertDialogBox";
 import { SceneMap, TabView } from "react-native-tab-view";
 import { Dimensions, StatusBar, Animated } from "react-native";
 import OtherLibraryScreen from "./OtherUserLibraryScreen";
 import OtherWishlistScreen from "./OtherUserWishlistScreen";
 import OtherSwapHistory from "./OtherUserSwapHistory";
+import { fetchUserProfileData } from "../../api/service";
+import { LoadingOverlay } from "../../components/LoadingOverlay";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function OtherUserProfileScreen({ navigation, route }) {
-
   const userTemp = route?.params?.user;
 
   const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
 
-  const dispatch = useDispatch<AppDispatch>();
+  const [profile, setProfile] = useState(null);
+  const [libraryBook, setLibraryBook] = useState(null);
+  const [wishedBook, setWishedBook] = useState(null);
+  const [historyList, setHistoryList] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchProfileData = async () => {
+        try {
+          setLoading(true);
+          const profileData = await fetchUserProfileData(userTemp?.firebase_uid);
+          setProfile({
+            firebase_uid: userTemp?.firebase_uid,
+            id: profileData.id,
+            name: profileData.name,
+            photo_file_name: profileData.imageData,
+          });
+          setLibraryBook(profileData.libraryBook);
+          setWishedBook(profileData.wishlistBook);
+          setHistoryList(profileData.historyList);
+        } catch (error) {
+          console.error("Error fetching profile data:", error);
+          // Set an error state here if needed
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchProfileData();
+    }, [userTemp, route?.params])
+  );
 
   const [isOpen, setIsOpen] = useState(false);
 
   const onClose = () => setIsOpen(false);
 
-  const signOutHandler = async (): Promise<void> => {
-  };
+  const signOutHandler = async (): Promise<void> => {};
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -59,9 +89,30 @@ export default function OtherUserProfileScreen({ navigation, route }) {
     width: Dimensions.get("window").width,
   };
   const renderScene = SceneMap({
-    library: OtherLibraryScreen,
-    wishlist: OtherWishlistScreen,
-    swapHistory: OtherSwapHistory,
+    library: (props: any) => (
+      <OtherLibraryScreen
+        {...props}
+        navigation={navigation}
+        profile={profile}
+        libraryBook={libraryBook}
+      />
+    ),
+    wishlist: (props: any) => (
+      <OtherWishlistScreen
+        {...props}
+        navigation={navigation}
+        profile={profile}
+        wishedBook={wishedBook}
+      />
+    ),
+    swapHistory: (props: any) => (
+      <OtherSwapHistory
+        {...props}
+        navigation={navigation}
+        profile={profile}
+        historyList={historyList}
+      />
+    ),
   });
   const renderTabBar = (props) => {
     const inputRange = props.navigationState.routes.map((x, i) => i);
@@ -93,7 +144,6 @@ export default function OtherUserProfileScreen({ navigation, route }) {
               mx="2"
             >
               <Pressable
-            
                 onPress={() => {
                   setIndex(i);
                 }}
@@ -101,8 +151,8 @@ export default function OtherUserProfileScreen({ navigation, route }) {
                 <Animated.Text
                   style={{
                     color,
-                    fontWeight:"700",
-                    fontFamily: "Poppins.200"
+                    fontWeight: "700",
+                    fontFamily: "Poppins.200",
                   }}
                 >
                   {route.title}
@@ -114,15 +164,13 @@ export default function OtherUserProfileScreen({ navigation, route }) {
       </Box>
     );
   };
+  if (loading) {
+    return <LoadingOverlay></LoadingOverlay>;
+  }
 
   return (
     <Screen>
-      <VStack
-        space={1}
-        alignItems="center"
-        height={"100%"}
-        width="100%"
-      >
+      <VStack space={1} alignItems="center" height={"100%"} width="100%">
         <Center w="100%" h="10" justifyContent="space-between">
           <Flex direction="row" justifyContent="space-between" w="100%" h="10">
             <Button
@@ -145,13 +193,9 @@ export default function OtherUserProfileScreen({ navigation, route }) {
             w="100%"
             h="100%"
           >
-            <Avatar
-              width="25%"
-              height="100%"
-              source={otherUserImage}
-            />
+            <Avatar width="25%" height="100%" source={otherUserImage} />
             <Heading width="60%" color="black.100" my={3}>
-              Walter White
+              {profile?.name}
             </Heading>
             <Spacer></Spacer>
           </HStack>
@@ -162,7 +206,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
             routes,
           }}
           renderScene={renderScene}
-          renderTabBar={renderTabBar}
+          renderTabBar={(props) => renderTabBar({ ...props })}
           onIndexChange={setIndex}
           initialLayout={initialLayout}
           style={{

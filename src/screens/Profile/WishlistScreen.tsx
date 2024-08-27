@@ -115,7 +115,7 @@ export default function WishlistScreen({ navigation }) {
       {selectedBooks.length > 0 && (
         <BookListVertical
           data={selectedBooks}
-          primaryActionButton={removeBookButton}
+          onPrimaryAction={removeBookButton}
         />
       )}
       {showFab && (

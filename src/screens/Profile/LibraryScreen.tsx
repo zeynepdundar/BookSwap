@@ -160,7 +160,7 @@ export default function LibraryScreen({ navigation, route }) {
       {selectedBooks.length > 0 && (
           <BookListVertical
             data={selectedBooks}
-            primaryActionButton={selectedBooksAction}
+            onPrimaryAction={selectedBooksAction}
           />
       )}
       {showFab && (
