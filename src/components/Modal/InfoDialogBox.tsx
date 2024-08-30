@@ -1,16 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import { AlertDialog, Button, Center, CheckCircleIcon } from "native-base";
 import React, { useEffect, useState } from "react";
+import { LIBRARY, MyStackParamList, WISHLIST } from "../../constants";
 import i18n from "../../i18n";
-import { LIBRARY, WISHLIST } from "../../store/profile-slice";
 
-type MyStackParamList = {
-  Home: undefined;
-  Profile: undefined;
-  Library: undefined;
-  Wishlist: undefined;
 
-};
 
 export const InfoDialogBox = ({
   isOpen,
@@ -33,8 +27,7 @@ export const InfoDialogBox = ({
     description = i18n.t("the-book-added-to-library");
     buttonVariant = "outline";
     confirmButtonLabel = i18n.t("see-my-library");
-  }
-  else if (actionType === "TRADE") {
+  } else if (actionType === "TRADE") {
     title = i18n.t("the-offer-sent");
     description = i18n.t("see-sent-offers-description");
     buttonVariant = "outline";
@@ -45,7 +38,8 @@ export const InfoDialogBox = ({
     setIsAlertDialogOpen(isOpen);
   }, [isOpen]);
 
-  const navigateToScreen = (screenName: keyof MyStackParamList ) => {
+  const navigateToScreen = (screenName: keyof MyStackParamList) => {
+    console.log("screen", actionType);
     navigation.navigate("ProfileStack", {
       screen: screenName,
     }); // Error here
@@ -56,20 +50,28 @@ export const InfoDialogBox = ({
 
   const handleClose = () => {
     setIsAlertDialogOpen(false);
-    
+
     if (onClose) {
+      // Call the provided onClose function
       onClose();
-      return;
     }
-  
-    // Perform navigation based on the action type if onClose is not provided
-    if (actionType === WISHLIST) {
-      navigateToScreen(WISHLIST_SCREEN);
-    } else if (actionType === LIBRARY) {
-      navigateToScreen(LIBRARY_SCREEN);
-    } else if (actionType === "TRADE") {
-      navigation.navigate("Trading", { screen: "Sent" });
+  };
+  const handleConfirm = () => {
+    switch (actionType) {
+      case WISHLIST:
+        navigateToScreen(WISHLIST_SCREEN);
+        break;
+      case LIBRARY:
+        navigateToScreen(LIBRARY_SCREEN);
+        break;
+      case "TRADE":
+        break;
+      default:
+        console.log("No specific action type found");
+        // Handle any default action or do nothing
+        break;
     }
+    setIsAlertDialogOpen(false);
   };
 
   return (
@@ -104,7 +106,7 @@ export const InfoDialogBox = ({
           <Button.Group space={2}>
             <Button
               variant={buttonVariant ? buttonVariant : "primary"}
-              onPress={handleClose}
+              onPress={handleConfirm}
             >
               {confirmButtonLabel?.toUpperCase()}
             </Button>

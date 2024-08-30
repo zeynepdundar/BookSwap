@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { EditionEndpoints, ProfileEndpoints } from "./endpoints";
-import { UserProfile, WISHLIST } from "../store/profile-slice";
 import { createBookData, structureOfferData } from "../utils/helper";
+import { UserProfile, WISHLIST } from "../constants";
 
 export const updateUserProfileData = async (profileData) => {
   const wishlistBookIds = (profileData.wishlistBook || [])
@@ -64,13 +64,34 @@ export const fetchProfileImage = async (userId: string) => {
       throw new Error("Invalid content type");
     }
 
+    const blobToBase64 = (blob) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+          resolve(reader.result.split(",")[1]);
+        };
+
+        reader.onerror = (error) => {
+          reject(error);
+        };
+
+        reader.readAsDataURL(blob);
+      });
+    };
+
     const imageBlob = await response.blob();
     console.log("imageBlob", imageBlob);
 
-    const uri = URL.createObjectURL(imageBlob);
-    console.log("uri", uri);
+    blobToBase64(imageBlob)
+      .then((dataUrl) => {
+        console.log("Test Blob to Base64 result:");
+        return dataUrl;
+      })
+      .catch((error) => console.error("Error converting test blob:", error));
 
-    return uri;
+    // const uri = URL.createObjectURL(imageBlob);
+    // console.log("uri", uri);
   } catch (err) {
     console.error("Error fetching profile image:", err.message);
   }
@@ -114,39 +135,45 @@ export const uploadProfileImage = async (userId, imageUri) => {
 export const fetchUserProfileData = async (firebaseUserId: string) => {
   try {
     // Fetch the main profile data first
-    const profileResponse = await fetch(ProfileEndpoints.FETCH_USER_DATA(firebaseUserId), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${"YOUR_ACCESS_TOKEN"}`, // Replace with your actual access token
-      },
-    });
+    const profileResponse = await fetch(
+      ProfileEndpoints.FETCH_USER_DATA(firebaseUserId),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${"YOUR_ACCESS_TOKEN"}`, // Replace with your actual access token
+        },
+      }
+    );
 
     const result = await profileResponse.json();
 
     if (!profileResponse.ok) {
-      throw new Error("Failed to fetch user profile from db [fetchUserProfileData]");
+      throw new Error(
+        "Failed to fetch user profile from db [fetchUserProfileData]"
+      );
     }
 
     // Once we have the result, we can fetch other related data in parallel
-    const [imageUri, receivedOffers, sentOffers, historyList] = await Promise.all([
-      fetchProfileImage(result.id).catch((error) => {
-        console.warn("Error fetching profile image:", error);
-        return null; // Fallback value
-      }),
-      fetchReceivedOffer(result.id).catch((error) => {
-        console.warn("Error fetching received offers:", error);
-        return []; // Fallback value
-      }),
-      fetchSentOffer(result.id).catch((error) => {
-        console.warn("Error fetching sent offers:", error);
-        return []; // Fallback value
-      }),
-      fetchHistory(result.id).catch((error) => {
-        console.warn("Error fetching history:", error);
-        return []; // Fallback value
-      }),
-    ]);
+    const [imageUri, receivedOffers, sentOffers, historyList] =
+      await Promise.all([
+        fetchProfileImage(result.id).catch((error) => {
+          console.warn("Error fetching profile image:", error);
+          return null; // Fallback value
+        }),
+        fetchReceivedOffer(result.id).catch((error) => {
+          console.warn("Error fetching received offers:", error);
+          return []; // Fallback value
+        }),
+        fetchSentOffer(result.id).catch((error) => {
+          console.warn("Error fetching sent offers:", error);
+          return []; // Fallback value
+        }),
+        fetchHistory(result.id).catch((error) => {
+          console.warn("Error fetching history:", error);
+          return []; // Fallback value
+        }),
+      ]);
 
     // Construct the user profile object
     const profile: UserProfile = {
@@ -257,7 +284,6 @@ export const addBookToList = async (userId, bookData) => {
   });
 
   const responseData = await response.json();
-
 
   if (!response.ok) {
     if (responseData.status === "error" && responseData.message) {

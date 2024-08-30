@@ -1,5 +1,5 @@
+import { LIBRARY, WISHLIST } from "../constants";
 import i18n from "../i18n";
-import { LIBRARY, WISHLIST } from "../store/profile-slice";
 
 export const getCoverUrl = (bookData) => {
   const isbn = bookData.isbn_13 || bookData.isbn_10;

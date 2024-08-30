@@ -12,6 +12,7 @@ import {
   Menu,
   VStack,
   HStack,
+  Spinner,
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
@@ -50,7 +51,9 @@ export default function ProfileScreen({ navigation }) {
   const onClose = () => setIsOpen(false);
 
   const handleLanguageChange = (selectedLanguage) => {
+    i18n.locale = selectedLanguage;
     dispatch(setProfileData({ languagePreference: selectedLanguage }));
+    console.log("language",imageData)
   };
   const handleImageUpload = (data) => {
     // setImage(data)
@@ -69,6 +72,8 @@ export default function ProfileScreen({ navigation }) {
       console.error("Error during logout:", error);
     }
   };
+  const [imageBase64, setImageBase64] = useState(null);
+
 
   useEffect(() => {
     updateUserProfileData(profileData);
@@ -100,7 +105,15 @@ export default function ProfileScreen({ navigation }) {
             selectedImage={handleImageUpload}
             initialImage={imageData}
           /> */}
-        <Heading color="black.100" my={3}>
+                {imageBase64 ? (
+        <Image
+          source={{ uri: imageBase64 }}
+          style={{ width: 100, height: 100 }}
+        />
+      ) : (
+        <Spinner color="primary.500" />
+      )}
+          <Heading color="black.100" my={3}>
             {name}
           </Heading>
         </Center>
@@ -199,7 +212,7 @@ export default function ProfileScreen({ navigation }) {
             <Spacer></Spacer>
             <Box maxW="20" px={1}>
               <Menu
-                w="100"
+                w="106"
                 mr={18}
                 trigger={(triggerProps) => {
                   return (

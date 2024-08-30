@@ -8,7 +8,6 @@ import SearchBar from "../components/shared/SearchBar";
 import { LoadingOverlay } from "../components/LoadingOverlay";
 import { fetchMostPopularBooks } from "../api/service";
 
-
 export default function HomeScreen({ navigation }) {
   const importUrl = require("../assets/images/avatar.png");
 
@@ -26,28 +25,6 @@ export default function HomeScreen({ navigation }) {
   }, []);
   const [imageUri, setImageUri] = useState(null);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const fetchBlob = async () => {
-      try {
-        const response = await fetch(
-          "blob:1D3F3FB6-E0D4-414A-8D2B-5F5101501437?offset=0&size=829956"
-        );
-        const blob = await response.blob();
-
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImageUri(reader.result);
-          setLoading(false);
-        };
-        reader.readAsDataURL(blob);
-      } catch (error) {
-        console.error("Error fetching blob:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchBlob();
-  }, []);
 
   if (profileLoading) {
     return <LoadingOverlay></LoadingOverlay>;
@@ -66,11 +43,18 @@ export default function HomeScreen({ navigation }) {
             navigation.navigate("ProfileStack", { screen: "Profile" })
           }
         >
-          <Image
-            source={profile.imageData ? { uri: imageUri } : importUrl}
+          {/* <Image
+            source={profile.imageData ? profile.imageData : importUrl}
             alt="Profile Image"
             size={10}
             rounded="7"
+          /> */}
+
+          <Image
+            alt="Profile Image"
+            source={{ uri: `data:image/jpeg;base64,${profile.imageData}` }}
+            style={{ width: 100, height: 100 }}
+            onError={(e) => console.error("Image loading error:", e.nativeEvent.error)}
           />
         </Pressable>
       </Flex>

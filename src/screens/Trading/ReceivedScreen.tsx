@@ -13,7 +13,7 @@ import {
   Text,
   VStack,
 } from "native-base";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback,  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import i18n from "../../i18n";
@@ -90,7 +90,7 @@ export default function ReceivedScreen({ navigation }) {
           refreshing={refreshing}
           onRefresh={onRefresh}
           renderItem={({ item }) => (
-            <Box pb="6" overflow="hidden" alignItems="center">
+            <Box pb="6" overflow="hidden" alignItems="center" key={item.id}>
               <Flex
                 direction="row"
                 justifyContent="space-between"
@@ -144,13 +144,12 @@ export default function ReceivedScreen({ navigation }) {
                 pb="2"
                 borderColor="coolGray.200"
                 width="90%"
-                shadow="2"
                 alignSelf="center"
                 maxW="80"
                 top="-12"
                 rounded="10"
                 overflow="hidden"
-                borderWidth="0.5"
+                borderWidth="1"
               >
                 <VStack>
                   <HStack justifyContent="space-between" width="100%" space={1}>
@@ -165,10 +164,12 @@ export default function ReceivedScreen({ navigation }) {
                           source={
                             item.offeredBook.coverUrl
                               ? { uri: item.offeredBook.coverUrl }
-                              : importUrl
+                              : {
+                                  uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                                }
                           }
                           alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
-                          roundedRight="6"
+                          roundedRight="4"
                         />
                       </AspectRatio>
                       <Text
@@ -197,10 +198,12 @@ export default function ReceivedScreen({ navigation }) {
                           source={
                             item.requestedBook.coverUrl
                               ? { uri: item.requestedBook.coverUrl }
-                              : importUrl
+                              : {
+                                  uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                                }
                           }
                           alt={`Cover of: ${item.requestedBook.title} by ${item.requestedBook.author}`}
-                          roundedRight="6"
+                          roundedRight="4"
                         />
                       </AspectRatio>
                       <Text

@@ -1,81 +1,97 @@
 import {
+  Center,
+  Heading,
+  Icon,
+  Fab,
+  ArrowBackIcon,
+  Button,
+  Spacer,
+  HStack,
+  Text,
+  Divider,
+  VStack,
+  Box,
   AspectRatio,
   Avatar,
-  Box,
-  Button,
-  Center,
-  FlatList,
-  HStack,
-  Icon,
-  Image,
-  Pressable,
-  Spacer,
-  Text,
-  VStack,
 } from "native-base";
-
-import { useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigationState } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../store/store";
+import { useEffect, useState } from "react";
 import Screen from "../components/Screen";
-import { formatText, BookListVertical } from "../components/shared/BookListVertical";
 import i18n from "../i18n";
+import { BookListVertical } from "../components/shared/BookListVertical";
 
-const DUMMY_BOOKS = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "The Path Made Clear",
-    author: "Oprah Winfrey",
-    publisher: "Can Yayınları",
-    coverUrl:
-      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "The Path Made Clear",
-    author: "Oprah Winfrey",
-    publisher: "Can Yayınları",
-    coverUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyEaZqT3fHeNrPGcnjLLX1v_W4mvBlgpwxnA&usqp=CAU",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "The Path Made Clear",
-    author: "Oprah Winfrey",
-    publisher: "Can Yayınları",
-    coverUrl: "https://miro.medium.com/max/1400/0*0fClPmIScV5pTLoE.jpg",
-  },
-  {
-    id: "68694a0f-3da1-431f-bd56-142371e29d72",
-    title: "The Path Made Clear",
-    author: "Oprah Winfrey",
-    publisher: "Can Yayınları",
-    coverUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr01zI37DYuR8bMV5exWQBSw28C1v_71CAh8d7GP1mplcmTgQA6Q66Oo--QedAN1B4E1k&usqp=CAU",
-  },
-  {
-    id: "28694a0f-3da1-471f-bd96-142456e29d72",
-    title: "The ",
-    author: "Oprah Winfrey",
-    publisher: "Can Yayınları",
-    coverUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU",
-  },
-];
-export default function OtherLibraryScreen({navigation, route}) {
-  const [books, setBooks] = useState(DUMMY_BOOKS);
+const RemoveBookButton = ({ onPress }) => (
+  <Icon
+    onPress={onPress}
+    name={"delete-forever"}
+    variant="solid"
+    size="md"
+    color="primary.100"
+    as={MaterialIcons}
+  />
+);
 
-  const { relatedScreen, onDonePress } = route.params;
+const AddBookToProposalButton = ({ onPress }) => (
+  <Icon
+    onPress={onPress}
+    name={"add-circle"}
+    variant="solid"
+    size="md"
+    color="primary.100"
+    as={MaterialIcons}
+  />
+);
 
+export default function OtherLibraryScreen({ navigation, route }) {
+  const navigationState = useNavigationState((state) => state);
 
-  const handleDonePress = (item:any) => {
-    // Pass selected items to the parent using the callback
-    onDonePress(item);
-    navigation.goBack();
-  };
+  const { params } = route;
+  const onDataReceived = params?.onDataReceived;
+  const addBookToProposalButton = (book) => (
+    <AddBookToProposalButton
+      onPress={() => {
+        if (onDataReceived && typeof onDataReceived === "function") {
+          onDataReceived(book);
+        }
+        navigation.goBack();
+      }}
+    />
+  );
+  const { libraryBook } = useSelector((state: any) => state.profile.profile);
 
+  const dispatch = useDispatch<AppDispatch>();
+
+  const [selectedBooks, setSelectedBooks] = useState(libraryBook);
+
+  useEffect(() => {
+    // Update the local state when libraryBook changes
+    setSelectedBooks(libraryBook);
+  }, [libraryBook]);
   const profilePhoto = require("../assets/images/lalo-salamanca.png");
 
   return (
     <Screen>
+      {/* <HStack
+        alignItems="center"
+        space="20%"
+        justifyContent="space-between"
+        w="100%"
+        h={16}
+      >
+        <Button
+          variant="ghost"
+          leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+          _pressed={{
+            bg: "transparent",
+          }}
+          onPress={() => navigation.goBack()}
+        ></Button>
+        <Heading>{i18n.t("my-library")}</Heading>
+        <Spacer></Spacer>
+      </HStack> */}
       <Box flexDirection="row" alignItems="center" m="3">
         <AspectRatio w="50px" ratio={1} marginRight={2}>
           <Avatar source={profilePhoto} size="50" />
@@ -84,76 +100,35 @@ export default function OtherLibraryScreen({navigation, route}) {
           Lalo Salamanca's Library
         </Text>
       </Box>
-      <Center>
-        <>
-          <FlatList
-            maxWidth="100%"
-            height="75%"
-            mx="3"
-            data={DUMMY_BOOKS}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <Pressable
-              onPress={()=>handleDonePress(item)}
-              >
-                <Box
-                  borderWidth="1"
-                  borderRadius="15"
-                  height="130"
-                  borderColor="#F1F1F1"
-                  // backgroundColor={
-                  //   isSelectedBook(item.id) ? "primary.200" : "white"
-                  // }
-                  p="3"
-                  mx="2"
-                  my="1"
-                >
-                  <HStack
-                    justifyContent="space-between"
-                    width="100%"
-                    space={3}
-                    p={1}
-                  >
-                    <AspectRatio
-                      w="20%"
-                      ratio={{
-                        base: 40 / 62,
-                      }}
-                    >
-                      <Image
-                        source={{ uri: item?.coverUrl }}
-                        alt={`Cover of ${item.title} by ${item.author}`}
-                        roundedRight="4"
-                      />
+      {selectedBooks.length === 0 && (
+        <VStack width="100%" height={200} mt="100">
+          <Center>
+            <Icon
+              name={"bookmark"}
+              color="primary.100"
+              variant="solid"
+              size="lg"
+              as={MaterialIcons}
+            />
 
-                      {/* {!item?.coverUrl && (
-                            <Image
-                              source={importUrl}
-                              alt={`Cover of`}
-                              roundedRight="6"
-                            />
-                          )} */}
-                    </AspectRatio>
+            <Text fontSize="md">{i18n.t("no-books-in-your-library-yet")}</Text>
+          </Center>
+          <Center w="100%">
+            <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
 
-                    <VStack width="75%" h="95">
-                      <Text color="#000000" fontSize="15">
-                        {formatText(item.title)}
-                      </Text>
-                      <Text color="#8c8c8c" fontSize="11">
-                        {formatText(item.author)}
-                      </Text>
-                      <Text color="#000000" fontSize="13px" fontWeight="200">
-                        {formatText(item.publisher)}
-                      </Text>
-                    </VStack>
-                  </HStack>
-                </Box>
-              </Pressable>
-            )}
-            keyExtractor={(item) => item.id}
-          />
-        </>
-      </Center>
+            <Text textAlign="center" mx="30" fontWeight="200">
+              {i18n.t("add-books-to-your-library-to-swap-books")}
+            </Text>
+          </Center>
+        </VStack>
+      )}
+
+      {selectedBooks.length > 0 && (
+        <BookListVertical
+          data={selectedBooks}
+          onPrimaryAction={selectedBooksAction}
+        />
+      )}
     </Screen>
   );
 }

@@ -21,7 +21,7 @@ import { AppDispatch } from "../../store/store";
 import { removeBookFromListAsync } from "../../store/profile-actions";
 import { useNavigationState } from "@react-navigation/native";
 import { useEffect, useMemo, useState } from "react";
-import { LIBRARY } from "../../store/profile-slice";
+import { LIBRARY } from "../../constants";
 
 const RemoveBookButton = ({ onPress }) => (
   <Icon

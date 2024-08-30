@@ -89,7 +89,7 @@ export const BorderedBookListVertical: React.FC<
     <>
       <FlatList
         maxWidth="100%"
-        height="75%"
+        height="94%"
         mx="3"
         data={data}
         keyExtractor={(item) => item.id}
@@ -97,6 +97,7 @@ export const BorderedBookListVertical: React.FC<
         extraData={data}
         renderItem={({ item }) => (
           <Pressable
+          key={item.id}
             onPress={() => {
               changeListStatusHandler(item);
             }}
@@ -181,12 +182,13 @@ export const BorderedBookListVertical: React.FC<
           </Pressable>
         )}
       />
-      <Box alignItems="center" justifyContent="center" h="9%" mx="2">
+      <Box alignItems="center" h="20" mx="2" >
         <Button
           variant={isButtonDisabled ? "disabledOutline" : "outline"}
           isDisabled={isButtonDisabled}
           onPress={handleDonePress}
           right={0}
+          top="2"
           position="absolute"
         >
           {i18n.t("done")}
