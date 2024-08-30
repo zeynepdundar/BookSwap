@@ -226,6 +226,7 @@ export default function BookSearchOnCreationScreen({
                     onPress={() => {
                       changeListStatusHandler(item);
                     }}
+                    key={item.id}
                   >
                     <Box
                       borderWidth="1"

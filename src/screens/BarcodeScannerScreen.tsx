@@ -226,11 +226,11 @@ const BookInfoBox = ({ edition, onAddBooks }) => (
         roundedRight="6"
       />
       <VStack width="40" height="82">
-        <Text color="#8c8c8c" fontSize="xs" letterSpacing="2xl">
+        <Text color="#8c8c8c" fontSize="xs" letterSpacing="2xl" >
           {truncateText(formatText(edition?.author), 19)}
 
         </Text>
-        <Text color="#494949" fontSize="16">
+        <Text color="#494949" fontSize="16" numberOfLines={2}>
         {truncateText(formatText(edition?.title), 36)}
         </Text>
         <Text color="#494949" fontSize="11">

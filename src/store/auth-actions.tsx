@@ -1,10 +1,18 @@
-import { createAsyncThunk, AsyncThunkOptions } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import auth from "@react-native-firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setPhoneNumber, setToken, setUser } from "./auth-slice";
 import { fetchUserProfileAsync } from "./profile-actions";
 import { setProfileData } from "./profile-slice";
 import { AuthEndpoints } from "../api/endpoints";
+
+import { createAction } from '@reduxjs/toolkit';
+
+// export const setUser = createAction('auth/setUser');
+// export const setToken = createAction('auth/setToken');
+// export const setPhoneNumber = createAction('auth/setToken');
+
+
 
 export const verifyPhoneNumber = createAsyncThunk(
   "auth/verifyPhoneNumber",

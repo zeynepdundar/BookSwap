@@ -16,10 +16,10 @@ import {
 import { InfoDialogBox } from "../Modal/InfoDialogBox";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ActionSheet } from "../ActionSheet";
-import { LIBRARY, WISHLIST, ListTypes } from "../../store/profile-slice";
 import { formatText, generateActions, truncateText } from "../../utils/helper";
 import i18n from "../../i18n";
 import { useSelector } from "react-redux";
+import { ListTypes } from "../../constants";
 interface BookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
   onPrimaryAction?: (id: string) => void;
@@ -59,8 +59,6 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
     if (!result.success) {
       // Handle the error message if action failed
     } else {
-      // Handle success if needed
-      // e.g., show a success message or navigate
       setSelectedAction(actionType);
       setIsInfoDialogOpen(true);
     }
@@ -85,6 +83,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
       <FlatList
         maxWidth="100%"
         mx="3"
+        height="100%"
         data={data}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
@@ -99,6 +98,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
               p="3"
               mx="2"
               my="1"
+              key={item.id}
             >
               <HStack
                 justifyContent="space-between"

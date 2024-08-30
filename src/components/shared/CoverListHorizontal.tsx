@@ -20,7 +20,7 @@ export const CoverListHorizontal = ({ data, removeBook = null }) => {
       showsHorizontalScrollIndicator={false}
       extraData={data}
       renderItem={({ item }) => (
-        <VStack w="120px" justifyContent="center" mr="1">
+        <VStack w="120px" justifyContent="center" mr="1" key={item.id}>
           <Box pt={2} h="160px" w="100%">
             <AspectRatio ratio={2 / 3} w="90%" h="100%">
               <Image

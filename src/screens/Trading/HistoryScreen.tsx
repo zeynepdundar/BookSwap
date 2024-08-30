@@ -72,8 +72,8 @@ export default function HistoryScreen({ navigation }) {
                 borderWidth="1"
                 borderRadius="10"
                 borderColor="#EEEEEE"
-                shadow={0.8}
                 overflow="hidden"
+                key={item.id}
               >
                 <HStack space="0.8" alignItems="center" h={151}>
                   <VStack w="85px" h={140} alignItems="center" pt={3}>

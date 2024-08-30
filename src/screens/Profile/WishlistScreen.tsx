@@ -23,7 +23,7 @@ import {
 } from "../../store/profile-actions";
 import { useNavigationState } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { WISHLIST } from "../../store/profile-slice";
+import { WISHLIST } from "../../constants";
 
 const RemoveBookButton = ({ onPress }) => (
   <Icon

@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
@@ -38,7 +38,6 @@ export default function TradeProposal({ navigation, route }) {
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
 
-
   const initialState: TradeProposal = {
     receiverId: user.id,
     offeredBook: null,
@@ -50,7 +49,6 @@ export default function TradeProposal({ navigation, route }) {
   );
 
   const dispatch = useDispatch<AppDispatch>();
-
 
   const proposeTradeHandler = async (): Promise<void> => {
     dispatch(sendOfferAsync(sentPropasal));
@@ -69,7 +67,7 @@ export default function TradeProposal({ navigation, route }) {
 
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);
-    navigation.navigate("Home")
+    navigation.navigate("Home");
   };
 
   useEffect(() => {
@@ -158,7 +156,14 @@ export default function TradeProposal({ navigation, route }) {
                       </Badge>
                     </Pressable>
                   </Box>
-                  <Text fontSize={11}>{sentPropasal.offeredBook.title}</Text>
+                  <Text
+                    w={100}
+                    textAlign="center"
+                    fontSize={11}
+                    numberOfLines={2}
+                  >
+                    {sentPropasal.offeredBook.title}
+                  </Text>
                 </>
               )}
               {!sentPropasal.offeredBook && (
@@ -252,10 +257,17 @@ export default function TradeProposal({ navigation, route }) {
                       </Badge>
                     </Pressable>
                   </Box>
-                  <Text fontSize={11}>{sentPropasal.requestedBook.title}</Text>
+                  <Text
+                    w={100}
+                    textAlign="center"
+                    fontSize={11}
+                    numberOfLines={2}
+                  >
+                    {sentPropasal.requestedBook.title}
+                  </Text>
                 </>
               )}
-             {/* TODO: Fetch other's library data, no api implemented yet */}
+              {/* TODO: Fetch other's library data, no api implemented yet */}
               {!sentPropasal?.requestedBook && (
                 <Fab
                   onPress={() =>
@@ -310,7 +322,12 @@ export default function TradeProposal({ navigation, route }) {
           {i18n.t("send-offer")}
         </Button> */}
       </VStack>
-      <Button m="7" variant={isButtonDisabled ? 'disabled' : 'primary'} isDisabled={isButtonDisabled} onPress={proposeTradeHandler}>
+      <Button
+        m="7"
+        variant={isButtonDisabled ? "disabled" : "primary"}
+        isDisabled={isButtonDisabled}
+        onPress={proposeTradeHandler}
+      >
         {i18n.t("send-offer")}
       </Button>
       <InfoDialogBox

@@ -1,4 +1,5 @@
 import { createSlice, current } from "@reduxjs/toolkit";
+import { LIBRARY, ProfileState, WISHLIST } from "../constants";
 import {
   acceptOfferAsync,
   addBookToListAsync,
@@ -12,34 +13,6 @@ import {
   takeBackOfferAsync,
 } from "./profile-actions";
 
-export const ListTypes = {
-  WISHLIST: "WISHLIST",
-  LIBRARY: "LIBRARY",
-};
-
-export const WISHLIST = ListTypes.WISHLIST;
-export const LIBRARY = ListTypes.LIBRARY;
-
-export interface UserProfile {
-  id: string;
-  name: string;
-  birthdate: string;
-  imageData: string | null;
-  gender: string;
-  languagePreference: string;
-  wishlistBook: any[];
-  libraryBook: any[];
-
-  //TODO: CreatE separate slices for receivedOffer, sentOffer, and historyList, good approach to manage their state independently
-  receivedOffer?;
-  sentOffer?;
-  historyList?;
-}
-interface ProfileState {
-  loading: boolean;
-  error: null | Error;
-  profile?: UserProfile;
-}
 const initialState: ProfileState = {
   loading: false,
   error: null as { name: string; message: string } | null,
