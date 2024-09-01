@@ -1,31 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
-  Button,
   Heading,
-  Image,
-  FlatList,
   Box,
   Text,
   VStack,
-  HStack,
   Flex,
-  Pressable,
-  Spacer,
   WarningTwoIcon,
   Center,
   Icon,
   Divider,
   Input,
-  AspectRatio,
 } from "native-base";
 
 import Screen from "../../components/Screen";
 import i18n from "../../i18n";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import { EditionEndpoints } from "../../api/endpoints";
-import { formatText } from "../../utils/helper";
-
+import { BorderedBookListVertical } from "../../components/shared/BorderedBookListVertical";
 
 export default function BookSearchOnCreationScreen({
   navigation,
@@ -33,43 +25,18 @@ export default function BookSearchOnCreationScreen({
 }) {
   const { relatedScreen, onDonePress } = route.params;
 
-  const importUrl = require("../../assets/images/no-cover-available.png");
-
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState([]);
-  const [selectedBooks, setSelectedBooks] = useState([]);
-
- 
-
-  const addBookToListHandler = (selectedLibraryItem: any) => {
-    setSelectedBooks((currentLibraryItems) => [
-      ...currentLibraryItems,
-      selectedLibraryItem,
-    ]);
-  };
-
-
-  const removeBookFromListHandler = (id) => {
-    setSelectedBooks((currentLibraryItems) =>
-      currentLibraryItems.filter((item) => item.id !== id)
-    );
-  };
-
-  const isSelectedBook = (id: string) => {
-    const existingLibraryItemIndex = selectedBooks.findIndex(
-      (item) => item.id === id
-    );
-    return existingLibraryItemIndex !== -1;
-  };
 
   const fetchBooks = async (title) => {
-    
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(EditionEndpoints.FETCH_EDITION_BY_TITLE(title));
+      const response = await fetch(
+        EditionEndpoints.FETCH_EDITION_BY_TITLE(title)
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP request failed with status ${response.status}`);
@@ -88,8 +55,8 @@ export default function BookSearchOnCreationScreen({
         // isbn_13: item.isbn_13 || item.isbn_11,
         coverUrl:
           item.isbn_13 && item.isbn_13 > 0
-          ? EditionEndpoints.FETCH_COVER_OL(undefined,item.isbn_13)
-          : null,
+            ? EditionEndpoints.FETCH_COVER_OL(undefined, item.isbn_13)
+            : null,
         author: item.author ? item.author : "",
       }));
 
@@ -114,8 +81,6 @@ export default function BookSearchOnCreationScreen({
     }
   };
   const inputRef = useRef(null);
-
-
 
   // useEffect(() => {
   //   // Focus on the input when the component mounts
@@ -147,25 +112,15 @@ export default function BookSearchOnCreationScreen({
       relatedScreen: "Library",
     });
   };
-  const changeListStatusHandler = (item) => {
-    const bookIsInList = isSelectedBook(item.id);
 
-    if (bookIsInList) {
-      removeBookFromListHandler(item.id);
-    } else {
-      addBookToListHandler(item);
-    }
-  };
-
-  const handleDonePress = () => {
-    // Pass selected items to the parent using the callback
-    onDonePress(selectedBooks);
+  const pressDoneHandler = async (selectedItem: any) => {
+    onDonePress(selectedItem);
     navigation.goBack();
   };
 
   return (
     <Screen>
-      <Flex h="100%">
+      <Flex h="80%">
         <Heading p={2}>{i18n.t("keep-exploring")}</Heading>
 
         {/* Search Bar Section */}
@@ -184,7 +139,6 @@ export default function BookSearchOnCreationScreen({
               bg: "#F4F4F6",
             }}
             ref={inputRef}
-
             InputLeftElement={
               <Icon
                 m="2"
@@ -213,117 +167,11 @@ export default function BookSearchOnCreationScreen({
             </Box>
           )}
           {!loading && !error && searchResults?.length > 0 && (
-            <>
-              <FlatList
-                maxWidth="100%"
-                height="75%"
-                mx="3"
-                data={searchResults}
-                showsVerticalScrollIndicator={false}
-                extraData={searchResults}
-                renderItem={({ item }) => (
-                  <Pressable
-                    onPress={() => {
-                      changeListStatusHandler(item);
-                    }}
-                    key={item.id}
-                  >
-                    <Box
-                      borderWidth="1"
-                      borderRadius="15"
-                      height="130"
-                      borderColor="#F1F1F1"
-                      backgroundColor={
-                        isSelectedBook(item.id) ? "primary.200" : "white"
-                      }
-                      p="3"
-                      mx="2"
-                      my="1"
-                    >
-                      <HStack
-                        justifyContent="space-between"
-                        width="100%"
-                        space={3}
-                        p={1}
-                      >
-                        <AspectRatio
-                          w="20%"
-                          ratio={{
-                            base: 40 / 62,
-                          }}
-                        >
-                          <Image
-                            source={
-                              item.coverUrl
-                                ? { uri: item?.coverUrl }
-                                : importUrl
-                            }
-                            alt={`Cover of ${item.title} by ${item.author}`}
-                            roundedRight="4"
-                          />
-
-                          {/* {!item?.coverUrl && (
-                            <Image
-                              source={importUrl}
-                              alt={`Cover of`}
-                              roundedRight="6"
-                            />
-                          )} */}
-                        </AspectRatio>
-
-                        <VStack width="75%" h="95">
-                          <Text color="#000000" fontSize="15">
-                            {formatText(item.title)}
-                          </Text>
-                          <Text color="#8c8c8c" fontSize="11">
-                            {formatText(item.author)}
-                          </Text>
-                          <Text
-                            color="#000000"
-                            fontSize="13px"
-                            fontWeight="200"
-                          >
-                            {formatText(item.publisher)}
-                          </Text>
-                        </VStack>
-                        <Box position="absolute" bottom="0" right="0">
-                          <Icon
-                            m="1"
-                            size="6"
-                            color={
-                              isSelectedBook(item.id)
-                                ? "primary.50"
-                                : "primary.100"
-                            }
-                            as={
-                              <MaterialIcons
-                                name={
-                                  isSelectedBook(item.id)
-                                    ? "bookmark"
-                                    : "bookmark-outline"
-                                }
-                              />
-                            }
-                          />
-                        </Box>
-                      </HStack>
-                    </Box>
-                  </Pressable>
-                )}
-                keyExtractor={(item) => item.id}
-              />
-              <Spacer />
-              <Box alignItems="center" justifyContent="center" h="8%" mx="2">
-                <Button
-                  variant="outline"
-                  onPress={handleDonePress}
-                  right={0}
-                  position="absolute"
-                >
-                  {i18n.t("done")}
-                </Button>
-              </Box>
-            </>
+            <BorderedBookListVertical
+              data={searchResults}
+              onDonePress={pressDoneHandler}
+              listType={relatedScreen}
+            />
           )}
           {searchQuery.length < 5 && (
             <VStack width="100%" height={200} mt="100">
@@ -356,7 +204,7 @@ export default function BookSearchOnCreationScreen({
               </Center>
             </VStack>
           )}
-          {error &&  searchQuery?.length > 4 && (
+          {error && searchQuery?.length > 4 && (
             <Box h="75%" alignItems="center" justifyContent="center">
               <WarningTwoIcon size="5" mt="0.5" mx="2" color="error.500" />
               <Text

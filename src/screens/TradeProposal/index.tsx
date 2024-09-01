@@ -131,8 +131,6 @@ export default function TradeProposal({ navigation, route }) {
                               }
                         }
                         alt={`Cover of`}
-                        w="90px"
-                        h="130px"
                       />
                     </AspectRatio>
                     <Pressable
@@ -239,8 +237,6 @@ export default function TradeProposal({ navigation, route }) {
                               }
                         }
                         alt={`Cover of`}
-                        w="90px"
-                        h="130px"
                       />
                     </AspectRatio>
                     <Pressable

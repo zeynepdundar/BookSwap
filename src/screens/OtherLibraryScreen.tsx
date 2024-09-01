@@ -1,28 +1,20 @@
+import { useCallback, useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
-  Center,
-  Heading,
   Icon,
-  Fab,
   ArrowBackIcon,
   Button,
-  Spacer,
-  HStack,
   Text,
-  Divider,
-  VStack,
   Box,
   AspectRatio,
   Avatar,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useFocusEffect, useNavigationState } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../store/store";
-import { useCallback, useEffect, useState } from "react";
 import Screen from "../components/Screen";
 import i18n from "../i18n";
 import { BookListVertical } from "../components/shared/BookListVertical";
 import { fetchUserProfileData } from "../api/service";
+import { LoadingOverlay } from "../components/LoadingOverlay";
 
 const AddBookToProposalButton = ({ onPress }) => (
   <Icon
@@ -36,8 +28,7 @@ const AddBookToProposalButton = ({ onPress }) => (
 );
 
 export default function OtherLibraryScreen({ navigation, route }) {
-  const navigationState = useNavigationState((state) => state);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [userLibraryList, setUserLibraryList] = useState([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,20 +36,9 @@ export default function OtherLibraryScreen({ navigation, route }) {
   const user = params?.user;
   const onDataReceived = params?.onDataReceived;
 
-  // const addBookToProposalButton = (book) => (
-  //   <AddBookToProposalButton
-  //     onPress={() => {
-  //       if (onDataReceived && typeof onDataReceived === "function") {
-  //         onDataReceived(book);
-  //       }
-  //       navigation.goBack();
-  //     }}
-  //   />
-  // );
-
   const addBookToProposalButton = (book) => (
     <AddBookToProposalButton
-      onPress={() => {        
+      onPress={() => {
         if (onDataReceived && typeof onDataReceived === "function") {
           onDataReceived(book);
         }
@@ -112,7 +92,7 @@ export default function OtherLibraryScreen({ navigation, route }) {
         <Spacer></Spacer>
       </HStack> */}
       <Box flexDirection="row" alignItems="center" m="3">
-      <Button
+        <Button
           variant="ghost"
           leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
           _pressed={{
@@ -127,33 +107,17 @@ export default function OtherLibraryScreen({ navigation, route }) {
           {i18n.t("users-library", { user: user.name })}
         </Text>
       </Box>
-      {userLibraryList.length === 0 && (
-        <VStack width="100%" height={200} mt="100">
-          <Center>
-            <Icon
-              name={"bookmark"}
-              color="primary.100"
-              variant="solid"
-              size="lg"
-              as={MaterialIcons}
-            />
 
-            <Text fontSize="md">{i18n.t("no-books-in-your-library-yet")}</Text>
-          </Center>
-          <Center w="100%">
-            <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-
-            <Text textAlign="center" mx="30" fontWeight="200">
-              {i18n.t("add-books-to-your-library-to-swap-books")}
-            </Text>
-          </Center>
-        </VStack>
+      {loading && (
+        <Box h="75%" alignItems="center" justifyContent="center">
+          <LoadingOverlay />
+        </Box>
       )}
-
       {userLibraryList.length > 0 && (
         <BookListVertical
           data={userLibraryList}
-          onPrimaryAction={addBookToProposalButton}        />
+          onPrimaryAction={addBookToProposalButton}
+        />
       )}
     </Screen>
   );
