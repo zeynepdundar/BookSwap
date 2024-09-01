@@ -13,7 +13,6 @@ import {
   Button,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import { LIBRARY, WISHLIST, ListTypes } from "../../store/profile-slice";
 import i18n from "../../i18n";
 import { formatText, truncateText } from "../../utils/helper";
 
