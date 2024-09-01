@@ -16,7 +16,6 @@ import Screen from "../../components/Screen";
 export default function OtherSwapHistory({ historyList }) {
   const tradeIcon = require("../../assets/images/icon/trade-in.png");
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
-  const importUrl = require("../../assets/images/cover_2.png");
 
   return (
     <Screen>
@@ -43,7 +42,9 @@ export default function OtherSwapHistory({ historyList }) {
                     source={
                       item.requestedBook.coverUrl
                         ? { uri: item.requestedBook.coverUrl }
-                        : importUrl
+                        : {
+                            uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                          }
                     }
                     alt="Library"
                     roundedRight="6"

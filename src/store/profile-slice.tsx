@@ -132,7 +132,7 @@ const profileSlice = createSlice({
       })
       .addCase(acceptOfferAsync.fulfilled, (state, action) => {
         state.profile.receivedOffer = state.profile.receivedOffer.filter(
-          (offer) => offer.id !== action.payload
+          (offer) => offer.id !== action.payload.id
         );
       })
       .addCase(rejectOfferAsync.fulfilled, (state, action) => {

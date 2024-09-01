@@ -22,6 +22,7 @@ import {
   fetchSentOffersAsync,
   takeBackOfferAsync,
 } from "../../store/profile-actions";
+import { ErrorAlert } from "../BarcodeScannerScreen";
 
 export default function SentScreen({ navigation }) {
   const tra = require("../../assets/images/icon/Icons.png");
@@ -29,6 +30,7 @@ export default function SentScreen({ navigation }) {
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
   const importUrl = require("../../assets/images/no-cover-available.png");
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const sentOffers = useSelector(
     (state: any) => state.profile.profile.sentOffer
@@ -37,8 +39,37 @@ export default function SentScreen({ navigation }) {
   const { loading, profile } = useSelector((state: any) => state.profile);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
-  const takeBackOfferHandler = (offerId: string) => {
-    dispatch(takeBackOfferAsync(offerId));
+  const takeBackOfferHandler = async (offerId: string) => {
+    try {
+      const response = await dispatch(takeBackOfferAsync(offerId));
+
+      const payload = response.payload;
+
+      if (!payload.success) {
+        const errorMessage =
+          payload.message === "Offer not found or not eligible for taking back"
+            ? i18n.t("offer-not-found-or-eligible-for-taking-back")
+            : payload.message;
+
+        setError(errorMessage);
+        setTimeout(() => {
+          setError(null);
+        }, 5000);
+
+        await dispatch(fetchSentOffersAsync(profile.id));
+
+        return;
+      }
+    } catch (error) {
+      setError(i18n.t("something-went-wrong"));
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
+
+      await dispatch(fetchSentOffersAsync(profile.id));
+
+      return;
+    }
   };
 
   // TODO: This is coded for providing asynchronous data fetching from the database.
@@ -236,6 +267,7 @@ export default function SentScreen({ navigation }) {
           keyExtractor={(item) => item.id}
         />
       )}
+      {error && <ErrorAlert message={error} />}
     </>
   );
 }

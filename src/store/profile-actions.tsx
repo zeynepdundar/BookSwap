@@ -40,6 +40,7 @@ export const addBookToListAsync = createAsyncThunk(
       const userId = (getState() as RootState).profile.profile.id;
       const response = await addBookToList(userId, book);
       const bookType = Array.isArray(book) ? book[0].type : book.type;
+
       if (response.status === "error") {
         return response; // Return the error response
       }
@@ -100,13 +101,15 @@ export const acceptOfferAsync = createAsyncThunk(
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Failed to accept offer");
+        return { success: false, message: data.message }; // Return the error response {"message": "Offer not found or not eligible for acceptance"}
       }
-      console.log("The offer was successfully accepted, offerId: ", offerId);
-      return offerId;
+      return { success: true, id:offerId };;
     } catch (error) {
       console.error(error);
+      throw error;
     }
   }
 );
@@ -129,12 +132,15 @@ export const rejectOfferAsync = createAsyncThunk(
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Failed to reject offer");
+        return { success: false, message: data.message }; // Return the error response {"message": "Offer not found or not eligible for acceptance"}
       }
       return offerId;
     } catch (error) {
       console.error(error);
+      throw error;
     }
   }
 );
@@ -157,13 +163,15 @@ export const takeBackOfferAsync = createAsyncThunk(
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Failed to take back offer");
+        return { success: false, message: data.message }; // Return the error response {"message": "Offer not found or not eligible for acceptance"}
       }
-      console.log("The offer was successfully taken back, offerId: ", offerId);
       return offerId;
     } catch (error) {
       console.error(error);
+      throw error;
     }
   }
 );

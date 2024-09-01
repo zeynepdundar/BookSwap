@@ -21,8 +21,8 @@ import { formatText, generateModalActions, truncateText } from "../utils/helper"
 import { ActionSheet } from "../components/ActionSheet";
 import { AppDispatch } from "../store/store";
 import { addBookToListAsync } from "../store/profile-actions";
-import { LIBRARY, WISHLIST } from "../store/profile-slice";
 import i18n from "../i18n";
+import { LIBRARY, WISHLIST } from "../constants";
 
 export default function BarcodeScannerScreen({
   navigation,
