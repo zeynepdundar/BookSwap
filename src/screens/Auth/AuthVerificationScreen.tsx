@@ -24,10 +24,11 @@ import {
 } from "../../store/auth-actions";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { setVerificationCode } from "../../store/auth-slice";
+import appLogo from '../../assets/images/app-icon-50x50.png';
+import swapBookText from '../../assets/images/swap-book.png';
+
 
 export default function AuthVerificationScreen({ navigation }) {
-  const surfLogo = require("../../assets/images/surf.png");
-  const swapBook = require("../../assets/images/swap-book.png");
 
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState("");
@@ -64,8 +65,8 @@ export default function AuthVerificationScreen({ navigation }) {
         <>
           <Flex direction="column" m="3" mt="20">
             <Center mb={30}>
-              <Image source={surfLogo} alt="Book Swap Logo" size="7" mb={2} />
-              <Image source={swapBook} alt="Book Swap" width={120} />
+              <Image source={appLogo} alt="Book Swap Logo"  mb={2} />
+              <Image source={swapBookText} alt="Book Swap" width={120} />
             </Center>
             <Center>
               <Text color="black.300" mb="12">

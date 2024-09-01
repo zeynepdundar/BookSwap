@@ -13,7 +13,7 @@ import {
   Text,
   VStack,
 } from "native-base";
-import { useCallback,  useState } from "react";
+import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import i18n from "../../i18n";
@@ -22,6 +22,7 @@ import {
   fetchReceivedOffersAsync,
   rejectOfferAsync,
 } from "../../store/profile-actions";
+import { ErrorAlert } from "../BarcodeScannerScreen";
 
 export default function ReceivedScreen({ navigation }) {
   const tra = require("../../assets/images/icon/Icons.png");
@@ -32,22 +33,82 @@ export default function ReceivedScreen({ navigation }) {
   );
   const [refreshing, setRefreshing] = useState(false);
   const { loading, profile } = useSelector((state: any) => state.profile);
+  const [error, setError] = useState<string | null>(null);
 
   const importUrl = require("../../assets/images/no-cover-available.png");
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
-  const acceptOfferHandler = (offer: any) => {
-    dispatch(acceptOfferAsync(offer.id));
-    navigation.navigate("TradeOfferAcceptedScreen", {
-      userId: offer.participantProfile.id,
-      receivedBook: offer.requestedBook,
-      offeredBook: offer.offeredBook,
-    });
+  const acceptOfferHandler = async (offer: string) => {
+    try {
+      const response = await dispatch(acceptOfferAsync(offer.id));
+      const payload = response.payload;
+
+      if (!payload.success) {
+        const errorMessage =
+          payload.message === "Offer not found or not eligible for acceptance"
+            ? i18n.t("offer-not-found-or-eligible-for-acceptance")
+            : payload.message;
+
+        setError(errorMessage);
+        setTimeout(() => {
+          setError(null);
+        }, 5000);
+
+        await dispatch(fetchReceivedOffersAsync(profile.id));
+
+        return;
+      }
+
+      // Navigate to the TradeOfferAcceptedScreen on success
+      navigation.navigate("TradeOfferAcceptedScreen", {
+        userId: offer.participantProfile.id,
+        receivedBook: offer.requestedBook,
+        offeredBook: offer.offeredBook,
+      });
+    } catch (error) {
+      setError(i18n.t("something-went-wrong"));
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
+
+      await dispatch(fetchReceivedOffersAsync(profile.id));
+
+      return;
+    }
   };
 
-  const rejectOfferHandler = (offerId: string) => {
-    dispatch(rejectOfferAsync(offerId));
+  const rejectOfferHandler = async (offerId: string) => {
+    try {
+      const response = await dispatch(rejectOfferAsync(offerId));
+
+      const payload = response.payload;
+
+      if (!payload.success) {
+        const errorMessage =
+          payload.message === "Offer not found or not eligible for rejection"
+            ? i18n.t("offer-not-found-or-eligible-for-rejection")
+            : payload.message;
+
+        setError(errorMessage);
+        setTimeout(() => {
+          setError(null);
+        }, 5000);
+
+        await dispatch(fetchReceivedOffersAsync(profile.id));
+
+        return;
+      }
+    } catch (error) {
+      setError(i18n.t("something-went-wrong"));
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
+
+      await dispatch(fetchReceivedOffersAsync(profile.id));
+
+      return;
+    }
   };
 
   const onRefresh = useCallback(() => {
@@ -249,6 +310,7 @@ export default function ReceivedScreen({ navigation }) {
           keyExtractor={(item) => item.id}
         />
       )}
+      {error && <ErrorAlert message={error} />}
     </>
   );
 }

@@ -200,7 +200,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                       onPress={() => openActionSheet(item)}
                       name={"more-vert"}
                       variant="solid"
-                      size="md"
+                      size="lg"
                       as={MaterialIcons}
                     />
                   )}

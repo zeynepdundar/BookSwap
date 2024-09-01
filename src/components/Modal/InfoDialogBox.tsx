@@ -39,7 +39,6 @@ export const InfoDialogBox = ({
   }, [isOpen]);
 
   const navigateToScreen = (screenName: keyof MyStackParamList) => {
-    console.log("screen", actionType);
     navigation.navigate("ProfileStack", {
       screen: screenName,
     }); // Error here

@@ -89,5 +89,9 @@
   "just-now":"şimdi",
   "already-have-book":"Bu kitap listende zaten mevcut",
   "something-went-wrong": "Bir şeyler ters gitti",
-  "block-and-report":"Engelle & Rapor et"
+  "block-and-report":"Engelle & Rapor et",
+  "offer-not-found-or-eligible-for-acceptance":"Teklif bulunamadı veya kabul edilmeye uygun değil.",
+  "offer-not-found-or-eligible-for-rejection":"Teklif bulunamadı veya reddedilmeye uygun değil.",
+  "offer-not-found-or-eligible-for-taking-back":"Teklif bulunamadı veya geri almaya uygun değil.",
+  "users-library":"%{user} kitaplığı"
 }

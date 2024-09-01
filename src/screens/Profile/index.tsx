@@ -31,13 +31,13 @@ import {
 } from "../../store/profile-slice";
 import { updateUserProfileData } from "../../api/service";
 
+
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../../assets/images/icon/library-icon.png");
   const wishlistIcon = require("../../assets/images/icon/wishlist-icon.png");
   const languageIcon = require("../../assets/images/icon/language-icon.png");
   const feedbackIcon = require("../../assets/images/icon/feedback-icon.png");
   const logoutIcon = require("../../assets/images/icon/logout-icon.png");
-
   const profileData = useSelector((state: any) => state.profile.profile);
 
   // Destructure specific attributes from the profileData

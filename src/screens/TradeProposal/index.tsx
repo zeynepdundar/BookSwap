@@ -58,13 +58,6 @@ export default function TradeProposal({ navigation, route }) {
   const tradeIcon = require("../../assets/images/icon/trade-icon.png");
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
 
-  const handleAddToReceivedBook = (data) => {
-    setSentProposal((prevProposal) => ({
-      ...prevProposal,
-      requestedBook: data,
-    }));
-  };
-
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);
     navigation.navigate("Home");
@@ -129,7 +122,14 @@ export default function TradeProposal({ navigation, route }) {
                   <Box width="100" p="2" mt="0">
                     <AspectRatio ratio={41 / 62}>
                       <Image
-                        source={{ uri: sentPropasal.offeredBook.coverUrl }}
+                        source={
+                          sentPropasal.offeredBook.coverUrl
+                            ? { uri: sentPropasal.offeredBook.coverUrl }
+                            : {
+                                //TODO Use the static import URL here
+                                uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                              }
+                        }
                         alt={`Cover of`}
                         w="90px"
                         h="130px"
@@ -230,7 +230,14 @@ export default function TradeProposal({ navigation, route }) {
                   <Box width="100" p="2" mt="0">
                     <AspectRatio ratio={41 / 62}>
                       <Image
-                        source={{ uri: sentPropasal?.requestedBook.coverUrl }}
+                        source={
+                          sentPropasal.requestedBook.coverUrl
+                            ? { uri: sentPropasal.requestedBook.coverUrl }
+                            : {
+                                //TODO Use the static import URL here
+                                uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                              }
+                        }
                         alt={`Cover of`}
                         w="90px"
                         h="130px"
@@ -272,8 +279,13 @@ export default function TradeProposal({ navigation, route }) {
                 <Fab
                   onPress={() =>
                     navigation.navigate("OtherLibrary", {
-                      user: "hb",
-                      onDonePress: handleAddToReceivedBook,
+                      user: user,
+                      onDataReceived: (data) => {
+                        setSentProposal((prevProposal) => ({
+                          ...prevProposal,
+                          requestedBook: data,
+                        }));
+                      },
                     })
                   }
                   renderInPortal={false}

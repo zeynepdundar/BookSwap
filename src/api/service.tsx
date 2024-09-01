@@ -196,7 +196,6 @@ export const fetchUserProfileData = async (firebaseUserId: string) => {
     throw error;
   }
 };
-
 export const fetchReceivedOffer = async (userId) => {
   try {
     const response = await fetch(
