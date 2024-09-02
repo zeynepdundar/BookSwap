@@ -113,7 +113,7 @@ export default function OtherLibraryScreen({ navigation, route }) {
           <LoadingOverlay />
         </Box>
       )}
-      {userLibraryList.length > 0 && (
+      {!loading && userLibraryList.length > 0 && (
         <BookListVertical
           data={userLibraryList}
           onPrimaryAction={addBookToProposalButton}
