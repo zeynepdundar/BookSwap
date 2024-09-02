@@ -72,7 +72,7 @@ export default function OtherUserWishlistScreen({
         data={libraryBooks}
         onSecondaryAction={addBookToListHandler}
         onSendOffer={sendOfferHandler}
-      ></BookListVertical>
+      />
       {listError && (
         <>
           <ErrorAlert message={listError} />

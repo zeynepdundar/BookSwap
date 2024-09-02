@@ -13,7 +13,7 @@ export const getCoverUrl = (bookData) => {
 export const createBookData = (books) => {
   if (Array.isArray(books)) {
     // If books is an array, map over it and apply createBookData for each item
-    return books.map((book) => createBookData(book));
+    return books.reverse().map((book) => createBookData(book));
   }
 
   // If books is not an array, create an array with book data for a single item

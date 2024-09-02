@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -20,6 +20,7 @@ import { formatText, generateActions, truncateText } from "../../utils/helper";
 import i18n from "../../i18n";
 import { useSelector } from "react-redux";
 import { ListTypes } from "../../constants";
+import { useFocusEffect } from "@react-navigation/native";
 interface BookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
   onPrimaryAction?: (id: string) => void;
@@ -45,6 +46,22 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   );
   const importUrl = require("../../assets/images/no-cover-available.png");
   const { id: userId } = useSelector((state: any) => state.profile.profile);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Reset state when the screen is focused
+      setIsInfoDialogOpen(false);
+      setIsActionSheetOpen(false);
+      setSelectedItem(null);
+      setSelectedAction(null);
+
+      // Optionally, return a cleanup function if needed
+      return () => {
+        // Cleanup actions if necessary
+      };
+    }, [])
+  );
+
 
   const handleAction = async (actionType) => {
     const result = await onSecondaryAction({

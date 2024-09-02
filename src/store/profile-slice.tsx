@@ -107,11 +107,11 @@ const profileSlice = createSlice({
           : [action.payload.book];
 
         if (action.payload.listType === WISHLIST) {
-          state.profile.wishlistBook.push(...booksToAdd);
+          state.profile.wishlistBook.unshift(...booksToAdd);
         }
 
         if (action.payload.listType === LIBRARY) {
-          state.profile.libraryBook.push(...booksToAdd);
+          state.profile.libraryBook.unshift(...booksToAdd);
         }
       })
 
