@@ -7,8 +7,7 @@ import { addBookToListAsync } from "../../store/profile-actions";
 import i18n from "../../i18n";
 import { ErrorAlert } from "../BarcodeScannerScreen";
 
-export default function OtherUserWishlistScreen({ profile, wishedBook }) {
-  const [userProfile, setUserProfile] = useState(profile);
+export default function OtherUserWishlistScreen({ wishedBook }) {
   const [wishedBooks, setWishedBook] = useState(wishedBook);
   const [listError, setListError] = useState<string | null>(null);
 

@@ -3,8 +3,11 @@ import { MaterialIcons } from "@expo/vector-icons";
 import i18n from "../../i18n";
 
 const BlockUserModal = ({ isOpen, onClose, blockUser = null }) => {
-  const reasons = ["Inappropriate behavior", "Spam", "Other"];
-
+  const reasons = [
+    i18n.t("inappropriate-behavior"),
+    i18n.t("spam"),
+    i18n.t("other")
+  ];
   const handleBlockUser = (reason) => {
     // blockUser(reason);
     onClose(); // Close the modal after selecting a reason
@@ -60,7 +63,7 @@ const BlockUserModal = ({ isOpen, onClose, blockUser = null }) => {
             _text={{ color: "#000000", fontWeight: "200" }}
             flex="1"
             onPress={() => {
-              // setShowModal3(true);
+              onClose();
             }}
           >
             {i18n.t("cancel")}

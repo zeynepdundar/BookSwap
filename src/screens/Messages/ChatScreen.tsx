@@ -38,6 +38,7 @@ export default function ChatScreen({ navigation, route }) {
 
   const { userId, friendId } = route.params;
   const conversationId = `${friendId}_${userId}`;
+  console.log("Con", conversationId)
 
   useLayoutEffect(() => {
     const subscriber = firestore()
@@ -57,6 +58,7 @@ export default function ChatScreen({ navigation, route }) {
               },
             }))
           );
+          console.log(" querySnapshot",querySnapshot.docs)
         },
         (error) => {
           console.error("Error getting documents: ", error);
