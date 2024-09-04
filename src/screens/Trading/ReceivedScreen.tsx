@@ -61,6 +61,7 @@ export default function ReceivedScreen({ navigation }) {
       }
 
       // Navigate to the TradeOfferAcceptedScreen on success
+      console.log("Navigate to TradeOfferAcceptedScreen",offer, profile)
       navigation.navigate("TradeOfferAcceptedScreen", {
         userId: offer.participantProfile.id,
         receivedBook: offer.requestedBook,

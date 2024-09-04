@@ -23,7 +23,6 @@ export default function HomeScreen({ navigation }) {
       setBooks(data);
     })();
   }, []);
-  const [imageUri, setImageUri] = useState(null);
   const [loading, setLoading] = useState(true);
 
   if (profileLoading) {
@@ -43,18 +42,11 @@ export default function HomeScreen({ navigation }) {
             navigation.navigate("ProfileStack", { screen: "Profile" })
           }
         >
-          {/* <Image
-            source={profile.imageData ? profile.imageData : importUrl}
+          <Image
+            source={profile.imageData ? { uri: profile.imageData } : importUrl}
             alt="Profile Image"
             size={10}
             rounded="7"
-          /> */}
-
-          <Image
-            alt="Profile Image"
-            source={{ uri: `data:image/jpeg;base64,${profile.imageData}` }}
-            style={{ width: 100, height: 100 }}
-            onError={(e) => console.error("Image loading error:", e.nativeEvent.error)}
           />
         </Pressable>
       </Flex>

@@ -30,6 +30,7 @@ import {
   setProfileData,
 } from "../../store/profile-slice";
 import { updateUserProfileData } from "../../api/service";
+import { RootState } from "../../store/types";
 
 
 export default function ProfileScreen({ navigation }) {
@@ -53,10 +54,18 @@ export default function ProfileScreen({ navigation }) {
   const handleLanguageChange = (selectedLanguage) => {
     i18n.locale = selectedLanguage;
     dispatch(setProfileData({ languagePreference: selectedLanguage }));
-    console.log("language",imageData)
+  
+    // Get the updated profile data after dispatch
+    const updatedProfileData = useSelector((state: RootState) => state.profile.profile);
+    updateUserProfileData(updatedProfileData);
   };
-  const handleImageUpload = (data) => {
-    // setImage(data)
+  const handleImageUpload = (imageUri) => {
+    dispatch(setProfileData({ imageData: imageUri }));
+
+    // Get the updated profile data after dispatch
+    const updatedProfileData = useSelector((state: RootState) => state.profile.profile);
+    updateUserProfileData(updatedProfileData);
+
   };
 
   const signOutHandler = async (): Promise<void> => {
@@ -72,7 +81,6 @@ export default function ProfileScreen({ navigation }) {
       console.error("Error during logout:", error);
     }
   };
-  const [imageBase64, setImageBase64] = useState(null);
 
 
   useEffect(() => {
@@ -101,18 +109,10 @@ export default function ProfileScreen({ navigation }) {
       </HStack>
       <VStack space={1} alignItems="center" height={"50%"}>
         <Center w="100%" h="215px" px={6}>
-          {/* <ImagePicker
+          <ImagePicker
             selectedImage={handleImageUpload}
             initialImage={imageData}
-          /> */}
-                {imageBase64 ? (
-        <Image
-          source={{ uri: imageBase64 }}
-          style={{ width: 100, height: 100 }}
-        />
-      ) : (
-        <Spinner color="primary.500" />
-      )}
+          />
           <Heading color="black.100" my={3}>
             {name}
           </Heading>

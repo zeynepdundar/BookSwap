@@ -62,8 +62,9 @@ const ImagePicker = ({
     });
 
     if (!image.canceled) {
-      setPickedImage(image.assets[0].uri);
-      selectedImage(image.assets[0].uri);
+      const newImageUri = image.assets[0].uri;
+      setPickedImage(newImageUri);
+      selectedImage(newImageUri); 
     }
   };
 
@@ -82,15 +83,16 @@ const ImagePicker = ({
     });
 
     if (!result.canceled) {
-      setPickedImage(result.assets[0].uri);
-      selectedImage(result.assets[0]);
+      const newImageUri = result.assets[0].uri;
+      setPickedImage(newImageUri);
+      selectedImage(newImageUri); // Convey the change to the parent
     }
   };
 
   useEffect(() => {
-    // Set the initial image when the initialImage prop changes
-    setPickedImage(initialImage || "");
-    console.log("setPickedImage", initialImage);
+    if (initialImage) {
+      setPickedImage(initialImage);
+    }
   }, [initialImage]);
 
   return (
@@ -102,10 +104,10 @@ const ImagePicker = ({
         borderRadius="full"
       >
         <Image
-          source={pickedImage ? { uri: initialImage } : avatarImage}
+          source={pickedImage ? { uri: pickedImage } : avatarImage}
           alt="Profile Image"
-          size={10}
-          rounded="7"
+          rounded="full"
+          size={120}
         />
         <Badge
           rounded="100"

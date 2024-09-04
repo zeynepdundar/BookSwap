@@ -22,8 +22,15 @@ export const updateUserProfileData = async (profileData) => {
     push_tokens: ["ExponentPushToken[iskGN6Io5dqFbfasNwDm4g]"], // Replace with actual push tokens
   };
 
-  // uploadProfileImage(profileData.id.toString(), profileData.imageData);
-
+  try {
+    // Attempt to upload the profile image
+    if (profileData.imageData) {
+      await uploadProfileImage(profileData.id.toString(), profileData.imageData);
+    }
+  } catch (error) {
+    console.error("Failed to upload profile imagexx", error.message);
+    throw new Error("Failed to upload profile imagexxx");
+  }
   const response = await fetch(ProfileEndpoints.UPDATE_USER_DATA, {
     method: "PUT",
     headers: {
@@ -50,48 +57,20 @@ export const fetchProfileImage = async (userId: string) => {
         },
       }
     );
-    console.log("Response status:", response.status);
-    console.log("Response headers:", response.headers);
+
+    console.log("Access",response)
+
     if (!response.ok) {
       throw new Error(
         "Failed to fetch user profile image from db [fetchProfileImage]"
       );
     }
 
-    // Ensure that the response is in the expected format
-    const contentType = response.headers.get("Content-Type");
-    if (!contentType || !contentType.includes("image")) {
-      throw new Error("Invalid content type");
-    }
+    const blob = await response.blob(); // Convert the response to a Blob
+    const imageUri = URL.createObjectURL(blob); // Convert Blob to a URI
 
-    const blobToBase64 = (blob) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
 
-        reader.onloadend = () => {
-          resolve(reader.result.split(",")[1]);
-        };
-
-        reader.onerror = (error) => {
-          reject(error);
-        };
-
-        reader.readAsDataURL(blob);
-      });
-    };
-
-    const imageBlob = await response.blob();
-    console.log("imageBlob", imageBlob);
-
-    blobToBase64(imageBlob)
-      .then((dataUrl) => {
-        console.log("Test Blob to Base64 result:");
-        return dataUrl;
-      })
-      .catch((error) => console.error("Error converting test blob:", error));
-
-    // const uri = URL.createObjectURL(imageBlob);
-    // console.log("uri", uri);
+    return imageUri
   } catch (err) {
     console.error("Error fetching profile image:", err.message);
   }
@@ -123,10 +102,15 @@ export const uploadProfileImage = async (userId, imageUri) => {
 
     // const result = await response.json();
 
-    // console.log("www",result)
-
     if (!response.ok) {
-      throw new Error("Failed to upload image to db [uploadProfileImage]");
+      if (response.status === 413) {
+        console.error("Failed to update profile: Payload Too Large");
+        throw new Error("The image size is too large to upload. Please try a smaller image.");
+      } else {
+        const result = await response.json();
+        console.error("Failed to update profile", result.data);
+        throw new Error("Failed to update profile");
+      }
     }
   } catch (error) {
     console.error(error);

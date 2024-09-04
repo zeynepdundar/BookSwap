@@ -26,6 +26,12 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
 
   const importUrl = require("../assets/images/radar.png");
 
+  // const fetchProfileData = async () => {
+  //     const profileData = await fetchUserProfileData(user.firebase_uid);
+  //     setUserLibraryList(profileData.libraryBook || []); // Ensure this is always an array
+
+  // };
+
   const goToChatScreen = () => {
     navigation.replace("ChatScreen", {
       userId: userId,
