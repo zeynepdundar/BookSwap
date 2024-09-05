@@ -58,8 +58,6 @@ export const fetchProfileImage = async (userId: string) => {
       }
     );
 
-    console.log("Access",response)
-
     if (!response.ok) {
       throw new Error(
         "Failed to fetch user profile image from db [fetchProfileImage]"
@@ -139,12 +137,12 @@ export const fetchUserProfileData = async (firebaseUserId: string) => {
     }
 
     // Once we have the result, we can fetch other related data in parallel
-    const [imageUri, receivedOffers, sentOffers, historyList] =
+    const [ receivedOffers, sentOffers, historyList] =
       await Promise.all([
-        fetchProfileImage(result.id).catch((error) => {
-          console.warn("Error fetching profile image:", error);
-          return null; // Fallback value
-        }),
+        // fetchProfileImage(result.id).catch((error) => {
+        //   console.warn("Error fetching profile image:", error);
+        //   return null; // Fallback value
+        // }),
         fetchReceivedOffer(result.id).catch((error) => {
           console.warn("Error fetching received offers:", error);
           return []; // Fallback value
@@ -164,7 +162,7 @@ export const fetchUserProfileData = async (firebaseUserId: string) => {
       id: result.id,
       name: result.name,
       birthdate: result.birthdate,
-      imageData: imageUri,
+      imageData: null,
       gender: result.gender,
       languagePreference: result.language_preference,
       wishlistBook: createBookData(result.wished_editions),

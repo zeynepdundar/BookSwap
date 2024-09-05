@@ -73,7 +73,7 @@ export default function BarcodeScannerScreen({
         setError("Multiple books found with this ISBN.");
       } else {
         setEdition(fetchedEditions[0]);
-        console.log(" book found with this ISBN",fetchedEditions[0])
+        console.log("Book found with this ISBN",fetchedEditions[0])
       }
     } catch (error) {
       setError("Error fetching editions. Please try again later.");

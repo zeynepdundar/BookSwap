@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import {
   Button,
   Text,
@@ -13,29 +12,16 @@ import {
 import i18n from "../i18n";
 import Screen from "../components/Screen";
 import { MaterialIcons } from "@expo/vector-icons";
-import {
-  CommonActions,
-  StackActions,
-  useNavigation,
-} from "@react-navigation/native";
 
 export default function TradeOfferAcceptedScreen({ navigation, route }) {
-  const { userId, receivedBook, offeredBook } = route.params;
-  const { firebaseUserId } = useSelector((state: any) => state.auth.user);
-  const navigatiod = useNavigation();
+  const { user, receivedBook, offeredBook, conversationId } = route.params;
 
   const importUrl = require("../assets/images/radar.png");
 
-  // const fetchProfileData = async () => {
-  //     const profileData = await fetchUserProfileData(user.firebase_uid);
-  //     setUserLibraryList(profileData.libraryBook || []); // Ensure this is always an array
-
-  // };
-
   const goToChatScreen = () => {
     navigation.replace("ChatScreen", {
-      userId: userId,
-      friendId: firebaseUserId, // or other params as needed
+      user: user,
+      conversationId: conversationId,
     });
   };
 
@@ -43,7 +29,7 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
     // TODO:Verify resetting the navigation stack. The current screen should not remain in the stack history, so users can't still use the back button to return to it
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Home' }],
+      routes: [{ name: "Home" }],
     });
   };
   return (
@@ -72,8 +58,8 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
                 receivedBook?.coverUrl
                   ? { uri: receivedBook?.coverUrl }
                   : {
-                    uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                  }
+                      uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                    }
               }
               alt={`Cover of`}
             />
@@ -87,8 +73,8 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
                 offeredBook?.coverUrl
                   ? { uri: offeredBook?.coverUrl }
                   : {
-                    uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                  }
+                      uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                    }
               }
               alt={`Cover of`}
             />

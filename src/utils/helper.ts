@@ -177,11 +177,19 @@ export const generateActions = (handleAction, closeActionSheet) => [
   { type: "cancel", label: "cancel", onPress: closeActionSheet },
   // Add more actions as needed
 ];
-
 export const generateModalActions = (actions, handleAction, closeModal) => {
   return actions.map((action) => ({
-      type: action.type,
-      label: action.label,
-      onPress: () => action.type === "cancel" ? closeModal() : handleAction(action.type),
-    }));
-  };
+    type: action.type,
+    label: action.label,
+    onPress: () =>
+      action.type === "cancel" ? closeModal() : handleAction(action.type),
+  }));
+};
+export const createConversationId = (friendId, userId) => {
+  return `${friendId}_${userId}`;
+};
+
+export const reverseConversationId = (conversationId) => {
+  const ids = conversationId.split("_");
+  return { userId: ids[1], friendId: ids[0] };
+};

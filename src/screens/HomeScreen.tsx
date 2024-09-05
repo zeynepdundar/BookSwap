@@ -43,7 +43,7 @@ export default function HomeScreen({ navigation }) {
           }
         >
           <Image
-            source={profile.imageData ? { uri: profile.imageData } : importUrl}
+            source={false ? { uri: profile.imageData } : importUrl}
             alt="Profile Image"
             size={10}
             rounded="7"

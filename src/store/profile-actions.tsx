@@ -106,7 +106,11 @@ export const acceptOfferAsync = createAsyncThunk(
       if (!response.ok) {
         return { success: false, message: data.message }; // Return the error response {"message": "Offer not found or not eligible for acceptance"}
       }
-      return { success: true, id:offerId };;
+      return {
+        success: true,
+        id: offerId,
+        conversationId: data.conversation_Id,
+      };
     } catch (error) {
       console.error(error);
       throw error;

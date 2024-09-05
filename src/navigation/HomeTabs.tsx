@@ -40,7 +40,7 @@ export default function HomeTabs() {
           ),
         }}
       />
-      <BottomTab.Screen
+      {/* <BottomTab.Screen
         name="Notification"
         component={NotificationScreen}
         options={{
@@ -54,7 +54,7 @@ export default function HomeTabs() {
           tabBarBadge: 3,
           tabBarBadgeStyle: { backgroundColor: "#7F3DFF", color: "#fff" },
         }}
-      />
+      /> */}
       <BottomTab.Screen
         name="Trading"
         component={TradingTabs}
