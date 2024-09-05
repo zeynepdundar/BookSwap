@@ -27,7 +27,7 @@ import {
 } from "native-base";
 import Screen from "../../components/Screen";
 import { ActionSheet } from "../../components/ActionSheet";
-import { generateModalActions } from "../../utils/helper";
+import { generateModalActions, reverseConversationId } from "../../utils/helper";
 import { AlertDialogBox } from "../../components/Modal/AlertDialogBox";
 import i18n from "../../i18n";
 import BlockUserModal from "../../components/Modal/BlockUserModal";
@@ -36,9 +36,8 @@ export default function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([]);
   const [actions, setActions] = useState([]);
 
-  const { userId, friendId } = route.params;
-  const conversationId = `${friendId}_${userId}`;
-  console.log("Con", conversationId)
+  const { conversationId, user } = route.params;
+  const { userId, friendId } = reverseConversationId(conversationId); 
 
   useLayoutEffect(() => {
     const subscriber = firestore()
@@ -58,7 +57,6 @@ export default function ChatScreen({ navigation, route }) {
               },
             }))
           );
-          console.log(" querySnapshot",querySnapshot.docs)
         },
         (error) => {
           console.error("Error getting documents: ", error);
@@ -312,7 +310,7 @@ export default function ChatScreen({ navigation, route }) {
   return (
     <>
       <ChatHeaderBar
-        title="John Smith"
+        title={user.name}
         avatarUri="https://example.com/avatar.jpg" // Replace with your avatar URL
         onBackPress={handleBackPress}
         onOptionsPress={handleOptionsPress}

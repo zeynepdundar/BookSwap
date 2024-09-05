@@ -64,7 +64,7 @@ export default function ProfileScreen({ navigation }) {
 
     // Get the updated profile data after dispatch
     const updatedProfileData = useSelector((state: RootState) => state.profile.profile);
-    updateUserProfileData(updatedProfileData);
+    // updateUserProfileData(updatedProfileData);
 
   };
 

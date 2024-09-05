@@ -59,13 +59,12 @@ export default function ReceivedScreen({ navigation }) {
 
         return;
       }
-
       // Navigate to the TradeOfferAcceptedScreen on success
-      console.log("Navigate to TradeOfferAcceptedScreen",offer, profile)
       navigation.navigate("TradeOfferAcceptedScreen", {
-        userId: offer.participantProfile.id,
+        user: {id: offer.participantProfile.id, name: offer.participantProfile.name},
         receivedBook: offer.requestedBook,
         offeredBook: offer.offeredBook,
+        conversationId: payload.conversationId
       });
     } catch (error) {
       setError(i18n.t("something-went-wrong"));
