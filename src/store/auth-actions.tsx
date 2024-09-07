@@ -24,6 +24,8 @@ export const verifyPhoneNumber = createAsyncThunk(
       thunkAPI.dispatch(setPhoneNumber(phoneNumber));
       return confirmationResult;
     } catch (error) {
+      console.log("Error",error)
+
       let errorMessage = "Failed to verify phone number";
       switch (error.code) {
         case "auth/invalid-phone-number":

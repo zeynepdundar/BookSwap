@@ -97,5 +97,6 @@
   "offer-not-found-or-eligible-for-acceptance": "Offer not found or not eligible for acceptance",
   "offer-not-found-or-eligible-for-rejection": "Offer not found or not eligible for rejection",
   "offer-not-found-or-eligible-for-taking-back": "Offer not found or not eligible for taking back",
-  "users-library": "%{user}s library"
+  "users-library": "%{user}s library",
+  "text-message":"Text Message"
 }

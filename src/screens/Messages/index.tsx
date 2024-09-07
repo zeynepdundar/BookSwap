@@ -26,23 +26,19 @@ import {
 import { fetchUserProfileData } from "../../api/service";
 
 export default function MessagesScreen({ navigation }) {
-  const { id, firebaseUserId } = useSelector((state: any) => state.auth.user);
-
-  const [isLoading, setIsLoading] = useState(true); // Track overall loading state
-
-  const [userData, setUserData] = useState({}); // To store fetched user details
+  const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState({});
+  const { firebaseUserId } = useSelector((state: any) => state.auth.user);
   const { messages, loading: messagesLoading } =
     useMessageSubscription(firebaseUserId);
-  // Fetch user details for all messages at once
+
   const fetchUserData = async () => {
     if (!messages || messages.length === 0) {
-      setIsLoading(false); // No messages, so no need to load user data
+      setIsLoading(false);
       return;
     }
-
     try {
       const userIds = messages.map((message) => message.userId);
-      console.log("Loading",messages)
       const userDetailsPromises = userIds.map((userId) =>
         fetchUserProfileData(userId).then((userProfile) => ({
           ...userProfile,
@@ -59,39 +55,32 @@ export default function MessagesScreen({ navigation }) {
 
       setUserData(newUserData);
     } catch (error) {
-      console.error('Error fetching user details:', error);
+      console.error("Error fetching user details:", error);
     } finally {
-      setIsLoading(false); // Set loading to false after data is fetched
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    // Fetch user data when messages are loaded and not loading
     if (!messagesLoading) {
       fetchUserData();
     }
-  }, [messages, messagesLoading]); // Run effect when messages or messagesLoading change
+  }, [messages, messagesLoading]);
 
   if (isLoading || messagesLoading) {
-    return <LoadingOverlay />; // Show the spinner while loading either messages or user data
+    return <LoadingOverlay />;
   }
   const handlePress = (friendData) => {
-    const conversationId = createConversationId(friendData.userId, firebaseUserId);
+    const conversationId = createConversationId(
+      friendData.userId,
+      firebaseUserId
+    );
 
     navigation.navigate("ChatScreen", {
       conversationId: conversationId,
       user: friendData,
     });
   };
-//   if (!messagesLoading) {
-//     fetchAllUserData();
-//   }
-// }, [messages, messagesLoading]); // Run effect when messages or messagesLoading change
-
-// if (isLoading || messagesLoading) {
-//   return <LoadingSpinner />; // Show the spinner while loading either messages or user data
-// }
-
 
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
 
@@ -106,11 +95,11 @@ export default function MessagesScreen({ navigation }) {
       >
         <Heading>{i18n.t("messages")}</Heading>
       </HStack>
-      {/* {messagesLoading && (
+      {messagesLoading && (
         <Box h="75%" alignItems="center" justifyContent="center">
           <LoadingOverlay />
         </Box>
-      )} */}
+      )}
       {messages?.length > 0 && !messagesLoading && (
         <FlatList
           w="100%"
@@ -118,7 +107,6 @@ export default function MessagesScreen({ navigation }) {
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => {
             const user = userData[item.userId];
-            console.log("user",item, user)
             return (
               // renderItem={({ item }) => (
               <Pressable onPress={() => handlePress(user)}>

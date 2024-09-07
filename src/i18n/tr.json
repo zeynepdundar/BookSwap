@@ -96,5 +96,6 @@
   "offer-not-found-or-eligible-for-acceptance":"Teklif bulunamadı veya kabul edilmeye uygun değil.",
   "offer-not-found-or-eligible-for-rejection":"Teklif bulunamadı veya reddedilmeye uygun değil.",
   "offer-not-found-or-eligible-for-taking-back":"Teklif bulunamadı veya geri almaya uygun değil.",
-  "users-library":"%{user} kitaplığı"
+  "users-library":"%{user} kitaplığı",
+  "text-message":"Mesaj Gönder"
 }
