@@ -24,10 +24,15 @@ import {
   View,
   Box,
   HStack,
+  Image,
+  Center,
 } from "native-base";
 import Screen from "../../components/Screen";
 import { ActionSheet } from "../../components/ActionSheet";
-import { generateModalActions, reverseConversationId } from "../../utils/helper";
+import {
+  generateModalActions,
+  reverseConversationId,
+} from "../../utils/helper";
 import { AlertDialogBox } from "../../components/Modal/AlertDialogBox";
 import i18n from "../../i18n";
 import BlockUserModal from "../../components/Modal/BlockUserModal";
@@ -37,7 +42,7 @@ export default function ChatScreen({ navigation, route }) {
   const [actions, setActions] = useState([]);
 
   const { conversationId, user } = route.params;
-  const { userId, friendId } = reverseConversationId(conversationId); 
+  const { userId, friendId } = reverseConversationId(conversationId);
 
   useLayoutEffect(() => {
     const subscriber = firestore()
@@ -84,27 +89,31 @@ export default function ChatScreen({ navigation, route }) {
   const renderComposer = (props) => (
     <Composer
       {...props}
+      placeholder={i18n.t("text-message")}
       textInputStyle={{
         color: "#222B45",
-        backgroundColor: "transparent",
+        backgroundColor: "#EDF1F7",
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: "#E4E9F2",
         paddingTop: 8.5,
-        marginTop: 0,
         paddingHorizontal: 12,
-        marginLeft: 0,
+        marginHorizontal: 8,
       }}
     />
   );
   const customtInputToolbar = (props) => {
     return (
       <InputToolbar
-        {...props}
-        containerStyle={{
-          backgroundColor: "white",
-          borderTopColor: "#E8E8E8",
-          borderTopWidth: 1,
-          padding: 8,
-        }}
-      />
+      {...props}
+      containerStyle={{
+        backgroundColor: '#fff',
+        paddingTop: 6,
+        borderTopColor: "transparent",
+
+      }}
+      primaryStyle={{ alignItems: 'center' }}
+    />
     );
   };
   const renderSend = (props) => (
@@ -112,16 +121,17 @@ export default function ChatScreen({ navigation, route }) {
       {...props}
       disabled={!props.text}
       containerStyle={{
-        backgroundColor: "transparent",
-        justifyContent: "center",
+        width: 44,
+        height: 44,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 4,
       }}
     >
       <Icon
-        m="2"
-        ml="3"
-        size="6"
-        color="gray.400"
-        as={<MaterialIcons name="send" />}
+        size="32px"
+        color="primary.50"
+        as={<MaterialIcons name="arrow-circle-up" />}
       />
     </Send>
   );
@@ -233,45 +243,49 @@ export default function ChatScreen({ navigation, route }) {
 
   const ChatHeaderBar = ({ title, avatarUri, onBackPress, onOptionsPress }) => {
     return (
-      <Box
-        h="85px"
-        backgroundColor="#ffff"
-        shadow={3}
-        borderBottomWidth={2} // Add top border
-        borderBottomColor="#f5f5f5"
-        px="4"
-        pt="5"
-        justifyContent="center"
+      <HStack
+        alignItems="center"
+        justifyContent="space-between"
+        w="100%"
+        space={3}
+        h={16}
+        bg="#fff"
+        borderBottomColor="#E8E8E8"
+        borderBottomWidth="1"
       >
-        <HStack alignItems="center" justifyContent="space-between">
-          <Button
-            backgroundColor="transparent"
-            variant="ghost"
-            leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
-            _pressed={{ bg: "transparent" }}
-            onPress={onBackPress}
-          />
-          <Avatar borderRadius="full" source={avatarImage} size="40px" />
-          <Heading fontSize="18px" pl="5" flex={1}>
-            {title}
-          </Heading>
-          <Button
-            backgroundColor="transparent"
-            variant="ghost"
-            leftIcon={<MaterialIcons name="remove-circle-outline" size={24} />}
-            _pressed={{
-              bg: "transparent",
-            }}
-            onPress={onOptionsPress}
-          ></Button>
-        </HStack>
-      </Box>
+        <Button
+          backgroundColor="transparent"
+          variant="ghost"
+          leftIcon={<ArrowBackIcon size="6" color="#212325" />}
+          _pressed={{ bg: "transparent" }}
+          onPress={onBackPress}
+        />
+        {/* <Avatar borderRadius="full" source={avatarImage}  w="20"/> */}
+        <Image
+          source={user.imageData ? { uri: user.imageData } : avatarImage}
+          alt="Profile Image"
+          size={10}
+          rounded="full"
+        />
+        <Heading fontSize="18px" w="206">
+          {title}
+        </Heading>
+        <Button
+          backgroundColor="transparent"
+          variant="ghost"
+          leftIcon={<MaterialIcons name="remove-circle-outline" size={30} />}
+          _pressed={{
+            bg: "transparent",
+          }}
+          onPress={onOptionsPress}
+        />
+      </HStack>
     );
   };
   const handleBackPress = () => {
     // if (navigation.canGoBack()) {
     //   navigation.goBack();
-    // } else 
+    // } else
     navigation.navigate("Messages");
   };
 
@@ -308,57 +322,39 @@ export default function ChatScreen({ navigation, route }) {
   };
 
   return (
-    <>
+    <Screen >
       <ChatHeaderBar
         title={user.name}
         avatarUri="https://example.com/avatar.jpg" // Replace with your avatar URL
         onBackPress={handleBackPress}
         onOptionsPress={handleOptionsPress}
       />
-      <Screen>
-        <GiftedChat
-          messages={messages}
-          onSend={(messages) => onSend(messages)}
-          renderInputToolbar={(props) => customtInputToolbar(props)}
-          renderSystemMessage={renderSystemMessage}
-          renderMessage={renderMessage}
-          renderMessageText={renderMessageText}
-          renderBubble={renderBubble}
-          messagesContainerStyle={{ backgroundColor: "#FFFFFF" }}
-          renderComposer={renderComposer}
-          renderSend={renderSend}
-          bottomOffset={0}
-          scrollToBottom
-          user={{
-            _id: userId,
-          }}
-          infiniteScroll
-          timeTextStyle={{
-            left: { color: "#505066" },
-            right: { color: "#505066" },
-          }}
-        />
-        {/* <ActionSheet
-          isOpen={isBlockUserModalOpen}
-          onClose={closeBlockUserModal}
-          actions={actions}
-        /> */}
-        {/* <AlertDialogBox
+      <GiftedChat
+        messages={messages}
+        onSend={(messages) => onSend(messages)}
+        renderInputToolbar={(props) => customtInputToolbar(props)}
+        renderSystemMessage={renderSystemMessage}
+        renderMessage={renderMessage}
+        renderMessageText={renderMessageText}
+        renderBubble={renderBubble}
+        messagesContainerStyle={{ backgroundColor: "#FFFFFF" }}
+        renderComposer={renderComposer}
+        renderSend={renderSend}
+        bottomOffset={0}
+        scrollToBottom
+        user={{
+          _id: userId,
+        }}
+        infiniteScroll
+        timeTextStyle={{
+          left: { color: "#505066" },
+          right: { color: "#505066" },
+        }}
+      />
+      <BlockUserModal
         isOpen={isBlockUserModalOpen}
         onClose={closeBlockUserModal}
-        onConfirm={handleAction}
-        title={i18n.t("library-empty")}
-        description={i18n.t(
-          "add-books-to-your-library-before-sending-an-offer"
-        )}
-        cancelButtonLabel={i18n.t("cancel")}
-        confirmButtonLabel={i18n.t("see-my-library")}
-      ></AlertDialogBox> */}
-        <BlockUserModal
-          isOpen={isBlockUserModalOpen}
-          onClose={closeBlockUserModal}
-        />
-      </Screen>
-    </>
+      />
+    </Screen>
   );
 }

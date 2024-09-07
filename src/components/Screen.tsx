@@ -14,7 +14,7 @@ interface Props extends ViewProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export const Screen: React.FC<Props> = ({ scroll, style, children }) => {
+export const Screen: React.FC<Props & { noPadding?: boolean }> = ({ scroll, style, children, noPadding }) => {
   return scroll ? (
     <ScrollView showsVerticalScrollIndicator={false}
     //   testID="scrollview-screen"
@@ -24,7 +24,7 @@ export const Screen: React.FC<Props> = ({ scroll, style, children }) => {
       {children}
     </ScrollView>
   ) : (
-    <View style={[styles.container, style]} backgroundColor="#fff" >{children}</View>
+    <View style={[styles.container, { padding: noPadding ? 0 : 16 }, style]}backgroundColor="#fff" >{children}</View>
   );
 };
 export default Screen;
@@ -32,7 +32,6 @@ export default Screen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     paddingTop:40,
     height: height,
     width: "100%",
