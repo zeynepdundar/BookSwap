@@ -15,71 +15,75 @@ import {
   VStack,
 } from "native-base";
 import i18n from "../../i18n";
-import { useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { useMessageSubscription } from "../../hooks/use-message-subscription";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import {
-  createConversationId,
   formatLastMessageTime,
+  generateConversationId,
   truncateText,
 } from "../../utils/helper";
 import { fetchUserProfileData } from "../../api/service";
+import { resetUnseenCount } from "../../store/messages-actions";
 
 export default function MessagesScreen({ navigation }) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [userData, setUserData] = useState({});
+  const [isFetchingUserData, setIsFetchingUserData] = useState(true);
+  const [userProfiles, setUserProfiles] = useState({});
   const { firebaseUserId } = useSelector((state: any) => state.auth.user);
-  const { messages, loading: messagesLoading } =
+  const { messages, loading: isMessagesLoading } =
     useMessageSubscription(firebaseUserId);
 
-  const fetchUserData = async () => {
-    if (!messages || messages.length === 0) {
-      setIsLoading(false);
-      return;
-    }
+  const fetchUserProfiles = async () => {
     try {
       const userIds = messages.map((message) => message.userId);
-      const userDetailsPromises = userIds.map((userId) =>
+      const userProfilesPromises = userIds.map((userId) =>
         fetchUserProfileData(userId).then((userProfile) => ({
           ...userProfile,
           userId: userId,
         }))
       );
-      const userDetailsArray = await Promise.all(userDetailsPromises);
+      const fetchedUserProfiles = await Promise.all(userProfilesPromises);
 
-      const newUserData = userDetailsArray.reduce((acc, userProfile) => {
+      const newUserProfiles = fetchedUserProfiles.reduce((acc, userProfile) => {
         const { userId, name, imageData } = userProfile;
         acc[userId] = { userId, name, imageData };
         return acc;
       }, {});
 
-      setUserData(newUserData);
+      setUserProfiles(newUserProfiles);
     } catch (error) {
-      console.error("Error fetching user details:", error);
+      console.error("Error fetching user profiles:", error);
     } finally {
-      setIsLoading(false);
+      setIsFetchingUserData(false);
     }
   };
 
   useEffect(() => {
-    if (!messagesLoading) {
-      fetchUserData();
+    if (!isMessagesLoading) {
+      fetchUserProfiles();
     }
-  }, [messages, messagesLoading]);
+  }, [messages, isMessagesLoading]);
 
-  if (isLoading || messagesLoading) {
+  if (isFetchingUserData || isMessagesLoading) {
     return <LoadingOverlay />;
   }
-  const handlePress = (friendData) => {
-    const conversationId = createConversationId(
-      friendData.userId,
+
+  const handleStartChat = (friend) => {
+    const conversationId = generateConversationId(
+      friend.userId,
       firebaseUserId
     );
+    handleResetUnseenCount(friend.userId, firebaseUserId);
 
     navigation.navigate("ChatScreen", {
       conversationId: conversationId,
-      user: friendData,
+      friend: friend,
+      currentUserId: firebaseUserId,
     });
+  };
+
+  const handleResetUnseenCount = (friendUserId, firebaseUserId) => {
+  resetUnseenCount({ friendUserId, firebaseUserId });
   };
 
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
@@ -95,21 +99,16 @@ export default function MessagesScreen({ navigation }) {
       >
         <Heading>{i18n.t("messages")}</Heading>
       </HStack>
-      {messagesLoading && (
-        <Box h="75%" alignItems="center" justifyContent="center">
-          <LoadingOverlay />
-        </Box>
-      )}
-      {messages?.length > 0 && !messagesLoading && (
+      {messages?.length > 0 && (
         <FlatList
           w="100%"
           data={messages}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => {
-            const user = userData[item.userId];
+            const friendProfile = userProfiles[item.userId];
             return (
               // renderItem={({ item }) => (
-              <Pressable onPress={() => handlePress(user)}>
+              <Pressable onPress={() => handleStartChat(friendProfile)}>
                 <Box pl="4" pr="5" py="2">
                   <HStack alignItems="center" space={3}>
                     {/* <Avatar
@@ -122,10 +121,11 @@ export default function MessagesScreen({ navigation }) {
 
                     <VStack>
                       <Text color="coolGray.800" fontSize="md">
-                        {/* {item.fullName} */} {user?.name || "Unknown User"}
+                        {/* {item.fullName} */}
+                        {friendProfile?.name || "Unknown User"}
                       </Text>
                       <Text color="coolGray.500" fontSize="sm">
-                        {truncateText(item.lastMessageText, 20)}
+                        {truncateText(item.lastMessageText, 26)}
                       </Text>
                     </VStack>
                     <Spacer />

@@ -6,6 +6,7 @@ import {
 } from "../store/messages-actions";
 
 export const useMessageSubscription = (firebaseUserId) => {
+  console.log("useMessageSubscription")
   const dispatch = useDispatch();
   const { loading, messages } = useSelector((state: any) => state.messages);
 

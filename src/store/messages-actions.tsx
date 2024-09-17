@@ -1,166 +1,85 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import firestore from "@react-native-firebase/firestore";
+
 import { setError, setLoading, setMessages } from "./messages-slice";
 
-// export const subscribeToMessages = createAsyncThunk(
-//   "messages/subscribeToMessages",
-//   async (firebaseUserId:any, { dispatch }) => {
-//     return new Promise((resolve, reject) => {
-//       const subscriber = firestore()
-//         .collection("Users")
-//         .doc(firebaseUserId)
-//         .collection("conversations")
-//         .onSnapshot(
-//           (querySnapshot) => {
-//             const messages = querySnapshot.docs.map((doc) => ({
-//               conversationId: doc.data().conversationId,
-//               lastMessageText: doc.data().lastMessageText,
-//               lastMessageTime: doc.data().lastMessageTime.toDate(),
-//               unseenCount: doc.data().unseenCount,
-//               userId: doc.data().userId,
-//             }));
-//             dispatch(setMessages(messages));
-//             // resolve();
-//           },
-//           (error) => {
-//             reject(error);
-//           }
-//         );
+export const subscribeToMessages = createAsyncThunk(
+  "messages/subscribeToMessages",
+  async (firebaseUserId: string, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
 
-//       // Return the subscriber to allow unsubscribing later
-//       return subscriber;
-//     });
-//   }
-// );
+      console.log("subscribed to messages",firebaseUserId);
 
-// export const unsubscribeFromMessages = createAsyncThunk(
-//   "messages/unsubscribeFromMessages",
-//   async (subscriber) => {
-//     // if (subscriber) {
-//     //   subscriber(); // Unsubscribe from Firestore updates
-//     // }
-//   }
-// );
+      const subscriber = firestore()
+        .collection("Users")
+        .doc(firebaseUserId)
+        .collection("conversations")
+        .onSnapshot((querySnapshot) => {
+          console.log("querySnapshot",querySnapshot);
 
-// export const fetchMessagesAsync = createAsyncThunk(
-//   'messages/fetchMessages',
-//   async (userId, thunkAPI) => {
-//     const messages = await fetchUserMessages("userId");
-//     return messages;
-//   }
-// );
-
-// export const subscribeToMessages = (firebaseUserId:any) => async (dispatch) => {
-//   dispatch(setLoading(true));
-//   const subscriber = firestore()
-//     .collection('Users')
-//     .doc(firebaseUserId)
-//     .collection('conversations')
-//     .onSnapshot(
-//       (querySnapshot) => {
-//         const messages = querySnapshot.docs.map((doc) => ({
-//           conversationId: doc.data().conversationId,
-//           lastMessageText: doc.data().lastMessageText,
-//           lastMessageTime: doc.data().lastMessageTime.toDate(),
-//           unseenCount: doc.data().unseenCount,
-//           userId: doc.data().userId,
-//         }));
-//         dispatch(setMessages(messages));
-//         dispatch(setLoading(false));
-//       },
-//       (error) => {
-//         console.error('Error getting documents: ', error);
-//         dispatch(setError(error.message));
-//         dispatch(setLoading(false));
-//       }
-//     );
-
-//   dispatch(setSubscriber(subscriber));
-// };
-
-// export const subscribeToMessages = createAsyncThunk(
-//   'messages/subscribeToMessages',
-//   async (firebaseUserId:string, thunkAPI) => {
-//     try {
-//       thunkAPI.dispatch(setLoading(true));
-
-//       const subscriber = firestore()
-//         .collection('Users')
-//         .doc(firebaseUserId)
-//         .collection('conversations')
-//         .onSnapshot(
-//           (querySnapshot) => {
-//             const messages = querySnapshot.docs.map((doc) => ({
-//               conversationId: doc.data().conversationId,
-//               lastMessageText: doc.data().lastMessageText,
-//               lastMessageTime: doc.data().lastMessageTime.toDate(),
-//               unseenCount: doc.data().unseenCount,
-//               userId: doc.data().userId,
-//             }));
-//             thunkAPI.dispatch(setMessages(messages));
-//             thunkAPI.dispatch(setLoading(false));
-//           },
-//           (error) => {
-//             console.error('Error getting documents: ', error);
-//             thunkAPI.dispatch(setError(error.message));
-//             thunkAPI.dispatch(setLoading(false));
-//           }
-//         );
-//         thunkAPI.dispatch(setSubscriber(subscriber));
-//       } catch (error) {
-//         return thunkAPI.rejectWithValue(error.message);
-//       }
-//     }
-//   );
-  
-
-  // export const unsubscribeFromMessages = (subscriber:any) => (dispatch) => {
-  //   if (subscriber) {
-  //     subscriber();
-  //     dispatch(setSubscriber(null));
-  //   }
-  // };
-  
-  export const subscribeToMessages = createAsyncThunk(
-    'messages/subscribeToMessages',
-    async (firebaseUserId:string, { dispatch, rejectWithValue }) => {
-      try {
-        dispatch(setLoading(true));
-  
-        const subscriber = firestore()
-          .collection('Users')
-          .doc(firebaseUserId)
-          .collection('conversations')
-          .onSnapshot(
-            (querySnapshot) => {
-              const messages = querySnapshot.docs.map((doc) => ({
-                conversationId: doc.data().conversationId,
-                lastMessageText: doc.data().lastMessageText,
-                lastMessageTime: doc.data().lastMessageTime.toDate().toISOString(),
-                unseenCount: doc.data().unseenCount,
-                userId: doc.data().userId,
-              }));
-              dispatch(setMessages(messages));
-              dispatch(setLoading(false));
-            },
-            (error) => {
-              console.error('Error getting documents: ', error);
-              dispatch(setError(error.message));
-              dispatch(setLoading(false));
-            }
-          );
-  
-        // dispatch(setSubscriber(subscriber));
-      } catch (error) {
-        return rejectWithValue(error.message);
-      }
+          const messages = querySnapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+              conversationId: data.conversationId,
+              lastMessageText: data.lastMessageText,
+              lastMessageTime: data.lastMessageTime.toDate().toISOString(),
+              unseenCount: data.unseenCount,
+              userId: data.userId,
+            };
+          });
+          dispatch(setMessages(messages));
+        });
+    } catch (error) {
+      console.error("Failed to subscribe to messages: ", error);
+      return rejectWithValue(error.message);
+    } finally {
+      dispatch(setLoading(false));
     }
-  );
+  }
+);
 
-  export const unsubscribeFromMessages = (subscriber:any) => (dispatch) => {
-    if (subscriber) {
-      subscriber();
-      // dispatch(setSubscriber(null));
-    }
-  };
-  
+export const resetUnseenCount = async (relatedChat: any) => {
+  try {
+    const { friendUserId, firebaseUserId } = relatedChat;
+
+    await firestore()
+      .collection("Users")
+      .doc(firebaseUserId)
+      .collection("conversations")
+      .doc(friendUserId)
+      .update({
+        unseenCount: 0,
+      });
+  } catch (error) {
+    console.error("Failed to reset unseen count: ", error);
+    return;
+  } finally {
+  }
+};
+export const updateLastMessage = async (relatedChat: any) => {
+  const { friendUserId, currentUserId, messageData } = relatedChat;
+  const timestamp = firestore.Timestamp.fromDate(new Date());
+
+  try {
+    await firestore()
+      .collection("Users")
+      .doc(currentUserId)
+      .collection("conversations")
+      .doc(friendUserId)
+      .update({
+        lastMessageText: messageData.text,
+        lastMessageTime: timestamp,
+      });
+  } catch (error) {
+    console.error("Failed to update last message: ", error);
+    // Optionally, you can handle error here without needing to return to Redux
+  }
+};
+
+export const unsubscribeFromMessages = (subscriber: any) => (dispatch) => {
+  if (subscriber) {
+    subscriber();
+    // dispatch(setSubscriber(null));
+  }
+};

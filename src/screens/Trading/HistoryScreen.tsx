@@ -22,7 +22,6 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 export default function HistoryScreen({ navigation }) {
   const tradeIcon = require("../../assets/images/icon/trade-in.png");
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
-  const importUrl = require("../../assets/images/cover_2.png");
 
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -81,7 +80,7 @@ export default function HistoryScreen({ navigation }) {
                          source={
                           item.requestedBook.coverUrl
                             ? { uri: item.requestedBook.coverUrl }
-                            : importUrl
+                            : {uri:"https://store.bookbaby.com/bookshop/OnePageBookCoverImage.jpg?BookID=BK00009510&abOnly=False"}
                         }                    
                         alt="Library"
                         roundedRight="6"

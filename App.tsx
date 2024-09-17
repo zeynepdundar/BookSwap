@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { Platform, Text } from "react-native";
 import { Provider, useDispatch } from "react-redux";
-import AsyncStore from "./src/utils/AsyncStore";
 import "expo-dev-client";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
 import { useFonts } from "expo-font";
 import { NativeBaseProvider } from "native-base";
+import AsyncStore from "./src/utils/AsyncStore";
 import { theme } from "./src/theme";
 import Navigation from "./src/navigation";
 import store, { AppDispatch } from "./src/store/store";
@@ -67,7 +67,6 @@ export default function App() {
   const [notification, setNotification] =
     useState<Notifications.Notification>();
 
-  useEffect(() => {}, []);
 
   const registerForPushNotifications = async () => {
     try {
@@ -87,7 +86,6 @@ export default function App() {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
       });
   };
 

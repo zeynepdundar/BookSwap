@@ -25,7 +25,6 @@ export default function Navigation() {
   const isAuthenticated = useSelector(
     (state: any) => state.auth.isAuthenticated
   );
-
   if (loading) {
     // We haven't finished checking for the token yet
     return <LoadingOverlay></LoadingOverlay>;

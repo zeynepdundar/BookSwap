@@ -10,6 +10,7 @@ import {
   Input,
   Text,
 } from "native-base";
+import { Platform } from 'react-native';
 import { useState } from "react";
 import Screen from "../../components/Screen";
 import PhoneInput from "react-native-phone-input";
@@ -24,11 +25,13 @@ import {
 } from "../../store/auth-actions";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { setVerificationCode } from "../../store/auth-slice";
-import appLogo from '../../assets/images/app-icon-50x50.png';
-import swapBookText from '../../assets/images/swap-book.png';
 
 
 export default function AuthVerificationScreen({ navigation }) {
+
+  const appLogo = require("../../assets/images/app-icon-516x516.png");
+  const swapBookText = require("../../assets/images/swap-book.png");
+
 
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState("");
@@ -65,7 +68,7 @@ export default function AuthVerificationScreen({ navigation }) {
         <>
           <Flex direction="column" m="3" mt="20">
             <Center mb={30}>
-              <Image source={appLogo} alt="Book Swap Logo"  mb={2} />
+              <Image source={appLogo} alt="Book Swap Logo" size={60} mb={2} />
               <Image source={swapBookText} alt="Book Swap" width={120} />
             </Center>
             <Center>
@@ -86,6 +89,7 @@ export default function AuthVerificationScreen({ navigation }) {
                 borderWidth="1"
                 px="17px"
                 py="12px"
+                justifyContent="center" 
               >
                 <PhoneInput
                   onChangePhoneNumber={(val) => {
@@ -100,10 +104,15 @@ export default function AuthVerificationScreen({ navigation }) {
                     fontSize: 16,
                     fontFamily: "poppins-regular",
                     color: "#808085",
+                    paddingVertical: 0,  // Remove extra vertical padding
+                    lineHeight: Platform.OS === 'android' ? 21: 24,  // Align lineHeight to fontSize
+                    textAlignVertical: "center", 
+
                   }}
                   offset={20}
                   textProps={{
                     maxLength:17,
+                    allowFontScaling: false,
                   }}
                   autoFormat={true}
                 />

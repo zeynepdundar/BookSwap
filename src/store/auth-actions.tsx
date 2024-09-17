@@ -6,14 +6,6 @@ import { fetchUserProfileAsync } from "./profile-actions";
 import { setProfileData } from "./profile-slice";
 import { AuthEndpoints } from "../api/endpoints";
 
-import { createAction } from '@reduxjs/toolkit';
-
-// export const setUser = createAction('auth/setUser');
-// export const setToken = createAction('auth/setToken');
-// export const setPhoneNumber = createAction('auth/setToken');
-
-
-
 export const verifyPhoneNumber = createAsyncThunk(
   "auth/verifyPhoneNumber",
   async (phoneNumber: string, thunkAPI) => {
@@ -24,8 +16,6 @@ export const verifyPhoneNumber = createAsyncThunk(
       thunkAPI.dispatch(setPhoneNumber(phoneNumber));
       return confirmationResult;
     } catch (error) {
-      console.log("Error",error)
-
       let errorMessage = "Failed to verify phone number";
       switch (error.code) {
         case "auth/invalid-phone-number":

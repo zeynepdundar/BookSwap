@@ -20,9 +20,9 @@ export default function HomeTabs() {
         tabBarInactiveTintColor: "primary.100",
         tabBarStyle: {
           backgroundColor: "#fff",
-          height: 100,
+          height: 80,
           paddingHorizontal: 24,
-          paddingTop:12,
+          paddingTop:8,
           borderTopColor: "#B3B3B3",
         },
       }}

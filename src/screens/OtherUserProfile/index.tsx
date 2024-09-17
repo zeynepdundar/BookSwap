@@ -12,10 +12,8 @@ import {
   Pressable,
   useColorModeValue,
 } from "native-base";
-import i18n from "../../i18n";
 import Screen from "../../components/Screen";
-import { useCallback, useEffect, useState } from "react";
-import { AlertDialogBox } from "../../components/Modal/AlertDialogBox";
+import { useCallback, useState } from "react";
 import { SceneMap, TabView } from "react-native-tab-view";
 import { Dimensions, StatusBar, Animated } from "react-native";
 import OtherLibraryScreen from "./OtherUserLibraryScreen";
@@ -63,11 +61,6 @@ export default function OtherUserProfileScreen({ navigation, route }) {
     }, [userTemp, route?.params])
   );
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  const onClose = () => setIsOpen(false);
-
-  const signOutHandler = async (): Promise<void> => {};
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -215,15 +208,6 @@ export default function OtherUserProfileScreen({ navigation, route }) {
           }}
         />
       </VStack>
-      <AlertDialogBox
-        isOpen={isOpen}
-        onClose={onClose}
-        onConfirm={signOutHandler}
-        title={i18n.t("logout")}
-        description={i18n.t("are-you-sure-log-out")}
-        cancelButtonLabel={i18n.t("cancel")}
-        confirmButtonLabel={i18n.t("logout")}
-      ></AlertDialogBox>
     </Screen>
   );
 }

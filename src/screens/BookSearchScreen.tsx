@@ -224,9 +224,14 @@ export default function BookSearchScreen({ navigation, route = null }) {
             searchResults.length === 0 &&
             searchQuery.length > 3 && (
               <VStack width="100%" height={200} mt="100">
-                <Center>
-                  <Text fontSize="md">
-                    {i18n.t("no-results-for")} "{searchQuery}"
+                <Center w="100%">
+                  <Text
+                    fontSize="md"
+                    alignSelf="center"
+                    maxWidth={360}
+                    textAlign="center"
+                  >
+                    {`${i18n.t("no-results-for")} "${searchQuery}"`}
                   </Text>
                 </Center>
                 <Center w="100%">

@@ -8,7 +8,7 @@ const store = configureStore({
     getDefaultMiddleware({
       // Ignore these action types
       serializableCheck: {
-        ignoredActions: ["auth/checkVerificationCode/fulfilled", "auth/verifyPhoneNumber/fulfilled", "auth/resendVerificationCode/fulfilled", "messages/subscribeToMessages/fulfilled", "messages/subscriber"],
+        ignoredActions: ["auth/checkVerificationCode/fulfilled", "auth/verifyPhoneNumber/fulfilled", "auth/resendVerificationCode/fulfilled", "messages/subscribeToMessages/fulfilled", "messages/subscriber","messages/resetUnseenCount"],
         ignoredPaths: ["auth"],
       },
     }),

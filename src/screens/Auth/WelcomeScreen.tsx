@@ -6,9 +6,7 @@ export default function WelcomeScreen({ navigation }) {
   const importUrl = require("../../assets/images/infinite-library.png");
 
   const pressHandler = () => {
-    navigation.navigate("AuthStack", { screen: "AuthVerification" })
-
-    
+    navigation.navigate("AuthStack", { screen: "AuthVerification" });
   };
 
   return (

@@ -8,14 +8,13 @@ import {
 const initialState = {
   loading: false,
   error: null,
-  user: { id:null, isNewUser: false, firebaseUserId: null },
+  user: { id: "", isNewUser: false, firebaseUserId: null },
   authToken: null,
   phoneNumber: "",
   verificationCode: "",
   confirmationResult: null,
   isAuthenticated: false,
 };
-
 
 // const initialState = {
 //   loading: false,
@@ -48,11 +47,8 @@ const authSlice = createSlice({
     setIsNewUser: (state, action) => {
       state.user.isNewUser = action.payload;
     },
-    signOut: (state) => {
-      state.user = null;
-      state.authToken = null;
-      state.isAuthenticated = false;
-      state.confirmationResult = null; // Can be removed, check it later!
+    signOut: () => {
+      return initialState;
     },
   },
   extraReducers: (builder) => {
@@ -81,7 +77,7 @@ const authSlice = createSlice({
       .addCase(checkVerificationCode.rejected, (state, action: any) => {
         state.loading = false;
         state.error = action.payload;
-      }) 
+      })
 
       //Add authenticated user to db
       .addCase(addUserToDatabaseAsync.pending, (state) => {
@@ -105,7 +101,7 @@ export const {
   setUser,
   setToken,
   signOut,
-  setIsNewUser
+  setIsNewUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;

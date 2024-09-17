@@ -190,11 +190,16 @@ export default function BookSearchOnCreationScreen({
           )}
           {!error && searchResults.length === 0 && searchQuery.length > 4 && (
             <VStack width="100%" height={200} mt="100">
-              <Center>
-                <Text fontSize="md">
-                  {i18n.t("no-results-for")} "{searchQuery}"
-                </Text>
-              </Center>
+                <Center w="100%">
+                  <Text
+                    fontSize="md"
+                    alignSelf="center"
+                    maxWidth={360}
+                    textAlign="center"
+                  >
+                    {`${i18n.t("no-results-for")} "${searchQuery}"`}
+                  </Text>
+                </Center>
               <Center w="100%">
                 <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
 

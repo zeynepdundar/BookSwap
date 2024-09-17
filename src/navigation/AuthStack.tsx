@@ -14,7 +14,7 @@ export default function AuthStack() {
         headerShown: false,
       }}
     >
-      {(!confirmationResult && !error )&& (
+      {!confirmationResult && !error && (
         <Stack.Screen name="Welcome" component={WelcomeScreen}></Stack.Screen>
       )}
       <Stack.Screen
