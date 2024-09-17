@@ -25,24 +25,28 @@ import {
   Box,
   HStack,
   Image,
-  Center,
 } from "native-base";
 import Screen from "../../components/Screen";
 import { ActionSheet } from "../../components/ActionSheet";
 import {
   generateModalActions,
-  reverseConversationId,
 } from "../../utils/helper";
-import { AlertDialogBox } from "../../components/Modal/AlertDialogBox";
 import i18n from "../../i18n";
 import BlockUserModal from "../../components/Modal/BlockUserModal";
+import { updateLastMessage } from "../../store/messages-actions";
 
 export default function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([]);
   const [actions, setActions] = useState([]);
+  const { conversationId, friend, currentUserId } = route.params;
 
-  const { conversationId, user } = route.params;
-  const { userId, friendId } = reverseConversationId(conversationId);
+  const handleUpdateLastMessage = (message) => {
+    updateLastMessage({
+      friendUserId: friend.userId,
+      currentUserId,
+      ...message,
+    });
+  };
 
   useLayoutEffect(() => {
     const subscriber = firestore()
@@ -50,28 +54,45 @@ export default function ChatScreen({ navigation, route }) {
       .doc(conversationId)
       .collection("messages")
       .orderBy("createdAt", "desc")
-      .onSnapshot(
-        (querySnapshot) => {
-          setMessages(
-            querySnapshot.docs.map((doc) => ({
-              _id: doc.id,
-              createdAt: doc.data().createdAt.toDate(),
-              text: doc.data().text,
-              user: {
-                _id: doc.data().senderId,
-              },
-            }))
-          );
-        },
-        (error) => {
-          console.error("Error getting documents: ", error);
+      .onSnapshot((querySnapshot) => {
+        const messages = querySnapshot.docs.map((doc) => ({
+          _id: doc.id,
+          createdAt: doc.data().createdAt.toDate(),
+          text: doc.data().text,
+          user: {
+            _id: doc.data().senderId,
+          },
+        }));
+
+        setMessages(messages);
+
+        // Get the latest message (first in the ordered list)
+        if (!querySnapshot.empty) {
+          const latestDoc = querySnapshot.docs[0];
+          const latestMessage = {
+            text: latestDoc.data().text,
+            createdAt: latestDoc.data().createdAt.toDate(),
+            senderId: latestDoc.data().senderId,
+          };
+
+          // Update the latest message in the Users collection
+          handleUpdateLastMessage({ messageData:latestMessage });
         }
-      );
+      });
     // Stop listening for updates when no longer required
     return () => subscriber();
   }, []);
 
   const onSend = useCallback((messages = []) => {
+    if (messages.length === 0) return;
+
+    const newMessage = messages[0];
+    const messageData = {
+      createdAt: firestore.Timestamp.now(),
+      text: newMessage.text,
+      senderId: currentUserId,
+    };
+
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
     );
@@ -79,10 +100,10 @@ export default function ChatScreen({ navigation, route }) {
       .collection("Conversations")
       .doc(conversationId)
       .collection("messages")
-      .add({
-        createdAt: firestore.Timestamp.now(),
-        text: messages[0].text,
-        senderId: userId,
+      .add(messageData)
+      .then(() => {
+        // Update last message in the conversation only if Firestore operation is successful
+        handleUpdateLastMessage({ messageData });
       })
       .catch((err) => console.log("Failed to send message", err));
   }, []);
@@ -105,15 +126,14 @@ export default function ChatScreen({ navigation, route }) {
   const customtInputToolbar = (props) => {
     return (
       <InputToolbar
-      {...props}
-      containerStyle={{
-        backgroundColor: '#fff',
-        paddingTop: 6,
-        borderTopColor: "transparent",
-
-      }}
-      primaryStyle={{ alignItems: 'center' }}
-    />
+        {...props}
+        containerStyle={{
+          backgroundColor: "#fff",
+          paddingTop: 6,
+          borderTopColor: "transparent",
+        }}
+        primaryStyle={{ alignItems: "center" }}
+      />
     );
   };
   const renderSend = (props) => (
@@ -123,8 +143,8 @@ export default function ChatScreen({ navigation, route }) {
       containerStyle={{
         width: 44,
         height: 44,
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: "center",
+        justifyContent: "center",
         marginHorizontal: 4,
       }}
     >
@@ -262,7 +282,7 @@ export default function ChatScreen({ navigation, route }) {
         />
         {/* <Avatar borderRadius="full" source={avatarImage}  w="20"/> */}
         <Image
-          source={user.imageData ? { uri: user.imageData } : avatarImage}
+          source={friend.imageData ? { uri: friend.imageData } : avatarImage}
           alt="Profile Image"
           size={10}
           rounded="full"
@@ -322,9 +342,9 @@ export default function ChatScreen({ navigation, route }) {
   };
 
   return (
-    <Screen >
+    <Screen>
       <ChatHeaderBar
-        title={user.name}
+        title={friend.name}
         avatarUri="https://example.com/avatar.jpg" // Replace with your avatar URL
         onBackPress={handleBackPress}
         onOptionsPress={handleOptionsPress}
@@ -343,7 +363,7 @@ export default function ChatScreen({ navigation, route }) {
         bottomOffset={0}
         scrollToBottom
         user={{
-          _id: userId,
+          _id: currentUserId,
         }}
         infiniteScroll
         timeTextStyle={{

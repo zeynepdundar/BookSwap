@@ -13,7 +13,6 @@ import {
   Text,
   Icon,
   IconButton,
-  Button,
   Alert,
 } from "native-base";
 import { fetchBooksByISBN } from "../api/service";
@@ -149,7 +148,7 @@ export default function BarcodeScannerScreen({
   };
 
   return (
-    <View w={width} h={height}>
+    <View style={{ width, height }}>
       <IconButton
         onPress={() => navigation.goBack()}
         size="10"

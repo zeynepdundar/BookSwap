@@ -44,7 +44,6 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   const [selectedAction, setSelectedAction] = useState<typeof ListTypes | null>(
     null
   );
-  const importUrl = require("../../assets/images/no-cover-available.png");
   const { id: userId } = useSelector((state: any) => state.profile.profile);
 
   useFocusEffect(

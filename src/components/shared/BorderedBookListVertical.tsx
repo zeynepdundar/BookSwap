@@ -27,8 +27,6 @@ export const BorderedBookListVertical: React.FC<
   const [selectedBooks, setSelectedBooks] = useState([]);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
 
-  const importUrl = require("../../assets/images/no-cover-available.png");
-
   const handleDonePress = () => {
     // Pass selected items to the parent using the callback
     onDonePress(selectedBooks);

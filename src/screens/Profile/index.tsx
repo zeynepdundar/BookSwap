@@ -18,11 +18,12 @@ import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AlertDialogBox } from "../../components/Modal/AlertDialogBox";
 import ImagePicker from "../../components/ImagePicker";
 import auth from "@react-native-firebase/auth";
 import { signOut } from "../../store/auth-slice";
+import { clearMessages } from "../../store/messages-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   clearProfileData,
@@ -32,60 +33,63 @@ import {
 import { updateUserProfileData } from "../../api/service";
 import { RootState } from "../../store/types";
 
-
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../../assets/images/icon/library-icon.png");
   const wishlistIcon = require("../../assets/images/icon/wishlist-icon.png");
   const languageIcon = require("../../assets/images/icon/language-icon.png");
   const feedbackIcon = require("../../assets/images/icon/feedback-icon.png");
   const logoutIcon = require("../../assets/images/icon/logout-icon.png");
-  const profileData = useSelector((state: any) => state.profile.profile);
+
+  const profileData = useSelector((state: RootState) => state.profile.profile);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const onClose = () => setIsOpen(false);
+
+  const hasMounted = useRef(false);
+  const [isProfileCleared, setIsProfileCleared] = useState(false); // Track if profile data has been cleared
 
   // Destructure specific attributes from the profileData
   const { name, wishlistBook, libraryBook, languagePreference, imageData } =
     profileData;
 
-  const dispatch = useDispatch<AppDispatch>();
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const onClose = () => setIsOpen(false);
+  useEffect(() => {
+    if (hasMounted.current) {
+      if (!isProfileCleared) {
+        updateUserProfileData(profileData);
+      }
+    } else {
+      hasMounted.current = true;
+    }
+  }, [profileData, isProfileCleared]);
 
   const handleLanguageChange = (selectedLanguage) => {
     i18n.locale = selectedLanguage;
     dispatch(setProfileData({ languagePreference: selectedLanguage }));
-  
-    // Get the updated profile data after dispatch
-    const updatedProfileData = useSelector((state: RootState) => state.profile.profile);
-    updateUserProfileData(updatedProfileData);
+    // No need to useSelector here
+    // Instead, directly use the updated profileData from the component state
+    updateUserProfileData(profileData);
   };
+
   const handleImageUpload = (imageUri) => {
     dispatch(setProfileData({ imageData: imageUri }));
-
-    // Get the updated profile data after dispatch
-    const updatedProfileData = useSelector((state: RootState) => state.profile.profile);
-    // updateUserProfileData(updatedProfileData);
-
+    // No need to useSelector here
+    // Instead, directly use the updated profileData from the component state
+    // updateUserProfileData(profileData);
   };
 
   const signOutHandler = async (): Promise<void> => {
     try {
-      // Sign out the user from Firebase
       await auth().signOut();
-      dispatch(clearProfileData());
-
-      // Dispatch the logout action to clear user data in Redux state
-      AsyncStorage.removeItem("authToken");
+      dispatch(clearMessages());
+      await AsyncStorage.removeItem("authToken");
       dispatch(signOut());
+      setIsProfileCleared(true); // Mark profile data as cleared
+      dispatch(clearProfileData());
     } catch (error) {
       console.error("Error during logout:", error);
     }
   };
-
-
-  useEffect(() => {
-    updateUserProfileData(profileData);
-  }, [profileData]);
 
   return (
     <Screen>

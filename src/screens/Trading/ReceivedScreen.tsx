@@ -35,8 +35,6 @@ export default function ReceivedScreen({ navigation }) {
   const { loading, profile } = useSelector((state: any) => state.profile);
   const [error, setError] = useState<string | null>(null);
 
-  const importUrl = require("../../assets/images/no-cover-available.png");
-
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
   const acceptOfferHandler = async (offer: string) => {

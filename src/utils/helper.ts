@@ -185,8 +185,8 @@ export const generateModalActions = (actions, handleAction, closeModal) => {
       action.type === "cancel" ? closeModal() : handleAction(action.type),
   }));
 };
-export const createConversationId = (friendId, userId) => {
-  return `${friendId}_${userId}`;
+export const generateConversationId = (friendUserId, currentUserId) => {
+  return [friendUserId, currentUserId].sort().join('_');
 };
 
 export const reverseConversationId = (conversationId) => {

@@ -71,20 +71,9 @@ const profileSlice = createSlice({
     setLanguagePreference: (state, action) => {
       state.profile.languagePreference = action.payload; // Assuming 'image' is the key for profile image
     },
-    clearProfileData: (state) => {
-      state.profile = {
-        id: null,
-        name: "",
-        birthdate: "",
-        imageData: null,
-        gender: "",
-        languagePreference: "",
-        wishlistBook: [],
-        libraryBook: [],
-        receivedOffer: [],
-        sentOffer: [],
-        historyList: [],
-      };
+    clearProfileData: () => {
+      return initialState
+
     },
     removeBookFromList: (state, action) => {
       if (action.payload.listType === WISHLIST)
