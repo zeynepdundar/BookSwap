@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import auth from "@react-native-firebase/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setPhoneNumber, setToken, setUser } from "./auth-slice";
 import { fetchUserProfileAsync } from "./profile-actions";
 import { setProfileData } from "./profile-slice";
 import { AuthEndpoints } from "../api/endpoints";
+import AsyncStore from "../utils/AsyncStore";
 
 export const verifyPhoneNumber = createAsyncThunk(
   "auth/verifyPhoneNumber",
@@ -68,7 +68,7 @@ export const checkVerificationCode = createAsyncThunk(
       }
 
       thunkAPI.dispatch(setToken(user.token));
-      await AsyncStorage.setItem("authToken", user.token);
+      await AsyncStore.setItem("authToken", user.token);
 
       return userCredential;
     } catch (error) {

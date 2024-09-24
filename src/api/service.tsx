@@ -1,6 +1,7 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { EditionEndpoints, ProfileEndpoints } from "./endpoints";
 import { createBookData, structureOfferData } from "../utils/helper";
+import AsyncStore from "../utils/AsyncStore";
+
 import { UserProfile, WISHLIST } from "../constants";
 
 export const updateUserProfileData = async (profileData) => {
@@ -10,7 +11,11 @@ export const updateUserProfileData = async (profileData) => {
   const libraryBookIds = (profileData.libraryBook || [])
     .map((item) => item.id || null)
     .filter(Boolean);
-  const pushNotificationToken = await AsyncStorage.getItem("pushToken");
+
+  const pushNotificationToken = await AsyncStore.getItem<string>(
+    "pushToken",
+    null
+  );
 
   const updatedAttributes: any = {
     id: profileData.id.toString(),
@@ -19,13 +24,16 @@ export const updateUserProfileData = async (profileData) => {
     wished_editions: wishlistBookIds,
     owned_editions: libraryBookIds,
     language_preference: profileData.languagePreference,
-    push_tokens: ["ExponentPushToken[iskGN6Io5dqFbfasNwDm4g]"], // Replace with actual push tokens
+    push_tokens: ["ExponentPushToken[iskGN6Io5dqFbfasNwDm4g]"], // Replace with actual push tokens: pushNotificationToken
   };
 
   try {
     // Attempt to upload the profile image
     if (profileData.imageData) {
-      await uploadProfileImage(profileData.id.toString(), profileData.imageData);
+      await uploadProfileImage(
+        profileData.id.toString(),
+        profileData.imageData
+      );
     }
   } catch (error) {
     console.error("Failed to upload profile imagexx", error.message);
@@ -45,30 +53,33 @@ export const updateUserProfileData = async (profileData) => {
     throw new Error("Failed to update profile");
   }
 };
-export const fetchProfileImage = async (userId: string) => {
+export const fetchProfileImageUrl = async (userId: string) => {
   try {
     const response: any = await fetch(
-      ProfileEndpoints.FETCH_USER_PHOTO(userId),
+      ProfileEndpoints.FETCH_USER_PHOTO_URL(userId),
       {
         method: "GET",
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
           // Authorization: `Bearer ${"eyJhbGciOiJSUzI1NiIsImtpZCI6IjAzMmNjMWNiMjg5ZGQ0NjI2YTQzNWQ3Mjk4OWFlNDMyMTJkZWZlNzgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm9vay1zd2FwLTJkOWE1IiwiYXVkIjoiYm9vay1zd2FwLTJkOWE1IiwiYXV0aF90aW1lIjoxNzAzMjQ4MjUwLCJ1c2VyX2lkIjoiMnZXNFJhRUpCc1RCYVI0VTloTHpudUtsTzZJMiIsInN1YiI6IjJ2VzRSYUVKQnNUQmFSNFU5aEx6bnVLbE82STIiLCJpYXQiOjE3MDM0MjU0MzMsImV4cCI6MTcwMzQyOTAzMywicGhvbmVfbnVtYmVyIjoiKzE1NTU2NjYxMjM0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrMTU1NTY2NjEyMzQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwaG9uZSJ9fQ.p4gFmzGQKYv22zrsbo-zatwMeTs8WhbrFn6FFTkLY76PsfF2flZyEQ3hLFfDU3zy0BmS8SFgLyA6DQVp4uDGebtYNfxdCkHc6AB1Ni0fAF7FXoI_J3jQ8dUDA2cUQ9wQOzjaVcboiciX89Begp_GtM19EcOoK045Q1DIw-cWta0NGY-BjngJ11jWEYDJb1pzexsjTZiA6CuQghhq8sTZsvstwueCdhre4gwQzARJaXVzEQMfHWMekUacGqjkDa90onwNChlMzQtxdOu0KDrpgsZj7-8Oi5EQODnFl6xHp5g42vB64HNS2Kc2_frgQA1yxyxNeYaKVMB1ia6y_QmuOw"}`, // Replace with your actual access token
         },
       }
     );
 
     if (!response.ok) {
-      throw new Error(
-        "Failed to fetch user profile image from db [fetchProfileImage]"
+      const { status, statusText } = response;
+      const body = await response.text(); // Read the body as text or JSON, depending on your API
+      console.error(
+        `Error fetching user profile image [fetchProfileImage]:\nStatus: ${status}\nMessage: ${statusText}\nBody: ${body}`
       );
+      throw new Error(`Failed to fetch user profile image [fetchProfileImage]`);
     }
 
-    const blob = await response.blob(); // Convert the response to a Blob
-    const imageUri = URL.createObjectURL(blob); // Convert Blob to a URI
+    const data = await response.json();
 
+    await AsyncStore.setItem("profile_photo_url", data.profile_photo_url);
 
-    return imageUri
+    return data.profile_photo_url;
   } catch (err) {
     console.error("Error fetching profile image:", err.message);
   }
@@ -103,7 +114,9 @@ export const uploadProfileImage = async (userId, imageUri) => {
     if (!response.ok) {
       if (response.status === 413) {
         console.error("Failed to update profile: Payload Too Large");
-        throw new Error("The image size is too large to upload. Please try a smaller image.");
+        throw new Error(
+          "The image size is too large to upload. Please try a smaller image."
+        );
       } else {
         const result = await response.json();
         console.error("Failed to update profile", result.data);
@@ -137,12 +150,12 @@ export const fetchUserProfileData = async (firebaseUserId: string) => {
     }
 
     // Once we have the result, we can fetch other related data in parallel
-    const [ receivedOffers, sentOffers, historyList] =
+    const [imageURL, receivedOffers, sentOffers, historyList] =
       await Promise.all([
-        // fetchProfileImage(result.id).catch((error) => {
-        //   console.warn("Error fetching profile image:", error);
-        //   return null; // Fallback value
-        // }),
+        fetchProfileImageUrl(result.id).catch((error) => {
+          console.warn("Error fetching profile image:", error);
+          return null; // Fallback value
+        }),
         fetchReceivedOffer(result.id).catch((error) => {
           console.warn("Error fetching received offers:", error);
           return []; // Fallback value
@@ -162,7 +175,7 @@ export const fetchUserProfileData = async (firebaseUserId: string) => {
       id: result.id,
       name: result.name,
       birthdate: result.birthdate,
-      imageData: null,
+      imageData: imageURL,
       gender: result.gender,
       languagePreference: result.language_preference,
       wishlistBook: createBookData(result.wished_editions),
