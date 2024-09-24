@@ -24,7 +24,6 @@ import ImagePicker from "../../components/ImagePicker";
 import auth from "@react-native-firebase/auth";
 import { signOut } from "../../store/auth-slice";
 import { clearMessages } from "../../store/messages-slice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   clearProfileData,
   setLanguagePreference,
@@ -32,6 +31,7 @@ import {
 } from "../../store/profile-slice";
 import { updateUserProfileData } from "../../api/service";
 import { RootState } from "../../store/types";
+import AsyncStore from "../../utils/AsyncStore";
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../../assets/images/icon/library-icon.png");
@@ -75,14 +75,14 @@ export default function ProfileScreen({ navigation }) {
     dispatch(setProfileData({ imageData: imageUri }));
     // No need to useSelector here
     // Instead, directly use the updated profileData from the component state
-    // updateUserProfileData(profileData);
+    updateUserProfileData(profileData);
   };
 
   const signOutHandler = async (): Promise<void> => {
     try {
       await auth().signOut();
       dispatch(clearMessages());
-      await AsyncStorage.removeItem("authToken");
+      await AsyncStore.removeItem("authToken");
       dispatch(signOut());
       setIsProfileCleared(true); // Mark profile data as cleared
       dispatch(clearProfileData());
@@ -230,7 +230,7 @@ export default function ProfileScreen({ navigation }) {
                         color="black.700"
                         letterSpacing="lg"
                       >
-                        {languagePreference.toUpperCase()}
+                        {languagePreference?.toUpperCase()}
                       </Text>
                     </Pressable>
                   );
