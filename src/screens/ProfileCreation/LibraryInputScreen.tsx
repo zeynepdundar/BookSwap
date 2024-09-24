@@ -49,6 +49,7 @@ export default function LibraryInputScreen({ navigation }) {
     );
   };
   const handleProfileUpdate = (specificAction) => {
+    console.log("Profile lang",deviceLanguage)
     // Additional logic based on the specific action
     if (specificAction === "pressContinue") {
       dispatch(
