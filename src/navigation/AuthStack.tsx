@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import WelcomeScreen from "../screens/Auth/WelcomeScreen";
+import TempScreen from "../screens/Auth/TempScreen";
 import AuthVerificationScreen from "../screens/Auth/AuthVerificationScreen";
 import { useSelector } from "react-redux";
 
@@ -15,6 +16,7 @@ export default function AuthStack() {
       }}
     >
       {!confirmationResult && !error && (
+        // <Stack.Screen name="Temp" component={TempScreen}></Stack.Screen>
         <Stack.Screen name="Welcome" component={WelcomeScreen}></Stack.Screen>
       )}
       <Stack.Screen

@@ -73,9 +73,10 @@ export default function ProfileScreen({ navigation }) {
 
   const handleImageUpload = (imageUri) => {
     dispatch(setProfileData({ imageData: imageUri }));
+    console.log("rrr",imageUri)
     // No need to useSelector here
     // Instead, directly use the updated profileData from the component state
-    // updateUserProfileData(profileData);
+    updateUserProfileData(profileData);
   };
 
   const signOutHandler = async (): Promise<void> => {
@@ -230,7 +231,7 @@ export default function ProfileScreen({ navigation }) {
                         color="black.700"
                         letterSpacing="lg"
                       >
-                        {languagePreference.toUpperCase()}
+                        {languagePreference?.toUpperCase()}
                       </Text>
                     </Pressable>
                   );
