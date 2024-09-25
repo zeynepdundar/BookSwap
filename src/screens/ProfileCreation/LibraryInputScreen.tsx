@@ -54,8 +54,6 @@ export default function LibraryInputScreen({ navigation }) {
         libraryBook: selectedBooks,
         languagePreference: deviceLanguage,
       };
-
-      // Dispatch the async thunk to update profile data
       dispatch(updateProfileAsync(updatedProfile));
     }
     dispatch(setIsNewUser(false));

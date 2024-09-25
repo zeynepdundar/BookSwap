@@ -316,7 +316,12 @@ export default function TradeProposal({ navigation, route }) {
           </VStack>
 
           <AspectRatio w="39">
-            <Avatar source={profilePhoto} size="50" />
+            <Image
+              source={{ uri: user.photo_file_name }}
+              alt="Profile Image"
+              size="50"
+              rounded="full"
+            />
           </AspectRatio>
         </HStack>
         {/* <Button

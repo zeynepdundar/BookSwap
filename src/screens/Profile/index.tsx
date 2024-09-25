@@ -42,22 +42,10 @@ export default function ProfileScreen({ navigation }) {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
 
-  const hasMounted = useRef(false);
-  const [isProfileCleared, setIsProfileCleared] = useState(false); // Track if profile data has been cleared
-
   // Destructure specific attributes from the profileData
   const { name, wishlistBook, libraryBook, languagePreference, imageData } =
     profileData;
-
-  // useEffect(() => {
-  //   if (hasMounted.current) {
-  //     if (!isProfileCleared) {
-  //       updateUserProfileData(profileData);
-  //     }
-  //   } else {
-  //     hasMounted.current = true;
-  //   }
-  // }, [profileData, isProfileCleared]);
+    console.log("imageData",imageData)
 
   const handleLanguageChange = (selectedLanguage) => {
     i18n.locale = selectedLanguage;
@@ -85,7 +73,6 @@ export default function ProfileScreen({ navigation }) {
       dispatch(clearMessages());
       await AsyncStore.removeItem("authToken");
       dispatch(signOut());
-      setIsProfileCleared(true); // Mark profile data as cleared
       dispatch(clearProfileData());
     } catch (error) {
       console.error("Error during logout:", error);
