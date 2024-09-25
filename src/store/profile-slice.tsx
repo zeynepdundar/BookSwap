@@ -11,6 +11,7 @@ import {
   removeBookFromListAsync,
   sendOfferAsync,
   takeBackOfferAsync,
+  updateProfileAsync,
 } from "./profile-actions";
 
 const initialState: ProfileState = {
@@ -154,6 +155,20 @@ const profileSlice = createSlice({
         state.loading = false;
         state.profile = action.payload;
         state.error = null;
+      })
+      .addCase(updateProfileAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProfileAsync.fulfilled, (state, action:any) => {
+        state.loading = false;
+        // Update the store with the updated profile data
+        state.profile = action.payload;
+        state.error = null;
+      })
+      .addCase(updateProfileAsync.rejected, (state, action) => {
+        state.loading = false;
+        // state.error = action.payload;
       })
       .addCase(fetchReceivedOffersAsync.pending, (state) => {
         state.loading = true;
