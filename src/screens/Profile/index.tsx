@@ -45,7 +45,6 @@ export default function ProfileScreen({ navigation }) {
   // Destructure specific attributes from the profileData
   const { name, wishlistBook, libraryBook, languagePreference, imageData } =
     profileData;
-    console.log("imageData",imageData)
 
   const handleLanguageChange = (selectedLanguage) => {
     i18n.locale = selectedLanguage;
