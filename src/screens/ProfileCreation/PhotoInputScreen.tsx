@@ -20,12 +20,13 @@ export default function PhotoInputScreen({ navigation }) {
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
-  const handleSelectImage = (data) => {
-    setImage(data)
+  const handleSelectImage = (imageUri) => {
+    setImage(imageUri)
   };
 
   const pressHandler = () => {
-    dispatch(setProfileData({imageData:image.uri}));
+    dispatch(setProfileData({imageData:image}));
+
     navigation.navigate("Wishlist");
   };
 

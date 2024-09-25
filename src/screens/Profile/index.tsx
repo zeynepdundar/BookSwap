@@ -24,14 +24,10 @@ import ImagePicker from "../../components/ImagePicker";
 import auth from "@react-native-firebase/auth";
 import { signOut } from "../../store/auth-slice";
 import { clearMessages } from "../../store/messages-slice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  clearProfileData,
-  setLanguagePreference,
-  setProfileData,
-} from "../../store/profile-slice";
-import { updateUserProfileData } from "../../api/service";
+import { clearProfileData, setProfileData } from "../../store/profile-slice";
 import { RootState } from "../../store/types";
+import AsyncStore from "../../utils/AsyncStore";
+import { updateProfileAsync } from "../../store/profile-actions";
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../../assets/images/icon/library-icon.png");
@@ -53,36 +49,41 @@ export default function ProfileScreen({ navigation }) {
   const { name, wishlistBook, libraryBook, languagePreference, imageData } =
     profileData;
 
-  useEffect(() => {
-    if (hasMounted.current) {
-      if (!isProfileCleared) {
-        updateUserProfileData(profileData);
-      }
-    } else {
-      hasMounted.current = true;
-    }
-  }, [profileData, isProfileCleared]);
+  // useEffect(() => {
+  //   if (hasMounted.current) {
+  //     if (!isProfileCleared) {
+  //       updateUserProfileData(profileData);
+  //     }
+  //   } else {
+  //     hasMounted.current = true;
+  //   }
+  // }, [profileData, isProfileCleared]);
 
   const handleLanguageChange = (selectedLanguage) => {
     i18n.locale = selectedLanguage;
-    dispatch(setProfileData({ languagePreference: selectedLanguage }));
-    // No need to useSelector here
-    // Instead, directly use the updated profileData from the component state
-    updateUserProfileData(profileData);
+
+    const updatedProfile = {
+      ...profileData,
+      languagePreference: selectedLanguage,
+    };
+
+    dispatch(updateProfileAsync(updatedProfile));
   };
 
   const handleImageUpload = (imageUri) => {
-    dispatch(setProfileData({ imageData: imageUri }));
-    // No need to useSelector here
-    // Instead, directly use the updated profileData from the component state
-    // updateUserProfileData(profileData);
+    const updatedProfile = {
+      ...profileData,
+      imageData: imageUri,
+    };
+
+    dispatch(updateProfileAsync(updatedProfile));
   };
 
   const signOutHandler = async (): Promise<void> => {
     try {
       await auth().signOut();
       dispatch(clearMessages());
-      await AsyncStorage.removeItem("authToken");
+      await AsyncStore.removeItem("authToken");
       dispatch(signOut());
       setIsProfileCleared(true); // Mark profile data as cleared
       dispatch(clearProfileData());
@@ -230,7 +231,7 @@ export default function ProfileScreen({ navigation }) {
                         color="black.700"
                         letterSpacing="lg"
                       >
-                        {languagePreference.toUpperCase()}
+                        {languagePreference?.toUpperCase()}
                       </Text>
                     </Pressable>
                   );

@@ -21,8 +21,8 @@ const ProfileEndpoints = {
   FETCH_USER_DATA: (firebaseUID: string) =>
     `${BASE_URL}:${PORT}/core/users/${firebaseUID}`,
   UPDATE_USER_DATA: `${BASE_URL}:${PORT}/core/profile`,
-  FETCH_USER_PHOTO: (userId: string) =>
-    `${BASE_URL}:${PORT}/core/profile/${userId}/photo`,
+  FETCH_USER_PHOTO_URL: (userId: string) =>
+    `${BASE_URL}:${PORT}/core/profile/${userId}/photo-url`,
   UPLOAD_USER_PHOTO: (userId: string) =>
     `${BASE_URL}:${PORT}/core/user/${userId}/upload`,
 

@@ -16,11 +16,10 @@ import SearchBar from "../../components/shared/SearchBar";
 import { CoverListHorizontal } from "../../components/shared/CoverListHorizontal";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { setProfileData } from "../../store/profile-slice";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import { setIsNewUser } from "../../store/auth-slice";
-import { updateUserProfileData } from "../../api/service";
 import * as Localization from "expo-localization";
+import { updateProfileAsync } from "../../store/profile-actions";
 
 export default function LibraryInputScreen({ navigation }) {
   const [selectedBooks, setSelectedBooks] = useState([]);
@@ -48,19 +47,20 @@ export default function LibraryInputScreen({ navigation }) {
       currentLibraryItems.filter((item) => item.id !== id)
     );
   };
-  const handleProfileUpdate = (specificAction) => {
-    // Additional logic based on the specific action
+  const handleProfileUpdate = async(specificAction) => {
     if (specificAction === "pressContinue") {
-      dispatch(
-        setProfileData({
-          libraryBook: selectedBooks,
-          languagePreference: deviceLanguage,
-        })
-      );
+      const updatedProfile = {
+        ...profile,
+        libraryBook: selectedBooks,
+        languagePreference: deviceLanguage,
+      };
+
+      // Dispatch the async thunk to update profile data
+      dispatch(updateProfileAsync(updatedProfile));
     }
-    updateUserProfileData(profile);
     dispatch(setIsNewUser(false));
   };
+
 
   const pressContinueHandler = () => {
     handleProfileUpdate("pressContinue");
