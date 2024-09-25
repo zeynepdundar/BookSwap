@@ -5,7 +5,6 @@ import AsyncStore from "../utils/AsyncStore";
 import { UserProfile, WISHLIST } from "../constants";
 
 export const updateUserProfileData = async (profileData) => {
-  console.log("update",profileData);
   const wishlistBookIds = (profileData.wishlistBook || [])
     .map((item) => item.id || null)
     .filter(Boolean);
@@ -22,6 +21,7 @@ export const updateUserProfileData = async (profileData) => {
     id: profileData.id.toString(),
     name: profileData.name,
     gender: profileData.gender,
+    birthdate: profileData.birthdate,
     wished_editions: wishlistBookIds,
     owned_editions: libraryBookIds,
     language_preference: profileData.languagePreference,

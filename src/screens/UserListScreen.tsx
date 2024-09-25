@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Heading,
@@ -12,12 +12,15 @@ import {
   Divider,
   Avatar,
   Pressable,
+  Image,
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { AlertDialogBox } from "../components/Modal/AlertDialogBox";
+import { fetchProfileImageUrl } from "../api/service";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function UserListScreen({ navigation, route }) {
   const usersTemp = route?.params?.data?.usersOwning;
@@ -30,6 +33,24 @@ export default function UserListScreen({ navigation, route }) {
   const [libraryItems, setLibraryItem] = useState<any>([]);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [usersWithPhotos, setUsersWithPhotos] = useState(
+    usersTemp.map(({ photo_file_name, ...rest }) => rest) // Create a new object without photo_file_name
+  );
+  // Function to fetch profile image URLs and update the state
+  const fetchProfileImages = async () => {
+    const updatedUsers = await Promise.all(
+      usersTemp.map(async (user) => {
+        const photoUrl = await fetchProfileImageUrl(user.id); // Fetch the profile image URL
+        return { ...user, photo_file_name: photoUrl || avatarImage }; // Set a default avatar if fetching fails
+      })
+    );
+    setUsersWithPhotos(updatedUsers);
+  };
+  useFocusEffect(
+   useCallback(() => {
+      fetchProfileImages();
+    }, [usersTemp])
+  );
 
   const sendOfferHandler = (data) => {
     if (libraryBook.length === 0) {
@@ -42,12 +63,11 @@ export default function UserListScreen({ navigation, route }) {
   };
   const onClose = () => setIsOpen(false);
 
-  const onNavigateProfile = (selectedUser) =>{
+  const onNavigateProfile = (selectedUser) => {
     navigation.navigate("OtherUserProfile", {
       user: selectedUser,
     });
   };
-
 
   const addBookHandler = () => {
     navigation.navigate("ProfileStack", { screen: "Library" });
@@ -79,42 +99,44 @@ export default function UserListScreen({ navigation, route }) {
         </HStack>
         <FlatList
           w="325px"
-          data={usersTemp}
-          extraData={usersTemp}
+          data={usersWithPhotos}
+          extraData={usersWithPhotos}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <>
-              <Center mx="3" mb="1" justifyContent="center" h="76" key={item.id}>
+              <Center
+                mx="3"
+                mb="1"
+                justifyContent="center"
+                h="76"
+                key={item.id}
+              >
                 <HStack space={[4, 6]} justifyContent="space-between">
                   <Pressable
                     onPress={() => {
                       onNavigateProfile(item);
                     }}
-                    flexDirection="row" 
+                    flexDirection="row"
                     padding="1"
-
-                  >     
-                   {item.photo_file_name && (            
-                    <Avatar
-                      borderRadius="full"
-                      source={{ uri: item.photo_file_name }}
-                      mr="3"
-                    />
-                  )}
-                  {!item.photo_file_name && (
-                    <Avatar borderRadius="full" source={avatarImage}  mr="3"/>
-                  )}
-                  <Text
-                    color="#000000"
-                    fontSize="16"
-                    alignSelf="center"
-                    numberOfLines={1}
                   >
-                    {item.name}
-                  </Text>
-
+                    {item.photo_file_name && (
+                      <Image
+                        source={{ uri: item.photo_file_name }}
+                        alt="Profile Image"
+                        size={10}
+                        rounded="full"
+                        mr={3}
+                      />
+                    )}
+                    <Text
+                      color="#000000"
+                      fontSize="16"
+                      alignSelf="center"
+                      numberOfLines={1}
+                    >
+                      {item.name}
+                    </Text>
                   </Pressable>
-
 
                   <Spacer />
                   <Button

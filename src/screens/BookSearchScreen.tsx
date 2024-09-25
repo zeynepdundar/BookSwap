@@ -81,10 +81,10 @@ export default function BookSearchScreen({ navigation, route = null }) {
     } else {
     }
   };
-
   const navigateUserList = (item) => {
+    const { photo_file_name, ...userWithoutPhoto } = item; // Destructure to omit photo_file_name
     navigation.navigate("UserList", {
-      data: item,
+      data: userWithoutPhoto, // Pass the user object without the photo_file_name
     });
   };
   const navigationState = useNavigationState((state) => state);

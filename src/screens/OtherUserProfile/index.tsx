@@ -11,6 +11,7 @@ import {
   Avatar,
   Pressable,
   useColorModeValue,
+  Image,
 } from "native-base";
 import Screen from "../../components/Screen";
 import { useCallback, useState } from "react";
@@ -39,7 +40,9 @@ export default function OtherUserProfileScreen({ navigation, route }) {
       const fetchProfileData = async () => {
         try {
           setLoading(true);
-          const profileData = await fetchUserProfileData(userTemp?.firebase_uid);
+          const profileData = await fetchUserProfileData(
+            userTemp?.firebase_uid
+          );
           setProfile({
             firebase_uid: userTemp?.firebase_uid,
             id: profileData.id,
@@ -60,7 +63,6 @@ export default function OtherUserProfileScreen({ navigation, route }) {
       fetchProfileData();
     }, [userTemp, route?.params])
   );
-
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -186,7 +188,12 @@ export default function OtherUserProfileScreen({ navigation, route }) {
             w="100%"
             h="100%"
           >
-            <Avatar width="25%" height="100%" source={otherUserImage} />
+            <Image
+              source={{ uri: userTemp.photo_file_name }}
+              alt="Profile Image"
+              size="60z"
+              rounded="full"
+            />
             <Heading width="60%" color="black.100" my={3}>
               {profile?.name}
             </Heading>
