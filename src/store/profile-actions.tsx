@@ -8,9 +8,9 @@ import {
   fetchUserProfileData,
   removeBookFromList,
   sendOffer,
+  updateUserProfileData,
 } from "../api/service";
 import { ProfileEndpoints } from "../api/endpoints";
-import { structureOfferData } from "../utils/helper";
 
 export const fetchUserProfileAsync = createAsyncThunk(
   "profile/fetchUserProfile",
@@ -32,6 +32,20 @@ export const fetchUserProfileAsync = createAsyncThunk(
 //   book: any; // Adjust the type of 'book' as needed
 //   listType: string;
 // }
+
+export const updateProfileAsync = createAsyncThunk(
+  'profile/updateProfile',
+  async (profileData:any, { rejectWithValue }) => {
+    try {
+      // Make the API call to update user profile
+      await updateUserProfileData(profileData);
+      return profileData; // Return the updated profile to store in Redux
+    } catch (error) {
+      console.error("Profile update failed:", error.message);
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 export const addBookToListAsync = createAsyncThunk(
   "profile/addBookToList",
