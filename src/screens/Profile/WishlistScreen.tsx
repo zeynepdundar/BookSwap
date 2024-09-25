@@ -30,7 +30,7 @@ const RemoveBookButton = ({ onPress }) => (
     onPress={onPress}
     name={"delete-forever"}
     variant="solid"
-    size="md"
+    size="lg"
     color="primary.100"
     as={MaterialIcons}
   />

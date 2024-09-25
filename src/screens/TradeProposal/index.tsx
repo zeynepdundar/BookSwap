@@ -290,6 +290,7 @@ export default function TradeProposal({ navigation, route }) {
                   mr="7"
                   mb="12"
                   bgColor="primary.50"
+                  alignSelf="center"
                   icon={
                     <Icon
                       color="white"
