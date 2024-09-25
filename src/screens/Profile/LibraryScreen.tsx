@@ -28,7 +28,7 @@ const RemoveBookButton = ({ onPress }) => (
     onPress={onPress}
     name={"delete-forever"}
     variant="solid"
-    size="md"
+    size="lg"
     color="primary.100"
     as={MaterialIcons}
   />
@@ -39,7 +39,7 @@ const AddBookToProposalButton = ({ onPress }) => (
     onPress={onPress}
     name={"add-circle"}
     variant="solid"
-    size="md"
+    size="lg"
     color="primary.100"
     as={MaterialIcons}
   />

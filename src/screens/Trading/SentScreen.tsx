@@ -22,6 +22,7 @@ import {
   fetchSentOffersAsync,
   takeBackOfferAsync,
 } from "../../store/profile-actions";
+import { formatText, truncateText } from "../../utils/helper";
 import { ErrorAlert } from "../BarcodeScannerScreen";
 
 export default function SentScreen({ navigation }) {
@@ -207,9 +208,9 @@ export default function SentScreen({ navigation }) {
                         color="#000000"
                         fontSize="12"
                         fontWeight={500}
-                        numberOfLines={3}
+                        numberOfLines={2}
                       >
-                        {item.offeredBook.title}
+                        {truncateText(formatText(item.offeredBook.title), 36)}
                       </Text>
                       <Text color="#8c8c8c" fontSize="11">
                         {item.offeredBook.author}

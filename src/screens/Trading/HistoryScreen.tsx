@@ -18,6 +18,7 @@ import { LoadingOverlay } from "../../components/LoadingOverlay";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTradeHistoryAsync } from "../../store/profile-actions";
 import { ThunkDispatch } from "@reduxjs/toolkit";
+import { formatText, truncateText } from "../../utils/helper";
 
 export default function HistoryScreen({ navigation }) {
   const tradeIcon = require("../../assets/images/icon/trade-in.png");
@@ -44,7 +45,7 @@ export default function HistoryScreen({ navigation }) {
   return (
     <Screen>
       <Center>
-           {/* {!historyList || historyList.length===0 && (
+        {/* {!historyList || historyList.length===0 && (
         <VStack width="100%" height="100%" pt="100" bg="#fff">
           <Center>
             <Text fontSize="md">{i18n.t("start-searching-for-new-books")}</Text>
@@ -57,7 +58,7 @@ export default function HistoryScreen({ navigation }) {
           </Center>
         </VStack>
       )} */}
-        { !error && historyList && historyList?.length > 0 && (
+        {!error && historyList && historyList?.length > 0 && (
           <FlatList
             w="100%"
             data={historyList}
@@ -76,46 +77,52 @@ export default function HistoryScreen({ navigation }) {
               >
                 <HStack space="0.8" alignItems="center" h={151}>
                   <VStack w="85px" h={140} alignItems="center" pt={3}>
-                  <Image
-                         source={
-                          item.requestedBook.coverUrl
-                            ? { uri: item.requestedBook.coverUrl }
-                            : {uri:"https://store.bookbaby.com/bookshop/OnePageBookCoverImage.jpg?BookID=BK00009510&abOnly=False"}
-                        }                    
-                        alt="Library"
-                        roundedRight="6"
-                        width="60"
-                        height="82"
+                    <Image
+                      source={
+                        item.requestedBook.coverUrl
+                          ? { uri: item.requestedBook.coverUrl }
+                          : {
+                              uri: "https://store.bookbaby.com/bookshop/OnePageBookCoverImage.jpg?BookID=BK00009510&abOnly=False",
+                            }
+                      }
+                      alt="Library"
+                      roundedRight="6"
+                      width="60"
+                      height="82"
                     />
                     <Text
                       color="#06070D"
                       fontSize="xs"
                       mt="1"
                       textAlign="center"
+                      numberOfLines={2}
                     >
-                      {item.requestedBook.title}
+                      {truncateText(formatText(item.requestedBook.title), 36)}
                     </Text>
                   </VStack>
                   <Image source={tradeIcon} alt=" Library" />
                   <VStack w="85px" h={140} alignItems="center" pt={3}>
                     <Image
-                         source={
-                          item.offeredBook.coverUrl
-                            ? { uri: item.offeredBook.coverUrl }
-                            : {uri:"https://store.bookbaby.com/bookshop/OnePageBookCoverImage.jpg?BookID=BK00009510&abOnly=False"}
-                        }                    
-                        alt=" Library"
-                        width="60"
-                        height="82"
-                        roundedRight="6"
+                      source={
+                        item.offeredBook.coverUrl
+                          ? { uri: item.offeredBook.coverUrl }
+                          : {
+                              uri: "https://store.bookbaby.com/bookshop/OnePageBookCoverImage.jpg?BookID=BK00009510&abOnly=False",
+                            }
+                      }
+                      alt=" Library"
+                      width="60"
+                      height="82"
+                      roundedRight="6"
                     />
                     <Text
                       color="#06070D"
                       fontSize="xs"
                       mt="1"
                       textAlign="center"
+                      numberOfLines={2}
                     >
-                      {item.offeredBook.title}
+                      {truncateText(formatText(item.offeredBook.title), 36)}
                     </Text>
                   </VStack>
                   <Spacer></Spacer>

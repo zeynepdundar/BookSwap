@@ -22,6 +22,7 @@ import {
   fetchReceivedOffersAsync,
   rejectOfferAsync,
 } from "../../store/profile-actions";
+import { formatText, truncateText } from "../../utils/helper";
 import { ErrorAlert } from "../BarcodeScannerScreen";
 
 export default function ReceivedScreen({ navigation }) {
@@ -59,10 +60,13 @@ export default function ReceivedScreen({ navigation }) {
       }
       // Navigate to the TradeOfferAcceptedScreen on success
       navigation.navigate("TradeOfferAcceptedScreen", {
-        user: {id: offer.participantProfile.id, name: offer.participantProfile.name},
+        user: {
+          id: offer.participantProfile.id,
+          name: offer.participantProfile.name,
+        },
         receivedBook: offer.requestedBook,
         offeredBook: offer.offeredBook,
-        conversationId: payload.conversationId
+        conversationId: payload.conversationId,
       });
     } catch (error) {
       setError(i18n.t("something-went-wrong"));
@@ -235,12 +239,12 @@ export default function ReceivedScreen({ navigation }) {
                         color="#000000"
                         fontSize="12"
                         fontWeight={500}
-                        numberOfLines={3}
+                        numberOfLines={2}
                       >
-                        {item.offeredBook.title}
+                        {truncateText(formatText(item.offeredBook.title), 36)}
                       </Text>
-                      <Text color="#8c8c8c" fontSize="11">
-                        {item.offeredBook.author}
+                      <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
+                        {truncateText(formatText(item.offeredBook.author), 30)}
                       </Text>
                     </VStack>
                     <Center height={110}>
@@ -269,12 +273,15 @@ export default function ReceivedScreen({ navigation }) {
                         color="#000000"
                         fontSize="12"
                         fontWeight={500}
-                        numberOfLines={3}
+                        numberOfLines={2}
                       >
-                        {item.requestedBook.title}
+                        {truncateText(formatText(item.requestedBook.title), 36)}
                       </Text>
-                      <Text color="#8c8c8c" fontSize="11">
-                        {item.requestedBook.author}
+                      <Text color="#8c8c8c" fontSize="11" numberOfLines={2}>
+                        {truncateText(
+                          formatText(item.requestedBook.author),
+                          30
+                        )}
                       </Text>
                     </VStack>
                   </HStack>
