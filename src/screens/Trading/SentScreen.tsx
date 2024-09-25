@@ -1,3 +1,4 @@
+import { useFocusEffect } from "@react-navigation/native";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import {
   AspectRatio,
@@ -10,12 +11,14 @@ import {
   Flex,
   HStack,
   Image,
+  Pressable,
   Spinner,
   Text,
   VStack,
 } from "native-base";
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchProfileImageUrl } from "../../api/service";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import i18n from "../../i18n";
 import {
@@ -35,6 +38,8 @@ export default function SentScreen({ navigation }) {
   const sentOffers = useSelector(
     (state: any) => state.profile.profile.sentOffer
   );
+  const [sentOffersWithUserPhoto, setSentOffersWithUserPhoto] =
+    useState(sentOffers);
 
   const { loading, profile } = useSelector((state: any) => state.profile);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
@@ -71,7 +76,34 @@ export default function SentScreen({ navigation }) {
       return;
     }
   };
-
+  const onNavigateProfile = (selectedUser) => {
+    // console.log("onNavigateProfile",selectedUser)
+    // navigation.navigate("OtherUserProfile", {
+    //   user: selectedUser,
+    // });
+  };
+  const fetchProfileImages = async () => {
+    const updatedOffers = await Promise.all(
+      sentOffers.map(async (offer) => {
+        const photoUrl = await fetchProfileImageUrl(
+          offer.participantProfile.id
+        ); // Fetch the profile image URL
+        return {
+          ...offer,
+          participantProfile: {
+            ...offer.participantProfile,
+            photo_file_name: photoUrl || otherUserImage, // Add the photo URL or default image
+          },
+        };
+      })
+    );
+    setSentOffersWithUserPhoto(updatedOffers);
+  };
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfileImages();
+    }, [sentOffers])
+  );
   // TODO: This is coded for providing asynchronous data fetching from the database.
   // Profile fetching happens when logged in. The API should ideally use sockets.
   // Remove this when the socket-based implementation is ready.
@@ -108,7 +140,7 @@ export default function SentScreen({ navigation }) {
           maxWidth="100%"
           bg="#fff"
           height="75%"
-          data={sentOffers}
+          data={sentOffersWithUserPhoto}
           showsVerticalScrollIndicator={false}
           pt="3"
           refreshing={refreshing}
@@ -124,40 +156,55 @@ export default function SentScreen({ navigation }) {
                 zIndex={9}
               >
                 <Flex direction="row" justifyContent="space-between">
-                  <Avatar source={otherUserImage} size="44" />
-                  {/* <Text
-                      onPress={() => navigation.navigate("Library")}
-                      color="#161719"
-                      fontWeight="medium"
-                      fontSize="14px"
-                      mx="1"
-                    >
-                      {"Jesse Pinkman"}
-                    </Text> */}
+                  <Image
+                    source={
+                      profile.imageData
+                        ? { uri: profile.imageData }
+                        : otherUserImage
+                    }
+                    alt="Profile Image"
+                    size="44"
+                    rounded="full"
+                  />
                 </Flex>
                 <Flex direction="row" justifyContent="space-between">
-                  <VStack>
-                    <Text
-                      onPress={() => navigation.navigate("Library")}
-                      color="#161719"
-                      fontWeight="medium"
-                      fontSize="14px"
-                      mx="1"
-                    >
-                      {item.participantProfile.name}
-                    </Text>
-                    <Text
-                      onPress={() => navigation.navigate("Library")}
-                      color="coolGray.400"
-                      fontSize="12px"
-                      top="-5.5"
-                      mx="1"
-                      textAlign={"right"}
-                    >
-                      {item.createdAt}
-                    </Text>
-                  </VStack>
-                  <Avatar source={profilePhoto} size="44" />
+                  <Pressable
+                    onPress={() => {
+                      onNavigateProfile(item);
+                    }}
+                    flexDirection="row"
+                    padding="1"
+                  >
+                    <VStack>
+                      <Text
+                        color="#161719"
+                        fontWeight="medium"
+                        fontSize="14px"
+                        mx="1"
+                      >
+                        {item.participantProfile.name}
+                      </Text>
+                      <Text
+                        color="coolGray.400"
+                        fontSize="12px"
+                        top="-5.5"
+                        mx="1"
+                        textAlign={"right"}
+                      >
+                        {item.createdAt}
+                      </Text>
+                    </VStack>
+                    <Image
+                      source={
+                        item.participantProfile.photo_file_name
+                          ? { uri: item.participantProfile.photo_file_name }
+                          : otherUserImage
+                      }
+                      alt="Profile Image"
+                      size="44"
+                      rounded="full"
+                    />
+                  </Pressable>
                 </Flex>
               </Flex>
               <Box

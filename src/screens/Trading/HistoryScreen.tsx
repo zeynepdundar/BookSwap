@@ -19,6 +19,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchTradeHistoryAsync } from "../../store/profile-actions";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { formatText, truncateText } from "../../utils/helper";
+import { fetchProfileImageUrl } from "../../api/service";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function HistoryScreen({ navigation }) {
   const tradeIcon = require("../../assets/images/icon/trade-in.png");
@@ -30,9 +32,32 @@ export default function HistoryScreen({ navigation }) {
   const historyList = useSelector(
     (state: any) => state.profile.profile.historyList
   );
+  const [historyListWithUserPhoto, setHistoryListWithUserPhoto] =
+    useState(historyList);
   const { loading, profile } = useSelector((state: any) => state.profile);
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
-
+  const fetchProfileImages = async () => {
+    const updatedOffers = await Promise.all(
+      historyList.map(async (offer) => {
+        const photoUrl = await fetchProfileImageUrl(
+          offer.participantProfile.id
+        ); // Fetch the profile image URL
+        return {
+          ...offer,
+          participantProfile: {
+            ...offer.participantProfile,
+            photo_file_name: photoUrl || profilePhoto, // Add the photo URL or default image
+          },
+        };
+      })
+    );
+    setHistoryListWithUserPhoto(updatedOffers);
+  };
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfileImages();
+    }, [historyList])
+  );
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     dispatch(fetchTradeHistoryAsync(profile.id)) // Replace with your API call action
@@ -61,7 +86,7 @@ export default function HistoryScreen({ navigation }) {
         {!error && historyList && historyList?.length > 0 && (
           <FlatList
             w="100%"
-            data={historyList}
+            data={historyListWithUserPhoto}
             showsVerticalScrollIndicator={false}
             refreshing={refreshing}
             onRefresh={onRefresh}
@@ -132,9 +157,16 @@ export default function HistoryScreen({ navigation }) {
                     </Text>
                     <Spacer />
                     <Flex direction="column" alignItems="flex-end">
-                      <AspectRatio w="39">
-                        <Avatar source={profilePhoto} size="31" />
-                      </AspectRatio>
+                    <Image
+                      source={
+                        item.participantProfile.photo_file_name
+                          ? { uri: item.participantProfile.photo_file_name }
+                          : profilePhoto
+                      }
+                      alt="Profile Image"
+                      size="44"
+                      rounded="full"
+                    />
                       <Text
                         color="#8c8c8c"
                         fontSize="10"

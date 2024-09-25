@@ -1,3 +1,4 @@
+import { useFocusEffect } from "@react-navigation/native";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import {
   AspectRatio,
@@ -15,6 +16,7 @@ import {
 } from "native-base";
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchProfileImageUrl } from "../../api/service";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import i18n from "../../i18n";
 import {
@@ -32,12 +34,35 @@ export default function ReceivedScreen({ navigation }) {
   const receivedOffers = useSelector(
     (state: any) => state.profile.profile.receivedOffer
   );
+  const [receivedOffersWithUserPhoto, setReceivedOffersWithUserPhoto] =
+    useState(receivedOffers);
   const [refreshing, setRefreshing] = useState(false);
   const { loading, profile } = useSelector((state: any) => state.profile);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchProfileImages = async () => {
+    const updatedOffers = await Promise.all(
+      receivedOffers.map(async (offer) => {
+        const photoUrl = await fetchProfileImageUrl(
+          offer.participantProfile.id
+        ); // Fetch the profile image URL
+        return {
+          ...offer,
+          participantProfile: {
+            ...offer.participantProfile,
+            photo_file_name: photoUrl || otherUserImage, // Add the photo URL or default image
+          },
+        };
+      })
+    );
+    setReceivedOffersWithUserPhoto(updatedOffers);
+  };
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
-
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfileImages();
+    }, [receivedOffers])
+  );
   const acceptOfferHandler = async (offer: string) => {
     try {
       const response = await dispatch(acceptOfferAsync(offer.id));
@@ -147,7 +172,7 @@ export default function ReceivedScreen({ navigation }) {
           maxWidth="100%"
           bg="#fff"
           height="75%"
-          data={receivedOffers}
+          data={receivedOffersWithUserPhoto}
           showsVerticalScrollIndicator={false}
           pt="3"
           refreshing={refreshing}
@@ -163,21 +188,21 @@ export default function ReceivedScreen({ navigation }) {
                 zIndex={9}
               >
                 <Flex direction="row" justifyContent="space-between">
-                  <Avatar source={otherUserImage} size="44" />
-                  {/* <Text
-                onPress={() => navigation.navigate("Library")}
-                color="#161719"
-                fontWeight="medium"
-                fontSize="14px"
-                mx="1"
-              >
-                {"Jesse Pinkman"}
-              </Text> */}
+                  <Image
+                    source={
+                      profile.imageData
+                        ? { uri: profile.imageData }
+                        : otherUserImage
+                    }
+                    alt="Profile Image"
+                    size="44"
+                    rounded="full"
+                  />
                 </Flex>
                 <Flex direction="row" justifyContent="space-between">
                   <VStack>
                     <Text
-                      onPress={() => navigation.navigate("Library")}
+                      // onPress={() => navigation.navigate("Library")}
                       color="#161719"
                       fontWeight="medium"
                       fontSize="14px"
@@ -187,7 +212,7 @@ export default function ReceivedScreen({ navigation }) {
                     </Text>
 
                     <Text
-                      onPress={() => navigation.navigate("Library")}
+                      // onPress={() => navigation.navigate("Library")}
                       color="coolGray.400"
                       fontSize="12px"
                       top="-5.5"
@@ -197,7 +222,16 @@ export default function ReceivedScreen({ navigation }) {
                       {item.createdAt}
                     </Text>
                   </VStack>
-                  <Avatar source={profilePhoto} size="44" />
+                  <Image
+                    source={
+                      item.participantProfile.photo_file_name
+                        ? { uri: item.participantProfile.photo_file_name }
+                        : otherUserImage
+                    }
+                    alt="Profile Image"
+                    size="44"
+                    rounded="full"
+                  />
                 </Flex>
               </Flex>
               <Box
