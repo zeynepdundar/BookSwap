@@ -198,7 +198,7 @@ export default function TradeProposal({ navigation, route }) {
             </Center>
           </Center>
         </Box>
-        <Image source={tradeIcon} alt=" Library" m="2" alignSelf="center" />
+        <Image source={tradeIcon} alt=" Library" mt="4" alignSelf="center" />
 
         <Box m="2" width="90%" alignSelf="center">
           <Text fontWeight="500" fontSize="md" mb="3">
@@ -311,7 +311,6 @@ export default function TradeProposal({ navigation, route }) {
                 Trade with
               </Text>
             </Box>
-
             <Text textAlign="right">{user.name}</Text>
           </VStack>
 

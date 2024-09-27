@@ -26,6 +26,7 @@ import { AppDispatch } from "../store/store";
 import { addBookToListAsync } from "../store/profile-actions";
 import i18n from "../i18n";
 import { LIBRARY, WISHLIST } from "../constants";
+import { InfoDialogBox } from "../components/Modal/InfoDialogBox";
 
 export default function BarcodeScannerScreen({
   navigation,
@@ -41,6 +42,11 @@ export default function BarcodeScannerScreen({
   const [scanned, setScanned] = useState(false);
   const [edition, setEdition] = useState(null);
   const [error, setError] = useState(null);
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
+  const [selectedAction, setSelectedAction] = useState<typeof ListTypes | null>(
+    null
+  );
+  const [selectedItem, setSelectedItem] = useState(null);
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
   const [actions, setActions] = useState([]);
 
@@ -50,8 +56,11 @@ export default function BarcodeScannerScreen({
       setHasPermission(status === "granted");
     };
 
-    getBarCodeScannerPermissions();
-  }, []);
+    // Only request permissions if not previously determined
+    if (hasPermission === null) {
+      getBarCodeScannerPermissions();
+    }
+  }, [hasPermission]);
 
   useEffect(() => {
     const resetScannedResult = () => {
@@ -133,6 +142,10 @@ export default function BarcodeScannerScreen({
     setEdition(null);
   };
 
+  const closeInfoDialog = () => {
+    setIsInfoDialogOpen(false);
+  };
+
   const { width, height } = Dimensions.get("window");
   const handleAction = async (actionType) => {
     const response = await dispatch(
@@ -149,6 +162,10 @@ export default function BarcodeScannerScreen({
       setTimeout(() => {
         setError(null);
       }, 8000);
+    }
+    else{
+      setSelectedAction(actionType);
+      setIsInfoDialogOpen(true);
     }
     closeActionSheet();
   };
@@ -197,6 +214,12 @@ export default function BarcodeScannerScreen({
         defaultLabel={
           mode === "Wishlist" || mode === "Library" ? "the-book-added" : null
         }
+      />
+        <InfoDialogBox
+        isOpen={isInfoDialogOpen}
+        onClose={closeInfoDialog}
+        actionType={selectedAction}
+        selectedItem={selectedItem}
       />
     </View>
   );

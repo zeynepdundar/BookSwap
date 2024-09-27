@@ -18,8 +18,7 @@ export default function OtherSwapHistory({ historyList }) {
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
 
   return (
-    <Screen>
-      <Center>
+      <Center mt="6">
         <FlatList
           w="100%"
           data={historyList}
@@ -101,6 +100,5 @@ export default function OtherSwapHistory({ historyList }) {
           keyExtractor={(item) => item.id}
         />
       </Center>
-    </Screen>
   );
 }

@@ -93,21 +93,6 @@ export default function LibraryScreen({ navigation, route }) {
     setSelectedBooks((prevList) => [...prevList, ...books]);
   };
 
-  useEffect(() => {
-    return () => {
-      // Cleanup or additional actions when the component is unmounted
-      // Make your API call to update user libraryBook here
-      // For example, you can dispatch an action to update the libraryBook in Redux
-      // dispatch(updateLibraryBookAsync(selectedBooks));
-    };
-  }, [dispatch, selectedBooks]);
-  // useEffect(() => {
-  //   return () => {
-  //     // Make your API call or dispatch an action when the component is unmounted
-  //     // For example, you can dispatch an action to update the libraryBook in Redux
-  //     dispatch(updateLibraryBookAsync(selectedBooks));
-  //   };
-  // }, [dispatch, selectedBooks]);
 
   useEffect(() => {
     // Update the local state when libraryBook changes

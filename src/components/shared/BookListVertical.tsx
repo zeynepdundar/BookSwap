@@ -21,6 +21,7 @@ import i18n from "../../i18n";
 import { useSelector } from "react-redux";
 import { ListTypes } from "../../constants";
 import { useFocusEffect } from "@react-navigation/native";
+import { Keyboard } from "react-native";
 interface BookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
   onPrimaryAction?: (id: string) => void;
@@ -61,7 +62,6 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
     }, [])
   );
 
-
   const handleAction = async (actionType) => {
     const result = await onSecondaryAction({
       type: actionType,
@@ -98,10 +98,11 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
     <>
       <FlatList
         maxWidth="100%"
-        mx="3"
         height="100%"
         data={data}
         showsVerticalScrollIndicator={false}
+        onScrollBeginDrag={Keyboard.dismiss} // Dismiss keyboard on scroll
+        keyboardShouldPersistTaps="handled" 
         renderItem={({ item }) => (
           <>
             <Box
@@ -110,23 +111,23 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
               // py="2"
               // mb="1"
               // justifyContent="center"
-              height="135"
-              p="3"
+              height="125"
               mx="2"
-              my="1"
+              pl="2"
+              ml="2"
               key={item.id}
+              overflow={"hidden"}
             >
               <HStack
                 justifyContent="space-between"
                 width="100%"
                 space={3}
-                p={1}
+                py={1}
               >
                 <AspectRatio
-                  w="20%"
-                  ratio={{
-                    base: 40 / 62,
-                  }}
+                  w={{ base: "22%", md: "18%" }}
+                  ratio={40 / 62}
+                  maxWidth="80px"
                 >
                   <Image
                     source={
@@ -141,7 +142,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                   />
                 </AspectRatio>
                 <VStack width={173}>
-                  <Text color="#000000" fontSize="15" numberOfLines={2}>
+                  <Text color="#000000" fontSize="15" numberOfLines={2} lineHeight="18">
                     {truncateText(formatText(item.title), 44)}
                   </Text>
                   <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
@@ -169,7 +170,6 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
 
                   {item?.usersOwning && (
                     <>
-                      <Spacer></Spacer>
                       <Pressable
                         onPress={() => {
                           const filteredOwners = item.usersOwning.filter(
@@ -185,6 +185,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                         borderWidth="0.5"
                         borderRadius="9"
                         p="1"
+                        mt="4"
                         width="90px"
                         disabled={
                           item.usersOwning.filter(
@@ -221,26 +222,15 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                     />
                   )}
                   {onSendOffer && (
-                    // <Pressable
-                    //   onPress={() => onSendOffer(item.id)}
-                    //   borderColor="#007BFF"
-                    //   borderWidth="1"
-                    //   borderRadius="9"
-                    //   p="2"
-                    //   width="90px"
-                    // >
-                    //   <Text alignSelf="center" color="#007BFF" fontSize="12px">
-                    //     Send Offer
-                    //   </Text>
-                    // </Pressable>
                     <Button
                       onPress={() => onSendOffer({ item })}
                       variant="primary"
                       right={2}
-                      bottom="-14"
+                      bottom={0}
                       position="absolute"
-                      py={2}
+                      py={"6px"}
                       px={0}
+                      rounded="6"
                       width={126}
                     >
                       {i18n.t("send-offer")}
@@ -251,7 +241,9 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                 </VStack>
               </HStack>
             </Box>
-            <Divider mt="0" mb="3" mx="4" width={"90%"} bg="#EEEEEE" />
+            <Box w="100%" alignSelf="center">
+              <Divider my={2} mx="auto" w="90%" bg="#EEEEEE" />
+            </Box>
           </>
         )}
         keyExtractor={(item) => item.id}

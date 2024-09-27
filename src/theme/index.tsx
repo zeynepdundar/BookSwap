@@ -69,7 +69,7 @@ export const theme = extendTheme({
         _text: {
           fontFamily: "poppins-semi-bold",
           fontWeight: "700",
-          px: "6",
+          px: "4",
         },
         _pressed: {
           opacity: "80",

@@ -10,10 +10,7 @@ import {
   Divider,
   Input,
 } from "native-base";
-import {
-  Keyboard,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import Screen from "../components/Screen";
 import i18n from "../i18n";

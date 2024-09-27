@@ -39,13 +39,23 @@ export const InfoDialogBox = ({
   }, [isOpen]);
 
   const navigateToScreen = (screenName: keyof MyStackParamList) => {
-    navigation.navigate("ProfileStack", {
-      screen: screenName,
-    }); // Error here
+    if (screenName === SENT) {
+      // Navigate to the TradingStack if the screenName is "Sent"
+      navigation.navigate("Trading", {
+        screen: screenName,
+      });
+    } else {
+      // For all other cases, navigate to the ProfileStack
+      navigation.navigate("ProfileStack", {
+        screen: screenName,
+      });
+    }
   };
 
   const WISHLIST_SCREEN: keyof MyStackParamList = "Wishlist";
   const LIBRARY_SCREEN: keyof MyStackParamList = "Library";
+  const SENT: keyof MyStackParamList = "Sent";
+
 
   const handleClose = () => {
     setIsAlertDialogOpen(false);
@@ -64,6 +74,7 @@ export const InfoDialogBox = ({
         navigateToScreen(LIBRARY_SCREEN);
         break;
       case "TRADE":
+        navigateToScreen(SENT);
         break;
       default:
         console.log("No specific action type found");

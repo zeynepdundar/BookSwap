@@ -1,4 +1,4 @@
-import { Button, Center } from "native-base";
+import { Box, Button, Center } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { BookListVertical } from "../../components/shared/BookListVertical";
@@ -67,7 +67,7 @@ export default function OtherUserWishlistScreen({
   };
 
   return (
-    <Screen>
+    <Center mt="6">
       <BookListVertical
         data={libraryBooks}
         onSecondaryAction={addBookToListHandler}
@@ -79,6 +79,6 @@ export default function OtherUserWishlistScreen({
           {/* <Button onPress={() => setScanned(false)}>Tap to Scan Again</Button> */}
         </>
       )}
-    </Screen>
+    </Center>
   );
 }
