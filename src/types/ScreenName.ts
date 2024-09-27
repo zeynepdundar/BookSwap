@@ -1,0 +1,20 @@
+export enum SceneName {
+    Welcome = "Welcome",
+    AuthVerification = "AuthVerification",
+    Home = "Home",
+    Trading = "Trading",
+    Messages = "Messages",
+    ProfileCreation = "ProfileCreation",
+    BarcodeScannerOnProfileCreation = "BarcodeScannerOnProfileCreation",
+    BookSearchOnCreation = "BookSearchOnCreation",
+    UserList = "UserList",
+    OtherUserProfile = "OtherUserProfile",
+    BarcodeScanner = "BarcodeScanner",
+    BookSearchFromList = "BookSearchFromList",
+    BookSearch = "BookSearch",
+    TradeProposal = "TradeProposal",
+    TradeOfferAcceptedScreen = "TradeOfferAcceptedScreen",
+    OtherLibrary = "OtherLibrary",
+    ChatScreen = "ChatScreen",
+
+  }

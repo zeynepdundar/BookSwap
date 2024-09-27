@@ -54,7 +54,7 @@ export default function LibraryInputScreen({ navigation }) {
         libraryBook: selectedBooks,
         languagePreference: deviceLanguage,
       };
-      dispatch(updateProfileAsync(updatedProfile));
+      dispatch(updateProfileAsync({ profileData: updatedProfile, fullUpdate: true }));
     }
     dispatch(setIsNewUser(false));
   };

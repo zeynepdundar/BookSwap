@@ -111,7 +111,7 @@ export default function HistoryScreen({ navigation }) {
                             }
                       }
                       alt="Library"
-                      roundedRight="6"
+                      roundedRight="5"
                       width="60"
                       height="82"
                     />
@@ -138,7 +138,7 @@ export default function HistoryScreen({ navigation }) {
                       alt=" Library"
                       width="60"
                       height="82"
-                      roundedRight="6"
+                      roundedRight="4"
                     />
                     <Text
                       color="#06070D"

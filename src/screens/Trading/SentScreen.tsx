@@ -34,6 +34,7 @@ export default function SentScreen({ navigation }) {
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadingImages, setLoadingImages] = useState(true);
 
   const sentOffers = useSelector(
     (state: any) => state.profile.profile.sentOffer
@@ -83,6 +84,7 @@ export default function SentScreen({ navigation }) {
     // });
   };
   const fetchProfileImages = async () => {
+    setLoadingImages(true)
     const updatedOffers = await Promise.all(
       sentOffers.map(async (offer) => {
         const photoUrl = await fetchProfileImageUrl(
@@ -98,12 +100,14 @@ export default function SentScreen({ navigation }) {
       })
     );
     setSentOffersWithUserPhoto(updatedOffers);
+    setLoadingImages(false)
   };
   useFocusEffect(
     useCallback(() => {
       fetchProfileImages();
     }, [sentOffers])
   );
+
   // TODO: This is coded for providing asynchronous data fetching from the database.
   // Profile fetching happens when logged in. The API should ideally use sockets.
   // Remove this when the socket-based implementation is ready.
@@ -117,6 +121,14 @@ export default function SentScreen({ navigation }) {
   if (loading && !refreshing) {
     return <LoadingOverlay />;
   }
+  // if (loadingImages) {
+  //   return <LoadingOverlay />;
+  // }
+
+  const handleImageError = () => {
+    // Fallback to a default image on error
+    // setImageSource({ uri: 'https://example.com/fallback-image.png' });
+  };
   return (
     <>
       {!sentOffers ||
@@ -195,11 +207,7 @@ export default function SentScreen({ navigation }) {
                       </Text>
                     </VStack>
                     <Image
-                      source={
-                        item.participantProfile.photo_file_name
-                          ? { uri: item.participantProfile.photo_file_name }
-                          : otherUserImage
-                      }
+                      source={ {uri: item.participantProfile.photo_file_name} }
                       alt="Profile Image"
                       size="44"
                       rounded="full"
@@ -282,7 +290,7 @@ export default function SentScreen({ navigation }) {
                                 }
                           }
                           alt={`Cover of: ${item.requestedBook.title} by ${item.requestedBook.author}`}
-                          roundedRight="6"
+                          roundedRight="4"
                         />
                       </AspectRatio>
                       <Text
