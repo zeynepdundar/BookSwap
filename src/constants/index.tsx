@@ -31,4 +31,5 @@ export type MyStackParamList = {
   Profile: undefined;
   Library: undefined;
   Wishlist: undefined;
+  Sent: undefined;
 };

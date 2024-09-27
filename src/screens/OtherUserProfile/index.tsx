@@ -8,26 +8,23 @@ import {
   Box,
   VStack,
   HStack,
-  Avatar,
   Pressable,
   useColorModeValue,
   Image,
 } from "native-base";
-import Screen from "../../components/Screen";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SceneMap, TabView } from "react-native-tab-view";
-import { Dimensions, StatusBar, Animated } from "react-native";
+import { StatusBar, Animated } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import Screen from "../../components/Screen";
+import { LoadingOverlay } from "../../components/LoadingOverlay";
 import OtherLibraryScreen from "./OtherUserLibraryScreen";
 import OtherWishlistScreen from "./OtherUserWishlistScreen";
 import OtherSwapHistory from "./OtherUserSwapHistory";
 import { fetchUserProfileData } from "../../api/service";
-import { LoadingOverlay } from "../../components/LoadingOverlay";
-import { useFocusEffect } from "@react-navigation/native";
 
 export default function OtherUserProfileScreen({ navigation, route }) {
-  const userTemp = route?.params?.user;
-
-  const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
+  const selectedUser = route?.params?.user;
 
   const [profile, setProfile] = useState(null);
   const [libraryBook, setLibraryBook] = useState(null);
@@ -35,34 +32,32 @@ export default function OtherUserProfileScreen({ navigation, route }) {
   const [historyList, setHistoryList] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useFocusEffect(
-    useCallback(() => {
-      const fetchProfileData = async () => {
-        try {
-          setLoading(true);
-          const profileData = await fetchUserProfileData(
-            userTemp?.firebase_uid
-          );
-          setProfile({
-            firebase_uid: userTemp?.firebase_uid,
-            id: profileData.id,
-            name: profileData.name,
-            photo_file_name: profileData.imageData,
-          });
-          setLibraryBook(profileData.libraryBook);
-          setWishedBook(profileData.wishlistBook);
-          setHistoryList(profileData.historyList);
-        } catch (error) {
-          console.error("Error fetching profile data:", error);
-          // Set an error state here if needed
-        } finally {
-          setLoading(false);
-        }
-      };
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        setLoading(true);
+        const profileData = await fetchUserProfileData(
+          selectedUser?.firebase_uid
+        );
+        setProfile({
+          firebase_uid: selectedUser?.firebase_uid,
+          id: profileData.id,
+          name: profileData.name,
+          photo_file_name: profileData.imageData,
+        });
+        setLibraryBook(profileData.libraryBook);
+        setWishedBook(profileData.wishlistBook);
+        setHistoryList(profileData.historyList);
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+        // Set an error state here if needed
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      fetchProfileData();
-    }, [userTemp, route?.params])
-  );
+    if (selectedUser.firebase_uid) fetchProfileData();
+  }, [selectedUser]);
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -127,13 +122,14 @@ export default function OtherUserProfileScreen({ navigation, route }) {
               : useColorModeValue("coolGray.200", "gray.400");
           return (
             <Box
+              key={route.key || i}
               paddingTop={0}
               borderBottomWidth="3"
               borderColor={borderColor}
               flex={1}
               alignItems="center"
               p="3"
-              mx="2"    
+              mx="2"
             >
               <Pressable
                 onPress={() => {
@@ -186,10 +182,10 @@ export default function OtherUserProfileScreen({ navigation, route }) {
             h="100%"
           >
             <Image
-              source={{ uri: userTemp.photo_file_name }}
+              source={{ uri: selectedUser.photo_file_name }}
               alt="Profile Image"
-              size="60z"
               rounded="full"
+              size={60}
             />
             <Heading width="60%" color="black.100" my={3}>
               {profile?.name}
@@ -208,7 +204,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
           style={{
             flex: 1,
             width: "100%",
-            marginTop: StatusBar.currentHeight || 0, 
+            marginTop: StatusBar.currentHeight || 0,
           }}
         />
       </VStack>

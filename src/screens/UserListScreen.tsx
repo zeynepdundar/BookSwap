@@ -99,13 +99,22 @@ export default function UserListScreen({ navigation, route }) {
         <Spacer />
       </HStack>
       <FlatList
-        w="100%"
+        maxWidth="100%"
+        height="100%"
         data={usersWithPhotos}
         extraData={usersWithPhotos}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <>
-            <Box py="1" justifyContent="center" key={item.id}>
+            <Box
+              py="1"
+              justifyContent="center"
+              height="60"
+              mx="2"
+              p="2"
+              key={item.id}
+              overflow={"hidden"}
+            >
               <HStack space={[4, 6]} justifyContent="space-between">
                 <Pressable
                   onPress={() => {
@@ -115,15 +124,23 @@ export default function UserListScreen({ navigation, route }) {
                   padding="1"
                   alignItems="center"
                 >
-                  {item.photo_file_name && (
-                    <Image
-                      source={{ uri: item.photo_file_name }}
-                      alt="Profile Image"
-                      size={10}
-                      rounded="full"
-                      mr={3}
-                    />
-                  )}
+                  <Box
+                    size={10}
+                    rounded="full"
+                    backgroundColor="#e0e0e0"
+                    mr={3}
+                    overflow="hidden"
+                  >
+                    {item.photo_file_name && (
+                      <Image
+                        source={{ uri: item.photo_file_name }}
+                        alt="Profile Image"
+                        size={10}
+                        rounded="full"
+                        mr={3}
+                      />
+                    )}
+                  </Box>
                   <Text
                     color="#000000"
                     fontSize="16"
@@ -144,7 +161,7 @@ export default function UserListScreen({ navigation, route }) {
               </HStack>
             </Box>
             <Box w="100%" alignSelf="center">
-              <Divider my={2} mx="auto" w="100%" bg="#EEEEEE" />
+              <Divider my={2} mx="auto" w="90%" bg="#EEEEEE" />
             </Box>
           </>
         )}

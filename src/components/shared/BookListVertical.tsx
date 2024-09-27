@@ -21,6 +21,7 @@ import i18n from "../../i18n";
 import { useSelector } from "react-redux";
 import { ListTypes } from "../../constants";
 import { useFocusEffect } from "@react-navigation/native";
+import { Keyboard } from "react-native";
 interface BookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
   onPrimaryAction?: (id: string) => void;
@@ -100,6 +101,8 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
         height="100%"
         data={data}
         showsVerticalScrollIndicator={false}
+        onScrollBeginDrag={Keyboard.dismiss} // Dismiss keyboard on scroll
+        keyboardShouldPersistTaps="handled" 
         renderItem={({ item }) => (
           <>
             <Box
@@ -110,7 +113,8 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
               // justifyContent="center"
               height="125"
               mx="2"
-              px="2"
+              pl="2"
+              ml="2"
               key={item.id}
               overflow={"hidden"}
             >
@@ -218,23 +222,11 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                     />
                   )}
                   {onSendOffer && (
-                    // <Pressable
-                    //   onPress={() => onSendOffer(item.id)}
-                    //   borderColor="#007BFF"
-                    //   borderWidth="1"
-                    //   borderRadius="9"
-                    //   p="2"
-                    //   width="90px"
-                    // >
-                    //   <Text alignSelf="center" color="#007BFF" fontSize="12px">
-                    //     Send Offer
-                    //   </Text>
-                    // </Pressable>
                     <Button
                       onPress={() => onSendOffer({ item })}
                       variant="primary"
                       right={2}
-                      bottom={-4}
+                      bottom={0}
                       position="absolute"
                       py={"6px"}
                       px={0}
