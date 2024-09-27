@@ -4,29 +4,46 @@ import AsyncStore from "../utils/AsyncStore";
 
 import { UserProfile, WISHLIST } from "../constants";
 
-export const updateUserProfileData = async (profileData) => {
-  const wishlistBookIds = (profileData.wishlistBook || [])
-    .map((item) => item.id || null)
-    .filter(Boolean);
-  const libraryBookIds = (profileData.libraryBook || [])
-    .map((item) => item.id || null)
-    .filter(Boolean);
+export const updateUserProfileData = async (
+  profileData,
+  fullUpdate = false
+) => {
+  const wishlistBookIds = Array.isArray(profileData.wishlistBook) && profileData.wishlistBook.length > 0
+    ? profileData.wishlistBook.map((item: any) => item.id).filter(Boolean)
+    : undefined;
+
+  const libraryBookIds = Array.isArray(profileData.libraryBook) && profileData.libraryBook.length > 0
+    ? profileData.libraryBook.map((item: any) => item.id).filter(Boolean)
+    : undefined;
 
   const pushNotificationToken = await AsyncStore.getItem<string>(
     "pushToken",
     null
   );
 
+  // Initialize updatedAttributes with mandatory fields (id is required)
   const updatedAttributes: any = {
     id: profileData.id.toString(),
-    name: profileData.name,
-    gender: profileData.gender,
-    birthdate: profileData.birthdate,
-    wished_editions: wishlistBookIds,
-    owned_editions: libraryBookIds,
-    language_preference: profileData.languagePreference,
-    push_tokens: ["ExponentPushToken[iskGN6Io5dqFbfasNwDm4g]"], // Replace with actual push tokens: pushNotificationToken
   };
+
+  // Full update: add all attributes
+  if (fullUpdate) {
+    updatedAttributes.name = profileData.name;
+    updatedAttributes.gender = profileData.gender;
+    updatedAttributes.birthdate = profileData.birthdate;
+    updatedAttributes.wished_editions = wishlistBookIds;
+    updatedAttributes.owned_editions = libraryBookIds;
+    updatedAttributes.language_preference = profileData.languagePreference;
+    updatedAttributes.push_tokens = [pushNotificationToken || "defaultToken"];
+  } else {
+    // Partial update: only include fields that are present in profileData
+    if (wishlistBookIds) updatedAttributes.wished_editions = wishlistBookIds;
+    if (libraryBookIds) updatedAttributes.owned_editions = libraryBookIds;
+    if (profileData.languagePreference)
+      updatedAttributes.language_preference = profileData.languagePreference;
+    if (pushNotificationToken)
+      updatedAttributes.push_tokens = [pushNotificationToken];
+  }
 
   try {
     // Attempt to upload the profile image

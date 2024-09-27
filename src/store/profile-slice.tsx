@@ -162,8 +162,10 @@ const profileSlice = createSlice({
       })
       .addCase(updateProfileAsync.fulfilled, (state, action:any) => {
         state.loading = false;
-        // Update the store with the updated profile data
-        state.profile = action.payload;
+        state.profile = {
+          ...state.profile,
+          ...action.payload,
+        };
         state.error = null;
       })
       .addCase(updateProfileAsync.rejected, (state, action) => {

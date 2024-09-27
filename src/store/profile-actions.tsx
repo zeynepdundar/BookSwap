@@ -35,11 +35,10 @@ export const fetchUserProfileAsync = createAsyncThunk(
 
 export const updateProfileAsync = createAsyncThunk(
   'profile/updateProfile',
-  async (profileData:any, { rejectWithValue }) => {
+  async ({ profileData, fullUpdate = false }: { profileData: any; fullUpdate?: boolean }, { rejectWithValue }) => {
     try {
-      // Make the API call to update user profile
-      await updateUserProfileData(profileData);
-      return profileData; // Return the updated profile to store in Redux
+      await updateUserProfileData(profileData, fullUpdate);
+      return profileData; 
     } catch (error) {
       console.error("Profile update failed:", error.message);
       return rejectWithValue(error.message);

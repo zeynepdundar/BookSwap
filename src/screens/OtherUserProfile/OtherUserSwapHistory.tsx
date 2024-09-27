@@ -47,7 +47,7 @@ export default function OtherSwapHistory({ historyList }) {
                           }
                     }
                     alt="Library"
-                    roundedRight="6"
+                    roundedRight="4"
                     width="60"
                     height="82"
                   />
@@ -68,7 +68,7 @@ export default function OtherSwapHistory({ historyList }) {
                     alt=" Library"
                     width="60"
                     height="82"
-                    roundedRight="6"
+                    roundedRight="4"
                   />
                   <Text color="#06070D" fontSize="xs" mt="1" textAlign="center">
                     {item.offeredBook.title}

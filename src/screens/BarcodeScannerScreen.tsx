@@ -16,7 +16,11 @@ import {
   Alert,
 } from "native-base";
 import { fetchBooksByISBN } from "../api/service";
-import { formatText, generateModalActions, truncateText } from "../utils/helper";
+import {
+  formatText,
+  generateModalActions,
+  truncateText,
+} from "../utils/helper";
 import { ActionSheet } from "../components/ActionSheet";
 import { AppDispatch } from "../store/store";
 import { addBookToListAsync } from "../store/profile-actions";
@@ -72,7 +76,7 @@ export default function BarcodeScannerScreen({
         setError("Multiple books found with this ISBN.");
       } else {
         setEdition(fetchedEditions[0]);
-        console.log("Book found with this ISBN",fetchedEditions[0])
+        console.log("Book found with this ISBN", fetchedEditions[0]);
       }
     } catch (error) {
       setError("Error fetching editions. Please try again later.");
@@ -85,17 +89,20 @@ export default function BarcodeScannerScreen({
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
-  const handleAddBook =async () => {
+  const handleAddBook = async () => {
     //For profile creation flow library/wishlist add book
     if (onAddBook) {
       onAddBook([edition]);
       setEdition(null);
       navigation.goBack();
-      
+
       //TODO : Refactor to handle Wishlist and Library cases generically using a function passed as a prop.
     } else if (mode === "Wishlist" || mode === "Library") {
       const response = await dispatch(
-        addBookToListAsync({ ...edition, type: mode.toUpperCase() })
+        addBookToListAsync({
+          ...edition,
+          type: mode === "Wishlist" ? WISHLIST : LIBRARY,
+        })
       );
       const payload = response.payload;
 
@@ -108,8 +115,7 @@ export default function BarcodeScannerScreen({
         setTimeout(() => {
           setError(null);
         }, 8000);
-      }
-      else navigation.navigate(mode);
+      } else navigation.navigate(mode);
       closeActionSheet();
     } else {
       const actions = [
@@ -222,15 +228,14 @@ const BookInfoBox = ({ edition, onAddBooks }) => (
         alt="Library"
         width="60"
         height="82"
-        roundedRight="6"
+        roundedRight="4"
       />
       <VStack width="40" height="82">
-        <Text color="#8c8c8c" fontSize="xs" letterSpacing="2xl" >
+        <Text color="#8c8c8c" fontSize="xs" letterSpacing="2xl">
           {truncateText(formatText(edition?.author), 19)}
-
         </Text>
         <Text color="#494949" fontSize="16" numberOfLines={2}>
-        {truncateText(formatText(edition?.title), 36)}
+          {truncateText(formatText(edition?.title), 36)}
         </Text>
         <Text color="#494949" fontSize="11">
           {truncateText(formatText(edition?.publisher), 23)}

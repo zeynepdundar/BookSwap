@@ -54,7 +54,7 @@ export default function ProfileScreen({ navigation }) {
       languagePreference: selectedLanguage,
     };
 
-    dispatch(updateProfileAsync(updatedProfile));
+    dispatch(updateProfileAsync({ profileData: updatedProfile }));
   };
 
   const handleImageUpload = (imageUri) => {
@@ -63,7 +63,7 @@ export default function ProfileScreen({ navigation }) {
       imageData: imageUri,
     };
 
-    dispatch(updateProfileAsync(updatedProfile));
+    dispatch(updateProfileAsync({ profileData: updatedProfile }));
   };
 
   const signOutHandler = async (): Promise<void> => {
