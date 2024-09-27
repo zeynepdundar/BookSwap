@@ -146,7 +146,7 @@ export const BorderedBookListVertical: React.FC<
                 </AspectRatio>
 
                 <VStack width="75%" h="95">
-                  <Text color="#000000" fontSize="15" numberOfLines={2}>
+                  <Text color="#000000" fontSize="15" numberOfLines={2} lineHeight="18">
                     {truncateText(formatText(item.title), 60)}
                   </Text>
                   <Text color="#8c8c8c" fontSize="11">

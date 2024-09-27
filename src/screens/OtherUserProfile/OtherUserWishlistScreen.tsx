@@ -6,6 +6,7 @@ import { AppDispatch } from "../../store/store";
 import { addBookToListAsync } from "../../store/profile-actions";
 import i18n from "../../i18n";
 import { ErrorAlert } from "../BarcodeScannerScreen";
+import { Box, Center } from "native-base";
 
 export default function OtherUserWishlistScreen({ wishedBook }) {
   const [wishedBooks, setWishedBook] = useState(wishedBook);
@@ -42,7 +43,7 @@ export default function OtherUserWishlistScreen({ wishedBook }) {
   };
 
   return (
-    <Screen>
+    <Center mt="6">
       <BookListVertical
         data={wishedBooks}
         onSecondaryAction={addBookToListHandler}
@@ -53,6 +54,6 @@ export default function OtherUserWishlistScreen({ wishedBook }) {
           {/* <Button onPress={() => setScanned(false)}>Tap to Scan Again</Button> */}
         </>
       )}
-    </Screen>
+    </Center>
   );
 }

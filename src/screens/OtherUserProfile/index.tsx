@@ -80,9 +80,6 @@ export default function OtherUserProfileScreen({ navigation, route }) {
     },
   ]);
 
-  const initialLayout = {
-    width: Dimensions.get("window").width,
-  };
   const renderScene = SceneMap({
     library: (props: any) => (
       <OtherLibraryScreen
@@ -136,7 +133,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
               flex={1}
               alignItems="center"
               p="3"
-              mx="2"
+              mx="2"    
             >
               <Pressable
                 onPress={() => {
@@ -208,10 +205,10 @@ export default function OtherUserProfileScreen({ navigation, route }) {
           renderScene={renderScene}
           renderTabBar={(props) => renderTabBar({ ...props })}
           onIndexChange={setIndex}
-          initialLayout={initialLayout}
           style={{
-            marginTop: StatusBar.currentHeight,
+            flex: 1,
             width: "100%",
+            marginTop: StatusBar.currentHeight || 0, 
           }}
         />
       </VStack>

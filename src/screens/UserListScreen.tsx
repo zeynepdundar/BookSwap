@@ -13,6 +13,7 @@ import {
   Avatar,
   Pressable,
   Image,
+  Box,
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
@@ -47,7 +48,7 @@ export default function UserListScreen({ navigation, route }) {
     setUsersWithPhotos(updatedUsers);
   };
   useFocusEffect(
-   useCallback(() => {
+    useCallback(() => {
       fetchProfileImages();
     }, [usersTemp])
   );
@@ -77,88 +78,78 @@ export default function UserListScreen({ navigation, route }) {
 
   return (
     <Screen>
-      <VStack space={1} alignItems="center">
-        <HStack
-          alignItems="center"
-          justifyContent="space-between"
-          w="100%"
-          h={16}
-        >
-          <Button
-            variant="ghost"
-            leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
-            _pressed={{
-              bg: "transparent",
-            }}
-            onPress={() => navigation.goBack()}
-          ></Button>
-          <Center flex={8}>
-            <Heading>{i18n.t("ask-for-swap")}</Heading>
-          </Center>
-          <Spacer></Spacer>
-        </HStack>
-        <FlatList
-          w="325px"
-          data={usersWithPhotos}
-          extraData={usersWithPhotos}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <>
-              <Center
-                mx="3"
-                mb="1"
-                justifyContent="center"
-                h="76"
-                key={item.id}
-              >
-                <HStack space={[4, 6]} justifyContent="space-between">
-                  <Pressable
-                    onPress={() => {
-                      onNavigateProfile(item);
-                    }}
-                    flexDirection="row"
-                    padding="1"
-                  >
-                    {item.photo_file_name && (
-                      <Image
-                        source={{ uri: item.photo_file_name }}
-                        alt="Profile Image"
-                        size={10}
-                        rounded="full"
-                        mr={3}
-                      />
-                    )}
-                    <Text
-                      color="#000000"
-                      fontSize="16"
-                      alignSelf="center"
-                      numberOfLines={1}
-                    >
-                      {item.name}
-                    </Text>
-                  </Pressable>
-
-                  <Spacer />
-                  <Button
-                    onPress={() => sendOfferHandler({ book: book, user: item })}
-                    variant="primary"
-                    right={0}
-                    bottom="0"
-                    position="absolute"
-                    p={2}
-                    px="0"
-                    width={126}
-                  >
-                    {i18n.t("send-offer")}
-                  </Button>
-                </HStack>
-              </Center>
-              <Divider mt="0" mb="3" mx="3" bg="#EEEEEE" />
-            </>
-          )}
-          keyExtractor={(user: any) => user.id}
+      <HStack
+        alignItems="center"
+        justifyContent="space-between"
+        w="100%"
+        h={16}
+      >
+        <Button
+          variant="ghost"
+          leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+          _pressed={{
+            bg: "transparent",
+          }}
+          onPress={() => navigation.goBack()}
+          aria-label={i18n.t("go-back")}
         />
-      </VStack>
+        <Center flex={8}>
+          <Heading>{i18n.t("ask-for-swap")}</Heading>
+        </Center>
+        <Spacer />
+      </HStack>
+      <FlatList
+        w="100%"
+        data={usersWithPhotos}
+        extraData={usersWithPhotos}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <>
+            <Box py="1" justifyContent="center" key={item.id}>
+              <HStack space={[4, 6]} justifyContent="space-between">
+                <Pressable
+                  onPress={() => {
+                    onNavigateProfile(item);
+                  }}
+                  flexDirection="row"
+                  padding="1"
+                  alignItems="center"
+                >
+                  {item.photo_file_name && (
+                    <Image
+                      source={{ uri: item.photo_file_name }}
+                      alt="Profile Image"
+                      size={10}
+                      rounded="full"
+                      mr={3}
+                    />
+                  )}
+                  <Text
+                    color="#000000"
+                    fontSize="16"
+                    alignSelf="center"
+                    numberOfLines={1}
+                  >
+                    {item.name}
+                  </Text>
+                </Pressable>
+                <Button
+                  onPress={() => sendOfferHandler({ book: book, user: item })}
+                  variant="primary"
+                  p={0}
+                  m="6px"
+                >
+                  {i18n.t("send-offer")}
+                </Button>
+              </HStack>
+            </Box>
+            <Box w="100%" alignSelf="center">
+              <Divider my={2} mx="auto" w="100%" bg="#EEEEEE" />
+            </Box>
+          </>
+        )}
+        keyExtractor={(user: any) => user.id}
+      />
       <AlertDialogBox
         isOpen={isOpen}
         onClose={onClose}

@@ -61,7 +61,6 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
     }, [])
   );
 
-
   const handleAction = async (actionType) => {
     const result = await onSecondaryAction({
       type: actionType,
@@ -98,7 +97,6 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
     <>
       <FlatList
         maxWidth="100%"
-        mx="3"
         height="100%"
         data={data}
         showsVerticalScrollIndicator={false}
@@ -110,23 +108,22 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
               // py="2"
               // mb="1"
               // justifyContent="center"
-              height="135"
-              p="3"
+              height="125"
               mx="2"
-              my="1"
+              px="2"
               key={item.id}
+              overflow={"hidden"}
             >
               <HStack
                 justifyContent="space-between"
                 width="100%"
                 space={3}
-                p={1}
+                py={1}
               >
                 <AspectRatio
-                  w="20%"
-                  ratio={{
-                    base: 40 / 62,
-                  }}
+                  w={{ base: "22%", md: "18%" }}
+                  ratio={40 / 62}
+                  maxWidth="80px"
                 >
                   <Image
                     source={
@@ -141,7 +138,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                   />
                 </AspectRatio>
                 <VStack width={173}>
-                  <Text color="#000000" fontSize="15" numberOfLines={2}>
+                  <Text color="#000000" fontSize="15" numberOfLines={2} lineHeight="18">
                     {truncateText(formatText(item.title), 44)}
                   </Text>
                   <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
@@ -169,7 +166,6 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
 
                   {item?.usersOwning && (
                     <>
-                      <Spacer></Spacer>
                       <Pressable
                         onPress={() => {
                           const filteredOwners = item.usersOwning.filter(
@@ -185,6 +181,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                         borderWidth="0.5"
                         borderRadius="9"
                         p="1"
+                        mt="4"
                         width="90px"
                         disabled={
                           item.usersOwning.filter(
@@ -237,10 +234,11 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                       onPress={() => onSendOffer({ item })}
                       variant="primary"
                       right={2}
-                      bottom="-14"
+                      bottom={-4}
                       position="absolute"
-                      py={2}
+                      py={"6px"}
                       px={0}
+                      rounded="6"
                       width={126}
                     >
                       {i18n.t("send-offer")}
@@ -251,7 +249,9 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
                 </VStack>
               </HStack>
             </Box>
-            <Divider mt="0" mb="3" mx="4" width={"90%"} bg="#EEEEEE" />
+            <Box w="100%" alignSelf="center">
+              <Divider my={2} mx="auto" w="90%" bg="#EEEEEE" />
+            </Box>
           </>
         )}
         keyExtractor={(item) => item.id}
