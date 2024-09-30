@@ -13,9 +13,12 @@ import {
   useCameraPermissions,
   PermissionStatus,
 } from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 import i18n from "../i18n";
+import { ErrorAlert } from "./shared/ErrorAlert";
 
 const avatarImage = require("../assets/images/avatar.png");
+const MAX_IMAGE_SIZE_MB = 10; // Maximum allowed size in MB
 
 const ImagePicker = ({
   selectedImage,
@@ -25,6 +28,7 @@ const ImagePicker = ({
   initialImage?: any;
 }) => {
   const [pickedImage, setPickedImage] = useState(initialImage || "");
+  const [error, setError] = useState(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
@@ -46,6 +50,30 @@ const ImagePicker = ({
     return true;
   };
 
+  const getImageSize = async (imageUri: string) => {
+    try {
+      const imageInfo = await FileSystem.getInfoAsync(imageUri);
+      return imageInfo.size; // Size in bytes
+    } catch (error) {
+      console.error("Error getting image size:", error);
+      return 0;
+    }
+  };
+
+  const checkImageSizeAndSet = async (newImageUri: string) => {
+    const fileSizeInBytes = await getImageSize(newImageUri);
+    const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+    if (fileSizeInMB <= MAX_IMAGE_SIZE_MB) {
+      setPickedImage(newImageUri);
+      selectedImage({ uri: newImageUri, fileSize: fileSizeInBytes });
+    } else {
+      setError(
+        `The selected image is too large. Maximum allowed size is ${MAX_IMAGE_SIZE_MB} MB.`
+      );
+    }
+  };
+
   const takeImageHandler = async () => {
     setIsOpen(false);
 
@@ -64,7 +92,8 @@ const ImagePicker = ({
     if (!image.canceled) {
       const newImageUri = image.assets[0].uri;
       setPickedImage(newImageUri);
-      selectedImage(newImageUri); 
+      selectedImage(newImageUri);
+      await checkImageSizeAndSet(newImageUri);
     }
   };
 
@@ -84,8 +113,7 @@ const ImagePicker = ({
 
     if (!result.canceled) {
       const newImageUri = result.assets[0].uri;
-      setPickedImage(newImageUri);
-      selectedImage(newImageUri); // Convey the change to the parent
+      await checkImageSizeAndSet(newImageUri);
     }
   };
 
@@ -121,6 +149,7 @@ const ImagePicker = ({
           <AddIcon color="#545454" />
         </Badge>
       </Pressable>
+      {error && <ErrorAlert message={error} />}
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content>
           <Actionsheet.Item onPress={uploadImageHandler}>
