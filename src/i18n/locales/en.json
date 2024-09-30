@@ -98,5 +98,7 @@
   "offer-not-found-or-eligible-for-rejection": "Offer not found or not eligible for rejection",
   "offer-not-found-or-eligible-for-taking-back": "Offer not found or not eligible for taking back",
   "users-library": "%{user}s library",
-  "text-message":"Text Message"
+  "text-message":"Text Message",
+  "feedback-description":"The more detail you can give, the better we can improve BookSwap.",
+  "submit":"Submit"
 }

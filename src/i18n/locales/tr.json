@@ -97,5 +97,7 @@
   "offer-not-found-or-eligible-for-rejection":"Teklif bulunamadı veya reddedilmeye uygun değil.",
   "offer-not-found-or-eligible-for-taking-back":"Teklif bulunamadı veya geri almaya uygun değil.",
   "users-library":"%{user} kitaplığı",
-  "text-message":"Mesaj Gönder"
+  "text-message":"Mesaj Gönder",
+  "feedback-description":"Ne kadar çok detay verirseniz, BookSwap'ı o kadar iyi geliştirebiliriz.",
+  "submit":"Gönder"
 }

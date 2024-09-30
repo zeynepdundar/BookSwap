@@ -12,25 +12,27 @@ import {
 import i18n from "../i18n";
 import Screen from "../components/Screen";
 import { MaterialIcons } from "@expo/vector-icons";
+import { formatText, truncateText } from "../utils/helper";
+import { useSelector } from "react-redux";
 
 export default function TradeOfferAcceptedScreen({ navigation, route }) {
   const { user, receivedBook, offeredBook, conversationId } = route.params;
+  const { firebaseUserId } = useSelector((state: any) => state.auth.user);
+
 
   const importUrl = require("../assets/images/radar.png");
 
   const goToChatScreen = () => {
     navigation.replace("ChatScreen", {
-      user: user,
       conversationId: conversationId,
+      friend: user,
+      currentUserId:firebaseUserId
     });
   };
 
   const navigateHome = () => {
     // TODO:Verify resetting the navigation stack. The current screen should not remain in the stack history, so users can't still use the back button to return to it
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Home" }],
-    });
+    navigation.navigate("HomeTabs", { screen: "Home" });
   };
   return (
     <Screen>
@@ -64,7 +66,15 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
               alt={`Cover of`}
             />
           </AspectRatio>
-          <Text fontSize={11}>{receivedBook.title}</Text>
+          <Text
+            color="#06070D"
+            fontSize="xs"
+            mt="1"
+            textAlign="center"
+            numberOfLines={2}
+          >
+            {truncateText(formatText(receivedBook.title), 36)}
+          </Text>
         </Box>
         <Box width="100" p="2" bg="#fff" mt="9">
           <AspectRatio ratio={38 / 62}>
@@ -79,7 +89,15 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
               alt={`Cover of`}
             />
           </AspectRatio>
-          <Text fontSize={11}>{offeredBook.title}</Text>
+          <Text
+            color="#06070D"
+            fontSize="xs"
+            mt="1"
+            textAlign="center"
+            numberOfLines={2}
+          >
+            {truncateText(formatText(offeredBook.title), 36)}
+          </Text>
         </Box>
         <Text mt="7">{i18n.t("you-have-accepted-the-request")}</Text>
         <Spacer></Spacer>
