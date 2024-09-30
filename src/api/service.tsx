@@ -8,13 +8,16 @@ export const updateUserProfileData = async (
   profileData,
   fullUpdate = false
 ) => {
-  const wishlistBookIds = Array.isArray(profileData.wishlistBook) && profileData.wishlistBook.length > 0
-    ? profileData.wishlistBook.map((item: any) => item.id).filter(Boolean)
-    : undefined;
+  const wishlistBookIds =
+    Array.isArray(profileData.wishlistBook) &&
+    profileData.wishlistBook.length > 0
+      ? profileData.wishlistBook.map((item: any) => item.id).filter(Boolean)
+      : undefined;
 
-  const libraryBookIds = Array.isArray(profileData.libraryBook) && profileData.libraryBook.length > 0
-    ? profileData.libraryBook.map((item: any) => item.id).filter(Boolean)
-    : undefined;
+  const libraryBookIds =
+    Array.isArray(profileData.libraryBook) && profileData.libraryBook.length > 0
+      ? profileData.libraryBook.map((item: any) => item.id).filter(Boolean)
+      : undefined;
 
   const pushNotificationToken = await AsyncStore.getItem<string>(
     "pushToken",
@@ -452,4 +455,24 @@ export const sendOffer = async (userId, proposal) => {
     throw new Error("Failed to sent offer [sendOffer]");
   }
   return;
+};
+export const submitFeedback = async (userId, feedbackText) => {
+  try {
+    const response = await fetch(ProfileEndpoints.SUBMIT_FEEDBACK(userId), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: feedbackText,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(response.message || "Failed to submit feedback.");
+    }
+    return response;
+  } catch (error) {
+    console.error("Error submitting feedback:", error);
+  }
 };

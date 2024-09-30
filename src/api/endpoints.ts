@@ -1,4 +1,4 @@
-const BASE_URL = "http://18.195.95.136";
+const BASE_URL = "http://35.159.109.130";
 //"http://localhost"; // Change this based on your environment
 const PORT = 3050;
 
@@ -44,6 +44,10 @@ const ProfileEndpoints = {
   ACCEPT_OFFER: `${BASE_URL}:${PORT}/core/offer/accept`,
   REJECT_OFFER: `${BASE_URL}:${PORT}/core/offer/reject`,
   TAKE_BACK_OFFER: `${BASE_URL}:${PORT}/core/offer/takeback`,
+
+  // Feedback
+  SUBMIT_FEEDBACK: (userId: string) =>
+    `${BASE_URL}:${PORT}/core/user/${userId}/feedback`,
 };
 
 export { AuthEndpoints, EditionEndpoints, ProfileEndpoints };

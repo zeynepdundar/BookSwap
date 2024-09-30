@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Dimensions,
+  SafeAreaView,
+  StatusBar,
+  Platform,
+} from "react-native";
 import { useDispatch } from "react-redux";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -162,8 +168,7 @@ export default function BarcodeScannerScreen({
       setTimeout(() => {
         setError(null);
       }, 8000);
-    }
-    else{
+    } else {
       setSelectedAction(actionType);
       setIsInfoDialogOpen(true);
     }
@@ -171,12 +176,13 @@ export default function BarcodeScannerScreen({
   };
 
   return (
-    <View style={{ width, height }}>
+    <View style={[styles.container, { height }]}>
+      <StatusBar hidden />
       <IconButton
         onPress={() => navigation.goBack()}
         size="10"
-        m={"30px"}
-        borderRadius="full"
+        borderRadius={"full"}
+        margin={Platform.OS === "android" ? 2 : 5}
         position="absolute"
         bg="#dddddd"
         zIndex={99}
@@ -188,13 +194,12 @@ export default function BarcodeScannerScreen({
           <Icon color="black" name={"close"} as={MaterialIcons} size="lg" />
         }
       />
-      <Center width={"100%"} h="100%" bg="transparent" opacity={1}>
-        <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          style={StyleSheet.absoluteFillObject}
-          barCodeTypes={[BarCodeScanner.Constants.BarCodeType.ean13]}
-        />
-      </Center>
+      {/* Ensure full screen coverage */}
+      <BarCodeScanner
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        style={styles.fullScreenContainer}
+        barCodeTypes={[BarCodeScanner.Constants.BarCodeType.ean13]}
+      />
       {edition && (
         <Center>
           <BookInfoBox edition={edition} onAddBooks={handleAddBook} />
@@ -215,7 +220,7 @@ export default function BarcodeScannerScreen({
           mode === "Wishlist" || mode === "Library" ? "the-book-added" : null
         }
       />
-        <InfoDialogBox
+      <InfoDialogBox
         isOpen={isInfoDialogOpen}
         onClose={closeInfoDialog}
         actionType={selectedAction}
@@ -297,3 +302,18 @@ export const ErrorAlert = ({ message }) => (
     </Alert>
   </Center>
 );
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1, // Take up the full screen height
+    backgroundColor: "black", // Match the background color of the scanner
+    margin: 0,
+    padding: 0,
+  },
+  fullScreenContainer: {
+    flex: 1, // Merged to ensure full-screen coverage
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black", // Optional background color to match scanner
+  },
+});

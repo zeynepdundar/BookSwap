@@ -28,6 +28,7 @@ import { clearProfileData, setProfileData } from "../../store/profile-slice";
 import { RootState } from "../../store/types";
 import AsyncStore from "../../utils/AsyncStore";
 import { updateProfileAsync } from "../../store/profile-actions";
+import { FeedbackModal } from "../../components/Modal/FeedbackModal";
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../../assets/images/icon/library-icon.png");
@@ -41,6 +42,7 @@ export default function ProfileScreen({ navigation }) {
 
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
+
 
   // Destructure specific attributes from the profileData
   const { name, wishlistBook, libraryBook, languagePreference, imageData } =
@@ -79,218 +81,223 @@ export default function ProfileScreen({ navigation }) {
   };
 
   return (
-    <Screen>
-      <HStack
-        alignItems="center"
-        space="26%"
-        justifyContent="space-between"
-        w="100%"
-        h={16}
-      >
-        <Button
-          variant="ghost"
-          leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
-          _pressed={{
-            bg: "transparent",
-          }}
-          onPress={() => navigation.goBack()}
-        ></Button>
-        <Heading>{i18n.t("profile")}</Heading>
-        <Spacer></Spacer>
-      </HStack>
-      <VStack space={1} alignItems="center" height={"50%"}>
-        <Center w="100%" h="215px" px={6}>
-          <ImagePicker
-            selectedImage={handleImageUpload}
-            initialImage={imageData}
-          />
-          <Heading color="black.100" my={3}>
-            {name}
-          </Heading>
-        </Center>
+    <>
+      <Screen>
+        <HStack
+          alignItems="center"
+          space="26%"
+          justifyContent="space-between"
+          w="100%"
+          h={16}
+        >
+          <Button
+            variant="ghost"
+            leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+            _pressed={{
+              bg: "transparent",
+            }}
+            onPress={() => navigation.goBack()}
+          ></Button>
+          <Heading>{i18n.t("profile")}</Heading>
+          <Spacer></Spacer>
+        </HStack>
+        <VStack space={1} alignItems="center" height={"50%"}>
+          <Center w="100%" h="215px" px={6}>
+            <ImagePicker
+              selectedImage={handleImageUpload}
+              initialImage={imageData}
+            />
+            <Heading color="black.100" my={3}>
+              {name}
+            </Heading>
+          </Center>
 
-        {/* Wishlist */}
-        <Pressable width={320} onPress={() => navigation.navigate("Wishlist")}>
-          <Flex
-            direction="row"
-            alignItems="center"
-            maxW={320}
-            p="1"
-            pb="5"
-            mt="4"
-            overflow="hidden"
-            borderBottomColor="#f5f5f5"
-            borderBottomWidth={2}
+          {/* Wishlist */}
+          <Pressable
+            width={320}
+            onPress={() => navigation.navigate("Wishlist")}
           >
-            <Image source={wishlistIcon} alt="Library icon" />
-            <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
-              {i18n.t("my-wishlist")}
-            </Text>
-            <Spacer></Spacer>
-            <Box
-              alignSelf="center"
-              rounded="md"
-              maxW="20"
-              px={2}
-              py={0.5}
-              _text={{
-                fontSize: "sm",
-                fontWeight: "medium",
-                color: "warmGray.50",
-                letterSpacing: "lg",
-              }}
-              bg="primary.50"
+            <Flex
+              direction="row"
+              alignItems="center"
+              maxW={320}
+              p="1"
+              pb="5"
+              mt="4"
+              overflow="hidden"
+              borderBottomColor="#f5f5f5"
+              borderBottomWidth={2}
             >
-              {wishlistBook.length}
-            </Box>
-          </Flex>
-        </Pressable>
-
-        {/* Library */}
-        <Pressable width={320} onPress={() => navigation.navigate("Library")}>
-          <Flex
-            direction="row"
-            alignItems="center"
-            maxW={320}
-            p="1"
-            pb="5"
-            mt="4"
-            overflow="hidden"
-            borderBottomColor="#f5f5f5"
-            borderBottomWidth={2}
-          >
-            <Image source={libraryIcon} alt="Wishlist icon" />
-            <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
-              {i18n.t("my-library")}
-            </Text>
-            <Spacer></Spacer>
-            <Box
-              alignSelf="center"
-              rounded="md"
-              maxW="20"
-              px={2}
-              py={0.5}
-              _text={{
-                fontSize: "sm",
-                fontWeight: "medium",
-                color: "warmGray.50",
-                letterSpacing: "lg",
-              }}
-              bg="primary.50"
-            >
-              {libraryBook.length}
-            </Box>
-          </Flex>
-        </Pressable>
-
-        {/* Language */}
-        <Pressable width={320} onPress={() => console.log("Change language")}>
-          <Flex
-            direction="row"
-            alignItems="center"
-            maxW={320}
-            p="1"
-            pb="5"
-            mt="4"
-            overflow="hidden"
-            borderBottomColor="#f5f5f5"
-            borderBottomWidth={2}
-          >
-            <Image source={languageIcon} alt="Language selection icon" />
-            <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
-              {i18n.t("language")}
-            </Text>
-            <Spacer></Spacer>
-            <Box maxW="20" px={1}>
-              <Menu
-                w="106"
-                mr={18}
-                trigger={(triggerProps) => {
-                  return (
-                    <Pressable
-                      accessibilityLabel="Language selection"
-                      {...triggerProps}
-                    >
-                      <Text
-                        fontSize="md"
-                        fontWeight="medium"
-                        color="black.700"
-                        letterSpacing="lg"
-                      >
-                        {languagePreference?.toUpperCase()}
-                      </Text>
-                    </Pressable>
-                  );
+              <Image source={wishlistIcon} alt="Library icon" />
+              <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
+                {i18n.t("my-wishlist")}
+              </Text>
+              <Spacer></Spacer>
+              <Box
+                alignSelf="center"
+                rounded="md"
+                maxW="20"
+                px={2}
+                py={0.5}
+                _text={{
+                  fontSize: "sm",
+                  fontWeight: "medium",
+                  color: "warmGray.50",
+                  letterSpacing: "lg",
                 }}
+                bg="primary.50"
               >
-                {[
-                  { code: "tr", lang: i18n.t("turkish") },
-                  { code: "en", lang: i18n.t("english") },
-                ].map((input, index) => (
-                  <Menu.Item
-                    key={index}
-                    onPress={() => handleLanguageChange(input.code)}
-                    disabled={languagePreference === input.code}
-                  >
-                    {input.lang}
-                  </Menu.Item>
-                ))}
-              </Menu>
-            </Box>
-          </Flex>
-        </Pressable>
+                {wishlistBook.length}
+              </Box>
+            </Flex>
+          </Pressable>
 
-        {/* Feedback */}
-        <Pressable width={320} onPress={() => console.log("Write feedback")}>
-          <Flex
-            direction="row"
-            alignItems="center"
-            maxW={320}
-            p="1"
-            pb="5"
-            mt="4"
-            overflow="hidden"
-            borderBottomColor="#f5f5f5"
-            borderBottomWidth={2}
-          >
-            <Image source={feedbackIcon} alt="Feedback icon" />
-            <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
-              {i18n.t("feedback")}
-            </Text>
-            <Spacer></Spacer>
-          </Flex>
-        </Pressable>
+          {/* Library */}
+          <Pressable width={320} onPress={() => navigation.navigate("Library")}>
+            <Flex
+              direction="row"
+              alignItems="center"
+              maxW={320}
+              p="1"
+              pb="5"
+              mt="4"
+              overflow="hidden"
+              borderBottomColor="#f5f5f5"
+              borderBottomWidth={2}
+            >
+              <Image source={libraryIcon} alt="Wishlist icon" />
+              <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
+                {i18n.t("my-library")}
+              </Text>
+              <Spacer></Spacer>
+              <Box
+                alignSelf="center"
+                rounded="md"
+                maxW="20"
+                px={2}
+                py={0.5}
+                _text={{
+                  fontSize: "sm",
+                  fontWeight: "medium",
+                  color: "warmGray.50",
+                  letterSpacing: "lg",
+                }}
+                bg="primary.50"
+              >
+                {libraryBook.length}
+              </Box>
+            </Flex>
+          </Pressable>
 
-        {/* Logout */}
-        <Pressable width={320} onPress={() => setIsOpen(!isOpen)}>
-          <Flex
-            direction="row"
-            alignItems="center"
-            maxW={320}
-            p="1"
-            pb="5"
-            mt="4"
-            overflow="hidden"
-            borderBottomColor="#f5f5f5"
-            borderBottomWidth={2}
-          >
-            <Image source={logoutIcon} alt="Logout icon" />
-            <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
-              {i18n.t("logout")}
-            </Text>
-            <Spacer></Spacer>
-          </Flex>
-        </Pressable>
-        <AlertDialogBox
-          isOpen={isOpen}
-          onClose={onClose}
-          onConfirm={signOutHandler}
-          title={i18n.t("logout")}
-          description={i18n.t("are-you-sure-log-out")}
-          cancelButtonLabel={i18n.t("cancel")}
-          confirmButtonLabel={i18n.t("logout")}
-        />
-      </VStack>
-    </Screen>
+          {/* Language */}
+          <Pressable width={320} onPress={() => console.log("Change language")}>
+            <Flex
+              direction="row"
+              alignItems="center"
+              maxW={320}
+              p="1"
+              pb="5"
+              mt="4"
+              overflow="hidden"
+              borderBottomColor="#f5f5f5"
+              borderBottomWidth={2}
+            >
+              <Image source={languageIcon} alt="Language selection icon" />
+              <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
+                {i18n.t("language")}
+              </Text>
+              <Spacer></Spacer>
+              <Box maxW="20" px={1}>
+                <Menu
+                  w="106"
+                  mr={18}
+                  trigger={(triggerProps) => {
+                    return (
+                      <Pressable
+                        accessibilityLabel="Language selection"
+                        {...triggerProps}
+                      >
+                        <Text
+                          fontSize="md"
+                          fontWeight="medium"
+                          color="black.700"
+                          letterSpacing="lg"
+                        >
+                          {languagePreference?.toUpperCase()}
+                        </Text>
+                      </Pressable>
+                    );
+                  }}
+                >
+                  {[
+                    { code: "tr", lang: i18n.t("turkish") },
+                    { code: "en", lang: i18n.t("english") },
+                  ].map((input, index) => (
+                    <Menu.Item
+                      key={index}
+                      onPress={() => handleLanguageChange(input.code)}
+                      disabled={languagePreference === input.code}
+                    >
+                      {input.lang}
+                    </Menu.Item>
+                  ))}
+                </Menu>
+              </Box>
+            </Flex>
+          </Pressable>
+
+          {/* Feedback */}
+          <Pressable width={320} onPress={() => navigation.navigate("Feedback")}>
+            <Flex
+              direction="row"
+              alignItems="center"
+              maxW={320}
+              p="1"
+              pb="5"
+              mt="4"
+              overflow="hidden"
+              borderBottomColor="#f5f5f5"
+              borderBottomWidth={2}
+            >
+              <Image source={feedbackIcon} alt="Feedback icon" />
+              <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
+                {i18n.t("feedback")}
+              </Text>
+              <Spacer></Spacer>
+            </Flex>
+          </Pressable>
+
+          {/* Logout */}
+          <Pressable width={320} onPress={() => setIsOpen(!isOpen)}>
+            <Flex
+              direction="row"
+              alignItems="center"
+              maxW={320}
+              p="1"
+              pb="5"
+              mt="4"
+              overflow="hidden"
+              borderBottomColor="#f5f5f5"
+              borderBottomWidth={2}
+            >
+              <Image source={logoutIcon} alt="Logout icon" />
+              <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
+                {i18n.t("logout")}
+              </Text>
+              <Spacer></Spacer>
+            </Flex>
+          </Pressable>
+          <AlertDialogBox
+            isOpen={isOpen}
+            onClose={onClose}
+            onConfirm={signOutHandler}
+            title={i18n.t("logout")}
+            description={i18n.t("are-you-sure-log-out")}
+            cancelButtonLabel={i18n.t("cancel")}
+            confirmButtonLabel={i18n.t("logout")}
+          />
+        </VStack>
+      </Screen>
+    </>
   );
 }
