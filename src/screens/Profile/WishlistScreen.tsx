@@ -73,7 +73,7 @@ export default function WishlistScreen({ navigation }) {
         space="22%"
         justifyContent="space-between"
         w="100%"
-        h="40px"
+        h="50px"
       >
         <Button
           variant="ghost"
@@ -83,7 +83,7 @@ export default function WishlistScreen({ navigation }) {
           }}
           onPress={() => navigation.goBack()}
         />
-        <Heading>{i18n.t("my-wishlist")}</Heading>
+        <Heading fontWeight={500}>{i18n.t("my-wishlist")}</Heading>
         <Spacer></Spacer>
       </HStack>
       {selectedBooks.length === 0 && (

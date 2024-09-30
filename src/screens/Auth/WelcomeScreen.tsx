@@ -1,4 +1,4 @@
-import { Button, Center, Flex, Heading, Image } from "native-base";
+import { Button, Center, Flex, Heading, Image, Spacer, VStack } from "native-base";
 import Screen from "../../components/Screen";
 import i18n from "../../i18n";
 
@@ -11,26 +11,18 @@ export default function WelcomeScreen({ navigation }) {
 
   return (
     <Screen>
-      <Flex direction="column" mb="2.5" mt="20">
-        <Center mb="7">
-          <Image source={importUrl} alt="Infinite Library" size="375" />
-        </Center>
-        <Center>
-          <Heading fontSize="22px" mb="3">
-            {i18n.t("infinite-library")}
-          </Heading>
-        </Center>
-        <Center>
-          <Heading fontWeight="500" color="black.200" w={312}>
-            {i18n.t("make-your-library-different")}
-          </Heading>
-        </Center>
-        <Center>
-          <Button m="7" variant="primary" onPress={pressHandler}>
-            {i18n.t("get-started")}
-          </Button>
-        </Center>
-      </Flex>
+      <VStack space={2} alignItems="center" height={"100%"}>
+        <Image source={importUrl} alt="Infinite Library" size="375" mt="50"/>
+        <Heading fontSize="22px" mb="2">
+          {i18n.t("infinite-library")}
+        </Heading>
+        <Heading color="black.200" w={312}>
+          {i18n.t("make-your-library-different")}
+        </Heading>
+        <Button m="7" variant="primary" onPress={pressHandler}>
+          {i18n.t("get-started")}
+        </Button>
+      </VStack>
     </Screen>
   );
 }

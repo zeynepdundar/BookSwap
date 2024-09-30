@@ -64,92 +64,88 @@ export default function AuthVerificationScreen({ navigation }) {
     <Screen>
       {/* Phone Input Screen */}
       {(!confirmationResult || error?.type === "verifyPhoneNumberError") && (
-        <>
-          <Flex direction="column" m="3" mt="20">
-            <Center mb={30}>
-              <Image source={appLogo} alt="Book Swap Logo" size={60} mb={2} />
-              <Image source={swapBookText} alt="Book Swap" width={120} />
-            </Center>
-            <Center>
-              <Text color="black.300" mb="12">
-                {i18n.t("enter-your-phone-number")}
+        <VStack alignItems="center" h="100%">
+          <Image
+            source={appLogo}
+            alt="Book Swap Logo"
+            size={60}
+            mb={2}
+            mt="16"
+          />
+          <Image source={swapBookText} alt="Book Swap" width={120} mb="6" />
+          <Text color="black.300" mb="8" width={300}>
+            {i18n.t("enter-your-phone-number")}
+          </Text>
+          <Box
+            width={{
+              base: 300,
+              lg: 250,
+            }}
+            maxW="80"
+            rounded="4px"
+            overflow="hidden"
+            borderColor={error ? "error.500" : "black.500"}
+            borderWidth="1"
+            px="17px"
+            py="12px"
+            justifyContent="center"
+          >
+            <PhoneInput
+              onChangePhoneNumber={(val) => {
+                setPhoneNumber(val);
+              }}
+              initialCountry={"tr"}
+              ref={(ref) => {
+                ref ? setCountryCode(ref.getCountryCode()) : 1;
+              }}
+              flagStyle={{ width: 32, height: 24, borderWidth: 0 }}
+              textStyle={{
+                fontSize: 16,
+                fontFamily: "poppins-regular",
+                color: "#808085",
+                paddingVertical: 0, // Remove extra vertical padding
+                lineHeight: Platform.OS === "android" ? 21 : 24, // Align lineHeight to fontSize
+                textAlignVertical: "center",
+              }}
+              offset={20}
+              textProps={{
+                maxLength: 17,
+                allowFontScaling: false,
+              }}
+              autoFormat={true}
+            />
+          </Box>
+          {error && (
+            <Flex direction="row" width="92%" px="4" pt="1">
+              <Icon
+                size="4"
+                color="error.500"
+                as={<MaterialIcons name="error-outline" />}
+              />
+              <Text px={2} fontSize="xs" color="error.500">
+                {error.message}
               </Text>
-            </Center>
-            <Center>
-              <Box
-                width={{
-                  base: 300,
-                  lg: 250,
-                }}
-                maxW="80"
-                rounded="4px"
-                overflow="hidden"
-                borderColor={error ? "error.500" : "black.500"}
-                borderWidth="1"
-                px="17px"
-                py="12px"
-                justifyContent="center"
-              >
-                <PhoneInput
-                  onChangePhoneNumber={(val) => {
-                    setPhoneNumber(val);
-                  }}
-                  initialCountry={"tr"}
-                  ref={(ref) => {
-                    ref ? setCountryCode(ref.getCountryCode()) : 1;
-                  }}
-                  flagStyle={{ width: 32, height: 24, borderWidth: 0 }}
-                  textStyle={{
-                    fontSize: 16,
-                    fontFamily: "poppins-regular",
-                    color: "#808085",
-                    paddingVertical: 0, // Remove extra vertical padding
-                    lineHeight: Platform.OS === "android" ? 21 : 24, // Align lineHeight to fontSize
-                    textAlignVertical: "center",
-                  }}
-                  offset={20}
-                  textProps={{
-                    maxLength: 17,
-                    allowFontScaling: false,
-                  }}
-                  autoFormat={true}
-                />
-              </Box>
-              {error && (
-                <Flex direction="row" width="100%" px="4" py="2">
-                  <Icon
-                    size="4"
-                    color="error.500"
-                    as={<MaterialIcons name="error-outline" />}
-                  />
-                  <Text px={2} fontSize="xs" color="error.500">
-                    {error.message}
-                  </Text>
-                </Flex>
-              )}
-            </Center>
-            <Center>
-              <Button
-                variant="primary"
-                mt={60}
-                onPress={() => {
-                  handleVerifyPhoneNumber();
-                }}
-              >
-                {i18n.t("send")}
-              </Button>
-            </Center>
-          </Flex>
-        </>
+            </Flex>
+          )}
+          <Spacer></Spacer>
+          <Button
+            mb="370"
+            variant="primary"
+            onPress={() => {
+              handleVerifyPhoneNumber();
+            }}
+          >
+            {i18n.t("send")}
+          </Button>
+        </VStack>
       )}
       {/* Verification Code Screen */}
       {(confirmationResult || error?.type === "checkVerificationCodeError") && (
-        <VStack space={1} alignItems="center" height={"50%"}>
-          <Spacer></Spacer>
-          <Heading w="100%" h="8" px={10}>
+        <VStack space={1} alignItems="center" height="100%">
+          <Heading w="100%" h="8" px={6} mt="16" mb="2">
             {i18n.t("verification-code")}
           </Heading>
-          <Text w="100%" color="black.300" px={10} mb="6">
+          <Text w={300} color="black.300"  mb="6">
             {i18n.t("type-verification-code")}
           </Text>
           <Center>
@@ -205,7 +201,6 @@ export default function AuthVerificationScreen({ navigation }) {
           </Center>
         </VStack>
       )}
-
     </Screen>
   );
 }

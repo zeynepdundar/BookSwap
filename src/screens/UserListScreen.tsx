@@ -83,7 +83,7 @@ export default function UserListScreen({ navigation, route }) {
         space="22%"
         justifyContent="space-between"
         w="100%"
-        h="40px"
+        h="50px"
       >
         <Button
           variant="ghost"

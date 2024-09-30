@@ -91,7 +91,7 @@ export default function MessagesScreen({ navigation }) {
 
   return (
     <Screen>
-      <Center w="100%" h="40px">
+      <Center w="100%" h="50px">
         <Heading>{i18n.t("messages")}</Heading>
       </Center>
       {messages?.length > 0 && (

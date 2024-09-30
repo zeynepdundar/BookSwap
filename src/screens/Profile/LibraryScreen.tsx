@@ -106,8 +106,8 @@ export default function LibraryScreen({ navigation, route }) {
         space="20%"
         justifyContent="space-between"
         w="100%"
-        h="40px"       >
-        
+        h="50px"
+>        
         <Button
           variant="ghost"
           leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}

@@ -69,7 +69,7 @@ export default function FeedbackScreen({ navigation, route }) {
           space="24%"
           justifyContent="space-between"
           w="100%"
-          h="40px"       
+          h="50px"       
         >
           <Button
             variant="ghost"
