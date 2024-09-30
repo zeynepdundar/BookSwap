@@ -16,12 +16,12 @@ export default function WelcomeScreen({ navigation }) {
           <Image source={importUrl} alt="Infinite Library" size="375" />
         </Center>
         <Center>
-          <Heading fontSize="lg" mb="3" color="black.100">
+          <Heading fontSize="22px" mb="3">
             {i18n.t("infinite-library")}
           </Heading>
         </Center>
         <Center>
-          <Heading fontSize="18px" color="black.200" w={312}>
+          <Heading fontWeight="500" color="black.200" w={312}>
             {i18n.t("make-your-library-different")}
           </Heading>
         </Center>

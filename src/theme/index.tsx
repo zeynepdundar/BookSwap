@@ -135,12 +135,30 @@ export const theme = extendTheme({
       },
     },
     Heading: {
-      baseStyle: ({}) => {
-        return {
+      baseStyle: {
           color: "coolGray.800",
-          fontWeight: "medium",
-          fontFamily: "poppins",
-        };
+          fontWeight: "600",
+          fontFamily: "poppins"
+      },
+      sizes: {
+        xs: {
+          fontSize: "12px",
+        },
+        sm: {
+          fontSize: "14px",
+        },
+        md: {
+          fontSize: "16px",
+        },
+        lg: {
+          fontSize: "18px",
+        },
+        xl: {
+          fontSize: "20px",
+        },
+      },
+      defaultProps: {
+        size: "xl", 
       },
     },
   },

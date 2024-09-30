@@ -1,6 +1,6 @@
 import {
   Heading,
-  ArrowBackIcon,
+  ChevronLeftIcon,
   Button,
   Spacer,
   HStack,
@@ -66,19 +66,19 @@ export default function FeedbackScreen({ navigation, route }) {
       <Screen>
         <HStack
           alignItems="center"
-          space="20%"
+          space="24%"
           justifyContent="space-between"
           w="100%"
-          h={16}
+          h="40px"       
         >
           <Button
             variant="ghost"
-            leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+            leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
             _pressed={{
               bg: "transparent",
             }}
             onPress={() => navigation.goBack()}
-          ></Button>
+          />
           <Heading>{i18n.t("feedback")}</Heading>
           <Spacer />
         </HStack>

@@ -4,7 +4,7 @@ import {
   Flex,
   Heading,
   Spacer,
-  ArrowBackIcon,
+  ChevronLeftIcon,
   Box,
   VStack,
   HStack,
@@ -164,7 +164,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
             <Button
               backgroundColor="transparent"
               variant="ghost"
-              leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+              leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
               _pressed={{
                 bg: "transparent",
               }}
@@ -187,7 +187,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
               rounded="full"
               size={60}
             />
-            <Heading width="60%" color="black.100" my={3}>
+            <Heading width="60%" my={3}>
               {profile?.name}
             </Heading>
             <Spacer></Spacer>

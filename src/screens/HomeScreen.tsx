@@ -32,7 +32,7 @@ export default function HomeScreen({ navigation }) {
     <Screen>
       <Flex direction="row" justifyContent="space-between" alignItems="center">
         <Flex my="4">
-          <Heading color="coolGray.800">{i18n.t("hello")}</Heading>
+          <Heading>{i18n.t("hello")}</Heading>
           <Text color="coolGray.800" fontWeight="500" fontSize={16}>
             {profile.name}
           </Text>

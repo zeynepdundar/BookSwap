@@ -4,7 +4,7 @@ import {
   Flex,
   Heading,
   Spacer,
-  ArrowBackIcon,
+  ChevronLeftIcon,
   Image,
   Box,
   Text,
@@ -28,7 +28,6 @@ import { clearProfileData, setProfileData } from "../../store/profile-slice";
 import { RootState } from "../../store/types";
 import AsyncStore from "../../utils/AsyncStore";
 import { updateProfileAsync } from "../../store/profile-actions";
-import { FeedbackModal } from "../../components/Modal/FeedbackModal";
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("../../assets/images/icon/library-icon.png");
@@ -85,19 +84,18 @@ export default function ProfileScreen({ navigation }) {
       <Screen>
         <HStack
           alignItems="center"
-          space="26%"
+          space="28%"
           justifyContent="space-between"
           w="100%"
-          h={16}
-        >
+          h="40px"      >
           <Button
             variant="ghost"
-            leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+            leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
             _pressed={{
               bg: "transparent",
             }}
             onPress={() => navigation.goBack()}
-          ></Button>
+          />
           <Heading>{i18n.t("profile")}</Heading>
           <Spacer></Spacer>
         </HStack>

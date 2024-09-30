@@ -66,12 +66,16 @@ const ImagePicker = ({
 
     if (fileSizeInMB <= MAX_IMAGE_SIZE_MB) {
       setPickedImage(newImageUri);
-      selectedImage({ uri: newImageUri, fileSize: fileSizeInBytes });
+      selectedImage( newImageUri );
     } else {
       setError(
         `The selected image is too large. Maximum allowed size is ${MAX_IMAGE_SIZE_MB} MB.`
       );
+      setTimeout(() => {
+        setError("")
+      }, 1500);
     }
+
   };
 
   const takeImageHandler = async () => {
@@ -91,8 +95,6 @@ const ImagePicker = ({
 
     if (!image.canceled) {
       const newImageUri = image.assets[0].uri;
-      setPickedImage(newImageUri);
-      selectedImage(newImageUri);
       await checkImageSizeAndSet(newImageUri);
     }
   };

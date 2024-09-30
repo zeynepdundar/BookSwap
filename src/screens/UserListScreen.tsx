@@ -8,7 +8,7 @@ import {
   HStack,
   Spacer,
   Center,
-  ArrowBackIcon,
+  ChevronLeftIcon,
   Divider,
   Avatar,
   Pressable,
@@ -80,23 +80,21 @@ export default function UserListScreen({ navigation, route }) {
     <Screen>
       <HStack
         alignItems="center"
+        space="22%"
         justifyContent="space-between"
         w="100%"
-        h={16}
+        h="40px"
       >
         <Button
           variant="ghost"
-          leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+          leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
           _pressed={{
             bg: "transparent",
           }}
           onPress={() => navigation.goBack()}
-          aria-label={i18n.t("go-back")}
         />
-        <Center flex={8}>
-          <Heading>{i18n.t("ask-for-swap")}</Heading>
-        </Center>
-        <Spacer />
+        <Heading>{i18n.t("ask-for-swap")}</Heading>
+        <Spacer></Spacer>
       </HStack>
       <FlatList
         maxWidth="100%"
