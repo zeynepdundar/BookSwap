@@ -13,7 +13,7 @@ const { width, height } = Dimensions.get("window");
 export default function TradingTabs() {
   return (
     <Screen>
-      <Center w="100%" h="40px">
+      <Center w="100%" h="50px">
         <Heading>{i18n.t("trading")}</Heading>
       </Center>
       <Tab.Navigator

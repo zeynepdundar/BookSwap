@@ -123,7 +123,7 @@ export default function BookSearchOnCreationScreen({
       <Screen>
         <Box
           w="100%"
-          h={8}
+          h={9}
           alignItems="flex"
           justifyContent="center" // Aligns text to the left
           px={4}

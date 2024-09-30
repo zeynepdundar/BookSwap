@@ -79,7 +79,7 @@ export default function TradeProposal({ navigation, route }) {
         space="20%"
         justifyContent="space-between"
         w="100%"
-        h="40px"
+        h="50px"
 
       >
         <Button

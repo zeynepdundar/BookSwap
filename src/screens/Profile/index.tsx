@@ -42,7 +42,6 @@ export default function ProfileScreen({ navigation }) {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
 
-
   // Destructure specific attributes from the profileData
   const { name, wishlistBook, libraryBook, languagePreference, imageData } =
     profileData;
@@ -87,7 +86,8 @@ export default function ProfileScreen({ navigation }) {
           space="28%"
           justifyContent="space-between"
           w="100%"
-          h="40px"      >
+          h="50px"
+        >
           <Button
             variant="ghost"
             leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
@@ -245,7 +245,10 @@ export default function ProfileScreen({ navigation }) {
           </Pressable>
 
           {/* Feedback */}
-          <Pressable width={320} onPress={() => navigation.navigate("Feedback")}>
+          <Pressable
+            width={320}
+            onPress={() => navigation.navigate("Feedback")}
+          >
             <Flex
               direction="row"
               alignItems="center"
