@@ -121,11 +121,18 @@ export default function BookSearchOnCreationScreen({
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Screen>
+        <Box
+          w="100%"
+          h={8}
+          alignItems="flex"
+          justifyContent="center" // Aligns text to the left
+          px={4}
+        >
+          <Heading>{i18n.t("keep-exploring")}</Heading>
+        </Box>
         <Flex h="80%">
-          <Heading p={2}>{i18n.t("keep-exploring")}</Heading>
-
           {/* Search Bar Section */}
-          <Center w="100%" h="20" px={2}>
+          <Center w="100%" h={16} px={2}>
             <Input
               placeholder={i18n.t("search-book-by-title")}
               width="100%"

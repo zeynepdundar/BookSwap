@@ -15,7 +15,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import firestore from "@react-native-firebase/firestore";
 import {
-  ArrowBackIcon,
+  ChevronLeftIcon,
   Avatar,
   Button,
   Heading,
@@ -164,7 +164,7 @@ export default function ChatScreen({ navigation, route }) {
   // }, [])
   const customSystemMessage = (props) => {
     return (
-      <View bg="amber.200" {...props} style={{ bg: "amber.100" }}>
+      <View  {...props} style={{ bg: "amber.100" }}>
         <Icon name="lock" color="#9d9d9d" size={16} />
         <Text>
           Your chat is secured. Remember to be cautious about what you share
@@ -276,7 +276,7 @@ export default function ChatScreen({ navigation, route }) {
         <Button
           backgroundColor="transparent"
           variant="ghost"
-          leftIcon={<ArrowBackIcon size="6" color="#212325" />}
+          leftIcon={<ChevronLeftIcon size="6" color="#212325" />}
           _pressed={{ bg: "transparent" }}
           onPress={onBackPress}
         />
@@ -287,7 +287,7 @@ export default function ChatScreen({ navigation, route }) {
           size={10}
           rounded="full"
         />
-        <Heading fontSize="18px" w="206">
+        <Heading w="206">
           {title}
         </Heading>
         <Button

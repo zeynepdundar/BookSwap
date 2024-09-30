@@ -2,12 +2,15 @@ import { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import {
   Icon,
-  ArrowBackIcon,
+  ChevronLeftIcon,
   Button,
   Text,
   Box,
   AspectRatio,
   Avatar,
+  HStack,
+  Heading,
+  Spacer,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import Screen from "../components/Screen";
@@ -73,28 +76,10 @@ export default function OtherLibraryScreen({ navigation, route }) {
 
   return (
     <Screen>
-      {/* <HStack
-        alignItems="center"
-        space="20%"
-        justifyContent="space-between"
-        w="100%"
-        h={16}
-      >
+      {/* <Box flexDirection="row" alignItems="center" m="3">
         <Button
           variant="ghost"
-          leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
-          _pressed={{
-            bg: "transparent",
-          }}
-          onPress={() => navigation.goBack()}
-        ></Button>
-        <Heading>{i18n.t("my-library")}</Heading>
-        <Spacer></Spacer>
-      </HStack> */}
-      <Box flexDirection="row" alignItems="center" m="3">
-        <Button
-          variant="ghost"
-          leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+          leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
           _pressed={{
             bg: "transparent",
           }}
@@ -106,7 +91,27 @@ export default function OtherLibraryScreen({ navigation, route }) {
         <Text fontWeight="500" fontSize="18">
           {i18n.t("users-library", { user: user.name })}
         </Text>
-      </Box>
+      </Box> */}
+      <HStack
+        alignItems="center"
+        justifyContent="flex-start" // Aligns items to the left
+        w="100%"
+        h="60px"
+        space={2} // Optional: Adds a small space between items
+      >
+        <Button
+          variant="ghost"
+          leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
+          _pressed={{
+            bg: "transparent",
+          }}
+          onPress={() => navigation.goBack()}
+        />
+        <Avatar source={profilePhoto} size="50" />
+        <Text fontWeight="500" fontSize="18">
+          {i18n.t("users-library", { user: user.name })}
+        </Text>
+      </HStack>
 
       {loading && (
         <Box h="75%" alignItems="center" justifyContent="center">

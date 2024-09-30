@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Center, Heading, VStack, Input, Spacer } from "native-base";
+import { Button, Center, Heading, VStack, Input, Spacer, Box, ChevronLeftIcon } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { useDispatch } from "react-redux";
@@ -25,9 +25,9 @@ export default function NameInputScreen({ navigation }) {
 
   return (
     <Screen>
-      <VStack space={1} alignItems="center" height={"50%"}>
-        <Center h="20" />
-        <Heading w="100%" h="8" px={6}>
+      <VStack space={1} alignItems="center" height={"50%"}>   
+      <Center h="118px" />
+        <Heading w="100%" h="8" px={10}>
           {i18n.t("my-full-name")}
         </Heading>
         <Center w="100%" h="20" px={8}>

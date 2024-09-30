@@ -5,6 +5,7 @@ import {
   Avatar,
   Badge,
   Box,
+  Center,
   Divider,
   FlatList,
   Heading,
@@ -15,7 +16,7 @@ import {
   VStack,
 } from "native-base";
 import i18n from "../../i18n";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useMessageSubscription } from "../../hooks/use-message-subscription";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import {
@@ -83,22 +84,16 @@ export default function MessagesScreen({ navigation }) {
   };
 
   const handleResetUnseenCount = (friendUserId, firebaseUserId) => {
-  resetUnseenCount({ friendUserId, firebaseUserId });
+    resetUnseenCount({ friendUserId, firebaseUserId });
   };
 
   const profilePhoto = require("../../assets/images/lalo-salamanca.png");
 
   return (
     <Screen>
-      <HStack
-        alignItems="center"
-        space="20%"
-        justifyContent="center"
-        w="100%"
-        h={16}
-      >
+      <Center w="100%" h="40px">
         <Heading>{i18n.t("messages")}</Heading>
-      </HStack>
+      </Center>
       {messages?.length > 0 && (
         <FlatList
           w="100%"

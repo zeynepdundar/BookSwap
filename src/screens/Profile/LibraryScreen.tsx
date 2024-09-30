@@ -3,7 +3,7 @@ import {
   Heading,
   Icon,
   Fab,
-  ArrowBackIcon,
+  ChevronLeftIcon,
   Button,
   Spacer,
   HStack,
@@ -106,16 +106,16 @@ export default function LibraryScreen({ navigation, route }) {
         space="20%"
         justifyContent="space-between"
         w="100%"
-        h={16}
-      >
+        h="40px"       >
+        
         <Button
           variant="ghost"
-          leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+          leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
           _pressed={{
             bg: "transparent",
           }}
           onPress={() => navigation.goBack()}
-        ></Button>
+        />
         <Heading>{i18n.t("my-library")}</Heading>
         <Spacer></Spacer>
       </HStack>

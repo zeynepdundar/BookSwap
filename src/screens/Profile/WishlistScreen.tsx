@@ -3,7 +3,7 @@ import {
   Heading,
   Icon,
   Fab,
-  ArrowBackIcon,
+  ChevronLeftIcon,
   Button,
   Spacer,
   HStack,
@@ -18,9 +18,7 @@ import Screen from "../../components/Screen";
 import { BookListVertical } from "../../components/shared/BookListVertical";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import {
-  removeBookFromListAsync,
-} from "../../store/profile-actions";
+import { removeBookFromListAsync } from "../../store/profile-actions";
 import { useNavigationState } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { WISHLIST } from "../../constants";
@@ -56,7 +54,6 @@ export default function WishlistScreen({ navigation }) {
     };
   }, [dispatch, selectedBooks]);
 
-
   const removeBookButton = (book) => (
     <RemoveBookButton
       onPress={() =>
@@ -73,19 +70,19 @@ export default function WishlistScreen({ navigation }) {
     <Screen>
       <HStack
         alignItems="center"
-        space="20%"
+        space="22%"
         justifyContent="space-between"
         w="100%"
-        h={16}
+        h="40px"
       >
         <Button
           variant="ghost"
-          leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+          leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
           _pressed={{
             bg: "transparent",
           }}
           onPress={() => navigation.goBack()}
-        ></Button>
+        />
         <Heading>{i18n.t("my-wishlist")}</Heading>
         <Spacer></Spacer>
       </HStack>

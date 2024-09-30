@@ -6,7 +6,7 @@ import {
   Center,
   Heading,
   Spacer,
-  ArrowBackIcon,
+  ChevronLeftIcon,
   Image,
   Box,
   Text,
@@ -76,21 +76,21 @@ export default function TradeProposal({ navigation, route }) {
     <Screen>
       <HStack
         alignItems="center"
+        space="20%"
         justifyContent="space-between"
         w="100%"
-        h={16}
+        h="40px"
+
       >
         <Button
           variant="ghost"
-          leftIcon={<ArrowBackIcon size="6" color="#212325" pr="0" />}
+          leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
           _pressed={{
             bg: "transparent",
           }}
           onPress={() => navigation.goBack()}
-        ></Button>
-        <Center flex={8}>
-          <Heading>{i18n.t("trade-proposal")}</Heading>
-        </Center>
+        />
+        <Heading>{i18n.t("trade-proposal")}</Heading>
         <Spacer></Spacer>
       </HStack>
       <VStack>

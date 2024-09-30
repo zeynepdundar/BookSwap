@@ -8,9 +8,11 @@ import {
   Icon,
   Image,
   Input,
+  Spacer,
   Text,
+  VStack,
 } from "native-base";
-import { Platform } from 'react-native';
+import { Platform } from "react-native";
 import { useState } from "react";
 import Screen from "../../components/Screen";
 import PhoneInput from "react-native-phone-input";
@@ -26,12 +28,9 @@ import {
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { setVerificationCode } from "../../store/auth-slice";
 
-
 export default function AuthVerificationScreen({ navigation }) {
-
   const appLogo = require("../../assets/images/app-icon-516x516.png");
   const swapBookText = require("../../assets/images/swap-book.png");
-
 
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState("");
@@ -89,7 +88,7 @@ export default function AuthVerificationScreen({ navigation }) {
                 borderWidth="1"
                 px="17px"
                 py="12px"
-                justifyContent="center" 
+                justifyContent="center"
               >
                 <PhoneInput
                   onChangePhoneNumber={(val) => {
@@ -104,14 +103,13 @@ export default function AuthVerificationScreen({ navigation }) {
                     fontSize: 16,
                     fontFamily: "poppins-regular",
                     color: "#808085",
-                    paddingVertical: 0,  // Remove extra vertical padding
-                    lineHeight: Platform.OS === 'android' ? 21: 24,  // Align lineHeight to fontSize
-                    textAlignVertical: "center", 
-
+                    paddingVertical: 0, // Remove extra vertical padding
+                    lineHeight: Platform.OS === "android" ? 21 : 24, // Align lineHeight to fontSize
+                    textAlignVertical: "center",
                   }}
                   offset={20}
                   textProps={{
-                    maxLength:17,
+                    maxLength: 17,
                     allowFontScaling: false,
                   }}
                   autoFormat={true}
@@ -146,17 +144,18 @@ export default function AuthVerificationScreen({ navigation }) {
       )}
       {/* Verification Code Screen */}
       {(confirmationResult || error?.type === "checkVerificationCodeError") && (
-        <>
-          <Heading mt="100px">{i18n.t("verification-code")}</Heading>
-          <Center>
-            <Text color="black.300" mb="12">
-              {i18n.t("type-verification-code")}
-            </Text>
-          </Center>
+        <VStack space={1} alignItems="center" height={"50%"}>
+          <Spacer></Spacer>
+          <Heading w="100%" h="8" px={10}>
+            {i18n.t("verification-code")}
+          </Heading>
+          <Text w="100%" color="black.300" px={10} mb="6">
+            {i18n.t("type-verification-code")}
+          </Text>
           <Center>
             <Input
               variant="underlined"
-              keyboardType="numeric" 
+              keyboardType="numeric"
               maxLength={6}
               width={200}
               fontSize={20}
@@ -204,8 +203,9 @@ export default function AuthVerificationScreen({ navigation }) {
               </Alert>
             )}
           </Center>
-        </>
+        </VStack>
       )}
+
     </Screen>
   );
 }
