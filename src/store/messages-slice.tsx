@@ -27,41 +27,25 @@ const messagesSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
-    setLoading: (state, action) => {
-      state.loading = action.payload;
+    messagesLoading: (state) => {
+      state.loading = true;
     },
-    setMessages: (state, action) => {
+    messagesReceived: (state, action) => {
+      state.loading = false;
       state.messages = action.payload;
     },
-    // setSubscriber: (state, action) => {
-    //   state.subscriber = action.payload;
-    // },
-    clearMessages: (state) => {
-      state.messages = [];
-    },
-    setError: (state, action) => {
+    messagesError: (state, action) => {
+      state.loading = false;
       state.error = action.payload;
     },
-  
+    clearMessages: (state) => {
+      state.messages = [];
+    }
   },
 
-  extraReducers: (builder) => {
-    builder
-      .addCase(subscribeToMessages.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(subscribeToMessages.fulfilled, (state, action) => {
-        state.loading = false;
-        // state.subscriber = action.meta.arg;
-      })
-      .addCase(subscribeToMessages.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      })
-    }
 })
 
-export const { clearMessages, setMessages, setLoading, setError } = messagesSlice.actions;
+export const { messagesLoading, messagesReceived, messagesError, clearMessages } = messagesSlice.actions;
 
 export default messagesSlice.reducer;
 

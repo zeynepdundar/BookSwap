@@ -93,6 +93,7 @@ export const InfoDialogBox = ({
       <AlertDialog.Content>
         <AlertDialog.CloseButton />
         <AlertDialog.Header
+        borderBottomWidth={0}
           _text={{
             fontWeight: "medium",
             letterSpacing: "sm",
@@ -112,7 +113,7 @@ export const InfoDialogBox = ({
         >
           {description}
         </AlertDialog.Body>
-        <AlertDialog.Footer>
+        <AlertDialog.Footer  borderTopWidth={0}>
           <Button.Group space={2}>
             <Button
               variant={buttonVariant ? buttonVariant : "primary"}

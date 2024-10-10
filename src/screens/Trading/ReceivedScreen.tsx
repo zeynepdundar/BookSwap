@@ -11,6 +11,7 @@ import {
   Flex,
   HStack,
   Image,
+  Pressable,
   Text,
   VStack,
 } from "native-base";
@@ -24,13 +25,12 @@ import {
   fetchReceivedOffersAsync,
   rejectOfferAsync,
 } from "../../store/profile-actions";
-import { formatText, truncateText } from "../../utils/helper";
+import { formatText, getImageSource, truncateText } from "../../utils/helper";
 import { ErrorAlert } from "../BarcodeScannerScreen";
 
 export default function ReceivedScreen({ navigation }) {
   const tra = require("../../assets/images/icon/Icons.png");
-  const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
-  const profilePhoto = require("../../assets/images/lalo-salamanca.png");
+  const avatar = require("../../assets/images/avatar.png");
   const receivedOffers = useSelector(
     (state: any) => state.profile.profile.receivedOffer
   );
@@ -45,12 +45,12 @@ export default function ReceivedScreen({ navigation }) {
       receivedOffers.map(async (offer) => {
         const photoUrl = await fetchProfileImageUrl(
           offer.participantProfile.id
-        ); // Fetch the profile image URL
+        );
         return {
           ...offer,
           participantProfile: {
             ...offer.participantProfile,
-            photo_file_name: photoUrl || otherUserImage, // Add the photo URL or default image
+            photo_file_name: photoUrl,
           },
         };
       })
@@ -138,6 +138,14 @@ export default function ReceivedScreen({ navigation }) {
     }
   };
 
+  const onNavigateProfile = (selectedUser) => {
+    navigation.navigate("OtherUserProfile", {
+      user: selectedUser,
+    });
+  };
+
+  const renderEmptyItem = () => null; // Empty renderItem function
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     dispatch(fetchReceivedOffersAsync(profile.id)) // Replace with your API call action
@@ -152,18 +160,39 @@ export default function ReceivedScreen({ navigation }) {
     <>
       {!receivedOffers ||
         (receivedOffers.length === 0 && (
-          <VStack width="100%" height="100%" pt="100" bg="#fff">
-            <Center>
-              <Text fontSize="md">
-                {i18n.t("start-searching-for-new-books")}
-              </Text>
-            </Center>
-            <Center w="100%">
-              <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-              <Text textAlign="center" mx="30" fontWeight="200">
-                {i18n.t("you-have-not-received-any-offer-yet")}
-              </Text>
-            </Center>
+          <VStack width="100%" height="100%" bg="#fff" position="relative">
+            <Box position="absolute" top={0} left={0} right={0} zIndex={1}>
+              <Center pt="100">
+                <Text fontSize="md">
+                  {i18n.t("start-searching-for-new-books")}
+                </Text>
+              </Center>
+              <Center w="100%">
+                <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
+                <Text textAlign="center" mx="30" fontWeight="200">
+                  {i18n.t("you-have-not-received-any-offer-yet")}
+                </Text>
+
+                <Text textAlign="center" mx="30" fontWeight="200">
+                  {i18n.t("scroll-down-to-get-latest-request-if-exists")}
+                </Text>
+              </Center>
+            </Box>
+
+            <Box flex={1}>
+              <FlatList
+                data={[]}
+                refreshing={refreshing} // Show refresh indicator while fetching data
+                onRefresh={onRefresh} // Enable pull-to-refresh
+                ListEmptyComponent={<></>} // Optional empty component for spacing
+                renderItem={renderEmptyItem} // Provide empty renderItem function
+                contentContainerStyle={{
+                  flexGrow: 1,
+                  justifyContent: "center",
+                }} // Center content in FlatList
+                showsVerticalScrollIndicator={false}
+              />
+            </Box>
           </VStack>
         ))}
 
@@ -186,53 +215,63 @@ export default function ReceivedScreen({ navigation }) {
                 alignSelf="center"
                 position="relative"
                 zIndex={9}
+                p={1}
               >
-                <Flex direction="row" justifyContent="space-between">
+                <Box
+                  size={10}
+                  rounded="full"
+                  backgroundColor="#e0e0e0"
+                  mr={3}
+                  overflow="hidden"
+                >
                   <Image
-                    source={
-                      profile.imageData
-                        ? { uri: profile.imageData }
-                        : otherUserImage
-                    }
+                    source={getImageSource(profile.imageData, avatar)}
                     alt="Profile Image"
-                    size="44"
+                    size={10}
                     rounded="full"
                   />
-                </Flex>
-                <Flex direction="row" justifyContent="space-between">
-                  <VStack>
-                    <Text
-                      // onPress={() => navigation.navigate("Library")}
-                      color="#161719"
-                      fontWeight="medium"
-                      fontSize="14px"
-                      mx="1"
-                    >
-                      {item.participantProfile.name}
-                    </Text>
-
-                    <Text
-                      // onPress={() => navigation.navigate("Library")}
-                      color="coolGray.400"
-                      fontSize="12px"
-                      top="-5.5"
-                      mx="1"
-                      textAlign={"right"}
-                    >
-                      {item.createdAt}
-                    </Text>
-                  </VStack>
-                  <Image
-                    source={
-                      item.participantProfile.photo_file_name
-                        ? { uri: item.participantProfile.photo_file_name }
-                        : otherUserImage
-                    }
-                    alt="Profile Image"
-                    size="44"
+                </Box>
+                <VStack flex={1} alignItems="flex-end">
+                  <Text
+                    color="#161719"
+                    fontWeight="medium"
+                    fontSize="14px"
+                    mx={1}
+                  >
+                    {item.participantProfile.name}
+                  </Text>
+                  <Text
+                    color="coolGray.400"
+                    fontSize="12px"
+                    mx={1}
+                    textAlign="left"
+                    mt="-1"
+                  >
+                    {item.createdAt}
+                  </Text>
+                </VStack>
+                <Pressable
+                  onPress={() => {
+                    onNavigateProfile(item.participantProfile);
+                  }}
+                >
+                  <Box
+                    size={10}
                     rounded="full"
-                  />
-                </Flex>
+                    backgroundColor="#e0e0e0"
+                    overflow="hidden"
+                  >
+                    <Image
+                      source={getImageSource(
+                        item.participantProfile.photo_file_name,
+                        avatar
+                      )}
+                      alt="Profile Image"
+                      size={10}
+                      rounded="full"
+                    />
+                  </Box>
+                </Pressable>
               </Flex>
               <Box
                 px="7"

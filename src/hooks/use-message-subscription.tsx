@@ -1,26 +1,34 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  subscribeToMessages,
-  unsubscribeFromMessages,
-} from "../store/messages-actions";
+import { subscribeToMessages } from "../store/messages-actions";
+import { clearMessages } from "../store/messages-slice";
 
 export const useMessageSubscription = (firebaseUserId) => {
-  console.log("useMessageSubscription")
-  const dispatch = useDispatch();
-  const { loading, messages } = useSelector((state: any) => state.messages);
+  const [loading, setLoading] = useState(true);
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     if (firebaseUserId) {
-      dispatch(subscribeToMessages(firebaseUserId) as any);
-    }
+      const unsubscribe = subscribeToMessages(firebaseUserId, {
+        onMessageReceived: (newMessages) => {
+          setMessages(newMessages);
+          setLoading(false);
+        },
+        onError: (error) => {
+          console.error(error);
+          setLoading(false);
+        },
+      });
 
-    return () => {
-      // if (subscriber) {
-      //   // dispatch(unsubscribeFromMessages(firebaseUserId) as any);
-      // }
-    };
-  }, [firebaseUserId, dispatch]);
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+        setMessages([]);
+        setLoading(true);
+      };
+    }
+  }, [firebaseUserId]);
 
   return { loading, messages };
 };

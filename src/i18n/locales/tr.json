@@ -11,7 +11,7 @@
   "confirm": "Doğrula",
   "continue": "Devam",
   "skip": "geç",
-  "my-full-name": "Adım",
+  "my-name": "Adım",
   "man": "Erkek",
   "woman": "Kadın",
   "my-birthdate": "Doğum tarihim",
@@ -81,6 +81,7 @@
   "you-have-not-received-any-offer-yet":"Henüz bir teklif alınmadı",
   "you-have-not-sent-any-offer-yet":"Henüz bir teklif gönderilmedi",
   "you-have-accepted-the-request":"Takas teklifini kabul ettin",
+  "scroll-down-to-get-latest-request-if-exists":"Yeni talepler için listeyi güncellemek için aşağı kaydır.",
   "send-message": "Mesaj gönder",
   "days-ago":"%{count} gün önce",
   "hours-ago":"%{count} sa önce",
@@ -99,5 +100,8 @@
   "users-library":"%{user} kitaplığı",
   "text-message":"Mesaj Gönder",
   "feedback-description":"Ne kadar çok detay verirseniz, BookSwap'ı o kadar iyi geliştirebiliriz.",
-  "submit":"Gönder"
+  "submit":"Gönder",
+  "you-have-not-receive-any-message":"Henüz hiç mesaj alınmadı",
+  "check-offers-and-begin-chatting":"Yeni kitap tekliflerini kontrol et ve sohbet etmeye başla."
+
 }

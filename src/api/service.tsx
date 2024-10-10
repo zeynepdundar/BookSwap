@@ -87,18 +87,16 @@ export const fetchProfileImageUrl = async (userId: string) => {
       }
     );
 
+
     if (!response.ok) {
-      const { status, statusText } = response;
-      const body = await response.text(); // Read the body as text or JSON, depending on your API
-      console.error(
-        `Error fetching user profile image [fetchProfileImage]:\nStatus: ${status}\nMessage: ${statusText}\nBody: ${body}`
-      );
-      throw new Error(`Failed to fetch user profile image [fetchProfileImage]`);
+      const body = await response.text();
+      throw new Error(`Failed to fetch user profile image. Status: ${response.status}, Body: ${body}`);
     }
+    
 
     const data = await response.json();
 
-    await AsyncStore.setItem("profile_photo_url", data.profile_photo_url);
+    // await AsyncStore.setItem("profile_photo_url", data.profile_photo_url);
 
     return data.profile_photo_url;
   } catch (err) {
@@ -173,6 +171,7 @@ export const fetchUserProfileData = async (firebaseUserId: string) => {
     // Once we have the result, we can fetch other related data in parallel
     const [imageURL, receivedOffers, sentOffers, historyList] =
       await Promise.all([
+        //TODO: SET async storega data, but notice this function is using for other users data same timw
         fetchProfileImageUrl(result.id).catch((error) => {
           console.warn("Error fetching profile image:", error);
           return null; // Fallback value

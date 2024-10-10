@@ -18,13 +18,13 @@ import {
   AspectRatio,
   Badge,
   CloseIcon,
-  Avatar,
 } from "native-base";
 import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { AppDispatch } from "../../store/store";
 import { InfoDialogBox } from "../../components/Modal/InfoDialogBox";
 import { sendOfferAsync } from "../../store/profile-actions";
+import { getImageSource } from "../../utils/helper";
 
 interface TradeProposal {
   receiverId: string;
@@ -37,6 +37,7 @@ export default function TradeProposal({ navigation, route }) {
 
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
+  const avatar = require("../../assets/images/avatar.png");
 
   const initialState: TradeProposal = {
     receiverId: user.id,
@@ -56,7 +57,6 @@ export default function TradeProposal({ navigation, route }) {
   };
 
   const tradeIcon = require("../../assets/images/icon/trade-icon.png");
-  const profilePhoto = require("../../assets/images/lalo-salamanca.png");
 
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);
@@ -80,7 +80,6 @@ export default function TradeProposal({ navigation, route }) {
         justifyContent="space-between"
         w="100%"
         h="50px"
-
       >
         <Button
           variant="ghost"
@@ -314,26 +313,21 @@ export default function TradeProposal({ navigation, route }) {
             <Text textAlign="right">{user.name}</Text>
           </VStack>
 
-          <AspectRatio w="39">
+          <Box
+            size={12}
+            rounded="full"
+            backgroundColor="#e0e0e0"
+            mr={3}
+            overflow="hidden"
+          >
             <Image
-              source={{ uri: user.photo_file_name }}
+              source={getImageSource(user.photo_file_name, avatar)}
               alt="Profile Image"
-              size="50"
+              size={12}
               rounded="full"
             />
-          </AspectRatio>
+          </Box>
         </HStack>
-        {/* <Button
-          onPress={() => {
-            sendOfferHandler(item.id);
-          }}
-          variant="primary"
-          p={2}
-          px="0"
-          width={126}
-        >
-          {i18n.t("send-offer")}
-        </Button> */}
       </VStack>
       <Button
         m="7"
