@@ -11,7 +11,7 @@
   "confirm": "Confirm",
   "continue": "Continue",
   "skip": "skip",
-  "my-full-name": "My full name is",
+  "my-name": "My name is",
   "my-gender": "I am a",
   "man": "Man",
   "woman": "Woman",
@@ -82,6 +82,7 @@
   "you-have-not-received-any-offer-yet": "You have’t received new offer, yet",
   "you-have-not-sent-any-offer-yet": "You have’t sent an offer, yet",
   "you-have-accepted-the-request": "You have accepted the request",
+  "scroll-down-to-get-latest-request-if-exists":"Scroll down to refresh and check for new requests.",
   "send-message": "Send Message",
   "days-ago": "%{count}d ago",
   "hours-ago": "%{count}h ago",
@@ -100,5 +101,7 @@
   "users-library": "%{user}s library",
   "text-message":"Text Message",
   "feedback-description":"The more detail you can give, the better we can improve BookSwap.",
-  "submit":"Submit"
+  "submit":"Submit",
+  "you-have-not-receive-any-message":"You haven't received any message",
+  "check-offers-and-begin-chatting":"Check for new book offers and begin chatting"
 }

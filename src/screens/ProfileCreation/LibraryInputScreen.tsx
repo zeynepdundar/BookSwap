@@ -2,11 +2,9 @@ import { useEffect, useState } from "react";
 import {
   Button,
   Center,
-  Flex,
   Heading,
   ChevronLeftIcon,
   Text,
-  Box,
   VStack,
   Spacer,
   HStack,
@@ -92,7 +90,7 @@ export default function LibraryInputScreen({ navigation }) {
             onPress={() => navigation.goBack()}
           />
           <Text
-            onPress={() => navigation.navigate("Library")}
+            onPress={pressSkipHandler}
             color="#969696"
             fontWeight="500"
             fontSize="14px"

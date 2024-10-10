@@ -25,11 +25,11 @@ export default function TradingTabs() {
             fontSize: 14,
             textTransform: "none",
           },
-          tabBarStyle: { backgroundColor: "#fff"},
+          tabBarStyle: { backgroundColor: "#fff", height:48},
           tabBarAllowFontScaling: false,
           tabBarIndicatorStyle: { backgroundColor: "#7F3DFF" },
         }}
-        initialLayout={{ width: width }}
+        initialLayout={{ width: width}}
       >
         <Tab.Screen
           name="Received"

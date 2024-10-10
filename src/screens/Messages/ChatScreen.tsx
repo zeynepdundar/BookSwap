@@ -25,20 +25,25 @@ import {
   Box,
   HStack,
   Image,
+  Flex,
+  Divider,
 } from "native-base";
 import Screen from "../../components/Screen";
 import { ActionSheet } from "../../components/ActionSheet";
-import {
-  generateModalActions,
-} from "../../utils/helper";
+import { generateModalActions } from "../../utils/helper";
 import i18n from "../../i18n";
 import BlockUserModal from "../../components/Modal/BlockUserModal";
 import { updateLastMessage } from "../../store/messages-actions";
+import { useSelector } from "react-redux";
 
 export default function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([]);
   const [actions, setActions] = useState([]);
-  const { conversationId, friend, currentUserId } = route.params;
+  const { firebaseUserId: currentUserId } = useSelector(
+    (state: any) => state.auth.user
+  );
+
+  const { conversationId, friend } = route.params;
 
   const handleUpdateLastMessage = (message) => {
     updateLastMessage({
@@ -76,7 +81,7 @@ export default function ChatScreen({ navigation, route }) {
           };
 
           // Update the latest message in the Users collection
-          handleUpdateLastMessage({ messageData:latestMessage });
+          handleUpdateLastMessage({ messageData: latestMessage });
         }
       });
     // Stop listening for updates when no longer required
@@ -164,7 +169,7 @@ export default function ChatScreen({ navigation, route }) {
   // }, [])
   const customSystemMessage = (props) => {
     return (
-      <View  {...props} style={{ bg: "amber.100" }}>
+      <View {...props} style={{ bg: "amber.100" }}>
         <Icon name="lock" color="#9d9d9d" size={16} />
         <Text>
           Your chat is secured. Remember to be cautious about what you share
@@ -176,19 +181,40 @@ export default function ChatScreen({ navigation, route }) {
   const renderBubble = (props) => (
     <Bubble
       {...props}
-      // renderTime={() => <Text>Time</Text>}
-      // renderTicks={() => <Text>Ticks</Text>}
       containerStyle={{
-        left: { borderColor: "teal", borderWidth: 0, marginLeft: -50 },
-        right: { borderColor: "teal", borderWidth: 0 },
+        left: {
+          borderColor: "teal",
+          borderWidth: 0,
+          marginLeft: -40,
+          alignItems: "flex-start",
+        },
+        right: {
+          borderColor: "teal",
+          borderWidth: 0,
+          marginRight: 0,
+
+          alignItems: "flex-end",
+        },
       }}
       wrapperStyle={{
-        left: { borderWidth: 0, backgroundColor: "transparent" },
-        right: { borderWidth: 0, backgroundColor: "transparent" },
+        left: {
+          borderWidth: 0,
+          backgroundColor: "#EDEDED",
+        },
+        right: {
+          borderWidth: 0,
+          backgroundColor: "#7F3DFF",
+        },
       }}
       bottomContainerStyle={{
-        left: { borderWidth: 0, backgroundColor: "white" },
-        right: { borderWidth: 0, backgroundColor: "white" },
+        left: {
+          borderWidth: 0,
+          backgroundColor: "white",
+        },
+        right: {
+          borderWidth: 0,
+          backgroundColor: "white",
+        },
       }}
       containerToNextStyle={{
         right: { backgroundColor: "#7F3DFF" },
@@ -223,28 +249,37 @@ export default function ChatScreen({ navigation, route }) {
       containerStyle={{
         right: {
           backgroundColor: "#7F31FF",
+          padding: 2,
           borderTopLeftRadius: 12,
           borderTopRightRadius: 12,
           borderBottomRightRadius: 3,
           borderBottomLeftRadius: 12,
+          marginBottom: 2,
         },
         left: {
           backgroundColor: "#EDEDED",
+          padding: 2,
           borderTopLeftRadius: 12,
           borderTopRightRadius: 12,
           borderBottomRightRadius: 12,
           borderBottomLeftRadius: 3,
+          marginBottom: 2,
         },
       }}
       textStyle={{
-        left: { color: "#505066" },
-        right: { color: "#FFFFFF" },
+        left: {
+          color: "#505066",
+          fontSize: 14,
+        },
+        right: {
+          color: "#FFFFFF",
+          fontSize: 14,
+        },
       }}
-      // linkStyle={{
-      //   left: { color: "orange" },
-      //   right: { color: "orange" },
-      // }}
-      customTextStyle={{ fontSize: 14, lineHeight: 24 }}
+      customTextStyle={{
+        fontSize: 14,
+        lineHeight: 24,
+      }}
     />
   );
 
@@ -263,43 +298,54 @@ export default function ChatScreen({ navigation, route }) {
 
   const ChatHeaderBar = ({ title, avatarUri, onBackPress, onOptionsPress }) => {
     return (
-      <HStack
-        alignItems="center"
-        justifyContent="space-between"
-        w="100%"
-        space={3}
-        h={16}
-        bg="#fff"
-        borderBottomColor="#E8E8E8"
-        borderBottomWidth="1"
-      >
-        <Button
-          backgroundColor="transparent"
-          variant="ghost"
-          leftIcon={<ChevronLeftIcon size="6" color="#212325" />}
-          _pressed={{ bg: "transparent" }}
-          onPress={onBackPress}
-        />
-        {/* <Avatar borderRadius="full" source={avatarImage}  w="20"/> */}
-        <Image
-          source={friend.imageData ? { uri: friend.imageData } : avatarImage}
-          alt="Profile Image"
-          size={10}
-          rounded="full"
-        />
-        <Heading w="206">
-          {title}
-        </Heading>
-        <Button
-          backgroundColor="transparent"
-          variant="ghost"
-          leftIcon={<MaterialIcons name="remove-circle-outline" size={30} />}
-          _pressed={{
-            bg: "transparent",
-          }}
-          onPress={onOptionsPress}
-        />
-      </HStack>
+      <>
+        <Flex
+          direction="row"
+          justifyContent="space-between"
+          w="100%"
+          alignSelf="center"
+          alignItems="center"
+          py={1}
+        >
+          <Button
+            backgroundColor="transparent"
+            variant="ghost"
+            leftIcon={<ChevronLeftIcon size="6" color="#212325" />}
+            _pressed={{ bg: "transparent" }}
+            onPress={onBackPress}
+          />
+          <Box
+            size={12}
+            rounded="full"
+            backgroundColor="#e0e0e0"
+            overflow="hidden"
+          >
+            {avatarUri && (
+              <Image
+                source={{ uri: avatarUri }}
+                alt="Profile Image"
+                size={12}
+                rounded="full"
+              />
+            )}
+          </Box>
+          <Heading pl="3" width="56%">
+            {title}
+          </Heading>
+          <Button
+            backgroundColor="transparent"
+            variant="ghost"
+            leftIcon={<MaterialIcons name="remove-circle-outline" size={30} />}
+            _pressed={{
+              bg: "transparent",
+            }}
+            onPress={onOptionsPress}
+            py={1}
+            px={4}
+          />
+        </Flex>
+        <Divider ml="-15" width="110%" bg="#EEEEEE" />
+      </>
     );
   };
   const handleBackPress = () => {
@@ -345,7 +391,7 @@ export default function ChatScreen({ navigation, route }) {
     <Screen>
       <ChatHeaderBar
         title={friend.name}
-        avatarUri="https://example.com/avatar.jpg" // Replace with your avatar URL
+        avatarUri={friend.imageData}
         onBackPress={handleBackPress}
         onOptionsPress={handleOptionsPress}
       />
@@ -362,6 +408,7 @@ export default function ChatScreen({ navigation, route }) {
         renderSend={renderSend}
         bottomOffset={0}
         scrollToBottom
+        listViewProps={{ showsVerticalScrollIndicator: false }}
         user={{
           _id: currentUserId,
         }}

@@ -10,6 +10,9 @@ export const getCoverUrl = (bookData) => {
     return null;
   }
 };
+export const getImageSource = (photoUrl, fallbackImage) => {
+  return photoUrl ? { uri: photoUrl } : fallbackImage;
+};
 export const createBookData = (books) => {
   if (Array.isArray(books)) {
     // If books is an array, map over it and apply createBookData for each item
@@ -55,6 +58,10 @@ export const structureOfferData = (offers, type) => {
         type === "received"
           ? offers.sender_user_name
           : offers.receiver_user_name,
+      firebase_uid :
+      type === "received"
+        ? offers.sender_firebase_uid
+        : offers.receiver_firebase_uid
     },
     createdAt: timeAgo(offers.created_at),
     offeredBook: {
@@ -121,33 +128,46 @@ export const formatText = (inputText) => {
 
   return formattedText;
 };
-export const formatLastMessageTime = (timestamp) => {
+export const formatLastMessageTime = (timestamp, languagePreference) => {
   const messageDate = new Date(timestamp);
   const currentDate = new Date();
 
+  console.log("format",languagePreference)
+  const locale = languagePreference === 'tr' ? 'tr-TR' : 'en-US';
+
+  // Convert both dates to their local date equivalents without time
+  const messageDay = new Date(
+    messageDate.getFullYear(),
+    messageDate.getMonth(),
+    messageDate.getDate()
+  );
+  const currentDay = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate()
+  );
+
   // Check if the message was sent on the same day
-  const isSameDay =
-    messageDate.getDate() === currentDate.getDate() &&
-    messageDate.getMonth() === currentDate.getMonth() &&
-    messageDate.getFullYear() === currentDate.getFullYear();
+  const isSameDay = messageDay.getTime() === currentDay.getTime();
 
   // Format the time
   let formattedTime;
   if (isSameDay) {
     // If the message was sent on the same day, format as 'h:mm A' (e.g., 1:30 PM)
-    formattedTime = messageDate.toLocaleTimeString("en-US", {
+    formattedTime = messageDate.toLocaleTimeString(locale, {
       hour: "numeric",
+      minute: "2-digit", // Include minutes for better precision
       hour12: true,
     });
   } else {
     // If the message was sent on a different day, format as 'MMM d, h:mm A' (e.g., Mar 10, 1:30 PM)
     formattedTime =
-      messageDate.toLocaleDateString("en-US", {
+      messageDate.toLocaleDateString(locale, {
         month: "short",
         day: "numeric",
       }) +
       ", " +
-      messageDate.toLocaleTimeString("en-US", {
+      messageDate.toLocaleTimeString(locale, {
         hour: "numeric",
         minute: "2-digit",
         hour12: true,
@@ -188,7 +208,6 @@ export const generateModalActions = (actions, handleAction, closeModal) => {
 export const generateConversationId = (friendUserId, currentUserId) => {
   return [friendUserId, currentUserId].sort().join('_');
 };
-
 export const reverseConversationId = (conversationId) => {
   const ids = conversationId.split("_");
   return { userId: ids[1], friendId: ids[0] };

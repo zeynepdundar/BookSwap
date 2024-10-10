@@ -39,7 +39,7 @@ const AddBookToProposalButton = ({ onPress }) => (
     onPress={onPress}
     name={"add-circle"}
     variant="solid"
-    size="lg"
+    size="2xl"
     color="primary.100"
     as={MaterialIcons}
   />
@@ -69,6 +69,8 @@ export default function LibraryScreen({ navigation, route }) {
 
   const showFab =
   navigationState.routes[navigationState.index - 1]?.name === "Profile";
+
+  console.log("Library", navigationState.routes[navigationState.index - 1]?.name ,showFab)
   useEffect(() => {
     return () => {
       // Cleanup or additional actions when the component is unmounted

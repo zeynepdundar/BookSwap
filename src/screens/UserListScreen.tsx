@@ -22,12 +22,14 @@ import { ThunkDispatch } from "@reduxjs/toolkit";
 import { AlertDialogBox } from "../components/Modal/AlertDialogBox";
 import { fetchProfileImageUrl } from "../api/service";
 import { useFocusEffect } from "@react-navigation/native";
+import { getImageSource } from "../utils/helper";
 
 export default function UserListScreen({ navigation, route }) {
   const usersTemp = route?.params?.data?.usersOwning;
   const book = route?.params?.data;
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const avatar = require("../assets/images/avatar.png");
 
   const { libraryBook } = useSelector((state: any) => state.profile.profile);
 
@@ -35,14 +37,13 @@ export default function UserListScreen({ navigation, route }) {
 
   const [isOpen, setIsOpen] = useState(false);
   const [usersWithPhotos, setUsersWithPhotos] = useState(
-    usersTemp.map(({ photo_file_name, ...rest }) => rest) // Create a new object without photo_file_name
+    usersTemp.map(({ photo_file_name, ...rest }) => rest)
   );
-  // Function to fetch profile image URLs and update the state
   const fetchProfileImages = async () => {
     const updatedUsers = await Promise.all(
       usersTemp.map(async (user) => {
-        const photoUrl = await fetchProfileImageUrl(user.id); // Fetch the profile image URL
-        return { ...user, photo_file_name: photoUrl || avatarImage }; // Set a default avatar if fetching fails
+        const photoUrl = await fetchProfileImageUrl(user.id);
+        return { ...user, photo_file_name: photoUrl };
       })
     );
     setUsersWithPhotos(updatedUsers);
@@ -65,6 +66,7 @@ export default function UserListScreen({ navigation, route }) {
   const onClose = () => setIsOpen(false);
 
   const onNavigateProfile = (selectedUser) => {
+    console.log("onNavigateProfile", selectedUser);
     navigation.navigate("OtherUserProfile", {
       user: selectedUser,
     });
@@ -74,8 +76,7 @@ export default function UserListScreen({ navigation, route }) {
     navigation.navigate("ProfileStack", { screen: "Library" });
     onClose();
   };
-  const avatarImage = require("../assets/images/avatar.png");
-
+  
   return (
     <Screen>
       <HStack
@@ -129,15 +130,12 @@ export default function UserListScreen({ navigation, route }) {
                     mr={3}
                     overflow="hidden"
                   >
-                    {item.photo_file_name && (
-                      <Image
-                        source={{ uri: item.photo_file_name }}
-                        alt="Profile Image"
-                        size={10}
-                        rounded="full"
-                        mr={3}
-                      />
-                    )}
+                    <Image
+                      source={getImageSource(item.photo_file_name, avatar)}
+                      alt="Profile Image"
+                      size={10}
+                      rounded="full"
+                    />
                   </Box>
                   <Text
                     color="#000000"

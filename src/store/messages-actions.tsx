@@ -1,23 +1,57 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
 import firestore from "@react-native-firebase/firestore";
 
-import { setError, setLoading, setMessages } from "./messages-slice";
+import {
+  messagesError,
+  messagesLoading,
+  messagesReceived,
+} from "./messages-slice";
 
-export const subscribeToMessages = createAsyncThunk(
-  "messages/subscribeToMessages",
-  async (firebaseUserId: string, { dispatch, rejectWithValue }) => {
-    try {
-      dispatch(setLoading(true));
+// export const subscribeToMessages = async (firebaseUserId: string) => {
+//   try {
+//     console.log("subscribed to messages", firebaseUserId);
 
-      console.log("subscribed to messages",firebaseUserId);
+//     const unsubscribe = firestore()
+//       .collection("Users")
+//       .doc(firebaseUserId)
+//       .collection("conversations")
+//       .onSnapshot(
+//         (querySnapshot) => {
+//           console.log("querySnapshot", querySnapshot);
 
-      const subscriber = firestore()
-        .collection("Users")
-        .doc(firebaseUserId)
-        .collection("conversations")
-        .onSnapshot((querySnapshot) => {
-          console.log("querySnapshot",querySnapshot);
+//           const messages = querySnapshot.docs.map((doc) => {
+//             const data = doc.data();
+//             return {
+//               conversationId: data.conversationId,
+//               lastMessageText: data.lastMessageText,
+//               lastMessageTime: data.lastMessageTime.toDate().toISOString(),
+//               unseenCount: data.unseenCount,
+//               userId: data.userId,
+//             };
+//           });
+//           console.log("messages", messages);
+//         },
+//         (error) => {
+//           console.error("Failed to subscribe to messages: ", error);
+//         }
+//       );
 
+//   } catch (error) {
+//     console.error("Failed to subscribe to messages: ", error);
+//   }
+// };
+
+// Redux Thunk Action - Update without returning unsubscribe directly
+export const subscribeToMessages = (
+  firebaseUserId: any,
+  { onMessageReceived, onError }: { onMessageReceived: (messages: any[]) => void, onError?: (error: any) => void }
+) => {
+  try {
+    const unsubscribe = firestore()
+      .collection("Users")
+      .doc(firebaseUserId)
+      .collection("conversations")
+      .onSnapshot(
+        (querySnapshot) => {
           const messages = querySnapshot.docs.map((doc) => {
             const data = doc.data();
             return {
@@ -28,16 +62,27 @@ export const subscribeToMessages = createAsyncThunk(
               userId: data.userId,
             };
           });
-          dispatch(setMessages(messages));
-        });
-    } catch (error) {
-      console.error("Failed to subscribe to messages: ", error);
-      return rejectWithValue(error.message);
-    } finally {
-      dispatch(setLoading(false));
+          onMessageReceived(messages);
+        },
+        (error) => {
+          if (onError) {
+            onError(error);
+          }
+        }
+      );
+
+    // Return the unsubscribe function directly without needing a Promise
+    return unsubscribe;
+  } catch (error) {
+    if (onError) {
+      onError(error);
     }
   }
-);
+};
+
+
+
+
 
 export const resetUnseenCount = async (relatedChat: any) => {
   try {

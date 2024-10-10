@@ -2,7 +2,6 @@ import {
   ChevronLeftIcon,
   Button,
   Center,
-  Flex,
   Heading,
   Spacer,
   VStack,
@@ -19,7 +18,7 @@ import { useState } from "react";
 export default function PhotoInputScreen({ navigation }) {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const profileData = useSelector((state: any) => state.profile.profile);
-  const initialImage = profileData.imageData || ""; // Assuming imageData contains the image URI
+  const initialImage = profileData.imageData || ""; 
   const [image, setImage] = useState<any>(initialImage);
 
   const handleImageUpload = (imageUri) => {

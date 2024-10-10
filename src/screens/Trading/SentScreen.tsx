@@ -2,7 +2,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import {
   AspectRatio,
-  Avatar,
   Box,
   Button,
   Center,
@@ -12,7 +11,6 @@ import {
   HStack,
   Image,
   Pressable,
-  Spinner,
   Text,
   VStack,
 } from "native-base";
@@ -25,13 +23,12 @@ import {
   fetchSentOffersAsync,
   takeBackOfferAsync,
 } from "../../store/profile-actions";
-import { formatText, truncateText } from "../../utils/helper";
+import { formatText, getImageSource, truncateText } from "../../utils/helper";
 import { ErrorAlert } from "../BarcodeScannerScreen";
 
 export default function SentScreen({ navigation }) {
   const tra = require("../../assets/images/icon/Icons.png");
-  const otherUserImage = require("../../assets/images/jesse-pinkman-profile.png");
-  const profilePhoto = require("../../assets/images/lalo-salamanca.png");
+  const avatar = require("../../assets/images/avatar.png");
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingImages, setLoadingImages] = useState(true);
@@ -78,29 +75,28 @@ export default function SentScreen({ navigation }) {
     }
   };
   const onNavigateProfile = (selectedUser) => {
-    // console.log("onNavigateProfile",selectedUser)
-    // navigation.navigate("OtherUserProfile", {
-    //   user: selectedUser,
-    // });
+    navigation.navigate("OtherUserProfile", {
+      user: selectedUser,
+    });
   };
   const fetchProfileImages = async () => {
-    setLoadingImages(true)
+    setLoadingImages(true);
     const updatedOffers = await Promise.all(
       sentOffers.map(async (offer) => {
         const photoUrl = await fetchProfileImageUrl(
           offer.participantProfile.id
-        ); // Fetch the profile image URL
+        );
         return {
           ...offer,
           participantProfile: {
             ...offer.participantProfile,
-            photo_file_name: photoUrl || otherUserImage, // Add the photo URL or default image
+            photo_file_name: photoUrl,
           },
         };
       })
     );
     setSentOffersWithUserPhoto(updatedOffers);
-    setLoadingImages(false)
+    setLoadingImages(false);
   };
   useFocusEffect(
     useCallback(() => {
@@ -121,21 +117,13 @@ export default function SentScreen({ navigation }) {
   if (loading && !refreshing) {
     return <LoadingOverlay />;
   }
-  // if (loadingImages) {
-  //   return <LoadingOverlay />;
-  // }
-
-  const handleImageError = () => {
-    // Fallback to a default image on error
-    // setImageSource({ uri: 'https://example.com/fallback-image.png' });
-  };
   return (
     <>
       {!sentOffers ||
         (sentOffers.length === 0 && (
           <VStack width="100%" height="100%" pt="100" bg="#fff">
             <Center>
-              <Text fontSize="md">
+              <Text fontSize="md" textAlign="center">
                 {i18n.t("start-searching-for-new-books")}
               </Text>
             </Center>
@@ -166,54 +154,63 @@ export default function SentScreen({ navigation }) {
                 alignSelf="center"
                 position="relative"
                 zIndex={9}
+                p={1}
               >
-                <Flex direction="row" justifyContent="space-between">
+                <Box
+                  size={10}
+                  rounded="full"
+                  backgroundColor="#e0e0e0"
+                  mr={3}
+                  overflow="hidden"
+                >
                   <Image
-                    source={
-                      profile.imageData
-                        ? { uri: profile.imageData }
-                        : otherUserImage
-                    }
+                    source={getImageSource(profile.imageData, avatar)}
                     alt="Profile Image"
-                    size="44"
+                    size={10}
                     rounded="full"
                   />
-                </Flex>
-                <Flex direction="row" justifyContent="space-between">
-                  <Pressable
-                    onPress={() => {
-                      onNavigateProfile(item);
-                    }}
-                    flexDirection="row"
-                    padding="1"
+                </Box>
+                <VStack flex={1} alignItems="flex-end">
+                  <Text
+                    color="#161719"
+                    fontWeight="medium"
+                    fontSize="14px"
+                    mx={1}
                   >
-                    <VStack>
-                      <Text
-                        color="#161719"
-                        fontWeight="medium"
-                        fontSize="14px"
-                        mx="1"
-                      >
-                        {item.participantProfile.name}
-                      </Text>
-                      <Text
-                        color="coolGray.400"
-                        fontSize="12px"
-                        top="-5.5"
-                        mx="1"
-                        textAlign={"right"}
-                      >
-                        {item.createdAt}
-                      </Text>
-                    </VStack>
+                    {item.participantProfile.name}
+                  </Text>
+                  <Text
+                    color="coolGray.400"
+                    fontSize="12px"
+                    mx={1}
+                    textAlign="left"
+                    mt="-1"
+                  >
+                    {item.createdAt}
+                  </Text>
+                </VStack>
+                <Pressable
+                  onPress={() => {
+                    onNavigateProfile(item.participantProfile);
+                  }}
+                >
+                  <Box
+                    size={10}
+                    rounded="full"
+                    backgroundColor="#e0e0e0"
+                    overflow="hidden"
+                  >
                     <Image
-                      source={ {uri: item.participantProfile.photo_file_name} }
+                      source={getImageSource(
+                        item.participantProfile.photo_file_name,
+                        avatar
+                      )}
                       alt="Profile Image"
-                      size="44"
+                      size={10}
                       rounded="full"
                     />
-                  </Pressable>
-                </Flex>
+                  </Box>
+                </Pressable>
               </Flex>
               <Box
                 px="7"

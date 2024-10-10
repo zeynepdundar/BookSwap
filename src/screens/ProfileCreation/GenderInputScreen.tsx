@@ -6,7 +6,6 @@ import {
   Box,
   ChevronLeftIcon,
   Radio,
-  Flex,
   VStack,
   Text,
   Spacer,
@@ -50,7 +49,7 @@ export default function GenderInputScreen({ navigation }) {
             onPress={() => navigation.goBack()}
           />
           <Text
-            onPress={() => navigation.navigate("Library")}
+            onPress={() => navigation.navigate("Photo")}
             color="#969696"
             fontWeight="500"
             fontSize="14px"

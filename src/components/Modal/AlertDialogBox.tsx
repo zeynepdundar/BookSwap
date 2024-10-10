@@ -1,11 +1,26 @@
 import { AlertDialog, Button } from "native-base";
 
-export const AlertDialogBox = ({ isOpen, onConfirm, onClose, cancelButtonLabel, confirmButtonLabel, title, description }) => {
+export const AlertDialogBox = ({
+  isOpen,
+  onConfirm,
+  onClose,
+  cancelButtonLabel,
+  confirmButtonLabel,
+  title,
+  description,
+}) => {
   return (
-    <AlertDialog leastDestructiveRef={null} isOpen={isOpen} onClose={onClose} w="435px" alignSelf="center">
+    <AlertDialog
+      leastDestructiveRef={null}
+      isOpen={isOpen}
+      onClose={onClose}
+      w="435px"
+      alignSelf="center"
+    >
       <AlertDialog.Content>
         <AlertDialog.CloseButton />
         <AlertDialog.Header
+          borderBottomWidth={0}
           _text={{
             fontWeight: "medium",
             letterSpacing: "sm",
@@ -23,13 +38,13 @@ export const AlertDialogBox = ({ isOpen, onConfirm, onClose, cancelButtonLabel, 
         >
           {description}
         </AlertDialog.Body>
-        <AlertDialog.Footer>
+        <AlertDialog.Footer borderTopWidth={0}>
           <Button.Group space={2}>
             <Button variant="secondary" onPress={onClose} ref={null}>
               {cancelButtonLabel}
             </Button>
             <Button variant="primary" onPress={onConfirm}>
-             {confirmButtonLabel}
+              {confirmButtonLabel}
             </Button>
           </Button.Group>
         </AlertDialog.Footer>

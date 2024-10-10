@@ -24,7 +24,7 @@ const AddBookToProposalButton = ({ onPress }) => (
     onPress={onPress}
     name={"add-circle"}
     variant="solid"
-    size="md"
+    size="2xl"
     color="primary.100"
     as={MaterialIcons}
   />
