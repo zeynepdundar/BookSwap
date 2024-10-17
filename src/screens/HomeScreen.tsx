@@ -72,7 +72,7 @@ export default function HomeScreen({ navigation }) {
           <Text color="black.400" fontWeight="700">
             {i18n.t("recently-added")}
           </Text>
-          <CoverListHorizontal data={books} />
+          <CoverListHorizontal data={books}  navigation={navigation}/>
         </Box>
       )}
       {books.length > 0 && (

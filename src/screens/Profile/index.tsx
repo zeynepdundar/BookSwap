@@ -288,6 +288,7 @@ export default function ProfileScreen({ navigation }) {
               <Spacer></Spacer>
             </Flex>
           </Pressable>
+
           <AlertDialogBox
             isOpen={isOpen}
             onClose={onClose}

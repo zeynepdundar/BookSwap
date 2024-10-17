@@ -231,48 +231,53 @@ export default function ReceivedScreen({ navigation }) {
                     rounded="full"
                   />
                 </Box>
-                <VStack flex={1} alignItems="flex-end">
-                  <Text
-                    color="#161719"
-                    fontWeight="medium"
-                    fontSize="14px"
-                    mx={1}
-                  >
-                    {item.participantProfile.name}
-                  </Text>
-                  <Text
-                    color="coolGray.400"
-                    fontSize="12px"
-                    mx={1}
-                    textAlign="left"
-                    mt="-1"
-                  >
-                    {item.createdAt}
-                  </Text>
-                </VStack>
                 <Pressable
+                  flex={1}
+                  alignItems="flex-end"
                   onPress={() => {
                     onNavigateProfile(item.participantProfile);
                   }}
                 >
-                  <Box
-                    size={10}
-                    rounded="full"
-                    backgroundColor="#e0e0e0"
-                    overflow="hidden"
-                  >
-                    <Image
-                      source={getImageSource(
-                        item.participantProfile.photo_file_name,
-                        avatar
-                      )}
-                      alt="Profile Image"
+                  <HStack>
+                    <VStack>
+                      <Text
+                        color="#161719"
+                        fontWeight="medium"
+                        fontSize="14px"
+                        mx={1}
+                      >
+                        {item.participantProfile.name}
+                      </Text>
+                      <Text
+                        color="coolGray.400"
+                        fontSize="12px"
+                        mx={1}
+                        textAlign="right"
+                        mt="-1.5"
+                      >
+                        {item.createdAt}
+                      </Text>
+                    </VStack>
+                    <Box
                       size={10}
                       rounded="full"
-                    />
-                  </Box>
+                      backgroundColor="#e0e0e0"
+                      overflow="hidden"
+                    >
+                      <Image
+                        source={getImageSource(
+                          item.participantProfile.photo_file_name,
+                          avatar
+                        )}
+                        alt="Profile Image"
+                        size={10}
+                        rounded="full"
+                      />
+                    </Box>
+                  </HStack>
                 </Pressable>
               </Flex>
+
               <Box
                 px="7"
                 py="4"

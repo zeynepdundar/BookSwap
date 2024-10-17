@@ -142,6 +142,22 @@ export default function BarcodeScannerScreen({
       setIsActionSheetOpen(true);
     }
   };
+  let title, description, buttonVariant, confirmButtonLabel, navigateToScreen;
+  if (selectedAction === WISHLIST) {
+    title = i18n.t("successfully-added");
+    description = i18n.t("the-book-added-to-wishlist");
+    buttonVariant = "outline";
+    confirmButtonLabel = i18n.t("see-my-wishlist");
+    navigateToScreen = () =>
+      navigation.navigate("ProfileStack", { screen: "Wishlist" });
+  } else if (selectedAction === LIBRARY) {
+    title = i18n.t("successfully-added");
+    description = i18n.t("the-book-added-to-library");
+    buttonVariant = "outline";
+    confirmButtonLabel = i18n.t("see-my-library");
+    navigateToScreen = () =>
+      navigation.navigate("ProfileStack", { screen: "Library" });
+  }
 
   const closeActionSheet = () => {
     setIsActionSheetOpen(false);
@@ -220,11 +236,15 @@ export default function BarcodeScannerScreen({
           mode === "Wishlist" || mode === "Library" ? "the-book-added" : null
         }
       />
+
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
         onClose={closeInfoDialog}
-        actionType={selectedAction}
-        selectedItem={selectedItem}
+        title={title}
+        description={description}
+        buttonVariant={buttonVariant}
+        confirmButtonLabel={confirmButtonLabel}
+        navigateToScreen={navigateToScreen}
       />
     </View>
   );

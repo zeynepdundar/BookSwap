@@ -1,61 +1,37 @@
-import { useNavigation } from "@react-navigation/native";
-import { AlertDialog, Button, Center, CheckCircleIcon } from "native-base";
+import {
+  AlertDialog,
+  Button,
+  Center,
+  CheckCircleIcon,
+  Text,
+} from "native-base";
 import React, { useEffect, useState } from "react";
-import { LIBRARY, MyStackParamList, WISHLIST } from "../../constants";
-import i18n from "../../i18n";
 
+interface InfoDialogBoxProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  description: string;
+  buttonVariant?: string;
+  confirmButtonLabel: string;
+  navigateToScreen?: () => void; // Function to navigate
+}
 
-
-export const InfoDialogBox = ({
+export const InfoDialogBox: React.FC<InfoDialogBoxProps> = ({
   isOpen,
   onClose,
-  actionType,
-  selectedItem,
+  title,
+  description,
+  buttonVariant = "primary",
+  confirmButtonLabel,
+  navigateToScreen,
 }) => {
   const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(isOpen);
   const cancelRef = React.useRef(null);
-  const navigation = useNavigation();
-
-  let title, description, buttonVariant, confirmButtonLabel;
-  if (actionType === WISHLIST) {
-    title = i18n.t("added");
-    description = i18n.t("the-book-added-to-wishlist");
-    buttonVariant = "outline";
-    confirmButtonLabel = i18n.t("see-my-wishlist");
-  } else if (actionType === LIBRARY) {
-    title = i18n.t("added");
-    description = i18n.t("the-book-added-to-library");
-    buttonVariant = "outline";
-    confirmButtonLabel = i18n.t("see-my-library");
-  } else if (actionType === "TRADE") {
-    title = i18n.t("the-offer-sent");
-    description = i18n.t("see-sent-offers-description");
-    buttonVariant = "outline";
-    confirmButtonLabel = i18n.t("see-my-offers");
-  }
 
   useEffect(() => {
     setIsAlertDialogOpen(isOpen);
   }, [isOpen]);
-
-  const navigateToScreen = (screenName: keyof MyStackParamList) => {
-    if (screenName === SENT) {
-      // Navigate to the TradingStack if the screenName is "Sent"
-      navigation.navigate("Trading", {
-        screen: screenName,
-      });
-    } else {
-      // For all other cases, navigate to the ProfileStack
-      navigation.navigate("ProfileStack", {
-        screen: screenName,
-      });
-    }
-  };
-
-  const WISHLIST_SCREEN: keyof MyStackParamList = "Wishlist";
-  const LIBRARY_SCREEN: keyof MyStackParamList = "Library";
-  const SENT: keyof MyStackParamList = "Sent";
-
 
   const handleClose = () => {
     setIsAlertDialogOpen(false);
@@ -66,20 +42,8 @@ export const InfoDialogBox = ({
     }
   };
   const handleConfirm = () => {
-    switch (actionType) {
-      case WISHLIST:
-        navigateToScreen(WISHLIST_SCREEN);
-        break;
-      case LIBRARY:
-        navigateToScreen(LIBRARY_SCREEN);
-        break;
-      case "TRADE":
-        navigateToScreen(SENT);
-        break;
-      default:
-        console.log("No specific action type found");
-        // Handle any default action or do nothing
-        break;
+    if (navigateToScreen) {
+      navigateToScreen();
     }
     setIsAlertDialogOpen(false);
   };
@@ -93,32 +57,35 @@ export const InfoDialogBox = ({
       <AlertDialog.Content>
         <AlertDialog.CloseButton />
         <AlertDialog.Header
-        borderBottomWidth={0}
+          borderBottomWidth={0}
           _text={{
             fontWeight: "medium",
             letterSpacing: "sm",
             textAlign: "center",
           }}
+          mt="5"
         >
           <Center>
             <CheckCircleIcon size="lg" color="primary.50" />
           </Center>
+          <Text fontWeight="600" fontSize="md" textAlign="center" mt="2">
+            {title} {/* Display the title here */}
+          </Text>
         </AlertDialog.Header>
         <AlertDialog.Body
           _text={{
             fontWeight: "medium",
             color: "black.200",
             letterSpacing: "sm",
+            textAlign: "center",
           }}
+          pt="0"
         >
           {description}
         </AlertDialog.Body>
-        <AlertDialog.Footer  borderTopWidth={0}>
+        <AlertDialog.Footer borderTopWidth={0}>
           <Button.Group space={2}>
-            <Button
-              variant={buttonVariant ? buttonVariant : "primary"}
-              onPress={handleConfirm}
-            >
+            <Button variant={buttonVariant} onPress={handleConfirm}>
               {confirmButtonLabel?.toUpperCase()}
             </Button>
           </Button.Group>

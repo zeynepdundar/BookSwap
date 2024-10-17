@@ -24,6 +24,7 @@ import { LoadingOverlay } from "../../components/LoadingOverlay";
 import {
   formatLastMessageTime,
   generateConversationId,
+  getImageSource,
   truncateText,
 } from "../../utils/helper";
 import { fetchUserProfileData } from "../../api/service";
@@ -37,10 +38,12 @@ export default function MessagesScreen({ navigation }) {
   const { loading: isMessagesLoading, messages } =
     useMessageSubscription(firebaseUserId);
 
-    const profileData = useSelector((state: RootState) => state.profile.profile);
+  const profileData = useSelector((state: RootState) => state.profile.profile);
 
-    const { languagePreference } =
-      profileData;
+  const { languagePreference } = profileData;
+
+  const unseenMessagesCount =
+    messages?.reduce((total, item) => total + item.unseenCount, 0) || 0;
 
   const fetchUserProfiles = async () => {
     try {
@@ -95,6 +98,8 @@ export default function MessagesScreen({ navigation }) {
     resetUnseenCount({ friendUserId, firebaseUserId });
   };
 
+  const avatar = require("../../assets/images/avatar.png");
+
   return (
     <Screen>
       <Center w="100%" h="50px">
@@ -104,7 +109,7 @@ export default function MessagesScreen({ navigation }) {
         (messages.length === 0 && (
           <VStack width="100%" height="100%" pt="100">
             <Center mt="48px">
-              <Text fontSize="md" textAlign="center"> 
+              <Text fontSize="md" textAlign="center">
                 {i18n.t("check-offers-and-begin-chatting")}
               </Text>
             </Center>
@@ -139,33 +144,33 @@ export default function MessagesScreen({ navigation }) {
                     rounded="full"
                     backgroundColor="#e0e0e0"
                     overflow="hidden"
-                    width="14%"
                   >
-                    {friendProfile.imageData && (
-                      <Image
-                        source={{ uri: friendProfile.imageData }}
-                        alt="Profile Image"
-                        size={12}
-                        rounded="full"
-                      />
-                    )}
+                    <Image
+                      source={getImageSource(friendProfile.imageData, avatar)}
+                      alt="Profile Image"
+                      size={12}
+                      rounded="full"
+                    />
                   </Box>
-                  <VStack width="62%" px="2">
+                  <VStack width="62%" px="0">
                     <Text color="coolGray.800" fontSize="md">
                       {/* {item.fullName} */}
                       {friendProfile?.name || "Unknown User"}
                     </Text>
                     <Text color="coolGray.500" fontSize="sm">
-                      {truncateText(item.lastMessageText, 25)}
+                      {truncateText(item.lastMessageText, 26)}
                     </Text>
                   </VStack>
-                  <VStack  alignItems="flex-end">
+                  <VStack alignItems="flex-end">
                     <Text
                       fontSize="xs"
                       color="coolGray.500"
                       alignSelf="flex-end"
                     >
-                      {formatLastMessageTime(item.lastMessageTime, languagePreference)}
+                      {formatLastMessageTime(
+                        item.lastMessageTime,
+                        languagePreference
+                      )}
                     </Text>
                     {item.unseenCount > 0 && (
                       <Badge

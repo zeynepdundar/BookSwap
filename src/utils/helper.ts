@@ -132,7 +132,6 @@ export const formatLastMessageTime = (timestamp, languagePreference) => {
   const messageDate = new Date(timestamp);
   const currentDate = new Date();
 
-  console.log("format",languagePreference)
   const locale = languagePreference === 'tr' ? 'tr-TR' : 'en-US';
 
   // Convert both dates to their local date equivalents without time

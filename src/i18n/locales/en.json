@@ -64,8 +64,9 @@
   "we-do-not-have-the-book-yet": "We don’t have the book yet",
   "turkish": "Turkish",
   "english": "English",
-  "the-book-added-to-wishlist": "The book has been added to your wishlist successfully!",
-  "the-book-added-to-library": "The book has been added to your library successfully!",
+  "the-book-added-to-wishlist": "The book has been added to your wishlist",
+  "the-book-added-to-library": "The book has been added to your library",
+  "successfully-added":"Successfully added!",
   "see-my-wishlist": "See my wishlist",
   "see-my-library": "See my library",
   "trade-proposal": "Trade Proposal",
@@ -103,5 +104,8 @@
   "feedback-description":"The more detail you can give, the better we can improve BookSwap.",
   "submit":"Submit",
   "you-have-not-receive-any-message":"You haven't received any message",
-  "check-offers-and-begin-chatting":"Check for new book offers and begin chatting"
+  "check-offers-and-begin-chatting":"Check for new book offers and begin chatting",
+  "thank-you":"Thank you!",
+  "feedback-appreciation-and-update":"We appreciate your feedback! We'll work on the reported issues and incorporate your suggestions in upcoming updates.",
+  "close":"Close"
 }

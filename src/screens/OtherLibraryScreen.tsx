@@ -18,6 +18,7 @@ import i18n from "../i18n";
 import { BookListVertical } from "../components/shared/BookListVertical";
 import { fetchUserProfileData } from "../api/service";
 import { LoadingOverlay } from "../components/LoadingOverlay";
+import { BorderedBookListVertical } from "../components/shared/BorderedBookListVertical";
 
 const AddBookToProposalButton = ({ onPress }) => (
   <Icon
@@ -123,6 +124,10 @@ export default function OtherLibraryScreen({ navigation, route }) {
           data={userLibraryList}
           onPrimaryAction={addBookToProposalButton}
         />
+        // <BorderedBookListVertical
+        // data={userLibraryList}
+        // onDonePress={addBookToProposalButton}
+        // listType={"listType"}/>
       )}
     </Screen>
   );

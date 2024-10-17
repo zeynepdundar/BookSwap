@@ -19,7 +19,7 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
   const { user, receivedBook, offeredBook, conversationId } = route.params;
   const { firebaseUserId } = useSelector((state: any) => state.auth.user);
 
-
+console.log("neeeeee",  user, receivedBook, offeredBook, conversationId,firebaseUserId)
   const importUrl = require("../assets/images/radar.png");
 
   const goToChatScreen = () => {
@@ -33,11 +33,11 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
 
   const navigateHome = () => {
     // TODO:Verify resetting the navigation stack. The current screen should not remain in the stack history, so users can't still use the back button to return to it
-    navigation.navigate("HomeTabs", { screen: "Home" });
+    // navigation.navigate("HomeTabs", { screen: "Home" });
   };
   return (
     <Screen>
-      <Box position="absolute" top="28px" left="28px" zIndex={99}>
+      {/* <Box position="absolute" top="28px" left="28px" zIndex={99}>
         <IconButton
           onPress={navigateHome}
           size="10"
@@ -50,7 +50,7 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
             <Icon color="black" name={"close"} as={MaterialIcons} size="lg" />
           }
         />
-      </Box>
+      </Box> */}
       <ImageBackground
         source={importUrl}
         style={{

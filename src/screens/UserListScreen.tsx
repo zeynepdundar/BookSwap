@@ -66,7 +66,6 @@ export default function UserListScreen({ navigation, route }) {
   const onClose = () => setIsOpen(false);
 
   const onNavigateProfile = (selectedUser) => {
-    console.log("onNavigateProfile", selectedUser);
     navigation.navigate("OtherUserProfile", {
       user: selectedUser,
     });

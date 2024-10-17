@@ -12,6 +12,7 @@
   "continue": "Devam",
   "skip": "geç",
   "my-name": "Adım",
+  "my-gender": "Cinsiyetim",
   "man": "Erkek",
   "woman": "Kadın",
   "my-birthdate": "Doğum tarihim",
@@ -65,6 +66,7 @@
   "english": "İngilizce",
   "the-book-added-to-wishlist": "Kitap istek listene eklendi!",
   "the-book-added-to-library": "Kitap kitaplığına eklendi!",
+  "successfully-added":"Ekleme başarılı!",
   "see-my-wishlist": "İstek listeme git",
   "see-my-library": "Kitaplığıma git",
   "trade-proposal": "Takas Teklifi",
@@ -102,6 +104,9 @@
   "feedback-description":"Ne kadar çok detay verirseniz, BookSwap'ı o kadar iyi geliştirebiliriz.",
   "submit":"Gönder",
   "you-have-not-receive-any-message":"Henüz hiç mesaj alınmadı",
-  "check-offers-and-begin-chatting":"Yeni kitap tekliflerini kontrol et ve sohbet etmeye başla."
+  "check-offers-and-begin-chatting":"Yeni kitap tekliflerini kontrol et ve sohbet etmeye başla.",
+  "thank-you":"Teşekkürler!",
+  "feedback-appreciation-and-update":"Geribildirimin için teşekkür ediyoruz! Bildirilen sorunlar üzerinde çalışacağız ve önerilerinizi gelecek güncellemelerde dikkate alacağız.",
+  "close":"Kapat"
 
 }
