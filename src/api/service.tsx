@@ -100,7 +100,7 @@ export const fetchProfileImageUrl = async (userId: string) => {
 
     return data.profile_photo_url;
   } catch (err) {
-    console.error("Error fetching profile image:", err.message);
+    // console.error("Error fetching profile image:", err.message);
   }
 };
 export const uploadProfileImage = async (userId, imageUri) => {

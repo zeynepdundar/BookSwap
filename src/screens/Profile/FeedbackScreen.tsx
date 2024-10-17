@@ -20,6 +20,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/types";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { ErrorAlert } from "../BarcodeScannerScreen";
+import { InfoDialogBox } from "../../components/Modal/InfoDialogBox";
 
 export default function FeedbackScreen({ navigation, route }) {
   const [feedbackText, setFeedbackText] = useState("");
@@ -28,6 +29,7 @@ export default function FeedbackScreen({ navigation, route }) {
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const [focused, setFocused] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
 
   useEffect(() => {
     // Enable button only if there's feedback text
@@ -41,17 +43,22 @@ export default function FeedbackScreen({ navigation, route }) {
   const handleBlur = () => {
     setFocused(false);
   };
+  const closeInfoDialog = () => {
+    setIsInfoDialogOpen(false);
+    navigation.goBack();
+  };
 
   const handleSubmitFeedback = async () => {
+    Keyboard.dismiss();
     try {
       const feedback = await submitFeedback(userId, feedbackText);
       if (feedback.ok) {
         setSuccessMessage("Feedback submitted successfully!");
+        setIsInfoDialogOpen(true);
 
         setTimeout(() => {
-          setFeedbackText("")
+          setFeedbackText("");
           setSuccessMessage("");
-          navigation.goBack();
         }, 1500);
       } else {
         setError("Failed to submit feedback. Please try again.");
@@ -69,7 +76,7 @@ export default function FeedbackScreen({ navigation, route }) {
           space="24%"
           justifyContent="space-between"
           w="100%"
-          h="50px"       
+          h="50px"
         >
           <Button
             variant="ghost"
@@ -115,10 +122,20 @@ export default function FeedbackScreen({ navigation, route }) {
           >
             {i18n.t("submit")}
           </Button>
-          <Center mt="300">
+          {/* <Center mt="300">
             {successMessage && <ErrorAlert message={successMessage} />}
-          </Center>
+          </Center> */}
         </VStack>
+
+        <InfoDialogBox
+          isOpen={isInfoDialogOpen}
+          onClose={closeInfoDialog}
+          title={i18n.t("thank-you")}
+          description={i18n.t("feedback-appreciation-and-update")}
+          buttonVariant="outline"
+          confirmButtonLabel={i18n.t("close")}
+          navigateToScreen={() => navigation.goBack()}
+        />
       </Screen>
     </TouchableWithoutFeedback>
   );

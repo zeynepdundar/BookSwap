@@ -72,6 +72,15 @@ export default function TradeProposal({ navigation, route }) {
     }
   }, [sentPropasal]);
 
+  let title, description, buttonVariant, confirmButtonLabel, navigateToScreen;
+
+  title = i18n.t("the-offer-sent");
+  description = i18n.t("see-sent-offers-description");
+  buttonVariant = "outline";
+  confirmButtonLabel = i18n.t("see-my-offers");
+  navigateToScreen = () =>
+  navigation.navigate("Trading", { screen: "Sent" });
+
   return (
     <Screen>
       <HStack
@@ -340,8 +349,11 @@ export default function TradeProposal({ navigation, route }) {
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
         onClose={closeInfoDialog}
-        actionType={"TRADE"}
-        selectedItem={null}
+        title={title}
+        description={description}
+        buttonVariant={buttonVariant}
+        confirmButtonLabel={confirmButtonLabel}
+        navigateToScreen={navigateToScreen}
       />
     </Screen>
   );

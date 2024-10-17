@@ -19,8 +19,8 @@ import { ActionSheet } from "../ActionSheet";
 import { formatText, generateActions, truncateText } from "../../utils/helper";
 import i18n from "../../i18n";
 import { useSelector } from "react-redux";
-import { ListTypes } from "../../constants";
-import { useFocusEffect } from "@react-navigation/native";
+import { LIBRARY, WISHLIST } from "../../constants";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Keyboard } from "react-native";
 interface BookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
@@ -30,6 +30,103 @@ interface BookListVerticalProps {
   onSendOffer?: (id: any) => void;
   showSendOfferButton?: boolean;
 }
+
+const renderItem = (item, onNavigateList, userId, onPrimaryAction, openActionSheet, onSendOffer) => (
+  <>
+    <Box height="125" mx="2" pl="2" ml="2" key={item.id} overflow="hidden">
+      <HStack justifyContent="space-between" width="100%" space={3} py={1}>
+        <AspectRatio w={{ base: "22%", md: "18%" }} ratio={40 / 62} maxWidth="80px">
+          <Image
+            source={
+              item.coverUrl
+                ? { uri: item?.coverUrl }
+                : {
+                    uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                  }
+            }
+            alt={`Cover of ${item.title} by ${item.author}`}
+            roundedRight="4"
+          />
+        </AspectRatio>
+        <VStack width={198}>
+          <Text color="#000000" fontSize="15" numberOfLines={2} lineHeight="18">
+            {truncateText(formatText(item.title), 44)}
+          </Text>
+          <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
+            {truncateText(formatText(item.author), 30)}
+          </Text>
+          {item.publisher ||
+          (Array.isArray(item.publishers) && item.publishers.length > 0) ? (
+            <Text color="#8c8c8c" fontSize="13" fontWeight="200" numberOfLines={item?.usersOwning ? 1 : 2}>
+              {Array.isArray(item.publishers) && item.publishers.length > 0
+                ? truncateText(formatText(item.publishers[0]), 30)
+                : truncateText(formatText(item.publisher), 50)}
+            </Text>
+          ) : (
+            ""
+          )}
+
+          {item?.usersOwning && (
+            <Pressable
+              onPress={() => handleNavigateList(item, onNavigateList, userId)}
+              borderColor="#323232"
+              borderWidth="0.5"
+              borderRadius="9"
+              p="1"
+              mt="4"
+              width="90px"
+              disabled={item.usersOwning.filter((owner) => owner.id !== userId).length === 0}
+            >
+              <Text alignSelf="center" color="#323232" fontSize="12px">
+                {item.usersOwning.filter((owner) => owner.id !== userId).length} Owner
+              </Text>
+            </Pressable>
+          )}
+        </VStack>
+        <Spacer />
+        <VStack>
+          {onPrimaryAction && onPrimaryAction(item)}
+          {!onPrimaryAction && (
+            <Icon
+              onPress={() => openActionSheet(item)}
+              name="more-vert"
+              variant="solid"
+              size="lg"
+              as={MaterialIcons}
+            />
+          )}
+          {onSendOffer && (
+            <Button
+              onPress={() => onSendOffer({ item })}
+              variant="primary"
+              right={2}
+              bottom={0}
+              position="absolute"
+              py="6px"
+              px={0}
+              rounded="6"
+              width={126}
+            >
+              {i18n.t("send-offer")}
+            </Button>
+          )}
+          <Spacer />
+        </VStack>
+      </HStack>
+    </Box>
+    <Box w="100%" alignSelf="center">
+      <Divider my={2} mx="auto" w="90%" bg="#EEEEEE" />
+    </Box>
+  </>
+);
+
+const keyExtractor = (item) => item.id;
+
+const handleNavigateList = (item, onNavigateList, userId) => {
+  const filteredOwners = item.usersOwning.filter((owner) => owner.id !== userId);
+  const newItem = { ...item, usersOwning: filteredOwners };
+  onNavigateList(newItem);
+};
 export const BookListVertical: React.FC<BookListVerticalProps> = ({
   data,
   onPrimaryAction,
@@ -42,9 +139,8 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedAction, setSelectedAction] = useState<typeof ListTypes | null>(
-    null
-  );
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
+
   const { id: userId } = useSelector((state: any) => state.profile.profile);
 
   useFocusEffect(
@@ -92,6 +188,26 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
     setIsInfoDialogOpen(false);
   };
 
+  const navigation = useNavigation();
+
+  // Prepare dialog content based on selected action
+  let title, description, buttonVariant, confirmButtonLabel, navigateToScreen;
+  if (selectedAction === WISHLIST) {
+    title = i18n.t("successfully-added");
+    description = i18n.t("the-book-added-to-wishlist");
+    buttonVariant = "outline";
+    confirmButtonLabel = i18n.t("see-my-wishlist");
+    navigateToScreen = () =>
+      navigation.navigate("ProfileStack", { screen: "Wishlist" });
+  } else if (selectedAction === LIBRARY) {
+    title = i18n.t("successfully-added");
+    description = i18n.t("the-book-added-to-library");
+    buttonVariant = "outline";
+    confirmButtonLabel = i18n.t("see-my-library");
+    navigateToScreen = () =>
+      navigation.navigate("ProfileStack", { screen: "Library" });
+  }
+
   const actions = generateActions(handleAction, closeActionSheet);
 
   return (
@@ -100,153 +216,22 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
         maxWidth="100%"
         height="100%"
         data={data}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
         showsVerticalScrollIndicator={false}
-        onScrollBeginDrag={Keyboard.dismiss} // Dismiss keyboard on scroll
-        keyboardShouldPersistTaps="handled" 
-        renderItem={({ item }) => (
-          <>
-            <Box
-              // pl={["3", "4"]}
-              // pr={["3", "5"]}
-              // py="2"
-              // mb="1"
-              // justifyContent="center"
-              height="125"
-              mx="2"
-              pl="2"
-              ml="2"
-              key={item.id}
-              overflow={"hidden"}
-            >
-              <HStack
-                justifyContent="space-between"
-                width="100%"
-                space={3}
-                py={1}
-              >
-                <AspectRatio
-                  w={{ base: "22%", md: "18%" }}
-                  ratio={40 / 62}
-                  maxWidth="80px"
-                >
-                  <Image
-                    source={
-                      item.coverUrl
-                        ? { uri: item?.coverUrl }
-                        : {
-                            uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                          }
-                    }
-                    alt={`Cover of ${item.title} by ${item.author}`}
-                    roundedRight="4"
-                  />
-                </AspectRatio>
-                <VStack width={173}>
-                  <Text color="#000000" fontSize="15" numberOfLines={2} lineHeight="18">
-                    {truncateText(formatText(item.title), 44)}
-                  </Text>
-                  <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
-                    {truncateText(formatText(item.author), 30)}
-                  </Text>
-                  {/* Backend den publishers şeklinde gelen array , handle etmek için */}
-                  {item.publisher ||
-                  (Array.isArray(item.publishers) &&
-                    item.publishers.length > 0) ? (
-                    <Text
-                      color="#8c8c8c"
-                      fontSize="13"
-                      fontWeight="200"
-                      numberOfLines={item?.usersOwning ? 1 : 2}
-                    >
-                      {Array.isArray(item.publishers) &&
-                      item.publishers.length > 0
-                        ? truncateText(formatText(item.publishers[0]), 30)
-                        : truncateText(formatText(item.publisher), 50)}
-                    </Text>
-                  ) : (
-                    // Render something else or nothing when both item.publisher and item.publishers are null or empty
-                    ""
-                  )}
-
-                  {item?.usersOwning && (
-                    <>
-                      <Pressable
-                        onPress={() => {
-                          const filteredOwners = item.usersOwning.filter(
-                            (owner) => owner.id !== userId
-                          );
-                          const newItem = {
-                            ...item,
-                            usersOwning: filteredOwners,
-                          };
-                          onNavigateList(newItem);
-                        }}
-                        borderColor="#323232"
-                        borderWidth="0.5"
-                        borderRadius="9"
-                        p="1"
-                        mt="4"
-                        width="90px"
-                        disabled={
-                          item.usersOwning.filter(
-                            (owner) => owner.id !== userId
-                          ).length === 0
-                        }
-                      >
-                        <Text
-                          alignSelf="center"
-                          color="#323232"
-                          fontSize="12px"
-                        >
-                          {
-                            item.usersOwning.filter(
-                              (owner) => owner.id !== userId
-                            ).length
-                          }{" "}
-                          Owner
-                        </Text>
-                      </Pressable>
-                    </>
-                  )}
-                </VStack>
-                <Spacer />
-                <VStack>
-                  {onPrimaryAction && onPrimaryAction(item)}
-                  {!onPrimaryAction && (
-                    <Icon
-                      onPress={() => openActionSheet(item)}
-                      name={"more-vert"}
-                      variant="solid"
-                      size="lg"
-                      as={MaterialIcons}
-                    />
-                  )}
-                  {onSendOffer && (
-                    <Button
-                      onPress={() => onSendOffer({ item })}
-                      variant="primary"
-                      right={2}
-                      bottom={0}
-                      position="absolute"
-                      py={"6px"}
-                      px={0}
-                      rounded="6"
-                      width={126}
-                    >
-                      {i18n.t("send-offer")}
-                    </Button>
-                  )}
-
-                  <Spacer />
-                </VStack>
-              </HStack>
-            </Box>
-            <Box w="100%" alignSelf="center">
-              <Divider my={2} mx="auto" w="90%" bg="#EEEEEE" />
-            </Box>
-          </>
-        )}
-        keyExtractor={(item) => item.id}
+        onScrollBeginDrag={Keyboard.dismiss}
+        keyboardShouldPersistTaps="handled"
+        renderItem={({ item }) =>
+          renderItem(
+            item,
+            onNavigateList,
+            userId,
+            onPrimaryAction,
+            openActionSheet,
+            onSendOffer
+          )
+        }
+        keyExtractor={keyExtractor}
       />
       {onSecondaryAction && (
         <ActionSheet
@@ -258,8 +243,11 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
         onClose={closeInfoDialog}
-        actionType={selectedAction}
-        selectedItem={selectedItem}
+        title={title}
+        description={description}
+        buttonVariant={buttonVariant}
+        confirmButtonLabel={confirmButtonLabel}
+        navigateToScreen={navigateToScreen}
       />
     </>
   );

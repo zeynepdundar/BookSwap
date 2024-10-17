@@ -22,6 +22,7 @@ import OtherLibraryScreen from "./OtherUserLibraryScreen";
 import OtherWishlistScreen from "./OtherUserWishlistScreen";
 import OtherSwapHistory from "./OtherUserSwapHistory";
 import { fetchUserProfileData } from "../../api/service";
+import { getImageSource } from "../../utils/helper";
 
 export default function OtherUserProfileScreen({ navigation, route }) {
   const selectedUser = route?.params?.user;
@@ -155,6 +156,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
   if (loading) {
     return <LoadingOverlay></LoadingOverlay>;
   }
+  const avatar = require("../../assets/images/avatar.png");
 
   return (
     <Screen>
@@ -181,12 +183,25 @@ export default function OtherUserProfileScreen({ navigation, route }) {
             w="100%"
             h="100%"
           >
-            <Image
+            <Box
+              size={60}
+              rounded="full"
+              backgroundColor="#e0e0e0"
+              overflow="hidden"
+            >
+              <Image
+                source={getImageSource(selectedUser.photo_file_name, avatar)}
+                alt="Profile Image"
+                size={60}
+                rounded="full"
+              />
+            </Box>
+            {/* <Image
               source={{ uri: selectedUser.photo_file_name }}
               alt="Profile Image"
               rounded="full"
               size={60}
-            />
+            /> */}
             <Heading width="60%" my={3}>
               {profile?.name}
             </Heading>

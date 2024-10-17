@@ -29,6 +29,7 @@ import { ErrorAlert } from "./BarcodeScannerScreen";
 
 export default function BookSearchScreen({ navigation, route = null }) {
   const { relatedScreen, onDonePress } = route.params;
+  // const { searchedBook } = route.params || {};
 
   const [loading, setLoading] = useState<boolean>(false);
   const [searchError, setSearchError] = useState<string | null>(null);
@@ -37,6 +38,12 @@ export default function BookSearchScreen({ navigation, route = null }) {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
   const [listError, setListError] = useState<string | null>(null);
+
+  // useEffect(() => {
+  //   if (searchedBook) {
+  //     setSearchQuery(searchedBook || ""); // Set search query to the book's title
+  //   }
+  // }, [searchedBook]);
 
   const dispatch = useDispatch<AppDispatch>();
   const addBookToListHandler = async (selectedItem: any) => {
@@ -119,7 +126,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
   }, []);
 
   useEffect(() => {
-    if (searchQuery.length > 3) {
+    if (searchQuery.length >= 3) {
       const searchTimeout = setTimeout(async () => {
         try {
           await fetchBooks(searchQuery);
@@ -230,7 +237,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
             )}
             {!searchError &&
               searchResults.length === 0 &&
-              searchQuery.length > 3 && (
+              searchQuery.length >= 3 && (
                 <VStack width="100%" height={200} mt="100">
                   <Center w="100%">
                     <Text

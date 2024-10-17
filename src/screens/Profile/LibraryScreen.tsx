@@ -70,7 +70,6 @@ export default function LibraryScreen({ navigation, route }) {
   const showFab =
   navigationState.routes[navigationState.index - 1]?.name === "Profile";
 
-  console.log("Library", navigationState.routes[navigationState.index - 1]?.name ,showFab)
   useEffect(() => {
     return () => {
       // Cleanup or additional actions when the component is unmounted

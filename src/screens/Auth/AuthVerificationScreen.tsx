@@ -12,7 +12,7 @@ import {
   Text,
   VStack,
 } from "native-base";
-import { Platform } from "react-native";
+import { KeyboardAvoidingView, Platform } from "react-native";
 import { useState } from "react";
 import Screen from "../../components/Screen";
 import PhoneInput from "react-native-phone-input";
@@ -61,6 +61,7 @@ export default function AuthVerificationScreen({ navigation }) {
   };
 
   return (
+
     <Screen>
       {/* Phone Input Screen */}
       {(!confirmationResult || error?.type === "verifyPhoneNumberError") && (
@@ -127,9 +128,8 @@ export default function AuthVerificationScreen({ navigation }) {
               </Text>
             </Flex>
           )}
-          <Spacer></Spacer>
           <Button
-            mb="370"
+            mt="10"
             variant="primary"
             onPress={() => {
               handleVerifyPhoneNumber();
