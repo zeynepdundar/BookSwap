@@ -39,7 +39,7 @@ const AddBookToProposalButton = ({ onPress }) => (
     onPress={onPress}
     name={"add-circle"}
     variant="solid"
-    size="2xl"
+    size="xl"
     color="primary.100"
     as={MaterialIcons}
   />
@@ -51,6 +51,7 @@ export default function LibraryScreen({ navigation, route }) {
 
   const { params } = route;
   const onDataReceived = params?.onDataReceived;
+  const isTradeProposal = params?.data === "TradeProposal";
   const addBookToProposalButton = (book) => (
     <AddBookToProposalButton
       onPress={() => {        
@@ -67,8 +68,8 @@ export default function LibraryScreen({ navigation, route }) {
 
   const [selectedBooks, setSelectedBooks] = useState(libraryBook);
 
-  const showFab =
-  navigationState.routes[navigationState.index - 1]?.name === "Profile";
+  const previousRoute = navigationState?.routes?.[navigationState.index - 1];
+  const showFab =  previousRoute?.name === "Profile" ?? false;
 
   useEffect(() => {
     return () => {
@@ -86,9 +87,7 @@ export default function LibraryScreen({ navigation, route }) {
       }
     />
   );
-  const selectedBooksAction = useMemo(() => {
-    return showFab ? removeBookButton : addBookToProposalButton;
-  }, [showFab]);
+  const selectedBooksAction = isTradeProposal ? addBookToProposalButton : removeBookButton;
 
   const handleAddToLibrary = (books) => {
     setSelectedBooks((prevList) => [...prevList, ...books]);

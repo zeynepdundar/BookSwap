@@ -42,8 +42,9 @@ export default function WishlistScreen({ navigation }) {
 
   const navigationState = useNavigationState((state) => state);
 
-  const showFab =
-    navigationState.routes[navigationState.index - 1]?.name === "Profile";
+  const previousRoute = navigationState?.routes?.[navigationState.index - 1];
+  const showFab =  previousRoute?.name === "Profile" ?? false;
+
 
   useEffect(() => {
     return () => {
