@@ -67,6 +67,7 @@ export default function ReceivedScreen({ navigation }) {
     try {
       const response = await dispatch(acceptOfferAsync(offer.id));
       const payload = response.payload;
+      console.log("payload", payload);
 
       if (!payload.success) {
         const errorMessage =

@@ -60,7 +60,10 @@ export default function TradeProposal({ navigation, route }) {
 
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);
-    navigation.navigate("Home");
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Home" }],
+    });
   };
 
   useEffect(() => {
@@ -78,8 +81,7 @@ export default function TradeProposal({ navigation, route }) {
   description = i18n.t("see-sent-offers-description");
   buttonVariant = "outline";
   confirmButtonLabel = i18n.t("see-my-offers");
-  navigateToScreen = () =>
-  navigation.navigate("Trading", { screen: "Sent" });
+  navigateToScreen = () => navigation.navigate("Trading", { screen: "Sent" });
 
   return (
     <Screen>
