@@ -154,7 +154,7 @@ export const BorderedBookListVertical: React.FC<
         maxToRenderPerBatch={10}
         showsVerticalScrollIndicator={false}
         onScrollBeginDrag={Keyboard.dismiss}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps="never"
         renderItem={({ item }) =>
           renderItem(item, changeListStatusHandler, isSelectedBook)
         }

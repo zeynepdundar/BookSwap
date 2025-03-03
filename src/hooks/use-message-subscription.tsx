@@ -11,6 +11,7 @@ export const useMessageSubscription = (firebaseUserId) => {
     if (firebaseUserId) {
       const unsubscribe = subscribeToMessages(firebaseUserId, {
         onMessageReceived: (newMessages) => {
+          console.log("newMessages", newMessages);
           setMessages(newMessages);
           setLoading(false);
         },

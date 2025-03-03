@@ -12,6 +12,7 @@ import { theme } from "./src/theme";
 import Navigation from "./src/navigation";
 import store, { AppDispatch } from "./src/store/store";
 import { setToken } from "./src/store/auth-slice";
+import i18n from "./src/i18n";
 
 ///  PUSH NOTIFICATIONS - START  ///
 
@@ -133,6 +134,19 @@ export default function App() {
       //   }
       // }
       // fetchToken();
+    }, []);
+
+    const setLanguage = async () => {
+      const storedLanguage = await AsyncStore.getItem<string>("language",null);
+      if (storedLanguage) {
+        i18n.locale = storedLanguage; // Set the locale from AsyncStorage
+      } else {
+        i18n.locale = "en"; // Default language
+      }
+    };
+
+    useEffect(() => {
+      setLanguage(); // Call the function to set the language
     }, []);
 
     return <Navigation />;

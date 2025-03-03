@@ -16,7 +16,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Screen from "../components/Screen";
 import i18n from "../i18n";
 import { BookListVertical } from "../components/shared/BookListVertical";
-import { fetchUserProfileData } from "../api/service";
+import { fetchProfileData } from "../api/service";
 import { LoadingOverlay } from "../components/LoadingOverlay";
 import { BorderedBookListVertical } from "../components/shared/BorderedBookListVertical";
 
@@ -53,8 +53,8 @@ export default function OtherLibraryScreen({ navigation, route }) {
   const fetchProfileData = async () => {
     try {
       setLoading(true);
-      const profileData = await fetchUserProfileData(user.firebase_uid);
-      setUserLibraryList(profileData.libraryBook || []); // Ensure this is always an array
+      const profileData = await fetchProfileData(user.firebase_uid);
+      setUserLibraryList(profileData.ownedBooks || []); // Ensure this is always an array
     } catch (error) {
       setError(error);
     } finally {

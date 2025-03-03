@@ -16,14 +16,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import firestore from "@react-native-firebase/firestore";
 import {
   ChevronLeftIcon,
-  Avatar,
   Button,
   Heading,
   Icon,
   Text,
   View,
   Box,
-  HStack,
   Image,
   Flex,
   Divider,
@@ -35,8 +33,46 @@ import i18n from "../../i18n";
 import BlockUserModal from "../../components/Modal/BlockUserModal";
 import { updateLastMessage } from "../../store/messages-actions";
 import { useSelector } from "react-redux";
+import { REPORT_ACTIONS } from '../../constants/actions';
 
-export default function ChatScreen({ navigation, route }) {
+// Add types
+interface ChatScreenProps {
+  navigation: any; 
+  route: {
+    params: {
+      conversationId: string;
+      friend: {
+        userId: string;
+        name: string;
+        profilePicture?: string;
+      };
+    };
+  };
+}
+
+// Move styles to separate objects
+const styles = {
+  composer: {
+    color: "#222B45",
+    backgroundColor: "#EDF1F7",
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: "#E4E9F2",
+    paddingTop: 8.5,
+    paddingHorizontal: 12,
+    marginHorizontal: 8,
+  },
+  sendButton: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 4,
+  },
+  // ... add other styles
+};
+
+export default function ChatScreen({ navigation, route }: ChatScreenProps) {
   const [messages, setMessages] = useState([]);
   const [actions, setActions] = useState([]);
   const { firebaseUserId: currentUserId } = useSelector(
@@ -53,40 +89,41 @@ export default function ChatScreen({ navigation, route }) {
     });
   };
 
+  // Simplified message handling
+  const handleMessages = useCallback((querySnapshot) => {
+    const messages = querySnapshot.docs.map((doc) => ({
+      _id: doc.id,
+      createdAt: doc.data().createdAt.toDate(),
+      text: doc.data().text,
+      user: {
+        _id: doc.data().senderId,
+      },
+    }));
+
+    setMessages(messages);
+
+    if (!querySnapshot.empty) {
+      const latestDoc = querySnapshot.docs[0];
+      handleUpdateLastMessage({
+        messageData: {
+          text: latestDoc.data().text,
+          createdAt: latestDoc.data().createdAt.toDate(),
+          senderId: latestDoc.data().senderId,
+        },
+      });
+    }
+  }, []);
+
   useLayoutEffect(() => {
     const subscriber = firestore()
       .collection("Conversations")
       .doc(conversationId)
       .collection("messages")
       .orderBy("createdAt", "desc")
-      .onSnapshot((querySnapshot) => {
-        const messages = querySnapshot.docs.map((doc) => ({
-          _id: doc.id,
-          createdAt: doc.data().createdAt.toDate(),
-          text: doc.data().text,
-          user: {
-            _id: doc.data().senderId,
-          },
-        }));
+      .onSnapshot(handleMessages);
 
-        setMessages(messages);
-
-        // Get the latest message (first in the ordered list)
-        if (!querySnapshot.empty) {
-          const latestDoc = querySnapshot.docs[0];
-          const latestMessage = {
-            text: latestDoc.data().text,
-            createdAt: latestDoc.data().createdAt.toDate(),
-            senderId: latestDoc.data().senderId,
-          };
-
-          // Update the latest message in the Users collection
-          handleUpdateLastMessage({ messageData: latestMessage });
-        }
-      });
-    // Stop listening for updates when no longer required
     return () => subscriber();
-  }, []);
+  }, [conversationId, handleMessages]);
 
   const onSend = useCallback((messages = []) => {
     if (messages.length === 0) return;
@@ -116,16 +153,7 @@ export default function ChatScreen({ navigation, route }) {
     <Composer
       {...props}
       placeholder={i18n.t("text-message")}
-      textInputStyle={{
-        color: "#222B45",
-        backgroundColor: "#EDF1F7",
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: "#E4E9F2",
-        paddingTop: 8.5,
-        paddingHorizontal: 12,
-        marginHorizontal: 8,
-      }}
+      textInputStyle={styles.composer}
     />
   );
   const customtInputToolbar = (props) => {
@@ -145,13 +173,7 @@ export default function ChatScreen({ navigation, route }) {
     <Send
       {...props}
       disabled={!props.text}
-      containerStyle={{
-        width: 44,
-        height: 44,
-        alignItems: "center",
-        justifyContent: "center",
-        marginHorizontal: 4,
-      }}
+      containerStyle={styles.sendButton}
     >
       <Icon
         size="32px"
@@ -374,13 +396,12 @@ export default function ChatScreen({ navigation, route }) {
   };
   const handleOptionsPress = () => {
     setIsBlockUserModalOpen(true);
-    let actions = [
-      { type: "WISHLIST", label: "inappropiate-message" },
-      { type: "LIBRARY", label: "spam-message" },
-      { type: "other", label: "other" },
-    ];
     setActions(
-      generateModalActions(actions, handleAction, closeBlockUserModal)
+      generateModalActions([
+        REPORT_ACTIONS.INAPPROPRIATE,
+        REPORT_ACTIONS.SPAM,
+        REPORT_ACTIONS.OTHER,
+      ], handleAction, closeBlockUserModal)
     );
   };
   const closeBlockUserModal = () => {
@@ -391,28 +412,26 @@ export default function ChatScreen({ navigation, route }) {
     <Screen>
       <ChatHeaderBar
         title={friend.name}
-        avatarUri={friend.imageData}
-        onBackPress={handleBackPress}
+        avatarUri={friend.profilePicture}
+        onBackPress={() => navigation.navigate("Messages")}
         onOptionsPress={handleOptionsPress}
       />
       <GiftedChat
         messages={messages}
-        onSend={(messages) => onSend(messages)}
-        renderInputToolbar={(props) => customtInputToolbar(props)}
+        onSend={onSend}
+        renderInputToolbar={customtInputToolbar}
         renderSystemMessage={renderSystemMessage}
         renderMessage={renderMessage}
         renderMessageText={renderMessageText}
         renderBubble={renderBubble}
-        messagesContainerStyle={{ backgroundColor: "#FFFFFF" }}
         renderComposer={renderComposer}
         renderSend={renderSend}
+        user={{ _id: currentUserId }}
+        messagesContainerStyle={{ backgroundColor: "#FFFFFF" }}
         bottomOffset={0}
         scrollToBottom
-        listViewProps={{ showsVerticalScrollIndicator: false }}
-        user={{
-          _id: currentUserId,
-        }}
         infiniteScroll
+        listViewProps={{ showsVerticalScrollIndicator: false }}
         timeTextStyle={{
           left: { color: "#505066" },
           right: { color: "#505066" },

@@ -1,22 +1,23 @@
 import { EditionEndpoints, ProfileEndpoints } from "./endpoints";
-import { createBookData, structureOfferData } from "../utils/helper";
+import { createBookData, getCoverUrl, structureOfferData } from "../utils/helper";
 import AsyncStore from "../utils/AsyncStore";
 
-import { UserProfile, WISHLIST } from "../constants";
+import {  WISHLIST } from "../constants";
+import { UserData } from "../models/User";
 
 export const updateUserProfileData = async (
   profileData,
   fullUpdate = false
 ) => {
-  const wishlistBookIds =
-    Array.isArray(profileData.wishlistBook) &&
-    profileData.wishlistBook.length > 0
-      ? profileData.wishlistBook.map((item: any) => item.id).filter(Boolean)
+  const wishedBooksIds =
+    Array.isArray(profileData.wishedBooks) &&
+    profileData.wishedBooks.length > 0
+      ? profileData.wishedBooks.map((item: any) => item.id).filter(Boolean)
       : undefined;
 
-  const libraryBookIds =
-    Array.isArray(profileData.libraryBook) && profileData.libraryBook.length > 0
-      ? profileData.libraryBook.map((item: any) => item.id).filter(Boolean)
+  const ownedBooksIds =
+    Array.isArray(profileData.ownedBooks) && profileData.ownedBooks.length > 0
+      ? profileData.ownedBooks.map((item: any) => item.id).filter(Boolean)
       : undefined;
 
   const pushNotificationToken = await AsyncStore.getItem<string>(
@@ -31,17 +32,17 @@ export const updateUserProfileData = async (
 
   // Full update: add all attributes
   if (fullUpdate) {
-    updatedAttributes.name = profileData.name;
+    updatedAttributes.name = profileData.username;
     updatedAttributes.gender = profileData.gender;
     updatedAttributes.birthdate = profileData.birthdate;
-    updatedAttributes.wished_editions = wishlistBookIds;
-    updatedAttributes.owned_editions = libraryBookIds;
+    updatedAttributes.wished_editions = wishedBooksIds;
+    updatedAttributes.owned_editions = ownedBooksIds;
     updatedAttributes.language_preference = profileData.languagePreference;
     updatedAttributes.push_tokens = [pushNotificationToken || "defaultToken"];
   } else {
     // Partial update: only include fields that are present in profileData
-    if (wishlistBookIds) updatedAttributes.wished_editions = wishlistBookIds;
-    if (libraryBookIds) updatedAttributes.owned_editions = libraryBookIds;
+    if (wishedBooksIds) updatedAttributes.wished_editions = wishedBooksIds;
+    if (ownedBooksIds) updatedAttributes.owned_editions = ownedBooksIds;
     if (profileData.languagePreference)
       updatedAttributes.language_preference = profileData.languagePreference;
     if (pushNotificationToken)
@@ -50,11 +51,15 @@ export const updateUserProfileData = async (
 
   try {
     // Attempt to upload the profile image
-    if (profileData.imageData) {
+    if (profileData) {
+      console.log("profilee",profileData)
+      profileData.photo_file_name = profileData.profilePicture; // Change image to profilePicture
+        delete profileData.profilePicture; 
       await uploadProfileImage(
         profileData.id.toString(),
-        profileData.imageData
+        profileData.photo_file_name
       );
+
     }
   } catch (error) {
     console.error("Failed to upload profile imagexx", error.message);
@@ -87,12 +92,12 @@ export const fetchProfileImageUrl = async (userId: string) => {
       }
     );
 
-
     if (!response.ok) {
       const body = await response.text();
-      throw new Error(`Failed to fetch user profile image. Status: ${response.status}, Body: ${body}`);
+      throw new Error(
+        `Failed to fetch user profile image. Status: ${response.status}, Body: ${body}`
+      );
     }
-    
 
     const data = await response.json();
 
@@ -146,66 +151,70 @@ export const uploadProfileImage = async (userId, imageUri) => {
     console.error(error);
   }
 };
-export const fetchUserProfileData = async (firebaseUserId: string) => {
-  try {
-    // Fetch the main profile data first
-    const profileResponse = await fetch(
-      ProfileEndpoints.FETCH_USER_DATA(firebaseUserId),
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${"YOUR_ACCESS_TOKEN"}`, // Replace with your actual access token
-        },
-      }
-    );
-
-    const result = await profileResponse.json();
-
-    if (!profileResponse.ok) {
-      throw new Error(
-        "Failed to fetch user profile from db [fetchUserProfileData]"
-      );
+interface ProfileFetchResponse {
+  id: string;
+  name: string;
+  birthdate: string;
+  gender: string;
+  language_preference: string;
+  wished_editions: any[];
+  owned_editions: any[];
+}
+const fetchProfileData = async (
+  firebaseUserId: string
+): Promise<ProfileFetchResponse> => {
+  const response = await fetch(
+    ProfileEndpoints.FETCH_USER_DATA(firebaseUserId),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${"66"}`,
+      },
     }
+  );
 
-    // Once we have the result, we can fetch other related data in parallel
-    const [imageURL, receivedOffers, sentOffers, historyList] =
-      await Promise.all([
-        //TODO: SET async storega data, but notice this function is using for other users data same timw
-        fetchProfileImageUrl(result.id).catch((error) => {
-          console.warn("Error fetching profile image:", error);
-          return null; // Fallback value
-        }),
-        fetchReceivedOffer(result.id).catch((error) => {
-          console.warn("Error fetching received offers:", error);
-          return []; // Fallback value
-        }),
-        fetchSentOffer(result.id).catch((error) => {
-          console.warn("Error fetching sent offers:", error);
-          return []; // Fallback value
-        }),
-        fetchHistory(result.id).catch((error) => {
-          console.warn("Error fetching history:", error);
-          return []; // Fallback value
-        }),
-      ]);
+  const result = await response.json();
 
-    // Construct the user profile object
-    const profile: UserProfile = {
-      id: result.id,
-      name: result.name,
-      birthdate: result.birthdate,
-      imageData: imageURL,
-      gender: result.gender,
-      languagePreference: result.language_preference,
-      wishlistBook: createBookData(result.wished_editions),
-      libraryBook: createBookData(result.owned_editions),
-      receivedOffer: receivedOffers,
-      sentOffer: sentOffers,
-      historyList: historyList,
+  if (!response.ok) {
+    throw new Error("Failed to fetch user profile from db");
+  }
+
+  return result;
+};
+export const fetchUserProfileData = async (
+  firebaseUserId: string
+): Promise<UserData> => {
+  try {
+    const profileData = await fetchProfileData(firebaseUserId);
+
+    // Fetch additional data in parallel
+    const additionalData = await Promise.all([
+      fetchProfileImageUrl(profileData.id),
+      fetchReceivedOffer(profileData.id),
+      fetchSentOffer(profileData.id),
+      fetchHistory(profileData.id),
+    ]).catch((error) => {
+      console.error("Error fetching additional profile data:", error);
+      return [null, [], [], []];
+    });
+
+    const [imageURL, receivedOffers, sentOffers, historyList] = additionalData;
+
+    // Construct and return profile object
+    return {
+      id: profileData.id,
+      username: profileData.name,
+      birthdate: profileData.birthdate,
+      profilePicture: imageURL,
+      gender: profileData.gender,
+      languagePreference: profileData.language_preference,
+      wishedBooks: createBookData(profileData.wished_editions),
+      ownedBooks: createBookData(profileData.owned_editions),
+      receivedOffers: receivedOffers,
+      sentOffers: sentOffers,
+      tradeHistory: historyList,
     };
-
-    return profile;
   } catch (error) {
     console.error("Error fetching user profile data:", error);
     throw error;
@@ -363,10 +372,7 @@ export const fetchMostPopularBooks = async () => {
     id: item.id,
     title: item.title,
     isbn_13: item.isbn_13 || item.isbn_10,
-    coverUrl:
-      item.isbn_13 && item.isbn_13 > 0
-        ? EditionEndpoints.FETCH_COVER_OL(undefined, item.isbn_13)
-        : null,
+    coverUrl: getCoverUrl(item),
     author: item.author ? item.author : "",
   }));
   return transformedData;
@@ -398,10 +404,7 @@ export const fetchBooksByTitle = async (bookTitle: string) => {
     title: item.title,
     publisher: item.publishers ? item.publishers[0] : "",
     // isbn_13: item.isbn_13 || item.isbn_11,
-    coverUrl:
-      item.isbn_13 && item.isbn_13 > 0
-        ? EditionEndpoints.FETCH_COVER_OL(undefined, item.isbn_13)
-        : null,
+    coverUrl: getCoverUrl(item),
     author: item.author ? item.author : "",
     usersOwning: item.users_owning,
   }));

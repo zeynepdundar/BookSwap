@@ -66,7 +66,7 @@ export default function GenderInputScreen({ navigation }) {
           <Radio.Group
             name="genderRadioGroup"
             defaultValue=""
-            accessibilityLabel="Select your gender"
+           alt="Select your gender"
             value={gender}
             onChange={(nextValue) => {
               setGender(nextValue);

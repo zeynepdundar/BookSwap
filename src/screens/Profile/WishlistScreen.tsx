@@ -35,8 +35,8 @@ const RemoveBookButton = ({ onPress }) => (
 );
 
 export default function WishlistScreen({ navigation }) {
-  const { wishlistBook } = useSelector((state: any) => state.profile.profile);
-  const [selectedBooks, setSelectedBooks] = useState(wishlistBook);
+  const { wishedBooks } = useSelector((state: any) => state.profile.profile);
+  const [selectedBooks, setSelectedBooks] = useState(wishedBooks);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -49,8 +49,8 @@ export default function WishlistScreen({ navigation }) {
   useEffect(() => {
     return () => {
       // Cleanup or additional actions when the component is unmounted
-      // Make your API call to update user libraryBook here
-      // For example, you can dispatch an action to update the libraryBook in Redux
+      // Make your API call to update user ownedBooks here
+      // For example, you can dispatch an action to update the ownedBooks in Redux
       // dispatch(updateLibraryBookAsync(selectedBooks));
     };
   }, [dispatch, selectedBooks]);
@@ -63,9 +63,9 @@ export default function WishlistScreen({ navigation }) {
     />
   );
   useEffect(() => {
-    // Update the local state when wishlistBook changes
-    setSelectedBooks(wishlistBook);
-  }, [wishlistBook]);
+    // Update the local state when wishedBooks changes
+    setSelectedBooks(wishedBooks);
+  }, [wishedBooks]);
 
   return (
     <Screen>
@@ -120,7 +120,7 @@ export default function WishlistScreen({ navigation }) {
         <Fab
           onPress={() =>
             navigation.navigate("BookSearch", {
-              relatedScreen: "Wishlist",
+              sourceScreen: "Wishlist",
             })
           }
           renderInPortal={false}

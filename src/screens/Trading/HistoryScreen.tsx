@@ -31,7 +31,7 @@ export default function HistoryScreen({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
 
   const historyList = useSelector(
-    (state: any) => state.profile.profile.historyList
+    (state: any) => state.profile.profile.tradeHistory
   );
   const [historyListWithUserPhoto, setHistoryListWithUserPhoto] =
     useState(historyList);

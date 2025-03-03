@@ -32,7 +32,7 @@ export default function ReceivedScreen({ navigation }) {
   const tra = require("../../assets/images/icon/Icons.png");
   const avatar = require("../../assets/images/avatar.png");
   const receivedOffers = useSelector(
-    (state: any) => state.profile.profile.receivedOffer
+    (state: any) => state.profile.profile.receivedOffers
   );
   const [receivedOffersWithUserPhoto, setReceivedOffersWithUserPhoto] =
     useState(receivedOffers);
@@ -65,9 +65,9 @@ export default function ReceivedScreen({ navigation }) {
   );
   const acceptOfferHandler = async (offer: string) => {
     try {
+      console.log("tttt",offer)
       const response = await dispatch(acceptOfferAsync(offer.id));
       const payload = response.payload;
-      console.log("payload", payload);
 
       if (!payload.success) {
         const errorMessage =
@@ -226,7 +226,7 @@ export default function ReceivedScreen({ navigation }) {
                   overflow="hidden"
                 >
                   <Image
-                    source={getImageSource(profile.imageData, avatar)}
+                    source={getImageSource(profile.profilePicture, avatar)}
                     alt="Profile Image"
                     size={10}
                     rounded="full"

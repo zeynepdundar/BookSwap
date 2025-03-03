@@ -4,14 +4,18 @@ import i18n from "../i18n";
 export const getCoverUrl = (bookData) => {
   const isbn = bookData.isbn_13 || bookData.isbn_10;
 
-  if (isbn && isbn > 0) {
+  if(bookData.cover_file_name){
+    return bookData.cover_file_name;
+  }
+  else if (isbn && isbn > 0) {
     return `https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`;
   } else {
     return null;
   }
 };
-export const getImageSource = (photoUrl, fallbackImage) => {
-  return photoUrl ? { uri: photoUrl } : fallbackImage;
+export const getImageSource = (imageUrl?: string, defaultImage: any = null) => {
+  if (!imageUrl) return defaultImage;
+  return { uri: imageUrl };
 };
 export const createBookData = (books) => {
   if (Array.isArray(books)) {

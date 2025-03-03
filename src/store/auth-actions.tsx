@@ -5,6 +5,7 @@ import { fetchUserProfileAsync } from "./profile-actions";
 import { setProfileData } from "./profile-slice";
 import { AuthEndpoints } from "../api/endpoints";
 import AsyncStore from "../utils/AsyncStore";
+import i18n from "../i18n";
 
 export const verifyPhoneNumber = createAsyncThunk(
   "auth/verifyPhoneNumber",
@@ -53,7 +54,11 @@ export const checkVerificationCode = createAsyncThunk(
       const userCredential = await confirmationResult.confirm(verificationCode);
       const firebaseUserId = userCredential.user.uid;
       const isNewUser = userCredential.additionalUserInfo.isNewUser;
-      const user = await auth().currentUser.getIdTokenResult();
+
+      const profileData = await thunkAPI.dispatch(fetchUserProfileAsync(firebaseUserId)).unwrap();
+
+      i18n.locale = profileData.languagePreference;
+      await AsyncStore.setItem("languagePreference", profileData.languagePreference);
 
       thunkAPI.dispatch(
         setUser({
@@ -62,13 +67,12 @@ export const checkVerificationCode = createAsyncThunk(
         })
       );
 
-      if (isNewUser) thunkAPI.dispatch(addUserToDatabaseAsync(user.token));
-      else {
-        thunkAPI.dispatch(fetchUserProfileAsync(firebaseUserId));
+      if (isNewUser) {
+        thunkAPI.dispatch(addUserToDatabaseAsync(userCredential.user.token));
       }
 
-      thunkAPI.dispatch(setToken(user.token));
-      await AsyncStore.setItem("authToken", user.token);
+      thunkAPI.dispatch(setToken(userCredential.user.token));
+      await AsyncStore.setItem("authToken", userCredential.user.token);
 
       return userCredential;
     } catch (error) {

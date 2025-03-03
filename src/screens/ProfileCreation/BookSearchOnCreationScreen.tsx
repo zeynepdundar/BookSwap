@@ -18,12 +18,13 @@ import i18n from "../../i18n";
 import { LoadingOverlay } from "../../components/LoadingOverlay";
 import { EditionEndpoints } from "../../api/endpoints";
 import { BorderedBookListVertical } from "../../components/shared/BorderedBookListVertical";
+import { getCoverUrl } from "../../utils/helper";
 
 export default function BookSearchOnCreationScreen({
   navigation,
   route = null,
 }) {
-  const { relatedScreen, onDonePress } = route.params;
+  const { sourceScreen, onDonePress } = route.params;
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,10 +54,7 @@ export default function BookSearchOnCreationScreen({
         title: item.title,
         publisher: item.publishers ? item.publishers[0] : "",
         // isbn_13: item.isbn_13 || item.isbn_11,
-        coverUrl:
-          item.isbn_13 && item.isbn_13 > 0
-            ? EditionEndpoints.FETCH_COVER_OL(undefined, item.isbn_13)
-            : null,
+        coverUrl: getCoverUrl(item),
         author: item.author ? item.author : "",
       }));
 
@@ -109,7 +107,7 @@ export default function BookSearchOnCreationScreen({
 
   const scanBarcodeHandler = () => {
     navigation.navigate("BarcodeScannerOnProfileCreation", {
-      relatedScreen: "Library",
+      sourceScreen: "Library",
     });
   };
 
@@ -178,7 +176,7 @@ export default function BookSearchOnCreationScreen({
               <BorderedBookListVertical
                 data={searchResults}
                 onDonePress={pressDoneHandler}
-                listType={relatedScreen}
+                listType={sourceScreen}
               />
             )}
             {searchQuery.length < 5 && (
@@ -189,14 +187,14 @@ export default function BookSearchOnCreationScreen({
                 <Center w="100%">
                   <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
                   <Text textAlign="center" mx="30" fontWeight="200">
-                    {relatedScreen === "Wishlist"
+                    {sourceScreen === "Wishlist"
                       ? i18n.t("add-books-to-your-wishlist-to-start-swap")
                       : i18n.t("add-books-to-your-library-to-start-swap")}
                   </Text>
                 </Center>
               </VStack>
             )}
-            {!error && searchResults.length === 0 && searchQuery.length > 4 && (
+            {!loading && !error && searchResults.length === 0 && searchQuery.length >=3 && (
               <VStack width="100%" height={200} mt="100">
                 <Center w="100%">
                   <Text

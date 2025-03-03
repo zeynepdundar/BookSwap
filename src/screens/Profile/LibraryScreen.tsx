@@ -62,11 +62,11 @@ export default function LibraryScreen({ navigation, route }) {
       }}
     />
   );
-  const { libraryBook } = useSelector((state: any) => state.profile.profile);
+  const { ownedBooks } = useSelector((state: any) => state.profile.profile);
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const [selectedBooks, setSelectedBooks] = useState(libraryBook);
+  const [selectedBooks, setSelectedBooks] = useState(ownedBooks);
 
   const previousRoute = navigationState?.routes?.[navigationState.index - 1];
   const showFab =  previousRoute?.name === "Profile" ?? false;
@@ -74,8 +74,8 @@ export default function LibraryScreen({ navigation, route }) {
   useEffect(() => {
     return () => {
       // Cleanup or additional actions when the component is unmounted
-      // Make your API call to update user libraryBook here
-      // For example, you can dispatch an action to update the libraryBook in Redux
+      // Make your API call to update user ownedBooks here
+      // For example, you can dispatch an action to update the ownedBooks in Redux
       // dispatch(updateLibraryBookAsync(selectedBooks));
     };
   }, [dispatch, selectedBooks]);
@@ -95,9 +95,9 @@ export default function LibraryScreen({ navigation, route }) {
 
 
   useEffect(() => {
-    // Update the local state when libraryBook changes
-    setSelectedBooks(libraryBook);
-  }, [libraryBook]);
+    // Update the local state when ownedBooks changes
+    setSelectedBooks(ownedBooks);
+  }, [ownedBooks]);
 
   return (
     <Screen>
@@ -152,13 +152,12 @@ export default function LibraryScreen({ navigation, route }) {
         <Fab
           // onPress={() =>
           //   navigation.navigate('BookSearch', {
-          //     relatedScreen: 'Library',
+          //     sourceScreen: 'Library',
           //   })
           // }
           onPress={() =>
             navigation.navigate("BookSearch", {
-              relatedScreen: "Library",
-              // onDonePress: handleAddToLibrary,
+              sourceScreen: "Library",
             })
           }
           renderInPortal={false}

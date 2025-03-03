@@ -18,7 +18,7 @@ import i18n from "../../i18n";
 import Screen from "../../components/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { AlertDialogBox } from "../../components/Modal/AlertDialogBox";
 import ImagePicker from "../../components/ImagePicker";
 import auth from "@react-native-firebase/auth";
@@ -43,11 +43,18 @@ export default function ProfileScreen({ navigation }) {
   const onClose = () => setIsOpen(false);
 
   // Destructure specific attributes from the profileData
-  const { name, wishlistBook, libraryBook, languagePreference, imageData } =
-    profileData;
+  const {
+    username,
+    wishedBooks,
+    ownedBooks,
+    languagePreference,
+    profilePicture,
+  } = profileData;
 
-  const handleLanguageChange = (selectedLanguage) => {
+
+  const handleLanguageChange = async (selectedLanguage) => {
     i18n.locale = selectedLanguage;
+    await AsyncStore.setItem("language", selectedLanguage); // Store the selected language
 
     const updatedProfile = {
       ...profileData,
@@ -60,7 +67,7 @@ export default function ProfileScreen({ navigation }) {
   const handleImageUpload = (imageUri) => {
     const updatedProfile = {
       ...profileData,
-      imageData: imageUri,
+      profilePicture: imageUri,
     };
 
     dispatch(updateProfileAsync({ profileData: updatedProfile }));
@@ -103,10 +110,10 @@ export default function ProfileScreen({ navigation }) {
           <Center w="100%" h="215px" px={6}>
             <ImagePicker
               selectedImage={handleImageUpload}
-              initialImage={imageData}
+              initialImage={profilePicture}
             />
             <Heading color="black.100" my={3}>
-              {name}
+              {username}
             </Heading>
           </Center>
 
@@ -145,7 +152,7 @@ export default function ProfileScreen({ navigation }) {
                 }}
                 bg="primary.50"
               >
-                {wishlistBook.length}
+                {wishedBooks?.length || 0}
               </Box>
             </Flex>
           </Pressable>
@@ -182,7 +189,7 @@ export default function ProfileScreen({ navigation }) {
                 }}
                 bg="primary.50"
               >
-                {libraryBook.length}
+                {ownedBooks?.length || 0}
               </Box>
             </Flex>
           </Pressable>
@@ -212,7 +219,7 @@ export default function ProfileScreen({ navigation }) {
                   trigger={(triggerProps) => {
                     return (
                       <Pressable
-                        accessibilityLabel="Language selection"
+                       alt="Language selection"
                         {...triggerProps}
                       >
                         <Text

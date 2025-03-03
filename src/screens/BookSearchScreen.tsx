@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Heading,
   Box,
@@ -21,23 +21,27 @@ import { AppDispatch } from "../store/store";
 import { fetchBooksByTitle } from "../api/service";
 import { addBookToListAsync } from "../store/profile-actions";
 import {
-  getFocusedRouteNameFromRoute,
   useNavigationState,
 } from "@react-navigation/native";
 import { BorderedBookListVertical } from "../components/shared/BorderedBookListVertical";
 import { ErrorAlert } from "./BarcodeScannerScreen";
+import { SceneName } from "../types/navigation";
 
 export default function BookSearchScreen({ navigation, route = null }) {
-  const { relatedScreen, onDonePress } = route.params;
+  const { sourceScreen } = route.params;
+
   // const { searchedBook } = route.params || {};
 
   const [loading, setLoading] = useState<boolean>(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [listType, setListType] = useState<string>("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
   const [listError, setListError] = useState<string | null>(null);
+  const navigationState = useNavigationState((state) => state);
+
+
+  const listType = sourceScreen ? sourceScreen : "";
 
   // useEffect(() => {
   //   if (searchedBook) {
@@ -50,6 +54,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
     try {
       const response = await dispatch(addBookToListAsync(selectedItem));
       const payload = response.payload;
+
 
       if (payload?.status === "error") {
         if (payload.existingEditionIds?.length > 0) {
@@ -85,7 +90,6 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
     if (result.success) {
       navigation.goBack();
-    } else {
     }
   };
   const navigateUserList = (item) => {
@@ -94,9 +98,9 @@ export default function BookSearchScreen({ navigation, route = null }) {
       data: userWithoutPhoto, // Pass the user object without the photo_file_name
     });
   };
-  const navigationState = useNavigationState((state) => state);
 
   const fetchBooks = async (title) => {
+    setLoading(true);
     fetchBooksByTitle(title)
       .then((books) => {
         setSearchResults(books);
@@ -118,12 +122,10 @@ export default function BookSearchScreen({ navigation, route = null }) {
   // }, []);
 
   useEffect(() => {
-    inputRef.current?.focus();
-    const type = getFocusedRouteNameFromRoute(
-      navigationState.routes[navigationState.index - 1]
-    )?.toLocaleUpperCase();
-    setListType(type);
-  }, []);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [navigationState]);
 
   useEffect(() => {
     if (searchQuery.length >= 3) {
@@ -142,7 +144,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
   const scanBarcodeHandler = () => {
     navigation.navigate("BarcodeScanner", {
-      relatedScreen: relatedScreen,
+      sourceScreen: sourceScreen,
     });
   };
 
@@ -204,8 +206,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
             )}
             {!loading && !searchError && searchResults?.length > 0 && (
               <>
-                {/* For specific book list (wishlist/library) search result*/}
-                {listType && listType !== "HOME" ? (
+                {listType && listType !== "Home" ? (
                   <BorderedBookListVertical
                     data={searchResults}
                     onDonePress={pressDoneHandler}
@@ -228,14 +229,14 @@ export default function BookSearchScreen({ navigation, route = null }) {
                 <Center w="100%">
                   <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
                   <Text textAlign="center" mx="30" fontWeight="200">
-                    {relatedScreen === "Wishlist"
+                    {sourceScreen === SceneName.MyWishlist
                       ? i18n.t("add-books-to-your-wishlist-to-start-swap")
                       : i18n.t("add-books-to-your-library-to-start-swap")}
                   </Text>
                 </Center>
               </VStack>
             )}
-            {!searchError &&
+            {!loading && !searchError &&
               searchResults.length === 0 &&
               searchQuery.length >= 3 && (
                 <VStack width="100%" height={200} mt="100">
@@ -270,4 +271,16 @@ export default function BookSearchScreen({ navigation, route = null }) {
       </Screen>
     </TouchableWithoutFeedback>
   );
+}
+
+// Function to get the focused route name
+function getFocusedRouteNameFromRoute(route) {
+  // Check if the route has a nested state
+  if (route.state) {
+    // If there are nested routes, get the last one
+    const routeState = route.state.routes[route.state.index];
+    return routeState.name;
+  }
+  // Return the name of the route if no nested state
+  return route.name;
 }

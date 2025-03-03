@@ -31,19 +31,24 @@ interface BookListVerticalProps {
   showSendOfferButton?: boolean;
 }
 
-const renderItem = (item, onNavigateList, userId, onPrimaryAction, openActionSheet, onSendOffer) => (
+const renderItem = (
+  item,
+  onNavigateList,
+  userId,
+  onPrimaryAction,
+  openActionSheet,
+  onSendOffer
+) => (
   <>
     <Box height="125" mx="2" pl="2" ml="2" key={item.id} overflow="hidden">
       <HStack justifyContent="space-between" width="100%" space={3} py={1}>
-        <AspectRatio w={{ base: "22%", md: "18%" }} ratio={40 / 62} maxWidth="80px">
+        <AspectRatio
+          w={{ base: "22%", md: "18%" }}
+          ratio={40 / 62}
+          maxWidth="80px"
+        >
           <Image
-            source={
-              item.coverUrl
-                ? { uri: item?.coverUrl }
-                : {
-                    uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                  }
-            }
+            source={{ uri: item.coverUrl }}
             alt={`Cover of ${item.title} by ${item.author}`}
             roundedRight="4"
           />
@@ -57,7 +62,12 @@ const renderItem = (item, onNavigateList, userId, onPrimaryAction, openActionShe
           </Text>
           {item.publisher ||
           (Array.isArray(item.publishers) && item.publishers.length > 0) ? (
-            <Text color="#8c8c8c" fontSize="13" fontWeight="200" numberOfLines={item?.usersOwning ? 1 : 2}>
+            <Text
+              color="#8c8c8c"
+              fontSize="13"
+              fontWeight="200"
+              numberOfLines={item?.usersOwning ? 1 : 2}
+            >
               {Array.isArray(item.publishers) && item.publishers.length > 0
                 ? truncateText(formatText(item.publishers[0]), 30)
                 : truncateText(formatText(item.publisher), 50)}
@@ -75,10 +85,14 @@ const renderItem = (item, onNavigateList, userId, onPrimaryAction, openActionShe
               p="1"
               mt="4"
               width="90px"
-              disabled={item.usersOwning.filter((owner) => owner.id !== userId).length === 0}
+              disabled={
+                item.usersOwning.filter((owner) => owner.id !== userId)
+                  .length === 0
+              }
             >
               <Text alignSelf="center" color="#323232" fontSize="12px">
-                {item.usersOwning.filter((owner) => owner.id !== userId).length} Owner
+                {item.usersOwning.filter((owner) => owner.id !== userId).length}{" "}
+                Owner
               </Text>
             </Pressable>
           )}
@@ -123,7 +137,9 @@ const renderItem = (item, onNavigateList, userId, onPrimaryAction, openActionShe
 const keyExtractor = (item) => item.id;
 
 const handleNavigateList = (item, onNavigateList, userId) => {
-  const filteredOwners = item.usersOwning.filter((owner) => owner.id !== userId);
+  const filteredOwners = item.usersOwning
+    .filter((owner) => owner.id !== userId)
+    .map(({ photo_file_name, ...owner }) => owner);
   const newItem = { ...item, usersOwning: filteredOwners };
   onNavigateList(newItem);
 };
@@ -220,7 +236,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
         maxToRenderPerBatch={10}
         showsVerticalScrollIndicator={false}
         onScrollBeginDrag={Keyboard.dismiss}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps="never"
         renderItem={({ item }) =>
           renderItem(
             item,

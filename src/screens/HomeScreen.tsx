@@ -7,6 +7,7 @@ import { CoverListHorizontal } from "../components/shared/CoverListHorizontal";
 import SearchBar from "../components/shared/SearchBar";
 import { LoadingOverlay } from "../components/LoadingOverlay";
 import { fetchMostPopularBooks } from "../api/service";
+import { SceneName } from "../types/navigation";
 
 export default function HomeScreen({ navigation }) {
   const importUrl = require("../assets/images/avatar.png");
@@ -23,7 +24,12 @@ export default function HomeScreen({ navigation }) {
       setBooks(data);
     })();
   }, []);
-  const [loading, setLoading] = useState(true);
+
+  const navigateToScreen = (screenName: string) => {
+    navigation.navigate(screenName, {
+      sourceScreen: SceneName.Home,
+    });
+  };
 
   if (profileLoading) {
     return <LoadingOverlay></LoadingOverlay>;
@@ -34,7 +40,7 @@ export default function HomeScreen({ navigation }) {
         <Flex my="4">
           <Heading>{i18n.t("hello")}</Heading>
           <Text color="coolGray.800" fontWeight="500" fontSize={16}>
-            {profile.name}
+            {profile.username}
           </Text>
         </Flex>
         <Pressable
@@ -43,7 +49,7 @@ export default function HomeScreen({ navigation }) {
           }
         >
           <Image
-            source={profile.imageData ? { uri: profile.imageData } : importUrl}
+            source={profile.profilePicture ? { uri: profile.profilePicture } : importUrl}
             alt="Profile Image"
             size={10}
             rounded="7"
@@ -51,21 +57,9 @@ export default function HomeScreen({ navigation }) {
         </Pressable>
       </Flex>
       <SearchBar
-        onSearchBook={() => {
-          navigation.navigate("BookSearch", {
-            relatedScreen: "Home",
-          });
-        }}
-        onScanBarcode={() => {
-          navigation.navigate("BarcodeScanner", {
-            relatedScreen: "Home",
-          });
-        }}
-        onFocus={() => {
-          navigation.navigate("BookSearch", {
-            relatedScreen: "Home",
-          });
-        }}
+        onSearchBook={() => navigateToScreen("BookSearch")}
+        onScanBarcode={() => navigateToScreen("BarcodeScanner")}
+        onFocus={() => navigateToScreen("BookSearch")}
       />
       {books.length > 0 && (
         <Box mt="6">

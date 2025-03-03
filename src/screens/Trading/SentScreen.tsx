@@ -34,7 +34,7 @@ export default function SentScreen({ navigation }) {
   const [loadingImages, setLoadingImages] = useState(true);
 
   const sentOffers = useSelector(
-    (state: any) => state.profile.profile.sentOffer
+    (state: any) => state.profile.profile.sentOffers
   );
   const [sentOffersWithUserPhoto, setSentOffersWithUserPhoto] =
     useState(sentOffers);
@@ -164,7 +164,7 @@ export default function SentScreen({ navigation }) {
                   overflow="hidden"
                 >
                   <Image
-                    source={getImageSource(profile.imageData, avatar)}
+                    source={getImageSource(profile.profilePicture, avatar)}
                     alt="Profile Image"
                     size={10}
                     rounded="full"

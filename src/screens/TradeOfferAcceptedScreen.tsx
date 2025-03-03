@@ -19,11 +19,9 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
   const { user, receivedBook, offeredBook, conversationId } = route.params;
   const { firebaseUserId } = useSelector((state: any) => state.auth.user);
 
-console.log("neeeeee",  user, receivedBook, offeredBook, conversationId,firebaseUserId)
   const importUrl = require("../assets/images/radar.png");
 
   const goToChatScreen = () => {
-    console.log("goToChatScreen",user, conversationId);
     navigation.replace("ChatScreen", {
       conversationId: conversationId,
       friend: user,

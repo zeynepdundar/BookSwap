@@ -25,15 +25,20 @@ import { AppDispatch } from "../../store/store";
 import { InfoDialogBox } from "../../components/Modal/InfoDialogBox";
 import { sendOfferAsync } from "../../store/profile-actions";
 import { getImageSource } from "../../utils/helper";
+import { resetToHome } from '../../utils/navigation';
+import { BasicUserData } from "../../models/User";
+import { Book } from "../../models/Book";
 
 interface TradeProposal {
-  receiverId: string;
+  receiverId: number;
   offeredBook: any;
   requestedBook: any;
 }
 export default function TradeProposal({ navigation, route }) {
-  const user = route?.params?.data?.user;
-  const book = route?.params?.data?.book;
+  const user: BasicUserData = route?.params?.data?.user;
+  const book: Book = route?.params?.data?.book;
+
+  console.log("user", user);
 
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
@@ -60,10 +65,7 @@ export default function TradeProposal({ navigation, route }) {
 
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Home" }],
-    });
+    resetToHome(navigation);
   };
 
   useEffect(() => {
@@ -332,7 +334,7 @@ export default function TradeProposal({ navigation, route }) {
             overflow="hidden"
           >
             <Image
-              source={getImageSource(user.photo_file_name, avatar)}
+              source={getImageSource(user.profilePicture, avatar)}
               alt="Profile Image"
               size={12}
               rounded="full"

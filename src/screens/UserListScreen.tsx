@@ -28,22 +28,25 @@ export default function UserListScreen({ navigation, route }) {
   const usersTemp = route?.params?.data?.usersOwning;
   const book = route?.params?.data;
 
+
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const avatar = require("../assets/images/avatar.png");
 
-  const { libraryBook } = useSelector((state: any) => state.profile.profile);
+  const { ownedBooks } = useSelector((state: any) => state.profile.profile);
 
   const [libraryItems, setLibraryItem] = useState<any>([]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [usersWithPhotos, setUsersWithPhotos] = useState(
-    usersTemp.map(({ photo_file_name, ...rest }) => rest)
+    usersTemp.map(({ profilePicture, ...rest }) => rest)
   );
+
+  
   const fetchProfileImages = async () => {
     const updatedUsers = await Promise.all(
       usersTemp.map(async (user) => {
         const photoUrl = await fetchProfileImageUrl(user.id);
-        return { ...user, photo_file_name: photoUrl };
+        return { ...user, profilePicture: photoUrl };
       })
     );
     setUsersWithPhotos(updatedUsers);
@@ -55,7 +58,7 @@ export default function UserListScreen({ navigation, route }) {
   );
 
   const sendOfferHandler = (data) => {
-    if (libraryBook.length === 0) {
+    if (ownedBooks.length === 0) {
       // Library is empty, show an alert
       setIsOpen(true);
     } else {
@@ -130,7 +133,7 @@ export default function UserListScreen({ navigation, route }) {
                     overflow="hidden"
                   >
                     <Image
-                      source={getImageSource(item.photo_file_name, avatar)}
+                      source={getImageSource(item.profilePicture, avatar)}
                       alt="Profile Image"
                       size={10}
                       rounded="full"

@@ -22,7 +22,7 @@ import { setProfileData } from "../../store/profile-slice";
 export default function WishlistInputScreen({ navigation }) {
 
   const profileData = useSelector((state: any) => state.profile.profile);
-  const initialWishlistBooks = profileData.wishlistBook || []; // Assuming wishlistBook contains selected books
+  const initialWishlistBooks = profileData.wishedBooks || []; // Assuming wishedBooks contains selected books
   const [selectedBooks, setSelectedBooks] = useState(initialWishlistBooks);
 
 
@@ -47,7 +47,7 @@ export default function WishlistInputScreen({ navigation }) {
   };
 
   const pressHandler = () => {
-    dispatch(setProfileData({ wishlistBook: selectedBooks }));
+    dispatch(setProfileData({ wishedBooks: selectedBooks }));
     navigation.navigate("Library");
   };
 
@@ -87,19 +87,19 @@ export default function WishlistInputScreen({ navigation }) {
           <SearchBar
             onSearchBook={() => {
               navigation.navigate("BookSearchOnCreation", {
-                relatedScreen: "Wishlist",
+                sourceScreen: "Wishlist",
                 onDonePress: handleAddToWishlist,
               });
             }}
             onScanBarcode={() => {
               navigation.navigate("BarcodeScannerOnProfileCreation", {
-                relatedScreen: "Wishlist",
+                sourceScreen: "Wishlist",
                 onAddBook: handleAddToWishlist
               });
             }}
             onFocus={() => {
               navigation.navigate("BookSearchOnCreation", {
-                relatedScreen: "Wishlist",
+                sourceScreen: "Wishlist",
                 onDonePress: handleAddToWishlist,
               });
             }}

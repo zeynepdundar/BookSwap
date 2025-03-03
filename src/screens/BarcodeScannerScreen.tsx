@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   StyleSheet,
   Dimensions,
@@ -31,8 +31,11 @@ import { ActionSheet } from "../components/ActionSheet";
 import { AppDispatch } from "../store/store";
 import { addBookToListAsync } from "../store/profile-actions";
 import i18n from "../i18n";
-import { LIBRARY, WISHLIST } from "../constants";
+import { LIBRARY, ListTypes, WISHLIST } from "../constants";
 import { InfoDialogBox } from "../components/Modal/InfoDialogBox";
+import { MODAL_ACTIONS } from "../constants/actions";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { useNavigationState } from "@react-navigation/native";
 
 export default function BarcodeScannerScreen({
   navigation,
@@ -41,7 +44,6 @@ export default function BarcodeScannerScreen({
 }) {
   const dispatch = useDispatch<AppDispatch>();
 
-  const mode = route?.params?.relatedScreen;
   onAddBook = onAddBook || route?.params?.onAddBook;
 
   const [hasPermission, setHasPermission] = useState(null);
@@ -56,17 +58,25 @@ export default function BarcodeScannerScreen({
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
   const [actions, setActions] = useState([]);
 
+  const navigationState = useNavigationState((state) => state);
+
+  const listType = useMemo(() => {
+    const previousRoute = navigationState.routes[navigationState.index - 1];
+    const sourceScreen = previousRoute.params?.sourceScreen; 
+    return sourceScreen ?? "";
+  }, [navigationState]);
+
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === "granted");
     };
 
-    // Only request permissions if not previously determined
+    // Only request permissions if the component is mounted and hasPermission is still null
     if (hasPermission === null) {
       getBarCodeScannerPermissions();
     }
-  }, [hasPermission]);
+  }, []);
 
   useEffect(() => {
     const resetScannedResult = () => {
@@ -112,11 +122,11 @@ export default function BarcodeScannerScreen({
       navigation.goBack();
 
       //TODO : Refactor to handle Wishlist and Library cases generically using a function passed as a prop.
-    } else if (mode === "Wishlist" || mode === "Library") {
+    } else if (listType === WISHLIST|| listType === LIBRARY) {
       const response = await dispatch(
         addBookToListAsync({
           ...edition,
-          type: mode === "Wishlist" ? WISHLIST : LIBRARY,
+          type: listType,
         })
       );
       const payload = response.payload;
@@ -130,13 +140,13 @@ export default function BarcodeScannerScreen({
         setTimeout(() => {
           setError(null);
         }, 8000);
-      } else navigation.navigate(mode);
+      } else navigation.navigate(listType);
       closeActionSheet();
     } else {
       const actions = [
-        { type: WISHLIST, label: "add-my-wishlist" },
-        { type: LIBRARY, label: "add-my-library" },
-        { type: "cancel", label: "cancel" },
+        MODAL_ACTIONS.ADD_TO_WISHLIST,
+        MODAL_ACTIONS.ADD_TO_LIBRARY,
+        MODAL_ACTIONS.CANCEL,
       ];
       setActions(generateModalActions(actions, handleAction, closeActionSheet));
       setIsActionSheetOpen(true);
@@ -233,7 +243,9 @@ export default function BarcodeScannerScreen({
         onClose={closeActionSheet}
         actions={actions}
         defaultLabel={
-          mode === "Wishlist" || mode === "Library" ? "the-book-added" : null
+          listType === WISHLIST || listType === LIBRARY
+            ? "the-book-added"
+            : null
         }
       />
 

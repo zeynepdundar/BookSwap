@@ -50,7 +50,7 @@ export default function LibraryInputScreen({ navigation }) {
     if (specificAction === "pressContinue") {
       const updatedProfile = {
         ...profile,
-        libraryBook: selectedBooks,
+        ownedBooks: selectedBooks,
         languagePreference: deviceLanguage,
       };
       dispatch(updateProfileAsync({ profileData: updatedProfile, fullUpdate: true }));
@@ -107,20 +107,20 @@ export default function LibraryInputScreen({ navigation }) {
           <SearchBar
             onSearchBook={() => {
               navigation.navigate("BookSearchOnCreation", {
-                relatedScreen: "Library",
+                sourceScreen: "Library",
                 onDonePress: handleAddToLibrary,
               });
             }}
             onScanBarcode={() => {
               navigation.navigate("BarcodeScannerOnProfileCreation", {
-                relatedScreen: "Library",
+                sourceScreen: "Library",
                 onAddBook: handleAddToLibrary
 
               });
             }}
             onFocus={() => {
               navigation.navigate("BookSearchOnCreation", {
-                relatedScreen: "Library",
+                sourceScreen: "Library",
                 onDonePress: handleAddToLibrary,
               });
             }}

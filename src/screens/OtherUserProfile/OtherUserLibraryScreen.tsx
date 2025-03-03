@@ -11,10 +11,10 @@ import { ErrorAlert } from "../BarcodeScannerScreen";
 export default function OtherUserWishlistScreen({
   navigation,
   profile,
-  libraryBook,
+  ownedBooks,
 }) {
   const [userProfile, setUserProfile] = useState(profile);
-  const [libraryBooks, setLibraryBooks] = useState(libraryBook);
+  const [ownedBookss, setLibraryBooks] = useState(ownedBooks);
   const [listError, setListError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function OtherUserWishlistScreen({
   return (
     <Center mt="6">
       <BookListVertical
-        data={libraryBooks}
+        data={ownedBookss}
         onSecondaryAction={addBookToListHandler}
         onSendOffer={sendOfferHandler}
       />

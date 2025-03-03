@@ -28,13 +28,13 @@ export default function OtherUserProfileScreen({ navigation, route }) {
   const selectedUser = route?.params?.user;
 
   const [profile, setProfile] = useState(null);
-  const [libraryBook, setLibraryBook] = useState(null);
+  const [ownedBooks, setLibraryBook] = useState(null);
   const [wishedBook, setWishedBook] = useState(null);
   const [historyList, setHistoryList] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProfileData = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         const profileData = await fetchUserProfileData(
@@ -44,10 +44,10 @@ export default function OtherUserProfileScreen({ navigation, route }) {
           firebase_uid: selectedUser?.firebase_uid,
           id: profileData.id,
           name: profileData.name,
-          photo_file_name: profileData.imageData,
+          photo_file_name: profileData.profilePicture,
         });
-        setLibraryBook(profileData.libraryBook);
-        setWishedBook(profileData.wishlistBook);
+        setLibraryBook(profileData.ownedBooks);
+        setWishedBook(profileData.wishedBooks);
         setHistoryList(profileData.historyList);
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -57,7 +57,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
       }
     };
 
-    if (selectedUser.firebase_uid) fetchProfileData();
+    if (selectedUser.firebase_uid) fetchData();
   }, [selectedUser]);
 
   const [index, setIndex] = useState(0);
@@ -82,7 +82,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
         {...props}
         navigation={navigation}
         profile={profile}
-        libraryBook={libraryBook}
+        ownedBooks={ownedBooks}
       />
     ),
     wishlist: (props: any) => (
@@ -190,20 +190,14 @@ export default function OtherUserProfileScreen({ navigation, route }) {
               overflow="hidden"
             >
               <Image
-                source={getImageSource(selectedUser.photo_file_name, avatar)}
+                source={getImageSource(selectedUser.profilePicture, avatar)}
                 alt="Profile Image"
                 size={60}
                 rounded="full"
               />
             </Box>
-            {/* <Image
-              source={{ uri: selectedUser.photo_file_name }}
-              alt="Profile Image"
-              rounded="full"
-              size={60}
-            /> */}
             <Heading width="60%" my={3}>
-              {profile?.name}
+              {selectedUser?.name}
             </Heading>
             <Spacer></Spacer>
           </HStack>

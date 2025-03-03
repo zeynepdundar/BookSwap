@@ -1,5 +1,5 @@
-import { createSlice, current } from "@reduxjs/toolkit";
-import { LIBRARY, ProfileState, WISHLIST } from "../constants";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { LIBRARY, WISHLIST } from "../constants";
 import {
   acceptOfferAsync,
   addBookToListAsync,
@@ -13,132 +13,104 @@ import {
   takeBackOfferAsync,
   updateProfileAsync,
 } from "./profile-actions";
+import { ProfileState, UserData } from "../models/User";
 
 const initialState: ProfileState = {
   loading: false,
   error: null as { name: string; message: string } | null,
-  // profile: null as UserProfile | null,
   profile: {
     id: "",
+    username: "",
     name: "",
     birthdate: "",
-    imageData: null,
+    profilePicture: null,
     gender: "",
     languagePreference: "",
-    wishlistBook: [],
-    libraryBook: [],
-
-    receivedOffer: [], // Add this line for received trade ids
-    sentOffer: [], // Add this line for sent trade ids
-    historyList: [], // Add this line for history
-  },
+    wishedBooks: [],
+    ownedBooks: [],
+    receivedOffers: [],
+    sentOffers: [],
+    tradeHistory: [],
+  } as UserData,
 };
-
-// const initialState: ProfileState = {
-//   loading: false,
-//   error: null as { name: string; message: string } | null,
-//   // profile: null as UserProfile | null,
-//   profile: {
-//     id: "28",
-//     name: "Zeynep28",
-//     birthdate: "",
-//     imageData: null,
-//     gender: "f",
-//     languagePreference: "en",
-//     wishlistBook: [],
-//     libraryBook: [],
-
-//     receivedOffer: [], // Add this line for received trade ids
-//     sentOffer: [], // Add this line for sent trade ids
-//   },
-// };
 
 const profileSlice = createSlice({
   name: "profile",
   initialState,
   reducers: {
-    setProfileData: (state, action) => {
-      if (action.payload && typeof action.payload === "object") {
-        // Check if action.payload is an object
+    setProfileData: (state, action: PayloadAction<Partial<UserData>>) => {
+      if (action.payload) {
         state.profile = { ...state.profile, ...action.payload };
-      } else {
-        // Handle other cases as needed
-        console.error("Invalid payload:", action.payload);
       }
     },
-    setProfileImage: (state, action) => {
-      state.profile.imageData = action.payload; // Assuming 'image' is the key for profile image
+    setProfileImage: (state, action: PayloadAction<string | null>) => {
+      state.profile.profilePicture = action.payload;
     },
-    setLanguagePreference: (state, action) => {
+    setLanguagePreference: (state, action: PayloadAction<string>) => {
       state.profile.languagePreference = action.payload; // Assuming 'image' is the key for profile image
     },
-    clearProfileData: () => {
-      return initialState
-
-    },
-    removeBookFromList: (state, action) => {
-      if (action.payload.listType === WISHLIST)
-        state.profile.wishlistBook.splice(
-          state.profile.wishlistBook.indexOf(action.payload.id),
-          1
-        );
-      if (action.payload.listType === LIBRARY)
-        state.profile.libraryBook.splice(
-          state.profile.libraryBook.indexOf(action.payload.id),
-          1
-        );
+    clearProfileData: () => initialState,
+    removeBookFromList: (
+      state,
+      action: PayloadAction<{ listType: string; id: string }>
+    ) => {
+      const { listType, id } = action.payload;
+      const list = listType === WISHLIST ? "wishedBooks" : "ownedBooks";
+      state.profile[list] = state.profile[list].filter(
+        (book) => book.id !== id
+      );
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addBookToListAsync.fulfilled, (state, action: any) => {
+      .addCase(addBookToListAsync.fulfilled, (state, action) => {
         const booksToAdd = Array.isArray(action.payload.book)
           ? action.payload.book
           : [action.payload.book];
 
         if (action.payload.listType === WISHLIST) {
-          state.profile.wishlistBook.unshift(...booksToAdd);
+          state.profile.wishedBooks.unshift(...booksToAdd);
         }
 
         if (action.payload.listType === LIBRARY) {
-          state.profile.libraryBook.unshift(...booksToAdd);
+          state.profile.ownedBooks.unshift(...booksToAdd);
         }
       })
 
       .addCase(removeBookFromListAsync.fulfilled, (state, action: any) => {
         if (action.payload.listType === WISHLIST) {
-          state.profile.wishlistBook = state.profile.wishlistBook.filter(
+          state.profile.wishedBooks = state.profile.wishedBooks.filter(
             (book) => book.id !== action.payload.id
           );
         }
         if (action.payload.listType === LIBRARY) {
-          state.profile.libraryBook = state.profile.libraryBook.filter(
+          state.profile.ownedBooks = state.profile.ownedBooks.filter(
             (book) => book.id !== action.payload.id
           );
         }
       })
       .addCase(sendOfferAsync.fulfilled, (state, action) => {
-        state.profile.sentOffer = action.payload;
+        state.profile.sentOffers = action.payload;
       })
       .addCase(acceptOfferAsync.fulfilled, (state, action) => {
-        state.profile.receivedOffer = state.profile.receivedOffer.filter(
+        state.profile.receivedOffers = state.profile.receivedOffers.filter(
           (offer) => offer.id !== action.payload.id
         );
       })
       .addCase(rejectOfferAsync.fulfilled, (state, action) => {
-        state.profile.receivedOffer = state.profile.receivedOffer.filter(
+        state.profile.receivedOffers = state.profile.receivedOffers.filter(
           (offer) => offer.id !== action.payload
         );
         state.loading = false;
       })
       .addCase(rejectOfferAsync.pending, (state, action) => {
-        state.profile.receivedOffer = state.profile.receivedOffer.filter(
+        state.profile.receivedOffers = state.profile.receivedOffers.filter(
           (offer) => offer.id !== action.payload
         );
         state.loading = true;
       })
       .addCase(takeBackOfferAsync.fulfilled, (state, action) => {
-        state.profile.sentOffer = state.profile.sentOffer.filter(
+        state.profile.sentOffers = state.profile.sentOffers.filter(
           (offer) => offer.id !== action.payload
         );
         state.loading = false;
@@ -160,7 +132,7 @@ const profileSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateProfileAsync.fulfilled, (state, action:any) => {
+      .addCase(updateProfileAsync.fulfilled, (state, action: any) => {
         state.loading = false;
         state.profile = {
           ...state.profile,
@@ -178,7 +150,7 @@ const profileSlice = createSlice({
       })
       .addCase(fetchReceivedOffersAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.profile.receivedOffer = action.payload;
+        state.profile.receivedOffers = action.payload;
       })
       .addCase(fetchReceivedOffersAsync.rejected, (state, action) => {
         state.loading = false;
@@ -190,7 +162,7 @@ const profileSlice = createSlice({
       })
       .addCase(fetchSentOffersAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.profile.sentOffer = action.payload;
+        state.profile.sentOffers = action.payload;
       })
       .addCase(fetchSentOffersAsync.rejected, (state, action) => {
         state.loading = false;
@@ -202,7 +174,7 @@ const profileSlice = createSlice({
       })
       .addCase(fetchTradeHistoryAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.profile.historyList = action.payload;
+        state.profile.tradeHistory = action.payload;
       })
       .addCase(fetchTradeHistoryAsync.rejected, (state, action) => {
         state.loading = false;

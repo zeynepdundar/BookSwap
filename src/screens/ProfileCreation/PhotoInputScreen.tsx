@@ -18,7 +18,7 @@ import { useState } from "react";
 export default function PhotoInputScreen({ navigation }) {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const profileData = useSelector((state: any) => state.profile.profile);
-  const initialImage = profileData.imageData || ""; 
+  const initialImage = profileData.profilePicture || ""; 
   const [image, setImage] = useState<any>(initialImage);
 
   const handleImageUpload = (imageUri) => {
@@ -26,7 +26,7 @@ export default function PhotoInputScreen({ navigation }) {
   };
 
   const pressHandler = () => {
-    dispatch(setProfileData({ imageData: image }));
+    dispatch(setProfileData({ profilePicture: image }));
     navigation.navigate("Wishlist");
   };
 
