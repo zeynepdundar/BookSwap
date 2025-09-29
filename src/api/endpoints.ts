@@ -1,4 +1,4 @@
-const BASE_URL = "http://35.159.109.130";
+const BASE_URL = "http://3.124.218.218";
 //"http://localhost"; // Change this based on your environment
 const PORT = 3050;
 
