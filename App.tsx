@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Platform, Text } from "react-native";
+import { Platform } from "react-native";
 import { Provider, useDispatch } from "react-redux";
 import "expo-dev-client";
 import * as Notifications from "expo-notifications";
