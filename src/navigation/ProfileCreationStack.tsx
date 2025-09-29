@@ -1,12 +1,16 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import BirthdateInputScreen from "../screens/ProfileCreation/BirthdateInputScreen";
-import GenderInputScreen from "../screens/ProfileCreation/GenderInputScreen";
-import LibraryInputScreen from "../screens/ProfileCreation/LibraryInputScreen";
-import NameInputScreen from "../screens/ProfileCreation/NameInputScreen";
-import WishlistInputScreen from "../screens/ProfileCreation/WishlistInputScreen";
-import PhotoInputScreen from "../screens/ProfileCreation/PhotoInputScreen";
+import {
+  NameInputScreen,
+  GenderInputScreen,
+  BirthdateInputScreen,
+  PhotoInputScreen,
+  WishlistInputScreen,
+  LibraryInputScreen,
+} from "../screens/ProfileCreation";
+import {  ProfileCreationStackParamList} from "../types/navigation";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<ProfileCreationStackParamList>();
+
 
 export default function ProfileCreationStack() {
   return (
@@ -18,22 +22,22 @@ export default function ProfileCreationStack() {
       }}
     >
       <Stack.Group>
-        <Stack.Screen name="Name" component={NameInputScreen}></Stack.Screen>
+        <Stack.Screen name="NameInput" component={NameInputScreen}></Stack.Screen>
         <Stack.Screen
-          name="Gender"
+          name="GenderInput"
           component={GenderInputScreen}
         ></Stack.Screen>
         <Stack.Screen
-          name="Birthdate"
+          name="BirthdateInput"
           component={BirthdateInputScreen}
         ></Stack.Screen>
-        <Stack.Screen name="Photo" component={PhotoInputScreen}></Stack.Screen>
+        <Stack.Screen name="PhotoInput" component={PhotoInputScreen}></Stack.Screen>
         <Stack.Screen
-          name="Wishlist"
+          name="WishlistInput"
           component={WishlistInputScreen}
         ></Stack.Screen>
         <Stack.Screen
-          name="Library"
+          name="LibraryInput"
           component={LibraryInputScreen}
         ></Stack.Screen>
       </Stack.Group>

@@ -1,10 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ProfileScreen from "../screens/Profile";
-import FeedbackScreen from "../screens/Profile/FeedbackScreen";
-import LibraryScreen from "../screens/Profile/LibraryScreen";
-import WishlistScreen from "../screens/Profile/WishlistScreen";
+import { ProfileScreen, WishlistScreen, LibraryScreen, FeedbackScreen } from "../screens";
+import { ProfileStackParamList } from "../types/navigation";
 
-const Stack = createNativeStackNavigator();
+
+const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 export default function ProfileStack() {
   return (
@@ -18,7 +17,6 @@ export default function ProfileStack() {
       <Stack.Screen name="Wishlist" component={WishlistScreen}></Stack.Screen>
       <Stack.Screen name="Library" component={LibraryScreen}></Stack.Screen>
       <Stack.Screen name="Feedback" component={FeedbackScreen}></Stack.Screen>
-
     </Stack.Navigator>
   );
 }
