@@ -1,24 +1,20 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Button,
   Heading,
   FlatList,
   Text,
-  VStack,
   HStack,
   Spacer,
-  Center,
   ChevronLeftIcon,
   Divider,
-  Avatar,
   Pressable,
   Image,
   Box,
 } from "native-base";
 import i18n from "../i18n";
 import Screen from "../components/Screen";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
 import { AlertDialogBox } from "../components/Modal/AlertDialogBox";
 import { fetchProfileImageUrl } from "../api/service";
 import { useFocusEffect } from "@react-navigation/native";
@@ -28,12 +24,10 @@ export default function UserListScreen({ navigation, route }) {
   const usersTemp = route?.params?.data?.usersOwning;
   const book = route?.params?.data;
 
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const avatar = require("../assets/images/avatar.png");
 
   const { libraryBook } = useSelector((state: any) => state.profile.profile);
 
-  const [libraryItems, setLibraryItem] = useState<any>([]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [usersWithPhotos, setUsersWithPhotos] = useState(

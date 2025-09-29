@@ -1,4 +1,4 @@
-import { EditionEndpoints, ProfileEndpoints } from "./endpoints";
+import { EditionEndpoints, FeedbackEndpoints, ProfileEndpoints, TradeEndpoints } from "./endpoints";
 import { createBookData, structureOfferData } from "../utils/helper";
 import AsyncStore from "../utils/AsyncStore";
 
@@ -214,7 +214,7 @@ export const fetchUserProfileData = async (firebaseUserId: string) => {
 export const fetchReceivedOffer = async (userId) => {
   try {
     const response = await fetch(
-      ProfileEndpoints.FETCH_RECEIVED_OFFER(userId),
+      TradeEndpoints.FETCH_RECEIVED_OFFERS(userId),
       {
         method: "GET",
         headers: {
@@ -237,7 +237,7 @@ export const fetchReceivedOffer = async (userId) => {
 };
 export const fetchSentOffer = async (userId) => {
   try {
-    const response = await fetch(ProfileEndpoints.FETCH_SENT_OFFER(userId), {
+    const response = await fetch(TradeEndpoints.FETCH_SENT_OFFERS(userId), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -258,7 +258,7 @@ export const fetchSentOffer = async (userId) => {
 };
 export const fetchHistory = async (userId) => {
   try {
-    const response = await fetch(ProfileEndpoints.FETCH_HISTORY(userId), {
+    const response = await fetch(TradeEndpoints.FETCH_HISTORY(userId), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -285,7 +285,7 @@ export const addBookToList = async (userId, bookData) => {
 
   const url =
     bookType === WISHLIST
-      ? ProfileEndpoints.ADD_BOOK_TO_WISLIST(userId)
+      ? ProfileEndpoints.ADD_BOOK_TO_WISHLIST(userId)
       : ProfileEndpoints.ADD_BOOK_TO_LIBRARY(userId);
 
   const response = await fetch(`${url}`, {
@@ -326,7 +326,7 @@ export const addBookToList = async (userId, bookData) => {
 export const removeBookFromList = async (userId, bookData) => {
   const url =
     bookData.type === WISHLIST
-      ? ProfileEndpoints.ADD_BOOK_TO_WISLIST(userId)
+      ? ProfileEndpoints.ADD_BOOK_TO_WISHLIST(userId)
       : ProfileEndpoints.ADD_BOOK_TO_LIBRARY(userId);
 
   const response = await fetch(`${url}`, {
@@ -436,7 +436,7 @@ export const sendOffer = async (userId, proposal) => {
     ? proposal.requestedBook.map((book) => book.id)
     : [proposal.requestedBook.id];
 
-  const response = await fetch(ProfileEndpoints.SENT_OFFER, {
+  const response = await fetch(TradeEndpoints.SEND_OFFER, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -455,23 +455,24 @@ export const sendOffer = async (userId, proposal) => {
   }
   return;
 };
+
 export const submitFeedback = async (userId, feedbackText) => {
   try {
-    const response = await fetch(ProfileEndpoints.SUBMIT_FEEDBACK(userId), {
+    const response = await fetch(FeedbackEndpoints.SUBMIT_FEEDBACK(userId), {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: feedbackText,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: feedbackText }),
     });
 
     if (!response.ok) {
-      throw new Error(response.message || "Failed to submit feedback.");
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Failed to submit feedback.");
     }
-    return response;
+
+    return await response.json();
   } catch (error) {
     console.error("Error submitting feedback:", error);
+    throw error; // propagate error so caller can handle it
   }
 };
+

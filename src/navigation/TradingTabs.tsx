@@ -1,13 +1,14 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Center, Heading, HStack } from "native-base";
+import { Center, Heading } from "native-base";
 import { Dimensions } from "react-native";
 import Screen from "../components/Screen";
-import i18n from "../i18n";
-import HistoryScreen from "../screens/Trading/HistoryScreen";
-import SentScreen from "../screens/Trading/SentScreen";
-import ReceivedScreen from "../screens/Trading/ReceivedScreen";
 
-const Tab = createMaterialTopTabNavigator();
+import i18n from "../i18n";
+import { ReceivedScreen, SentScreen, HistoryScreen } from "../screens";
+import { TradingTabsParamList } from "../types/navigation";
+
+const Tab = createMaterialTopTabNavigator<TradingTabsParamList>();
+
 const { width, height } = Dimensions.get("window");
 
 export default function TradingTabs() {
@@ -25,11 +26,11 @@ export default function TradingTabs() {
             fontSize: 14,
             textTransform: "none",
           },
-          tabBarStyle: { backgroundColor: "#fff", height:48},
+          tabBarStyle: { backgroundColor: "#fff", height: 48 },
           tabBarAllowFontScaling: false,
           tabBarIndicatorStyle: { backgroundColor: "#7F3DFF" },
         }}
-        initialLayout={{ width: width}}
+        initialLayout={{ width: width }}
       >
         <Tab.Screen
           name="Received"

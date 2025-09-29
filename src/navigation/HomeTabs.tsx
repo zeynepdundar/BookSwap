@@ -5,8 +5,9 @@ import NotificationScreen from "../screens/NotificationScreen";
 import MessagesScreen from "../screens/Messages";
 import TradingTabs from "./TradingTabs";
 import { MaterialIcons } from "@expo/vector-icons";
+import { HomeTabsParamList } from "../types/navigation";
 
-const BottomTab = createBottomTabNavigator();
+const BottomTab = createBottomTabNavigator<HomeTabsParamList>();
 
 export default function HomeTabs() {
 

@@ -10,7 +10,7 @@ import {
   sendOffer,
   updateUserProfileData,
 } from "../api/service";
-import { ProfileEndpoints } from "../api/endpoints";
+import { ProfileEndpoints, TradeEndpoints } from "../api/endpoints";
 
 export const fetchUserProfileAsync = createAsyncThunk(
   "profile/fetchUserProfile",
@@ -101,7 +101,7 @@ export const acceptOfferAsync = createAsyncThunk(
       const uid = (getState() as RootState).auth.user.firebaseUserId;
       const id = (getState() as RootState).profile.profile.id;
 
-      const response = await fetch(ProfileEndpoints.ACCEPT_OFFER, {
+      const response = await fetch(TradeEndpoints.ACCEPT_OFFER, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -137,7 +137,7 @@ export const rejectOfferAsync = createAsyncThunk(
     try {
       const id = (getState() as RootState).profile.profile.id;
 
-      const response = await fetch(ProfileEndpoints.REJECT_OFFER, {
+      const response = await fetch(TradeEndpoints.REJECT_OFFER, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -168,7 +168,7 @@ export const takeBackOfferAsync = createAsyncThunk(
     try {
       const id = (getState() as RootState).profile.profile.id;
 
-      const response = await fetch(ProfileEndpoints.TAKE_BACK_OFFER, {
+      const response = await fetch(TradeEndpoints.TAKE_BACK_OFFER, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

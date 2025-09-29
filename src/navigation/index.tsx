@@ -1,6 +1,8 @@
+import React from "react";
 import { useSelector } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
 import AuthStack from "./AuthStack";
 import HomeTabs from "./HomeTabs";
 import ProfileCreationStack from "./ProfileCreationStack";
@@ -13,21 +15,21 @@ import OtherUserProfileScreen from "../screens/OtherUserProfile";
 import ChatScreen from "../screens/Messages/ChatScreen";
 import BookSearchOnCreationScreen from "../screens/ProfileCreation/BookSearchOnCreationScreen";
 import TradeProposal from "../screens/TradeProposal";
-import LibraryScreen from "../screens/Profile/LibraryScreen";
 import OtherLibraryScreen from "../screens/OtherLibraryScreen";
 import TradeOfferAcceptedScreen from "../screens/TradeOfferAcceptedScreen";
-import MessagesScreen from "../screens/Messages";
+import { RootState } from "../store/types";
+import { RootStackParamList } from "../types/navigation";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function Navigation() {
-  const { loading, user } = useSelector((state: any) => state.auth);
+  const { loading, user } = useSelector((state: RootState) => state.auth);
   const isAuthenticated = useSelector(
-    (state: any) => state.auth.isAuthenticated
+    (state: RootState) => state.auth.isAuthenticated
   );
+
   if (loading) {
-    // We haven't finished checking for the token yet
-    return <LoadingOverlay></LoadingOverlay>;
+    return <LoadingOverlay />;
   }
 
   return (
@@ -40,71 +42,63 @@ export default function Navigation() {
       >
         {isAuthenticated ? (
           <>
-            {user.isNewUser && (
-              <>
-                <Stack.Group>
-                  <Stack.Screen
-                    name="ProfileCreation"
-                    component={ProfileCreationStack}
-                  />
-                  <Stack.Screen
-                    name="BarcodeScannerOnProfileCreation"
-                    component={BarcodeScannerScreen}
-                  />
-                  <Stack.Screen
-                    name="BookSearchOnCreation"
-                    component={BookSearchOnCreationScreen}
-                  ></Stack.Screen>
-                </Stack.Group>
-              </>
-            )}
-            {!user.isNewUser && (
-              <>
-                <Stack.Group>
-                  <Stack.Screen name="HomeTabs" component={HomeTabs} />
-                  <Stack.Screen name="ProfileStack" component={ProfileStack} />
-                  <Stack.Screen name="UserList" component={UserListScreen} />
-                  <Stack.Screen
-                    name="OtherUserProfile"
-                    component={OtherUserProfileScreen}
-                  />
-                  <Stack.Screen
-                    name="BarcodeScanner"
-                    component={BarcodeScannerScreen}
-                  />
-                  <Stack.Screen
-                    name="BookSearchFromList"
-                    component={BookSearchOnCreationScreen}
-                  ></Stack.Screen>
-                  <Stack.Screen
-                    name="BookSearch"
-                    component={BookSearchScreen}
-                  ></Stack.Screen>
-                  <Stack.Screen
-                    name="TradeProposal"
-                    component={TradeProposal}
-                  ></Stack.Screen>
-                  <Stack.Screen
-                    name="TradeOfferAcceptedScreen"
-                    component={TradeOfferAcceptedScreen}
-                  ></Stack.Screen>
-                  <Stack.Screen
-                    name="OtherLibrary"
-                    component={OtherLibraryScreen}
-                  />
-                  {/*                    
-                  TODO: These screens are already registered in the
-                  BottomTabNavigator. // Verify adding them here in the
-                  Stack.Navigator is necessary. */}
-                  <Stack.Screen name="ChatScreen" component={ChatScreen} />
-                </Stack.Group>
-              </>
+            {user.isNewUser ? (
+              // New User Flow
+              <Stack.Group>
+                <Stack.Screen
+                  name="ProfileCreation"
+                  component={ProfileCreationStack}
+                />
+                <Stack.Screen
+                  name="BarcodeScannerOnProfileCreation"
+                  component={BarcodeScannerScreen}
+                />
+                <Stack.Screen
+                  name="BookSearchOnCreation"
+                  component={BookSearchOnCreationScreen}
+                />
+              </Stack.Group>
+            ) : (
+              // Existing User Flow
+              <Stack.Group>
+                <Stack.Screen name="HomeTabs" component={HomeTabs} />
+                <Stack.Screen name="ProfileStack" component={ProfileStack} />
+                <Stack.Screen name="UserList" component={UserListScreen} />
+                <Stack.Screen
+                  name="OtherUserProfile"
+                  component={OtherUserProfileScreen}
+                />
+                <Stack.Screen
+                  name="BarcodeScanner"
+                  component={BarcodeScannerScreen}
+                />
+                <Stack.Screen
+                  name="BookSearchFromList"
+                  component={BookSearchOnCreationScreen}
+                />
+                <Stack.Screen
+                  name="BookSearch"
+                  component={BookSearchScreen}
+                />
+                <Stack.Screen
+                  name="TradeProposal"
+                  component={TradeProposal}
+                />
+                <Stack.Screen
+                  name="TradeOfferAcceptedScreen"
+                  component={TradeOfferAcceptedScreen}
+                />
+                <Stack.Screen
+                  name="OtherLibrary"
+                  component={OtherLibraryScreen}
+                />
+                <Stack.Screen name="ChatScreen" component={ChatScreen} />
+              </Stack.Group>
             )}
           </>
         ) : (
-          <>
-            <Stack.Screen name="AuthStack" component={AuthStack} />
-          </>
+          // Auth Flow
+          <Stack.Screen name="AuthStack" component={AuthStack} />
         )}
       </Stack.Navigator>
     </NavigationContainer>
