@@ -64,74 +64,50 @@ export const theme = extendTheme({
   components: {
     Button: {
       baseStyle: {
-        rounded: "10px",
-        boxShadow: "5",
+        rounded: 10, // ✅ number, not "px"
+        shadow: 5,
         _text: {
           fontFamily: "poppins-semi-bold",
           fontWeight: "700",
-          px: "4",
+          px: 4,
         },
         _pressed: {
-          opacity: "80",
+          opacity: 0.8,
         },
       },
       variants: {
-        primary: () => {
-          return {
-            bg: "primary.50",
-            _text: {
-              color: "#fff",
-            },
-          };
-        },
-        secondary: () => {
-          return {
-            bg: "primary.100",
-            _text: {
-              color: "primary.50",
-            },
-          };
-        },
-        outline: () => {
-          return {
-            bg: "transparent",
-            borderColor: "primary.50",
-            _text: {
-              color: "primary.50",
-            },
-          };
-        },
-        ghost: () => {
-          return {
-            bg: "transparent",
-            borderColor: "primary.50",
-            _text: {
-              color: "primary.50",
-            },
-            _pressed: {
-              backgroundColor: "transparent",
-            },
-          };
-        },
-        disabled: () => {
-          return {
-            bg: "primary.50",
-            borderColor: "primary.50",
-            _text: {
-              color: "#fff",
-            },
-          };
-        },
-        disabledOutline: () => {
-          return {
-            bg: "transparent",
-            //TODO: Border color is not applying correctly, need to fix this.
-            borderColor: "black.700",
-            _text: {
-              color: "black.700",
-            },
-          };
-        },
+        primary: () => ({
+          bg: "primary.50",
+          _text: { color: "#fff" },
+          _pressed: { bg: "primary.100" }, // ✅ pressed feedback
+        }),
+        secondary: () => ({
+          bg: "primary.100",
+          _text: { color: "primary.50" },
+          _pressed: { bg: "primary.200" },
+        }),
+        outline: () => ({
+          bg: "transparent",
+          borderWidth: 1,
+          borderColor: "primary.50",
+          _text: { color: "primary.50" },
+          _pressed: { bg: "primary.50:alpha.10" }, // ✅ subtle feedback
+        }),
+        ghost: () => ({
+          bg: "transparent",
+          _text: { color: "primary.50" },
+          _pressed: { opacity: 0.6 }, // ✅ feedback without background
+        }),
+        disabled: () => ({
+          bg: "gray.300",
+          _text: { color: "gray.600" },
+        }),
+        disabledOutline: () => ({
+          bg: "transparent",
+          borderWidth: 1,
+          borderColor: "gray.400",
+          _text: { color: "gray.400" },
+        }),
       },
     },
     Heading: {
@@ -159,6 +135,14 @@ export const theme = extendTheme({
       },
       defaultProps: {
         size: "xl", 
+      },
+    },
+    Body: {
+      _text: {
+        fontFamily: "Poppins",
+        fontSize: "md",
+        fontWeight: "400",
+        color: "black.200",
       },
     },
   },

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   FlatList,
   Image,
@@ -22,62 +22,64 @@ interface BorderedBookListVerticalProps {
   onDonePress?: (item: any) => void;
   listType?: string;
 }
-const renderItem = (item, changeListStatusHandler, isSelectedBook) => (
-  <Pressable key={item.id} onPress={() => changeListStatusHandler(item)}>
-    <Box
-      borderWidth="1"
-      borderRadius="15"
-      height="130"
-      borderColor="#F1F1F1"
-      backgroundColor={isSelectedBook(item.id) ? "primary.200" : "white"}
-      p="3"
-      mx="2"
-      my="1"
-      overflow="hidden"
-    >
-      <HStack justifyContent="space-between" width="100%" space={3} p={1}>
-        <AspectRatio w="20%" ratio={{ base: 40 / 62 }}>
-          <Image
-            source={
-              item.coverUrl
-                ? { uri: item.coverUrl }
-                : {
-                    uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                  }
-            }
-            alt={`Cover of ${item.title} by ${item.author}`}
-            roundedRight="4"
-          />
-        </AspectRatio>
+const ListRow = React.memo(function ListRow({ item, changeListStatusHandler, isSelectedBook }: any) {
+  return (
+    <Pressable key={item.id} onPress={() => changeListStatusHandler(item)}>
+      <Box
+        borderWidth="1"
+        borderRadius="15"
+        height="130"
+        borderColor="#F1F1F1"
+        backgroundColor={isSelectedBook(item.id) ? "primary.200" : "white"}
+        p="3"
+        mx="2"
+        my="1"
+        overflow="hidden"
+      >
+        <HStack justifyContent="space-between" width="100%" space={3} p={1}>
+          <AspectRatio w="20%" ratio={{ base: 40 / 62 }}>
+            <Image
+              source={
+                item.coverUrl
+                  ? { uri: item.coverUrl }
+                  : {
+                      uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                    }
+              }
+              alt={`Cover of ${item.title} by ${item.author}`}
+              roundedRight="4"
+            />
+          </AspectRatio>
 
-        <VStack width="75%" h="95">
-          <Text color="#000000" fontSize="15" numberOfLines={2} lineHeight="18">
-            {truncateText(formatText(item.title), 60)}
-          </Text>
-          <Text color="#8c8c8c" fontSize="11">
-            {truncateText(formatText(item.author), 40)}
-          </Text>
-          <Text color="#000000" fontSize="13px" fontWeight="200">
-            {truncateText(formatText(item.publisher), 26)}
-          </Text>
-        </VStack>
+          <VStack width="75%" h="95">
+            <Text color="#000000" fontSize="15" numberOfLines={2} lineHeight="18">
+              {truncateText(formatText(item.title), 60)}
+            </Text>
+            <Text color="#8c8c8c" fontSize="11">
+              {truncateText(formatText(item.author), 40)}
+            </Text>
+            <Text color="#000000" fontSize="13px" fontWeight="200">
+              {truncateText(formatText(item.publisher), 26)}
+            </Text>
+          </VStack>
 
-        <Box position="absolute" bottom="0" right="0">
-          <Icon
-            m="1"
-            size="6"
-            color={isSelectedBook(item.id) ? "primary.50" : "primary.100"}
-            as={
-              <MaterialIcons
-                name={isSelectedBook(item.id) ? "bookmark" : "bookmark-outline"}
-              />
-            }
-          />
-        </Box>
-      </HStack>
-    </Box>
-  </Pressable>
-);
+          <Box position="absolute" bottom="0" right="0">
+            <Icon
+              m="1"
+              size="6"
+              color={isSelectedBook(item.id) ? "primary.50" : "primary.100"}
+              as={
+                <MaterialIcons
+                  name={isSelectedBook(item.id) ? "bookmark" : "bookmark-outline"}
+                />
+              }
+            />
+          </Box>
+        </HStack>
+      </Box>
+    </Pressable>
+  );
+});
 
 const keyExtractor = (item) => item.id;
 export const BorderedBookListVertical: React.FC<
@@ -155,9 +157,15 @@ export const BorderedBookListVertical: React.FC<
         showsVerticalScrollIndicator={false}
         onScrollBeginDrag={Keyboard.dismiss}
         keyboardShouldPersistTaps="handled"
-        renderItem={({ item }) =>
-          renderItem(item, changeListStatusHandler, isSelectedBook)
-        }
+        renderItem={({ item }) => (
+          <ListRow
+            item={item}
+            changeListStatusHandler={changeListStatusHandler}
+            isSelectedBook={isSelectedBook}
+          />
+        )}
+        windowSize={7}
+        removeClippedSubviews
       />
       <Box alignItems="center" h="20" mx="2">
         <Button

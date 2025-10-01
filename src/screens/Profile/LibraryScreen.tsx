@@ -50,15 +50,15 @@ export default function LibraryScreen({ navigation, route }) {
 
 
   const { params } = route;
-  const onDataReceived = params?.onDataReceived;
   const isTradeProposal = params?.data === "TradeProposal";
   const addBookToProposalButton = (book) => (
     <AddBookToProposalButton
       onPress={() => {        
-        if (onDataReceived && typeof onDataReceived === "function") {
-          onDataReceived(book);
-        }
-        navigation.goBack();
+        navigation.navigate({
+          name: "TradeProposal",
+          params: { offeredBook: book },
+          merge: true,
+        } as any);
       }}
     />
   );

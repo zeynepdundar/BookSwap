@@ -47,9 +47,15 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
   const dispatch = useDispatch<AppDispatch>();
   const addBookToListHandler = async (selectedItem: any) => {
+    Keyboard.dismiss();
+    inputRef.current?.blur?.();
     try {
       const response = await dispatch(addBookToListAsync(selectedItem));
-      const payload = response.payload;
+      const payload = (response as any).payload as {
+        status?: string;
+        existingEditionIds?: any[];
+        message?: string;
+      } | undefined;
 
       if (payload?.status === "error") {
         if (payload.existingEditionIds?.length > 0) {
@@ -75,6 +81,8 @@ export default function BookSearchScreen({ navigation, route = null }) {
   };
 
   const pressDoneHandler = async (selectedItem: any) => {
+    Keyboard.dismiss();
+    inputRef.current?.blur?.();
     let result;
 
     if (Array.isArray(selectedItem) && selectedItem.length > 0) {
@@ -119,11 +127,17 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
   useEffect(() => {
     inputRef.current?.focus();
+    // Ensure focus after navigation transition (especially Android)
+    const focusTimer = setTimeout(() => {
+      inputRef.current?.focus?.();
+    }, 100);
     const type = getFocusedRouteNameFromRoute(
       navigationState.routes[navigationState.index - 1]
     )?.toLocaleUpperCase();
     setListType(type);
+    return () => clearTimeout(focusTimer);
   }, []);
+
 
   useEffect(() => {
     if (searchQuery.length >= 3) {
@@ -170,6 +184,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
               py="3"
               px="1"
               fontSize="14"
+              autoFocus
               _focus={{
                 borderColor: "#EFEFEF",
                 bg: "#F4F4F6",
@@ -194,6 +209,8 @@ export default function BookSearchScreen({ navigation, route = null }) {
                   as={<MaterialIcons name="crop-free" />}
                 />
               }
+              returnKeyType="done"
+              onSubmitEditing={Keyboard.dismiss}
             />
           </Center>
           <Box>

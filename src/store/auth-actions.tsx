@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import auth from "@react-native-firebase/auth";
-import { setPhoneNumber, setToken, setUser } from "./auth-slice";
 import { fetchUserProfileAsync } from "./profile-actions";
 import { setProfileData } from "./profile-slice";
 import { AuthEndpoints } from "../api/endpoints";
@@ -13,7 +12,7 @@ export const verifyPhoneNumber = createAsyncThunk(
       const confirmationResult = await auth().signInWithPhoneNumber(
         phoneNumber
       );
-      thunkAPI.dispatch(setPhoneNumber(phoneNumber));
+      thunkAPI.dispatch({ type: "auth/setPhoneNumber", payload: phoneNumber });
       return confirmationResult;
     } catch (error) {
       let errorMessage = "Failed to verify phone number";
@@ -55,19 +54,20 @@ export const checkVerificationCode = createAsyncThunk(
       const isNewUser = userCredential.additionalUserInfo.isNewUser;
       const user = await auth().currentUser.getIdTokenResult();
 
-      thunkAPI.dispatch(
-        setUser({
+      thunkAPI.dispatch({
+        type: "auth/setUser",
+        payload: {
           isNewUser: isNewUser,
           firebaseUserId: firebaseUserId,
-        })
-      );
+        },
+      });
 
       if (isNewUser) thunkAPI.dispatch(addUserToDatabaseAsync(user.token));
       else {
         thunkAPI.dispatch(fetchUserProfileAsync(firebaseUserId));
       }
 
-      thunkAPI.dispatch(setToken(user.token));
+      thunkAPI.dispatch({ type: "auth/setToken", payload: user.token });
       await AsyncStore.setItem("authToken", user.token);
 
       return userCredential;

@@ -61,11 +61,13 @@ export default function HomeScreen({ navigation }) {
             relatedScreen: "Home",
           });
         }}
-        onFocus={() => {
+        onFocus={() => {}}
+        disableKeyboard={true}
+        navigateOnPress={() =>
           navigation.navigate("BookSearch", {
             relatedScreen: "Home",
-          });
-        }}
+          })
+        }
       />
       {books.length > 0 && (
         <Box mt="6">

@@ -1,96 +1,108 @@
-import {
-  AlertDialog,
-  Button,
-  Center,
-  CheckCircleIcon,
-  Text,
-} from "native-base";
-import React, { useEffect, useState } from "react";
+import React, { memo, useRef } from "react";
+import { AlertDialog, Button, Center, CheckCircleIcon, Text } from "native-base";
+
+type ButtonVariant = "primary" | "secondary" | "ghost" | "outline" | "subtle";
 
 interface InfoDialogBoxProps {
   isOpen: boolean;
   onClose: () => void;
+  onConfirm?: () => void;
   title: string;
   description: string;
-  buttonVariant?: string;
   confirmButtonLabel: string;
-  navigateToScreen?: () => void; // Function to navigate
+  buttonVariant?: ButtonVariant;
 }
 
-export const InfoDialogBox: React.FC<InfoDialogBoxProps> = ({
-  isOpen,
-  onClose,
-  title,
-  description,
-  buttonVariant = "primary",
-  confirmButtonLabel,
-  navigateToScreen,
-}) => {
-  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(isOpen);
-  const cancelRef = React.useRef(null);
+export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(
+  ({
+    isOpen,
+    onClose,
+    onConfirm,
+    title,
+    description,
+    confirmButtonLabel,
+    buttonVariant = "primary",
+  }) => {
+    const cancelRef = useRef(null);
 
-  useEffect(() => {
-    setIsAlertDialogOpen(isOpen);
-  }, [isOpen]);
-
-  const handleClose = () => {
-    setIsAlertDialogOpen(false);
-
-    if (onClose) {
-      // Call the provided onClose function
+    const handleConfirm = () => {
+      if (onConfirm) onConfirm();
       onClose();
-    }
-  };
-  const handleConfirm = () => {
-    if (navigateToScreen) {
-      navigateToScreen();
-    }
-    setIsAlertDialogOpen(false);
-  };
+    };
 
-  return (
-    <AlertDialog
-      leastDestructiveRef={cancelRef}
-      isOpen={isAlertDialogOpen}
-      onClose={handleClose}
-    >
-      <AlertDialog.Content>
-        <AlertDialog.CloseButton />
-        <AlertDialog.Header
-          borderBottomWidth={0}
-          _text={{
-            fontWeight: "medium",
-            letterSpacing: "sm",
-            textAlign: "center",
-          }}
-          mt="5"
+    return (
+      <AlertDialog
+        leastDestructiveRef={cancelRef}
+        isOpen={isOpen}
+        onClose={onClose}
+        closeOnOverlayClick={false}
+        isKeyboardDismissable={false}
+      >
+        <AlertDialog.Content
+          maxW="320px"   
+          w="90%"
+          alignSelf="center"
+          px="4"
+          py="3"
+          rounded="lg"
         >
-          <Center>
-            <CheckCircleIcon size="lg" color="primary.50" />
-          </Center>
-          <Text fontWeight="600" fontSize="md" textAlign="center" mt="2">
-            {title} {/* Display the title here */}
-          </Text>
-        </AlertDialog.Header>
-        <AlertDialog.Body
-          _text={{
-            fontWeight: "medium",
-            color: "black.200",
-            letterSpacing: "sm",
-            textAlign: "center",
-          }}
-          pt="0"
-        >
-          {description}
-        </AlertDialog.Body>
-        <AlertDialog.Footer borderTopWidth={0}>
-          <Button.Group space={2}>
-            <Button variant={buttonVariant} onPress={handleConfirm}>
-              {confirmButtonLabel?.toUpperCase()}
-            </Button>
-          </Button.Group>
-        </AlertDialog.Footer>
-      </AlertDialog.Content>
-    </AlertDialog>
-  );
-};
+          <AlertDialog.Header
+            borderBottomWidth={0}
+            alignItems="center"
+            mt="3"
+            mb="1"
+            px="0"
+          >
+            <Center>
+              <CheckCircleIcon size="8" color="primary.50" />
+            </Center>
+
+            <Text
+              fontSize="18px"   
+              fontWeight="600"
+              color="black.400"
+              textAlign="center"
+              mt="1"
+              lineHeight="24px"
+            >
+              {title}
+            </Text>
+          </AlertDialog.Header>
+          <AlertDialog.Body
+            _text={{
+              fontSize: "15px",
+              fontWeight: "400",
+              color: "black.200",
+              textAlign: "center",
+              lineHeight: "20px",
+            }}
+            pt="1"
+            pb="3"
+            px="2"
+          >
+            {description}
+          </AlertDialog.Body>
+          <AlertDialog.Footer
+            borderTopWidth={0}
+            justifyContent="center"
+            pt="1"
+            pb="3"
+          >
+            <Button.Group space={2} width="100%" justifyContent="center">
+              <Button
+                variant={buttonVariant}
+                onPress={handleConfirm}
+                px="5"        
+                py="2.5"
+                rounded="md"
+                fontSize="15px"
+              >
+                {confirmButtonLabel?.toUpperCase()}
+              </Button>
+            </Button.Group>
+          </AlertDialog.Footer>
+        </AlertDialog.Content>
+      </AlertDialog>
+    );
+  }
+);

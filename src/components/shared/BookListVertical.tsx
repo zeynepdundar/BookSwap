@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -31,9 +31,17 @@ interface BookListVerticalProps {
   showSendOfferButton?: boolean;
 }
 
-const renderItem = (item, onNavigateList, userId, onPrimaryAction, openActionSheet, onSendOffer) => (
-  <>
-    <Box height="125" mx="2" pl="2" ml="2" key={item.id} overflow="hidden">
+const ListRow = React.memo(function ListRow({
+  item,
+  onNavigateList,
+  userId,
+  onPrimaryAction,
+  openActionSheet,
+  onSendOffer,
+}: any) {
+  return (
+    <>
+      <Box height="125" mx="2" pl="2" ml="2" key={item.id} overflow="hidden">
       <HStack justifyContent="space-between" width="100%" space={3} py={1}>
         <AspectRatio w={{ base: "22%", md: "18%" }} ratio={40 / 62} maxWidth="80px">
           <Image
@@ -113,12 +121,13 @@ const renderItem = (item, onNavigateList, userId, onPrimaryAction, openActionShe
           <Spacer />
         </VStack>
       </HStack>
-    </Box>
-    <Box w="100%" alignSelf="center">
-      <Divider my={2} mx="auto" w="90%" bg="#EEEEEE" />
-    </Box>
-  </>
-);
+      </Box>
+      <Box w="100%" alignSelf="center">
+        <Divider my={2} mx="auto" w="90%" bg="#EEEEEE" />
+      </Box>
+    </>
+  );
+});
 
 const keyExtractor = (item) => item.id;
 
@@ -159,7 +168,8 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   );
 
   const handleAction = async (actionType) => {
-    const result = await onSecondaryAction({
+    Keyboard.dismiss();
+    const result: any = await onSecondaryAction({
       type: actionType,
       id: selectedItem?.id,
       title: selectedItem.title,
@@ -177,6 +187,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
     closeActionSheet();
   };
   const openActionSheet = (item) => {
+    Keyboard.dismiss();
     setSelectedItem(item);
     setIsActionSheetOpen(true);
   };
@@ -188,7 +199,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
     setIsInfoDialogOpen(false);
   };
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   // Prepare dialog content based on selected action
   let title, description, buttonVariant, confirmButtonLabel, navigateToScreen;
@@ -210,6 +221,22 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
 
   const actions = generateActions(handleAction, closeActionSheet);
 
+  const renderItemCb = useCallback(
+    ({ item }) => (
+      <ListRow
+        item={item}
+        onNavigateList={onNavigateList}
+        userId={userId}
+        onPrimaryAction={onPrimaryAction}
+        openActionSheet={openActionSheet}
+        onSendOffer={onSendOffer}
+      />
+    ),
+    [onNavigateList, userId, onPrimaryAction, onSendOffer]
+  );
+
+  const keyExtractorCb = useCallback((item: any) => item.id, []);
+
   return (
     <>
       <FlatList
@@ -221,17 +248,10 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
         showsVerticalScrollIndicator={false}
         onScrollBeginDrag={Keyboard.dismiss}
         keyboardShouldPersistTaps="handled"
-        renderItem={({ item }) =>
-          renderItem(
-            item,
-            onNavigateList,
-            userId,
-            onPrimaryAction,
-            openActionSheet,
-            onSendOffer
-          )
-        }
-        keyExtractor={keyExtractor}
+        renderItem={renderItemCb}
+        keyExtractor={keyExtractorCb}
+        windowSize={7}
+        removeClippedSubviews
       />
       {onSecondaryAction && (
         <ActionSheet
@@ -247,7 +267,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
         description={description}
         buttonVariant={buttonVariant}
         confirmButtonLabel={confirmButtonLabel}
-        navigateToScreen={navigateToScreen}
+        onConfirm={navigateToScreen}
       />
     </>
   );

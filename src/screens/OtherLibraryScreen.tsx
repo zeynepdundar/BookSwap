@@ -38,15 +38,15 @@ export default function OtherLibraryScreen({ navigation, route }) {
 
   const { params } = route;
   const user = params?.user;
-  const onDataReceived = params?.onDataReceived;
 
   const addBookToProposalButton = (book) => (
     <AddBookToProposalButton
       onPress={() => {
-        if (onDataReceived && typeof onDataReceived === "function") {
-          onDataReceived(book);
-        }
-        navigation.goBack();
+        navigation.navigate({
+          name: "TradeProposal",
+          params: { requestedBook: book },
+          merge: true,
+        } as any);
       }}
     />
   );

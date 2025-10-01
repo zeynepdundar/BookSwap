@@ -32,15 +32,17 @@ interface TradeProposal {
   requestedBook: any;
 }
 export default function TradeProposal({ navigation, route }) {
-  const user = route?.params?.data?.user;
-  const book = route?.params?.data?.book;
+  const user = route?.params?.data?.user || route?.params?.user;
+  const book = route?.params?.data?.book || route?.params?.book;
+  const offeredBookFromParams = route?.params?.offeredBook;
+  const requestedBookFromParams = route?.params?.requestedBook;
 
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
   const avatar = require("../../assets/images/avatar.png");
 
   const initialState: TradeProposal = {
-    receiverId: user.id,
+    receiverId: user?.id || "",
     offeredBook: null,
     requestedBook: book,
   };
@@ -55,15 +57,23 @@ export default function TradeProposal({ navigation, route }) {
     dispatch(sendOfferAsync(sentPropasal));
     setIsInfoDialogOpen(true);
   };
+  useEffect(() => {
+    if (offeredBookFromParams) {
+      setSentProposal((prev) => ({ ...prev, offeredBook: offeredBookFromParams }));
+      navigation.setParams({ offeredBook: undefined });
+    }
+    if (requestedBookFromParams) {
+      setSentProposal((prev) => ({ ...prev, requestedBook: requestedBookFromParams }));
+      navigation.setParams({ requestedBook: undefined });
+    }
+  }, [offeredBookFromParams, requestedBookFromParams, navigation]);
 
   const tradeIcon = require("../../assets/images/icon/trade-icon.png");
 
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Home" }],
-    });
+    // Keep stack intact; navigate if needed
+    // navigation.navigate("HomeTabs");
   };
 
   useEffect(() => {
@@ -181,11 +191,6 @@ export default function TradeProposal({ navigation, route }) {
                       screen: "Library",
                       params: {
                         data: "TradeProposal",
-                        onDataReceived: (data) =>
-                          setSentProposal((prevProposal) => ({
-                            ...prevProposal,
-                            offeredBook: data,
-                          })),
                       },
                     });
                   }}
@@ -286,12 +291,6 @@ export default function TradeProposal({ navigation, route }) {
                   onPress={() =>
                     navigation.navigate("OtherLibrary", {
                       user: user,
-                      onDataReceived: (data) => {
-                        setSentProposal((prevProposal) => ({
-                          ...prevProposal,
-                          requestedBook: data,
-                        }));
-                      },
                     })
                   }
                   renderInPortal={false}
@@ -351,11 +350,11 @@ export default function TradeProposal({ navigation, route }) {
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
         onClose={closeInfoDialog}
+        onConfirm={navigateToScreen}
         title={title}
         description={description}
         buttonVariant={buttonVariant}
         confirmButtonLabel={confirmButtonLabel}
-        navigateToScreen={navigateToScreen}
       />
     </Screen>
   );

@@ -4,7 +4,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import i18n from "../../i18n";
 import { useState } from "react";
 
-export default function SearchBar({ onSearchBook, onScanBarcode, onFocus }) {
+export default function SearchBar({
+  onSearchBook,
+  onScanBarcode,
+  onFocus,
+  disableKeyboard = false,
+  navigateOnPress,
+}) {
   const [value, setValue] = useState("");
 
   // const searchHandler = (text) => {
@@ -25,6 +31,14 @@ export default function SearchBar({ onSearchBook, onScanBarcode, onFocus }) {
         fontSize="14"
         onChangeText={onSearchBook}
         onFocus={onFocus}
+        editable
+        focusable
+        // @ts-ignore - RN supports this prop on modern versions
+        showSoftInputOnFocus={!disableKeyboard}
+        // Ensure cursor is visible even when keyboard is disabled
+        caretHidden={false}
+        bg="transparent"
+        onPressIn={disableKeyboard ? navigateOnPress : undefined}
         _focus={{
           borderColor: "#EFEFEF",
           bg: "#F4F4F6",

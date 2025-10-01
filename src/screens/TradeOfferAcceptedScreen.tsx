@@ -16,14 +16,11 @@ import { useSelector } from "react-redux";
 import { ImageBackground } from "react-native";
 
 export default function TradeOfferAcceptedScreen({ navigation, route }) {
-  const { user, receivedBook, offeredBook, conversationId } = route.params;
+  const { user, receivedBook, offeredBook, conversationId } = route.params || {};
   const { firebaseUserId } = useSelector((state: any) => state.auth.user);
-
-console.log("neeeeee",  user, receivedBook, offeredBook, conversationId,firebaseUserId)
   const importUrl = require("../assets/images/radar.png");
 
   const goToChatScreen = () => {
-    console.log("goToChatScreen",user, conversationId);
     navigation.replace("ChatScreen", {
       conversationId: conversationId,
       friend: user,
@@ -53,70 +50,10 @@ console.log("neeeeee",  user, receivedBook, offeredBook, conversationId,firebase
       </Box> */}
       <ImageBackground
         source={importUrl}
-        style={{
-          flex: 1, 
-          width: "100%",
-          height: "50%",
-          justifyContent: "center",
-          top: "8%",
-        }}
+        style={{ flex: 1, width: "100%", height: "100%", justifyContent: "center" }}
+        resizeMode="cover"
       >
-        <VStack
-          flex={1}
-          width="100%"
-          px={4}
-          py={4}
-          top="-130"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Box width="30%" h="200" p="2" bg="#fff" borderRadius="md" mb={4}>
-            <AspectRatio ratio={38 / 62}>
-              <Image
-                source={
-                  receivedBook?.coverUrl
-                    ? { uri: receivedBook?.coverUrl }
-                    : {
-                        uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                      }
-                }
-                alt={`Cover of`}
-              />
-            </AspectRatio>
-            <Text fontSize={11} numberOfLines={3}>
-              {truncateText(formatText(receivedBook.title), 36)}
-            </Text>
-          </Box>
-          <Icon
-            name="double-arrow"
-            variant="solid"
-            color="#fff"
-            size="sm"
-            mb="1"
-            as={MaterialIcons}
-          />
-          <Box width="30%" h="200" p="2" bg="#fff" borderRadius="md" mt={4}>
-            <AspectRatio ratio={38 / 62}>
-              <Image
-                source={
-                  offeredBook?.coverUrl
-                    ? { uri: offeredBook?.coverUrl }
-                    : {
-                        uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                      }
-                }
-                alt={`Cover of`}
-              />
-            </AspectRatio>
-            <Text fontSize={11} numberOfLines={3}>
-              {truncateText(formatText(offeredBook.title), 36)}
-            </Text>
-          </Box>
-          <Text mt="7">{i18n.t("you-have-accepted-the-request")}</Text>
-          <Button variant="outline" onPress={goToChatScreen} mt="10">
-            {i18n.t("send-message")}
-          </Button>
-        </VStack>
+<Text>fdf</Text>
       </ImageBackground>
     </Screen>
   );

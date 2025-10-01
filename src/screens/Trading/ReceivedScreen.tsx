@@ -63,11 +63,20 @@ export default function ReceivedScreen({ navigation }) {
       fetchProfileImages();
     }, [receivedOffers])
   );
-  const acceptOfferHandler = async (offer: string) => {
+  const refreshReceivedOffers = useCallback(async () => {
+    await dispatch(((fetchReceivedOffersAsync as any)(profile.id)));
+  }, [dispatch, profile.id]);
+
+  const showError = useCallback((message: string, durationMs: number = 5000) => {
+    setError(message);
+    setTimeout(() => {
+      setError(null);
+    }, durationMs);
+  }, []);
+  const acceptOfferHandler = async (offer: any) => {
     try {
       const response = await dispatch(acceptOfferAsync(offer.id));
-      const payload = response.payload;
-      console.log("payload", payload);
+      const payload = (response as any).payload as any;
 
       if (!payload.success) {
         const errorMessage =
@@ -75,17 +84,13 @@ export default function ReceivedScreen({ navigation }) {
             ? i18n.t("offer-not-found-or-eligible-for-acceptance")
             : payload.message;
 
-        setError(errorMessage);
-        setTimeout(() => {
-          setError(null);
-        }, 5000);
-
-        await dispatch(fetchReceivedOffersAsync(profile.id));
+        showError(errorMessage, 50000);
+        await refreshReceivedOffers();
 
         return;
       }
       // Navigate to the TradeOfferAcceptedScreen on success
-      navigation.navigate("TradeOfferAcceptedScreen", {
+      navigation.push("TradeOfferAcceptedScreen", {
         user: {
           id: offer.participantProfile.id,
           name: offer.participantProfile.name,
@@ -95,22 +100,18 @@ export default function ReceivedScreen({ navigation }) {
         conversationId: payload.conversationId,
       });
     } catch (error) {
-      setError(i18n.t("something-went-wrong"));
-      setTimeout(() => {
-        setError(null);
-      }, 5000);
-
-      await dispatch(fetchReceivedOffersAsync(profile.id));
+      showError(i18n.t("something-went-wrong"));
+      await refreshReceivedOffers();
 
       return;
     }
   };
 
-  const rejectOfferHandler = async (offerId: string) => {
+  const rejectOfferHandler = async (offerId: any) => {
     try {
       const response = await dispatch(rejectOfferAsync(offerId));
 
-      const payload = response.payload;
+      const payload = (response as any).payload as any;
 
       if (!payload.success) {
         const errorMessage =
@@ -118,22 +119,14 @@ export default function ReceivedScreen({ navigation }) {
             ? i18n.t("offer-not-found-or-eligible-for-rejection")
             : payload.message;
 
-        setError(errorMessage);
-        setTimeout(() => {
-          setError(null);
-        }, 5000);
-
-        await dispatch(fetchReceivedOffersAsync(profile.id));
+        showError(errorMessage);
+        await refreshReceivedOffers();
 
         return;
       }
     } catch (error) {
-      setError(i18n.t("something-went-wrong"));
-      setTimeout(() => {
-        setError(null);
-      }, 5000);
-
-      await dispatch(fetchReceivedOffersAsync(profile.id));
+      showError(i18n.t("something-went-wrong"));
+      await refreshReceivedOffers();
 
       return;
     }
@@ -149,7 +142,7 @@ export default function ReceivedScreen({ navigation }) {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    dispatch(fetchReceivedOffersAsync(profile.id)) // Replace with your API call action
+    (dispatch(((fetchReceivedOffersAsync as any)(profile.id)))) // Replace with your API call action
       .finally(() => setRefreshing(false));
   }, [dispatch]);
 
@@ -198,7 +191,7 @@ export default function ReceivedScreen({ navigation }) {
         ))}
 
       {receivedOffers && receivedOffers.length > 0 && (
-        <FlatList
+        <FlatList<any>
           maxWidth="100%"
           bg="#fff"
           height="75%"
@@ -207,7 +200,7 @@ export default function ReceivedScreen({ navigation }) {
           pt="3"
           refreshing={refreshing}
           onRefresh={onRefresh}
-          renderItem={({ item }) => (
+          renderItem={({ item }: { item: any }) => (
             <Box pb="6" overflow="hidden" alignItems="center" key={item.id}>
               <Flex
                 direction="row"
@@ -391,7 +384,7 @@ export default function ReceivedScreen({ navigation }) {
               </Box>
             </Box>
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item: any) => item.id}
         />
       )}
       {error && <ErrorAlert message={error} />}
