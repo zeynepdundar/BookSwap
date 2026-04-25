@@ -22,9 +22,5 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: "#FFFFFF",
     },
     package: "com.harmony.bookswap",
-  },
-  extra: {
-    API_BASE_URL: "http://3.124.218.218", // or localhost in dev
-    API_PORT: "3050",
-  },
+  }
 });

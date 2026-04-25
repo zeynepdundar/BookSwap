@@ -1,9 +1,6 @@
-import Constants from "expo-constants";
-
-const { API_BASE_URL, API_PORT } = Constants.expoConfig?.extra || {};
-
-const BASE_URL = API_BASE_URL || "http://localhost";
-const PORT = API_PORT || "3050";
+const BASE_URL = "http://159.223.22.255";
+//"http://localhost"; // Change this based on your environment
+const PORT = "3050";
 
 const api = (path: string) => `${BASE_URL}:${PORT}${path}`;
 
