@@ -27,7 +27,7 @@ export default function GenderInputScreen({ navigation }) {
 
   const pressHandler = () => {
     dispatch(setProfileData({ gender: gender }));
-    navigation.navigate("Photo");
+    navigation.navigate("PhotoInput");
   };
 
   return (

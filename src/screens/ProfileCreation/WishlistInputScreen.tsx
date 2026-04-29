@@ -48,7 +48,7 @@ export default function WishlistInputScreen({ navigation }) {
 
   const pressHandler = () => {
     dispatch(setProfileData({ wishlistBook: selectedBooks }));
-    navigation.navigate("Library");
+    navigation.navigate("LibraryInput");
   };
 
   return (

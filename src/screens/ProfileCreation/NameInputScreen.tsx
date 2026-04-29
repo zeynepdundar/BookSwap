@@ -28,7 +28,7 @@ export default function NameInputScreen({ navigation }) {
 
   const pressHandler = (event: any) => {
     dispatch(setProfileData({ name: name }));
-    navigation.navigate("Birthdate");
+    navigation.navigate("BirthdateInput");
   };
 
   return (

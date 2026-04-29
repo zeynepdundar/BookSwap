@@ -53,7 +53,7 @@ export default function BirthdateInputScreen({ navigation }) {
 
   const pressHandler = () => {
     dispatch(setProfileData({ birthdate: mergeDate() }));
-    navigation.navigate("Gender");
+    navigation.navigate("GenderInput");
   };
 
   return (
