@@ -1,24 +1,23 @@
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import {
-  ChevronLeftIcon,
   Button,
   Center,
   Heading,
   Spacer,
   VStack,
-  Box,
 } from "native-base";
-import Screen from "../../components/Screen";
-import i18n from "../../i18n";
-import ImagePicker from "../../components/ImagePicker";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
-import { setProfileData } from "../../store/profile-slice";
-import { useState } from "react";
+import i18n from "@/i18n";
+import { setProfileData } from "@/store/profile-slice";
+import Screen from "@/components/Screen";
+import ImagePicker from "@/components/ImagePicker";
+import StepHeader from "@/components/StepHeader";
 
 export default function PhotoInputScreen({ navigation }) {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const profileData = useSelector((state: any) => state.profile.profile);
-  const initialImage = profileData.imageData || ""; 
+  const initialImage = profileData.imageData || "";
   const [image, setImage] = useState<any>(initialImage);
 
   const handleImageUpload = (imageUri) => {
@@ -33,16 +32,9 @@ export default function PhotoInputScreen({ navigation }) {
   return (
     <Screen>
       <VStack space={1} alignItems="center" height={"50%"}>
-        <Box w="100%" alignItems="flex" h="38px">
-          <Button
-            variant="ghost"
-            leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
-            _pressed={{
-              bg: "transparent",
-            }}
-            onPress={() => navigation.goBack()}
-          />
-        </Box>
+        <StepHeader
+          onBack={() => navigation.goBack()}
+        />
         <Spacer></Spacer>
         <Heading w="100%" h="8" px={10}>
           {i18n.t("my-photo")}

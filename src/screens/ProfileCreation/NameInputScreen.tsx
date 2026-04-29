@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import {
   Button,
   Center,
@@ -7,27 +9,29 @@ import {
   Input,
   Spacer,
 } from "native-base";
-import i18n from "../../i18n";
-import Screen from "../../components/Screen";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
-import { setProfileData } from "../../store/profile-slice";
+import i18n from "@/i18n";
+import { setProfileData } from "@/store/profile-slice";
+import Screen from "@/components/Screen";
+
 
 export default function NameInputScreen({ navigation }) {
   const profileData = useSelector((state: any) => state.profile.profile);
+
   const initialName = profileData.name || "";
-  const [name, setName] = useState<string>(initialName);
-  const [isButtonDisabled, setButtonDisabled] = useState(true);
+  const [name, setName] = useState(initialName);
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
+    const isButtonDisabled = name.trim().length <= 2;
+
+
   const handleNameChange = (newName: string) => {
     setName(newName);
-    setButtonDisabled(newName.length <= 2);
   };
 
-  const pressHandler = (event: any) => {
-    dispatch(setProfileData({ name: name }));
+
+  const pressHandler = () => {
+    dispatch(setProfileData({ name: name.trim() }));
     navigation.navigate("BirthdateInput");
   };
 
@@ -49,6 +53,7 @@ export default function NameInputScreen({ navigation }) {
             borderBottomColor="black.400"
             color="black.400"
             textAlign="center"
+            autoCapitalize="words"
             autoCorrect={false}
             onChangeText={handleNameChange}
           />

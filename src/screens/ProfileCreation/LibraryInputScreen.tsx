@@ -1,24 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import * as Localization from "expo-localization";
+import { useDispatch, useSelector } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import {
   Button,
   Center,
   Heading,
-  ChevronLeftIcon,
-  Text,
   VStack,
   Spacer,
-  HStack,
 } from "native-base";
-import i18n from "../../i18n";
-import Screen from "../../components/Screen";
-import SearchBar from "../../components/shared/SearchBar";
-import { CoverListHorizontal } from "../../components/shared/CoverListHorizontal";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
-import { LoadingOverlay } from "../../components/LoadingOverlay";
-import { setIsNewUser } from "../../store/auth-slice";
-import * as Localization from "expo-localization";
-import { updateProfileAsync } from "../../store/profile-actions";
+import i18n from "@/i18n";
+import Screen from "@/components/Screen";
+import SearchBar from "@/components/shared/SearchBar";
+import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import StepHeader from "@/components/StepHeader";
+import { setIsNewUser } from "@/store/auth-slice";
+import { updateProfileAsync } from "@/store/profile-actions";
+
 
 export default function LibraryInputScreen({ navigation }) {
   const [selectedBooks, setSelectedBooks] = useState([]);
@@ -46,7 +45,7 @@ export default function LibraryInputScreen({ navigation }) {
       currentLibraryItems.filter((item) => item.id !== id)
     );
   };
-  const handleProfileUpdate = async(specificAction) => {
+  const handleProfileUpdate = async (specificAction) => {
     if (specificAction === "pressContinue") {
       const updatedProfile = {
         ...profile,
@@ -74,31 +73,11 @@ export default function LibraryInputScreen({ navigation }) {
   return (
     <Screen>
       <VStack space={1} alignItems="center" height={"50%"}>
-      <HStack
-          alignItems="center"
-          space="28%"
-          justifyContent="space-between"
-          w="100%"
-          h="40px"
-        >
-          <Button
-            variant="ghost"
-            leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
-            _pressed={{
-              bg: "transparent",
-            }}
-            onPress={() => navigation.goBack()}
-          />
-          <Text
-            onPress={pressSkipHandler}
-            color="#969696"
-            fontWeight="500"
-            fontSize="14px"
-            px={4}
-          >
-            {i18n.t("skip").toUpperCase()}
-          </Text>
-        </HStack>
+
+        <StepHeader
+          onBack={() => navigation.goBack()}
+          onSkip={pressSkipHandler}
+        />
         <Spacer></Spacer>
         <Heading w="100%" h="8" px={10}>
           {i18n.t("add-books-to-library")}
