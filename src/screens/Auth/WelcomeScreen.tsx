@@ -40,7 +40,6 @@ export default function WelcomeScreen({ navigation }: WelcomeScreenProps) {
         </Heading>
         
         <Spacer />
-        <Heading>Test push</Heading>
         <Button 
           m="7" 
           variant="primary" 

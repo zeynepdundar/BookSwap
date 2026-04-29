@@ -2,58 +2,115 @@ import {
   Button,
   Text,
   VStack,
-  Image,
   Box,
-  AspectRatio,
-  IconButton,
+  Heading,
   Icon,
+  IconButton,
 } from "native-base";
-import i18n from "../i18n";
-import Screen from "../components/Screen";
 import { MaterialIcons } from "@expo/vector-icons";
-import { formatText, truncateText } from "../utils/helper";
-import { useSelector } from "react-redux";
+import Screen from "../components/Screen";
 import { ImageBackground } from "react-native";
+import { useSelector } from "react-redux";
 
 export default function TradeOfferAcceptedScreen({ navigation, route }) {
-  const { user, receivedBook, offeredBook, conversationId } = route.params || {};
+  const { user, conversationId } = route.params || {};
   const { firebaseUserId } = useSelector((state: any) => state.auth.user);
+
   const importUrl = require("../assets/images/radar.png");
 
   const goToChatScreen = () => {
     navigation.replace("ChatScreen", {
-      conversationId: conversationId,
+      conversationId,
       friend: user,
-      currentUserId:firebaseUserId
+      currentUserId: firebaseUserId,
     });
   };
 
-  const navigateHome = () => {
-    // TODO:Verify resetting the navigation stack. The current screen should not remain in the stack history, so users can't still use the back button to return to it
-    // navigation.navigate("HomeTabs", { screen: "Home" });
+  const goHome = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "HomeTabs" }],
+    });
   };
+
   return (
     <Screen>
-      {/* <Box position="absolute" top="28px" left="28px" zIndex={99}>
-        <IconButton
-          onPress={navigateHome}
-          size="10"
-          borderRadius="full"
-          bg="#dddddd"
-          _pressed={{
-            bg: "primary.100",
-          }}
-          icon={
-            <Icon color="black" name={"close"} as={MaterialIcons} size="lg" />
-          }
-        />
-      </Box> */}
       <ImageBackground
         source={importUrl}
-        style={{ flex: 1, width: "100%", height: "100%", justifyContent: "center" }}
-        resizeMode="cover"
+        style={{ flex: 1 }}
+        resizeMode="contain"   // 👈 IMPORTANT: avoids zoom/crop
       >
-<Text>fdf</Text>
+
+        {/* readability layer ONLY */}
+        <Box flex={1} bg="rgba(255,255,255,0.15)">
+
+          {/* close button */}
+          <Box position="absolute" top={12} right={4}>
+            <IconButton
+              onPress={goHome}
+              borderRadius="full"
+              bg="rgba(255,255,255,0.9)"
+              icon={
+                <Icon
+                  as={MaterialIcons}
+                  name="close"
+                  size="md"
+                  color="black"
+                />
+              }
+            />
+          </Box>
+
+          {/* content */}
+          <VStack
+            flex={1}
+            justifyContent="center"
+            alignItems="center"
+            space={5}
+            px={6}
+          >
+
+            {/* icon */}
+            <Box bg="white" p={5} borderRadius="full" shadow={3}>
+              <Icon
+                as={MaterialIcons}
+                name="check-circle"
+                size="6xl"
+                color="green.500"
+              />
+            </Box>
+
+            {/* title */}
+            <Heading textAlign="center" color="black">
+              Trade Accepted
+            </Heading>
+
+            {/* text (fixed readability) */}
+            <Box
+              bg="rgba(255,255,255,0.75)"
+              px={5}
+              py={3}
+              borderRadius="xl"
+            >
+              <Text textAlign="center" color="gray.800">
+                Your exchange has been successfully matched.
+                You can now continue chatting with the other user.
+              </Text>
+            </Box>
+
+            {/* buttons */}
+            <VStack space={3} width="100%" mt={6}>
+              <Button onPress={goToChatScreen} borderRadius="xl">
+                Open Chat
+              </Button>
+
+              <Button onPress={goHome} variant="outline" borderRadius="xl">
+                Back to Home
+              </Button>
+            </VStack>
+
+          </VStack>
+        </Box>
       </ImageBackground>
     </Screen>
   );

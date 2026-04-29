@@ -33,7 +33,7 @@ import { ActionSheet } from "../../components/ActionSheet";
 import { generateModalActions } from "../../utils/helper";
 import i18n from "../../i18n";
 import BlockUserModal from "../../components/Modal/BlockUserModal";
-import { updateLastMessage } from "../../store/messages-actions";
+import { updateLastMessage, initializeConversation } from "../../store/messages-actions";
 import { useSelector } from "react-redux";
 
 export default function ChatScreen({ navigation, route }) {
@@ -45,15 +45,19 @@ export default function ChatScreen({ navigation, route }) {
 
   const { conversationId, friend } = route.params;
 
-  const handleUpdateLastMessage = (message) => {
+  const handleUpdateLastMessage = (messageData) => {
+    console.log("💬 Updating last message for friend:", friend.userId);
     updateLastMessage({
       friendUserId: friend.userId,
       currentUserId,
-      ...message,
+      messageData,
     });
   };
 
   useLayoutEffect(() => {
+    // Initialize conversation if it doesn't exist
+    initializeConversation(currentUserId, friend.userId, friend);
+
     const subscriber = firestore()
       .collection("Conversations")
       .doc(conversationId)
@@ -81,7 +85,7 @@ export default function ChatScreen({ navigation, route }) {
           };
 
           // Update the latest message in the Users collection
-          handleUpdateLastMessage({ messageData: latestMessage });
+          handleUpdateLastMessage(latestMessage);
         }
       });
     // Stop listening for updates when no longer required
@@ -108,7 +112,7 @@ export default function ChatScreen({ navigation, route }) {
       .add(messageData)
       .then(() => {
         // Update last message in the conversation only if Firestore operation is successful
-        handleUpdateLastMessage({ messageData });
+        handleUpdateLastMessage(messageData);
       })
       .catch((err) => console.log("Failed to send message", err));
   }, []);

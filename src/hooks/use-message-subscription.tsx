@@ -1,34 +1,44 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { subscribeToMessages } from "../store/messages-actions";
-import { clearMessages } from "../store/messages-slice";
 
-export const useMessageSubscription = (firebaseUserId) => {
-  const [loading, setLoading] = useState(true);
+export const useMessageSubscription = (firebaseUserId: string | null) => {
+  const [loading, setLoading] = useState(!!firebaseUserId);
   const [messages, setMessages] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (firebaseUserId) {
-      const unsubscribe = subscribeToMessages(firebaseUserId, {
-        onMessageReceived: (newMessages) => {
-          setMessages(newMessages);
-          setLoading(false);
-        },
-        onError: (error) => {
-          console.error(error);
-          setLoading(false);
-        },
-      });
-
-      return () => {
-        if (unsubscribe) {
-          unsubscribe();
-        }
-        setMessages([]);
-        setLoading(true);
-      };
+    if (!firebaseUserId) {
+      console.log("❌ useMessageSubscription - No firebaseUserId");
+      setLoading(false);
+      setMessages([]);
+      setError(null);
+      return;
     }
+
+    console.log("📨 useMessageSubscription - Starting subscription for:", firebaseUserId);
+    setLoading(true);
+    setError(null);
+
+    const unsubscribe = subscribeToMessages(firebaseUserId, {
+      onMessageReceived: (newMessages) => {
+        console.log("📨 useMessageSubscription - Messages received:", newMessages.length);
+        setMessages(newMessages);
+        setLoading(false);
+        setError(null);
+      },
+      onError: (error) => {
+        console.error("📨 useMessageSubscription - Error:", error);
+        setError(error);
+        setLoading(false);
+        setMessages([]);
+      },
+    });
+
+    return () => {
+      console.log("📨 useMessageSubscription - Cleaning up");
+      unsubscribe?.();
+    };
   }, [firebaseUserId]);
 
-  return { loading, messages };
+  return { loading, messages, error };
 };

@@ -42,11 +42,22 @@ export default function MessagesScreen({ navigation }) {
 
   const { languagePreference } = profileData;
 
+
+  // Safety check for firebaseUserId
+  if (!firebaseUserId) {
+    return <LoadingOverlay />;
+  }
+
   const unseenMessagesCount =
     messages?.reduce((total, item) => total + item.unseenCount, 0) || 0;
 
   const fetchUserProfiles = async () => {
     try {
+      if (!messages || messages.length === 0) {
+        setIsFetchingUserData(false);
+        return;
+      }
+
       const userIds = messages.map((message) => message.userId);
       const userProfilesPromises = userIds.map((userId) =>
         fetchUserProfileData(userId).then((userProfile) => ({
