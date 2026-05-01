@@ -15,8 +15,8 @@ import SearchBar from "@/components/shared/SearchBar";
 import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import StepHeader from "@/components/StepHeader";
-import { setIsNewUser } from "@/store/auth-slice";
-import { updateProfileAsync } from "@/store/profile-actions";
+import { setIsNewUser } from "@/store/auth/auth-slice";
+import { updateProfileAsync } from "@/store/profile/profile-actions";
 
 
 export default function LibraryInputScreen({ navigation }) {

@@ -9,7 +9,7 @@ import {
   VStack,
 } from "native-base";
 import i18n from "@/i18n";
-import { setProfileData } from "@/store/profile-slice";
+import { setProfileData } from "@/store/profile/profile-slice";
 import Screen from "@/components/Screen";
 import ImagePicker from "@/components/ImagePicker";
 import StepHeader from "@/components/StepHeader";

@@ -211,3 +211,6 @@ export const reverseConversationId = (conversationId) => {
   const ids = conversationId.split("_");
   return { userId: ids[1], friendId: ids[0] };
 };
+export const normalizePhone = (value: string): string => {
+  return value.replace(/[^\d+]/g, "");
+};

@@ -19,19 +19,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-import Screen from "../../components/Screen";
-import i18n from "../../i18n";
+import Screen from "@/components/Screen";
+import i18n from "@/i18n";
 import {
   checkVerificationCode,
   verifyPhoneNumber,
-} from "../../store/auth-actions";
-import { setVerificationCode } from "../../store/auth-slice";
-import { AuthStackParamList } from "../../types/navigation";
-import { RootState } from "../../store/types";
+} from "@/store/auth/auth-actions";
+import { setVerificationCode } from "@/store/auth/auth-slice";
+import { AuthStackParamList } from "@/types/navigation";
+import { RootState } from "@/store/types";
+import { normalizePhone } from "@/utils/helper";
 
 const APP_IMAGES = {
-  appLogo: require("../../assets/images/app-icon-516x516.png"),
-  swapBookText: require("../../assets/images/swap-book.png"),
+  appLogo: require("@/assets/images/app-icon-516x516.png"),
+  swapBookText: require("@/assets/images/swap-book.png"),
 } as const;
 
 const DIMENSIONS = {
@@ -45,32 +46,31 @@ type AuthVerificationScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList, "AuthVerification">;
 };
 
-type ScreenMode = "phoneInput" | "verificationCode";
+
 
 export default function AuthVerificationScreen({ navigation }: AuthVerificationScreenProps) {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState("tr");
-  
+
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
-  const { loading, error, confirmationResult, verificationCode } = useSelector(
+  const { loading, error, verificationId, verificationCode } = useSelector(
     (state: RootState) => state.auth
   );
 
-  // Screen mode determination
-  const screenMode: ScreenMode = 
-    (!confirmationResult || error?.type === "verifyPhoneNumberError") 
-      ? "phoneInput" 
-      : "verificationCode";
+  const showVerificationCodeScreen = Boolean(verificationId);
 
   const handleVerifyPhoneNumber = useCallback(() => {
-    dispatch(verifyPhoneNumber(phoneNumber));
+    const cleaned = normalizePhone(phoneNumber);
+    if (!cleaned) return;
+
+    dispatch(verifyPhoneNumber(cleaned));
   }, [dispatch, phoneNumber]);
 
   const handleCheckVerificationCode = useCallback(() => {
-    if (confirmationResult) {
-      dispatch(checkVerificationCode({ confirmationResult, verificationCode }));
+    if (verificationId) {
+      dispatch(checkVerificationCode({ verificationId, verificationCode }));
     }
-  }, [dispatch, confirmationResult, verificationCode]);
+  }, [dispatch, verificationId, verificationCode]);
 
   const handlePhoneNumberChange = useCallback((value: string) => {
     setPhoneNumber(value);
@@ -97,16 +97,16 @@ export default function AuthVerificationScreen({ navigation }: AuthVerificationS
         mb={2}
         mt="16"
       />
-      <Image 
-        source={APP_IMAGES.swapBookText} 
-        alt="Book Swap" 
-        width={120} 
-        mb="6" 
+      <Image
+        source={APP_IMAGES.swapBookText}
+        alt="Book Swap"
+        width={120}
+        mb="6"
       />
       <Text color="black.300" mb="8" width={DIMENSIONS.textWidth}>
         {i18n.t("enter-your-phone-number")}
       </Text>
-      
+
       <Box
         width={DIMENSIONS.phoneInputWidth}
         maxW="80"
@@ -139,7 +139,7 @@ export default function AuthVerificationScreen({ navigation }: AuthVerificationS
           autoFormat={true}
         />
       </Box>
-      
+
       {error && (
         <Flex direction="row" width="92%" px="4" pt="1">
           <Icon
@@ -152,7 +152,7 @@ export default function AuthVerificationScreen({ navigation }: AuthVerificationS
           </Text>
         </Flex>
       )}
-      
+
       <Button
         mt="10"
         variant="primary"
@@ -173,7 +173,7 @@ export default function AuthVerificationScreen({ navigation }: AuthVerificationS
       <Text w={DIMENSIONS.textWidth} color="black.300" mb="6">
         {i18n.t("type-verification-code")}
       </Text>
-      
+
       <Center>
         <Input
           variant="underlined"
@@ -188,7 +188,7 @@ export default function AuthVerificationScreen({ navigation }: AuthVerificationS
           onChangeText={handleVerificationCodeChange}
           value={verificationCode}
         />
-        
+
         <Center mt={10}>
           <Button
             variant="primary"
@@ -198,7 +198,7 @@ export default function AuthVerificationScreen({ navigation }: AuthVerificationS
             {i18n.t("confirm")}
           </Button>
         </Center>
-        
+
         {error && (
           <Alert
             w="80%"
@@ -217,11 +217,11 @@ export default function AuthVerificationScreen({ navigation }: AuthVerificationS
 
   return (
     <Screen>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        {screenMode === "phoneInput" ? renderPhoneInputScreen() : renderVerificationCodeScreen()}
+        {showVerificationCodeScreen ? renderVerificationCodeScreen() : renderPhoneInputScreen()}
       </KeyboardAvoidingView>
     </Screen>
   );

@@ -13,9 +13,9 @@ import {
   Button,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import i18n from "../../i18n";
+import i18n from "@/i18n";
 import { Keyboard } from "react-native";
-import { formatText, truncateText } from "../../utils/helper";
+import { formatText, truncateText } from "@/utils/helper";
 
 interface BorderedBookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items

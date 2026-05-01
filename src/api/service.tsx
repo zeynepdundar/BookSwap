@@ -1,6 +1,6 @@
 import { EditionEndpoints, FeedbackEndpoints, ProfileEndpoints, TradeEndpoints } from "./endpoints";
-import { createBookData, structureOfferData } from "../utils/helper";
-import AsyncStore from "../utils/AsyncStore";
+import { createBookData, structureOfferData } from "@/utils/helper";
+import AsyncStore from "@/utils/AsyncStore";
 
 import { UserProfile, WISHLIST } from "../constants";
 

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   Heading,
@@ -12,23 +13,29 @@ import {
   Divider,
   Input,
 } from "native-base";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
-import Screen from "../../components/Screen";
-import i18n from "../../i18n";
-import { LoadingOverlay } from "../../components/LoadingOverlay";
-import { EditionEndpoints } from "../../api/endpoints";
-import { BorderedBookListVertical } from "../../components/shared/BorderedBookListVertical";
+import Screen from "@/components/Screen";
+import i18n from "@/i18n";
+import { setProfileData } from "@/store/profile/profile-slice";
+
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { EditionEndpoints } from "@/api/endpoints";
+import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "@reduxjs/toolkit";
 
 export default function BookSearchOnCreationScreen({
   navigation,
   route = null,
 }) {
-  const { relatedScreen, onDonePress } = route.params;
+  const { relatedScreen } = route.params;
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState([]);
+
+    const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+
 
   const fetchBooks = async (title) => {
     try {
@@ -113,10 +120,18 @@ export default function BookSearchOnCreationScreen({
     });
   };
 
-  const pressDoneHandler = async (selectedItem: any) => {
-    onDonePress(selectedItem);
-    navigation.goBack();
-  };
+
+  const pressDoneHandler = (selectedItem) => {
+  if (relatedScreen === "wishlist") {
+    dispatch(setProfileData({ wishlistBook: selectedItem }));
+  }
+
+  if (relatedScreen === "library") {
+    dispatch(setProfileData({ libraryBook: selectedItem }));
+  }
+
+  navigation.goBack();
+};
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

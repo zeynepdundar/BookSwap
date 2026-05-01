@@ -1,5 +1,5 @@
 import { createSlice, current } from "@reduxjs/toolkit";
-import { LIBRARY, ProfileState, WISHLIST } from "../constants";
+import { LIBRARY, ProfileState, WISHLIST } from "../../constants";
 import {
   acceptOfferAsync,
   addBookToListAsync,

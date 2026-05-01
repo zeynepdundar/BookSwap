@@ -1,6 +1,6 @@
 import { Button, Icon, Modal, Text, TextArea, VStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import i18n from "../../i18n";
+import i18n from "@/i18n";
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 interface FeedbackModalProps {

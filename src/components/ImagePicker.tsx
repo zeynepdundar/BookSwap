@@ -14,7 +14,7 @@ import {
   PermissionStatus,
 } from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
-import i18n from "../i18n";
+import i18n from "@/i18n";
 import { ErrorAlert } from "./shared/ErrorAlert";
 
 const avatarImage = require("../assets/images/avatar.png");

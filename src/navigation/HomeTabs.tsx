@@ -1,11 +1,11 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Icon } from "native-base";
-import HomeScreen from "../screens/HomeScreen";
-import NotificationScreen from "../screens/NotificationScreen";
-import MessagesScreen from "../screens/Messages";
+import HomeScreen from "@/screens/HomeScreen";
+import NotificationScreen from "@/screens/NotificationScreen";
+import MessagesScreen from "@/screens/Messages";
 import TradingTabs from "./TradingTabs";
 import { MaterialIcons } from "@expo/vector-icons";
-import { HomeTabsParamList } from "../types/navigation";
+import { HomeTabsParamList } from "@/types/navigation";
 
 const BottomTab = createBottomTabNavigator<HomeTabsParamList>();
 

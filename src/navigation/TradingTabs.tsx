@@ -1,11 +1,11 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Center, Heading } from "native-base";
 import { Dimensions } from "react-native";
-import Screen from "../components/Screen";
+import Screen from "@/components/Screen";
 
-import i18n from "../i18n";
-import { ReceivedScreen, SentScreen, HistoryScreen } from "../screens";
-import { TradingTabsParamList } from "../types/navigation";
+import i18n from "@/i18n";
+import { ReceivedScreen, SentScreen, HistoryScreen } from "@/screens";
+import { TradingTabsParamList } from "@/types/navigation";
 
 const Tab = createMaterialTopTabNavigator<TradingTabsParamList>();
 

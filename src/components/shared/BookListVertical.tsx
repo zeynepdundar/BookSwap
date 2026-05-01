@@ -16,10 +16,10 @@ import {
 import { InfoDialogBox } from "../Modal/InfoDialogBox";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ActionSheet } from "../ActionSheet";
-import { formatText, generateActions, truncateText } from "../../utils/helper";
-import i18n from "../../i18n";
+import { formatText, generateActions, truncateText } from "@/utils/helper";
+import i18n from "@/i18n";
 import { useSelector } from "react-redux";
-import { LIBRARY, WISHLIST } from "../../constants";
+import { LIBRARY, WISHLIST } from "@/constants";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Keyboard } from "react-native";
 interface BookListVerticalProps {

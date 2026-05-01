@@ -19,12 +19,12 @@ import {
   Badge,
   CloseIcon,
 } from "native-base";
-import i18n from "../../i18n";
-import Screen from "../../components/Screen";
-import { AppDispatch } from "../../store/store";
-import { InfoDialogBox } from "../../components/Modal/InfoDialogBox";
-import { sendOfferAsync } from "../../store/profile-actions";
-import { getImageSource } from "../../utils/helper";
+import i18n from "@/i18n";
+import Screen from "@/components/Screen";
+import { AppDispatch } from "@/store";
+import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
+import { getImageSource } from "@/utils/helper";
+import { sendOfferAsync } from "@/store/profile/profile-actions";
 
 interface TradeProposal {
   receiverId: string;
@@ -39,7 +39,7 @@ export default function TradeProposal({ navigation, route }) {
 
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
-  const avatar = require("../../assets/images/avatar.png");
+  const avatar = require("@/assets/images/avatar.png");
 
   const initialState: TradeProposal = {
     receiverId: user?.id || "",
@@ -68,7 +68,7 @@ export default function TradeProposal({ navigation, route }) {
     }
   }, [offeredBookFromParams, requestedBookFromParams, navigation]);
 
-  const tradeIcon = require("../../assets/images/icon/trade-icon.png");
+  const tradeIcon = require("@/assets/images/icon/trade-icon.png");
 
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);

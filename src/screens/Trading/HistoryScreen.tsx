@@ -12,20 +12,20 @@ import {
   Pressable,
   Divider,
 } from "native-base";
-import Screen from "../../components/Screen";
+import Screen from "@/components/Screen";
 import { useCallback, useEffect, useState } from "react";
-import { LoadingOverlay } from "../../components/LoadingOverlay";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTradeHistoryAsync } from "../../store/profile-actions";
 import { ThunkDispatch } from "@reduxjs/toolkit";
-import { formatText, getImageSource, truncateText } from "../../utils/helper";
-import { fetchProfileImageUrl } from "../../api/service";
+import { formatText, getImageSource, truncateText } from "@/utils/helper";
+import { fetchProfileImageUrl } from "@/api/service";
 import { useFocusEffect } from "@react-navigation/native";
-import i18n from "../../i18n";
+import i18n from "@/i18n";
+import { fetchTradeHistoryAsync } from "@/store/profile/profile-actions";
 
 export default function HistoryScreen({ navigation }) {
-  const tradeIcon = require("../../assets/images/icon/trade-in.png");
-  const avatar = require("../../assets/images/avatar.png");
+  const tradeIcon = require("@/assets/images/icon/trade-in.png");
+  const avatar = require("@/assets/images/avatar.png");
 
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);

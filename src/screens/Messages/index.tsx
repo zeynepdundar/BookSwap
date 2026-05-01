@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 
-import Screen from "../../components/Screen";
+import Screen from "@/components/Screen";
 import {
   Avatar,
   Badge,
@@ -17,19 +17,19 @@ import {
   Text,
   VStack,
 } from "native-base";
-import i18n from "../../i18n";
+import i18n from "@/i18n";
 import { useSelector } from "react-redux";
-import { useMessageSubscription } from "../../hooks/use-message-subscription";
-import { LoadingOverlay } from "../../components/LoadingOverlay";
+import { useMessageSubscription } from "@/hooks/use-message-subscription";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import {
   formatLastMessageTime,
   generateConversationId,
   getImageSource,
   truncateText,
-} from "../../utils/helper";
-import { fetchUserProfileData } from "../../api/service";
-import { resetUnseenCount } from "../../store/messages-actions";
-import { RootState } from "../../store/types";
+} from "@/utils/helper";
+import { fetchUserProfileData } from "@/api/service";
+import { RootState } from "@/store/types";
+import { resetUnseenCount } from "@/store/messages/messages-actions";
 
 export default function MessagesScreen({ navigation }) {
   const [isFetchingUserData, setIsFetchingUserData] = useState(true);
@@ -109,7 +109,7 @@ export default function MessagesScreen({ navigation }) {
     resetUnseenCount({ friendUserId, firebaseUserId });
   };
 
-  const avatar = require("../../assets/images/avatar.png");
+  const avatar = require("@/assets/images/avatar.png");
 
   return (
     <Screen>

@@ -1,6 +1,6 @@
 import { Button, Icon, Modal, VStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import i18n from "../../i18n";
+import i18n from "@/i18n";
 
 const BlockUserModal = ({ isOpen, onClose, blockUser = null }) => {
   const reasons = [

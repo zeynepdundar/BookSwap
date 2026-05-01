@@ -1,12 +1,12 @@
 import { useState } from "react";
-import Screen from "../../components/Screen";
-import { BookListVertical } from "../../components/shared/BookListVertical";
+import Screen from "@/components/Screen";
+import { BookListVertical } from "@/components/shared/BookListVertical";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { addBookToListAsync } from "../../store/profile-actions";
-import i18n from "../../i18n";
+import { AppDispatch } from "@/store";
+import i18n from "@/i18n";
 import { ErrorAlert } from "../BarcodeScannerScreen";
 import { Box, Center } from "native-base";
+import { addBookToListAsync } from "@/store/profile/profile-actions";
 
 export default function OtherUserWishlistScreen({ wishedBook }) {
   const [wishedBooks, setWishedBook] = useState(wishedBook);

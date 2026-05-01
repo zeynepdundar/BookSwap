@@ -14,27 +14,27 @@ import {
   HStack,
   Spinner,
 } from "native-base";
-import i18n from "../../i18n";
-import Screen from "../../components/Screen";
+import i18n from "@/i18n";
+import Screen from "@/components/Screen";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import { AppDispatch } from "@/store";
 import { useEffect, useRef, useState } from "react";
-import { AlertDialogBox } from "../../components/Modal/AlertDialogBox";
-import ImagePicker from "../../components/ImagePicker";
+import { AlertDialogBox } from "@/components/Modal/AlertDialogBox";
+import ImagePicker from "@/components/ImagePicker";
 import auth from "@react-native-firebase/auth";
-import { signOut } from "../../store/auth-slice";
-import { clearMessages } from "../../store/messages-slice";
-import { clearProfileData, setProfileData } from "../../store/profile-slice";
-import { RootState } from "../../store/types";
-import AsyncStore from "../../utils/AsyncStore";
-import { updateProfileAsync } from "../../store/profile-actions";
+import { signOut } from "@/store/auth/auth-slice";
+import { clearMessages } from "@/store/messages/messages-slice";
+import { clearProfileData, setProfileData } from "@/store/profile/profile-slice";
+import { RootState } from "@/store/types";
+import AsyncStore from "@/utils/AsyncStore";
+import { updateProfileAsync } from "@/store/profile/profile-actions";
 
 export default function ProfileScreen({ navigation }) {
-  const libraryIcon = require("../../assets/images/icon/library-icon.png");
-  const wishlistIcon = require("../../assets/images/icon/wishlist-icon.png");
-  const languageIcon = require("../../assets/images/icon/language-icon.png");
-  const feedbackIcon = require("../../assets/images/icon/feedback-icon.png");
-  const logoutIcon = require("../../assets/images/icon/logout-icon.png");
+  const libraryIcon = require("@/assets/images/icon/library-icon.png");
+  const wishlistIcon = require("@/assets/images/icon/wishlist-icon.png");
+  const languageIcon = require("@/assets/images/icon/language-icon.png");
+  const feedbackIcon = require("@/assets/images/icon/feedback-icon.png");
+  const logoutIcon = require("@/assets/images/icon/logout-icon.png");
 
   const profileData = useSelector((state: RootState) => state.profile.profile);
   const dispatch = useDispatch<AppDispatch>();

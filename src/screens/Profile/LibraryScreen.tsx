@@ -13,15 +13,15 @@ import {
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import i18n from "../../i18n";
-import Screen from "../../components/Screen";
-import { BookListVertical } from "../../components/shared/BookListVertical";
+import i18n from "@/i18n";
+import Screen from "@/components/Screen";
+import { BookListVertical } from "@/components/shared/BookListVertical";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { removeBookFromListAsync } from "../../store/profile-actions";
+import { AppDispatch } from "@/store";
 import { useNavigationState } from "@react-navigation/native";
 import { useEffect, useMemo, useState } from "react";
-import { LIBRARY } from "../../constants";
+import { LIBRARY } from "@/constants";
+import { removeBookFromListAsync } from "@/store/profile/profile-actions";
 
 const RemoveBookButton = ({ onPress }) => (
   <Icon

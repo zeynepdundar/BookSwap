@@ -1,7 +1,7 @@
 import { Input, Center, Icon } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import i18n from "../../i18n";
+import i18n from "@/i18n";
 import { useState } from "react";
 
 export default function SearchBar({

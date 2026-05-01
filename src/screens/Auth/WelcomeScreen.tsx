@@ -1,16 +1,16 @@
 import React from 'react';
 import { Button, Heading, Image, Spacer, VStack } from "native-base";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Screen from "../../components/Screen";
-import i18n from "../../i18n";
-import { AuthStackParamList } from '../../types/navigation';
+import Screen from "@/components/Screen";
+import i18n from "@/i18n";
+import { AuthStackParamList } from '@/types/navigation';
 
 type WelcomeScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
 };
 
 const APP_IMAGES = {
-  infiniteLibrary: require("../../assets/images/infinite-library.png"),
+  infiniteLibrary: require("@/assets/images/infinite-library.png"),
 } as const;
 
 const IMAGE_SIZE = 375;

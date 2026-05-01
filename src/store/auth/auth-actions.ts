@@ -1,40 +1,43 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import auth from "@react-native-firebase/auth";
-import { fetchUserProfileAsync } from "./profile-actions";
-import { setProfileData } from "./profile-slice";
-import { AuthEndpoints } from "../api/endpoints";
-import AsyncStore from "../utils/AsyncStore";
+import { AuthEndpoints } from "@/api/endpoints";
+import { setProfileData } from "@/store/profile/profile-slice";
+import { AuthError, VerifyCodePayload } from "./auth.types";
 
-export const verifyPhoneNumber = createAsyncThunk(
+export const verifyPhoneNumber = createAsyncThunk<
+  { verificationId: string },
+  string,
+  { rejectValue: AuthError }
+>(
   "auth/verifyPhoneNumber",
   async (phoneNumber: string, thunkAPI) => {
+
     try {
       const confirmationResult = await auth().signInWithPhoneNumber(
         phoneNumber
       );
-      thunkAPI.dispatch({ type: "auth/setPhoneNumber", payload: phoneNumber });
-      return confirmationResult;
-    } catch (error) {
+      return {
+        verificationId: confirmationResult.verificationId,
+      };
+
+    } catch (error: any) {
       let errorMessage = "Failed to verify phone number";
-      switch (error.code) {
+      switch (error?.code) {
         case "auth/invalid-phone-number":
           errorMessage =
-            "Invalid phone number. Please enter a valid phone number.";
+            "Invalid phone number.";
           break;
         case "auth/missing-phone-number":
           errorMessage =
-            "Missing phone number. Please enter your phone number.";
+            "Phone number is required";
           break;
         case "auth/too-many-requests":
-          errorMessage = "Too many requests. Please try again after 5 minutes.";
+          errorMessage = "Too many requests. Try again later";
           break;
         case "auth/quota-exceeded":
-          errorMessage = "Verification quota exceeded. Please try again later.";
+          errorMessage = "Quota exceeded. Try again later.";
           break;
-        default:
-          errorMessage =
-            "An error occurred during phone verification. Please try again.";
-          break;
+
       }
       return thunkAPI.rejectWithValue({
         type: "verifyPhoneNumberError",
@@ -46,31 +49,31 @@ export const verifyPhoneNumber = createAsyncThunk(
 
 export const checkVerificationCode = createAsyncThunk(
   "auth/checkVerificationCode",
-  async (credentials: any, thunkAPI) => {
+  async (payload: VerifyCodePayload, thunkAPI) => {
     try {
-      const { confirmationResult, verificationCode } = credentials;
-      const userCredential = await confirmationResult.confirm(verificationCode);
+      const { verificationId, verificationCode } = payload;
+
+      const credential = auth.PhoneAuthProvider.credential(
+        verificationId,
+        verificationCode
+      );
+      const userCredential = await auth().signInWithCredential(credential);
+
       const firebaseUserId = userCredential.user.uid;
-      const isNewUser = userCredential.additionalUserInfo.isNewUser;
-      const user = await auth().currentUser.getIdTokenResult();
+      const isNewUser =
+        userCredential.additionalUserInfo?.isNewUser ?? false;
 
-      thunkAPI.dispatch({
-        type: "auth/setUser",
-        payload: {
-          isNewUser: isNewUser,
-          firebaseUserId: firebaseUserId,
+      const token = await userCredential.user.getIdToken();
+
+
+      return {
+        user: {
+          firebaseUserId,
+          isNewUser,
         },
-      });
+        token,
+      };
 
-      if (isNewUser) thunkAPI.dispatch(addUserToDatabaseAsync(user.token));
-      else {
-        thunkAPI.dispatch(fetchUserProfileAsync(firebaseUserId));
-      }
-
-      thunkAPI.dispatch({ type: "auth/setToken", payload: user.token });
-      await AsyncStore.setItem("authToken", user.token);
-
-      return userCredential;
     } catch (error) {
       let errorMessage = "Failed to verify the code";
       switch (error.code) {

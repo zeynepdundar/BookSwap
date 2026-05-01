@@ -1,12 +1,12 @@
 import { Box, Button, Center } from "native-base";
-import i18n from "../../i18n";
-import Screen from "../../components/Screen";
-import { BookListVertical } from "../../components/shared/BookListVertical";
+import i18n from "@/i18n";
+import Screen from "@/components/Screen";
+import { BookListVertical } from "@/components/shared/BookListVertical";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
-import { addBookToListAsync } from "../../store/profile-actions";
+import { AppDispatch } from "@/store";
 import { ErrorAlert } from "../BarcodeScannerScreen";
+import { addBookToListAsync } from "@/store/profile/profile-actions";
 
 export default function OtherUserWishlistScreen({
   navigation,

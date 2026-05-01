@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "./types";
+import { RootState } from "@/store/types";
+
 import {
   addBookToList,
   fetchHistory,
@@ -9,8 +10,8 @@ import {
   removeBookFromList,
   sendOffer,
   updateUserProfileData,
-} from "../api/service";
-import { ProfileEndpoints, TradeEndpoints } from "../api/endpoints";
+} from "@/api/service";
+import { ProfileEndpoints, TradeEndpoints } from "@/api/endpoints";
 
 export const fetchUserProfileAsync = createAsyncThunk(
   "profile/fetchUserProfile",

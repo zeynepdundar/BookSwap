@@ -10,8 +10,8 @@ import { NativeBaseProvider } from "native-base";
 import AsyncStore from "./src/utils/AsyncStore";
 import { theme } from "./src/theme";
 import Navigation from "./src/navigation";
-import store, { AppDispatch } from "./src/store/store";
-import { setToken } from "./src/store/auth-slice";
+import { AppDispatch, store } from "./src/store";
+import { setToken } from "./src/store/auth/auth-slice";
 
 ///  PUSH NOTIFICATIONS - START  ///
 

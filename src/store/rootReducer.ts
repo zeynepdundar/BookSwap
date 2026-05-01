@@ -1,7 +1,7 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import authReducer from "./auth-slice";
-import profileReducer from "./profile-slice";
-import messagesReducer from "./messages-slice";
+import authReducer from "./auth/auth-slice";
+import profileReducer from "./profile/profile-slice";
+import messagesReducer from "./messages/messages-slice";
 
 
 const rootReducer = combineReducers({

@@ -14,7 +14,7 @@ import {
 } from "native-base";
 import i18n from "@/i18n";
 import Screen from "@/components/Screen";
-import { setProfileData } from "@/store/profile-slice";
+import { setProfileData } from "@/store/profile/profile-slice";
 import StepHeader from "@/components/StepHeader";
 
 export default function BirthdateInputScreen({ navigation }) {

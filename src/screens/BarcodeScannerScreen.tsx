@@ -21,18 +21,18 @@ import {
   IconButton,
   Alert,
 } from "native-base";
-import { fetchBooksByISBN } from "../api/service";
+import { fetchBooksByISBN } from "@/api/service";
 import {
   formatText,
   generateModalActions,
   truncateText,
-} from "../utils/helper";
-import { ActionSheet } from "../components/ActionSheet";
-import { AppDispatch } from "../store/store";
-import { addBookToListAsync } from "../store/profile-actions";
-import i18n from "../i18n";
-import { LIBRARY, WISHLIST } from "../constants";
-import { InfoDialogBox } from "../components/Modal/InfoDialogBox";
+} from "@/utils/helper";
+import { ActionSheet } from "@/components/ActionSheet";
+import { AppDispatch } from "@/store";
+import i18n from "@/i18n";
+import { LIBRARY, ListTypes, WISHLIST } from "@/constants";
+import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
+import { addBookToListAsync } from "@/store/profile/profile-actions";
 
 export default function BarcodeScannerScreen({
   navigation,

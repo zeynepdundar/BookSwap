@@ -16,19 +16,17 @@ import {
 } from "native-base";
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProfileImageUrl } from "../../api/service";
-import { LoadingOverlay } from "../../components/LoadingOverlay";
-import i18n from "../../i18n";
-import {
-  fetchSentOffersAsync,
-  takeBackOfferAsync,
-} from "../../store/profile-actions";
-import { formatText, getImageSource, truncateText } from "../../utils/helper";
+import { fetchProfileImageUrl } from "@/api/service";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import i18n from "@/i18n";
+
+import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { ErrorAlert } from "../BarcodeScannerScreen";
+import { fetchSentOffersAsync, takeBackOfferAsync } from "@/store/profile/profile-actions";
 
 export default function SentScreen({ navigation }) {
-  const tra = require("../../assets/images/icon/Icons.png");
-  const avatar = require("../../assets/images/avatar.png");
+  const tra = require("@/assets/images/icon/Icons.png");
+  const avatar = require("@/assets/images/avatar.png");
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingImages, setLoadingImages] = useState(true);

@@ -1,5 +1,5 @@
+import { subscribeToMessages } from "@/store/messages/messages-actions";
 import { useEffect, useState } from "react";
-import { subscribeToMessages } from "../store/messages-actions";
 
 export const useMessageSubscription = (firebaseUserId: string | null) => {
   const [loading, setLoading] = useState(!!firebaseUserId);

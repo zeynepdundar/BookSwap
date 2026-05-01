@@ -12,20 +12,20 @@ import {
 } from "native-base";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import Screen from "../components/Screen";
-import i18n from "../i18n";
-import { LoadingOverlay } from "../components/LoadingOverlay";
-import { BookListVertical } from "../components/shared/BookListVertical";
+import Screen from "@/components/Screen";
+import i18n from "@/i18n";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { BookListVertical } from "@/components/shared/BookListVertical";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store/store";
-import { fetchBooksByTitle } from "../api/service";
-import { addBookToListAsync } from "../store/profile-actions";
+import { AppDispatch } from "@/store";
+import { fetchBooksByTitle } from "@/api/service";
 import {
   getFocusedRouteNameFromRoute,
   useNavigationState,
 } from "@react-navigation/native";
-import { BorderedBookListVertical } from "../components/shared/BorderedBookListVertical";
+import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";
 import { ErrorAlert } from "./BarcodeScannerScreen";
+import { addBookToListAsync } from "@/store/profile/profile-actions";
 
 export default function BookSearchScreen({ navigation, route = null }) {
   const { relatedScreen, onDonePress } = route.params;
@@ -50,7 +50,8 @@ export default function BookSearchScreen({ navigation, route = null }) {
     Keyboard.dismiss();
     inputRef.current?.blur?.();
     try {
-      const response = await dispatch(addBookToListAsync(selectedItem));
+      const response = await dispatch(addBookToListAsync
+        (selectedItem));
       const payload = (response as any).payload as {
         status?: string;
         existingEditionIds?: any[];
