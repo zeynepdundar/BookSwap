@@ -1,6 +1,10 @@
 {
   "name": "book-swap",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "yarn@1.22.22",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
