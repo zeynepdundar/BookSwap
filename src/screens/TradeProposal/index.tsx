@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
@@ -54,8 +54,12 @@ export default function TradeProposal({ navigation, route }) {
   const dispatch = useDispatch<AppDispatch>();
 
   const proposeTradeHandler = async (): Promise<void> => {
-    dispatch(sendOfferAsync(sentPropasal));
-    setIsInfoDialogOpen(true);
+    try {
+      await dispatch(sendOfferAsync(sentPropasal)).unwrap();
+      setIsInfoDialogOpen(true);
+    } catch (error) {
+      console.error("Failed to send offer:", error);
+    }
   };
   useEffect(() => {
     if (offeredBookFromParams) {
@@ -124,6 +128,7 @@ export default function TradeProposal({ navigation, route }) {
             borderRadius="10"
             width="100%"
             borderColor="#EEEEEE"
+            bgColor="white"
             shadow={0.9}
             height="200"
             overflow="hidden"
@@ -132,6 +137,7 @@ export default function TradeProposal({ navigation, route }) {
               borderWidth="1"
               borderRadius="10"
               borderColor="#EEEEEE"
+              bgColor="white"
               shadow={0.9}
               width="43%"
               height="180"
@@ -146,9 +152,9 @@ export default function TradeProposal({ navigation, route }) {
                           sentPropasal.offeredBook.coverUrl
                             ? { uri: sentPropasal.offeredBook.coverUrl }
                             : {
-                                //TODO Use the static import URL here
-                                uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                              }
+                              //TODO Use the static import URL here
+                              uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                            }
                         }
                         alt={`Cover of`}
                       />
@@ -226,6 +232,7 @@ export default function TradeProposal({ navigation, route }) {
             width="100%"
             borderColor="#EEEEEE"
             shadow={0.9}
+            bgColor="white"
             height="200"
             overflow="hidden"
           >
@@ -234,6 +241,7 @@ export default function TradeProposal({ navigation, route }) {
               borderRadius="10"
               borderColor="#EEEEEE"
               shadow={0.9}
+              bgColor="white"
               width="43%"
               height="180"
               overflow="hidden"
@@ -247,9 +255,9 @@ export default function TradeProposal({ navigation, route }) {
                           sentPropasal.requestedBook.coverUrl
                             ? { uri: sentPropasal.requestedBook.coverUrl }
                             : {
-                                //TODO Use the static import URL here
-                                uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                              }
+                              //TODO Use the static import URL here
+                              uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                            }
                         }
                         alt={`Cover of`}
                       />
@@ -350,11 +358,9 @@ export default function TradeProposal({ navigation, route }) {
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
         onClose={closeInfoDialog}
-        onConfirm={navigateToScreen}
         title={title}
         description={description}
-        buttonVariant={buttonVariant}
-        confirmButtonLabel={confirmButtonLabel}
+        primaryAction={{ label: confirmButtonLabel, variant: buttonVariant, onPress: navigateToScreen }}
       />
     </Screen>
   );

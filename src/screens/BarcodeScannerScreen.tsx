@@ -242,9 +242,7 @@ export default function BarcodeScannerScreen({
         onClose={closeInfoDialog}
         title={title}
         description={description}
-        buttonVariant={buttonVariant}
-        confirmButtonLabel={confirmButtonLabel}
-        navigateToScreen={navigateToScreen}
+        primaryAction={{ label: confirmButtonLabel, variant: buttonVariant, onPress: navigateToScreen }}
       />
     </View>
   );

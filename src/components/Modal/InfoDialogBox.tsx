@@ -1,52 +1,67 @@
 import React, { memo, useRef } from "react";
-import { AlertDialog, Button, Center, CheckCircleIcon, Text } from "native-base";
+import { Button, Center, CheckCircleIcon, Modal, Text } from "native-base";
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "outline" | "subtle";
 
 interface InfoDialogBoxProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm?: () => void;
+
   title: string;
   description: string;
-  confirmButtonLabel: string;
-  buttonVariant?: ButtonVariant;
+
+  primaryAction?: {
+    label: string;
+    onPress?: () => void;
+    variant?: ButtonVariant;
+  };
+
+  secondaryAction?: {
+    label: string;
+    onPress?: () => void;
+    variant?: ButtonVariant;
+  };
 }
 
 export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(
   ({
     isOpen,
     onClose,
-    onConfirm,
     title,
     description,
-    confirmButtonLabel,
-    buttonVariant = "primary",
+    primaryAction,
+    secondaryAction,
   }) => {
     const cancelRef = useRef(null);
 
-    const handleConfirm = () => {
-      if (onConfirm) onConfirm();
+    console.log("whaqq")
+
+    const handlePrimaryPress = async () => {
+      await primaryAction?.onPress?.();
+      onClose();
+    };
+
+    const handleSecondaryPress = () => {
+      secondaryAction?.onPress?.();
       onClose();
     };
 
     return (
-      <AlertDialog
-        leastDestructiveRef={cancelRef}
+      <Modal
         isOpen={isOpen}
         onClose={onClose}
-        closeOnOverlayClick={false}
-        isKeyboardDismissable={false}
+        closeOnOverlayClick={true}
+        isKeyboardDismissable={true}
       >
-        <AlertDialog.Content
-          maxW="320px"   
+        <Modal.Content
+          maxW="320px"
           w="90%"
           alignSelf="center"
           px="4"
           py="3"
           rounded="lg"
         >
-          <AlertDialog.Header
+          <Modal.Header
             borderBottomWidth={0}
             alignItems="center"
             mt="3"
@@ -58,7 +73,7 @@ export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(
             </Center>
 
             <Text
-              fontSize="18px"   
+              fontSize="18px"
               fontWeight="600"
               color="black.400"
               textAlign="center"
@@ -67,8 +82,8 @@ export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(
             >
               {title}
             </Text>
-          </AlertDialog.Header>
-          <AlertDialog.Body
+          </Modal.Header>
+          <Modal.Body
             _text={{
               fontSize: "15px",
               fontWeight: "400",
@@ -81,28 +96,43 @@ export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(
             px="2"
           >
             {description}
-          </AlertDialog.Body>
-          <AlertDialog.Footer
+          </Modal.Body>
+          <Modal.Footer
             borderTopWidth={0}
             justifyContent="center"
             pt="1"
             pb="3"
           >
             <Button.Group space={2} width="100%" justifyContent="center">
-              <Button
-                variant={buttonVariant}
-                onPress={handleConfirm}
-                px="5"        
-                py="2.5"
-                rounded="md"
-                fontSize="15px"
-              >
-                {confirmButtonLabel?.toUpperCase()}
-              </Button>
+              {secondaryAction && (
+                <Button
+                  ref={cancelRef}
+                  variant={secondaryAction.variant ?? "ghost"}
+                  onPress={handleSecondaryPress}
+                  px="5"
+                  py="2.5"
+                  rounded="md"
+                  fontSize="15px"
+                >
+                  {secondaryAction.label?.toUpperCase()}
+                </Button>
+              )}
+              {primaryAction && (
+                <Button
+                  variant={primaryAction.variant ?? "primary"}
+                  onPress={handlePrimaryPress}
+                  px="5"
+                  py="2.5"
+                  rounded="md"
+                  fontSize="15px"
+                >
+                  {primaryAction.label?.toUpperCase()}
+                </Button>
+              )}
             </Button.Group>
-          </AlertDialog.Footer>
-        </AlertDialog.Content>
-      </AlertDialog>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     );
   }
 );

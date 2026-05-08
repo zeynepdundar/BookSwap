@@ -17,13 +17,13 @@ import {
   Pressable,
   Button,
 } from "native-base";
-import { InfoDialogBox } from "../Modal/InfoDialogBox";
 
-import { ActionSheet } from "../ActionSheet";
+import { ActionSheet } from "@/components/ActionSheet";
 import { formatText, generateActions, truncateText } from "@/utils/helper";
 import i18n from "@/i18n";
 import { useSelector } from "react-redux";
 import { BookCollections } from "@/types/book.types";
+import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 interface BookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
   onPrimaryAction?: (id: string) => void;
@@ -267,9 +267,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
         onClose={closeInfoDialog}
         title={title}
         description={description}
-        buttonVariant={buttonVariant}
-        confirmButtonLabel={confirmButtonLabel}
-        onConfirm={navigateToScreen}
+        primaryAction={{ label: confirmButtonLabel, variant: buttonVariant, onPress: navigateToScreen }}
       />
     </>
   );

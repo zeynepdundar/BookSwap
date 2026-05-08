@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import { useSelector } from "react-redux";
 import {
   Heading,
   ChevronLeftIcon,
@@ -7,66 +10,49 @@ import {
   VStack,
   TextArea,
   Text,
-  Box,
-  Center,
 } from "native-base";
 
-import i18n from "../../i18n";
-import Screen from "../../components/Screen";
+import i18n from "@/i18n";
+import { submitFeedback } from "@/api/service";
+import { RootState } from "@/store/types";
+import Screen from "@/components/Screen";
+import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 
-import { useEffect, useState } from "react";
-import { submitFeedback } from "../../api/service";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/types";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
-import { ErrorAlert } from "../BarcodeScannerScreen";
-import { InfoDialogBox } from "../../components/Modal/InfoDialogBox";
 
-export default function FeedbackScreen({ navigation, route }) {
+export default function FeedbackScreen({ navigation }) {
   const [feedbackText, setFeedbackText] = useState("");
-  const [error, setError] = useState(null);
   const userId = useSelector((state: RootState) => state.profile.profile.id);
-  const [isButtonDisabled, setButtonDisabled] = useState(true);
-  const [focused, setFocused] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    // Enable button only if there's feedback text
-    setButtonDisabled(!feedbackText);
-  }, [feedbackText]);
+  const isDisabled = !feedbackText?.trim()
 
-  const handleFocus = () => {
-    setFocused(true);
-  };
 
-  const handleBlur = () => {
-    setFocused(false);
-  };
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);
-    navigation.goBack();
+
+    setFeedbackText("");
   };
 
   const handleSubmitFeedback = async () => {
     Keyboard.dismiss();
     try {
       const feedback = await submitFeedback(userId, feedbackText);
-      if (feedback.ok) {
-        setSuccessMessage("Feedback submitted successfully!");
-        setIsInfoDialogOpen(true);
-
-        setTimeout(() => {
-          setFeedbackText("");
-          setSuccessMessage("");
-        }, 1500);
-      } else {
-        setError("Failed to submit feedback. Please try again.");
-      }
-    } catch (error) {
-      setError("Error submitting feedback. Please try again later.");
+      setIsInfoDialogOpen(true);
+    }
+    //TODO: Show error message toast to user and and loading state while submitting
+    catch (error) {
+      console.error("Feedback submission error:", error);
     }
   };
+
+  //Auto-close info dialog after 3 seconds
+  //useEffect(() => {
+  //  if (!isInfoDialogOpen) return;
+  //  const timer = setTimeout(() => {
+  //    closeInfoDialog();
+  //  }, 3000);
+  /// return () => clearTimeout(timer);
+  //}, [isInfoDialogOpen]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -101,30 +87,26 @@ export default function FeedbackScreen({ navigation, route }) {
             autoCompleteType={false}
             w="100%"
             _hover={{
-              borderColor: "primary.50", // Change border color on hover
-              backgroundColor: "gray.50", // Optional: change background on hover
+              borderColor: "primary.50",
+              backgroundColor: "gray.50",
             }}
             _focus={{
-              borderColor: "primary.50", // Change border color when focused
-              backgroundColor: "gray.50", // Optional: change background when focused
+              borderColor: "primary.50",
+              backgroundColor: "gray.50",
             }}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            borderColor={focused ? "primary.100" : "gray.300"}
+
           />
         </VStack>
 
         <VStack space={3} mx="4" my="10">
           <Button
-            variant={isButtonDisabled ? "disabled" : "primary"}
+            variant="primary"
+            isDisabled={isDisabled}
             onPress={handleSubmitFeedback}
-            isDisabled={isButtonDisabled}
+
           >
             {i18n.t("submit")}
           </Button>
-          {/* <Center mt="300">
-            {successMessage && <ErrorAlert message={successMessage} />}
-          </Center> */}
         </VStack>
 
         <InfoDialogBox
@@ -132,9 +114,11 @@ export default function FeedbackScreen({ navigation, route }) {
           onClose={closeInfoDialog}
           title={i18n.t("thank-you")}
           description={i18n.t("feedback-appreciation-and-update")}
-          buttonVariant="outline"
-          confirmButtonLabel={i18n.t("close")}
-          navigateToScreen={() => navigation.goBack()}
+          primaryAction={{
+            label: i18n.t("close"),
+            variant: "outline",
+            onPress: closeInfoDialog,
+          }}
         />
       </Screen>
     </TouchableWithoutFeedback>

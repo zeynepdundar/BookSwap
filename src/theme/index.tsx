@@ -74,6 +74,11 @@ export const theme = extendTheme({
         _pressed: {
           opacity: 0.8,
         },
+        _disabled: {
+          bg: "gray.300",
+          _text: { color: "gray.600" },
+          opacity: 1,
+        },
       },
       variants: {
         primary: () => ({
@@ -98,23 +103,13 @@ export const theme = extendTheme({
           _text: { color: "primary.50" },
           _pressed: { opacity: 0.6 }, // ✅ feedback without background
         }),
-        disabled: () => ({
-          bg: "gray.300",
-          _text: { color: "gray.600" },
-        }),
-        disabledOutline: () => ({
-          bg: "transparent",
-          borderWidth: 1,
-          borderColor: "gray.400",
-          _text: { color: "gray.400" },
-        }),
       },
     },
     Heading: {
       baseStyle: {
-          color: "coolGray.800",
-          fontWeight: "500",
-          fontFamily: "poppins"
+        color: "coolGray.800",
+        fontWeight: "500",
+        fontFamily: "poppins"
       },
       sizes: {
         xs: {
@@ -134,7 +129,7 @@ export const theme = extendTheme({
         },
       },
       defaultProps: {
-        size: "xl", 
+        size: "xl",
       },
     },
     Body: {

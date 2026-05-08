@@ -472,15 +472,17 @@ export const submitFeedback = async (userId, feedbackText) => {
       body: JSON.stringify({ message: feedbackText }),
     });
 
+    const data = await response.text();
+    const parsed = data ? JSON.parse(data) : null;
+
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || "Failed to submit feedback.");
+      throw new Error(parsed?.message || "Failed to submit feedback.");
     }
 
-    return await response.json();
+    return parsed;
   } catch (error) {
     console.error("Error submitting feedback:", error);
-    throw error; // propagate error so caller can handle it
+    throw error;
   }
 };
 
