@@ -15,12 +15,12 @@ import {
   Spinner,
 } from "native-base";
 import i18n from "@/i18n";
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store";
 import { useEffect, useRef, useState } from "react";
-import { AlertDialogBox } from "@/components/Modal/AlertDialogBox";
-import ImagePicker from "@/components/ImagePicker";
+import { AlertDialogBox } from "@/components/modal/AlertDialogBox";
+import ImagePicker from "@/components/shared/ImagePicker";
 import auth from "@react-native-firebase/auth";
 import { signOut } from "@/store/auth";
 import { clearMessages } from "@/store/messages/messages-slice";

@@ -16,9 +16,9 @@ import {
   Input,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 import i18n from "@/i18n";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { BookListVertical } from "@/components/shared/BookListVertical";
 import { fetchBooksByTitle } from "@/api/service";
 import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";

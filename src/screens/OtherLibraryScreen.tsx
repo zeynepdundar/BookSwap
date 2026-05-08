@@ -13,11 +13,11 @@ import {
   Spacer,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import Screen from "../components/Screen";
+import Screen from "../components/shared/Screen";
 import i18n from "../i18n";
 import { BookListVertical } from "../components/shared/BookListVertical";
 import { fetchUserProfileData } from "../api/service";
-import { LoadingOverlay } from "../components/LoadingOverlay";
+import { LoadingOverlay } from "../components/shared/LoadingOverlay";
 import { BorderedBookListVertical } from "../components/shared/BorderedBookListVertical";
 
 const AddBookToProposalButton = ({ onPress }) => (

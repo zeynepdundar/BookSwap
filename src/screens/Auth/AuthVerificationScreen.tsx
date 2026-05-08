@@ -27,7 +27,7 @@ import {
 import { RootState } from "@/store/types";
 import { AuthStackParamList } from "@/types/navigation.types";
 import { normalizePhone } from "@/utils/helper";
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 
 
 const ASSETS = {

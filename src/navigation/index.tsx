@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthStack from "./AuthStack";
 import HomeTabs from "./HomeTabs";
 import ProfileCreationStack from "./ProfileCreationStack";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import BookSearchScreen from "@/screens/BookSearchScreen";
 import UserListScreen from "@/screens/UserListScreen";
 import BarcodeScannerScreen from "@/screens/BarcodeScannerScreen";

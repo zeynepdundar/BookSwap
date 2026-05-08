@@ -15,8 +15,8 @@ import {
 import i18n from "@/i18n";
 import { submitFeedback } from "@/api/service";
 import { RootState } from "@/store/types";
-import Screen from "@/components/Screen";
-import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
+import Screen from "@/components/shared/Screen";
+import { InfoDialogBox } from "@/components/modal/InfoDialogBox";
 
 
 export default function FeedbackScreen({ navigation }) {

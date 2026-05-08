@@ -12,9 +12,9 @@ import {
   Pressable,
   Divider,
 } from "native-base";
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 import { useCallback, useEffect, useState } from "react";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { formatText, getImageSource, truncateText } from "@/utils/helper";

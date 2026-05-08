@@ -10,9 +10,9 @@ import {
 } from "native-base";
 import i18n from "@/i18n";
 import { setProfileData } from "@/store/profile/slice";
-import Screen from "@/components/Screen";
-import ImagePicker from "@/components/ImagePicker";
-import StepHeader from "@/components/StepHeader";
+import Screen from "@/components/shared/Screen";
+import ImagePicker from "@/components/shared/ImagePicker";
+import StepHeader from "@/components/shared/StepHeader";
 
 export default function PhotoInputScreen({ navigation }) {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();

@@ -13,11 +13,11 @@ import {
   Divider,
   Input,
 } from "native-base";
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 import i18n from "@/i18n";
 import { setProfileData } from "@/store/profile/slice";
 
-import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { EditionEndpoints } from "@/api/endpoints";
 import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";
 import { useDispatch } from "react-redux";

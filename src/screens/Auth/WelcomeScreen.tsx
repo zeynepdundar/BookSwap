@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import i18n from "@/i18n";
 import { AuthStackParamList } from '@/types/navigation.types';
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 
 type WelcomeScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;

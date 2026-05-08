@@ -11,7 +11,7 @@ import {
   Avatar,
   Flex,
 } from "native-base";
-import Screen from "../../components/Screen";
+import Screen from "../../components/shared/Screen";
 
 export default function OtherSwapHistory({ historyList }) {
   const tradeIcon = require("../../assets/images/icon/trade-in.png");

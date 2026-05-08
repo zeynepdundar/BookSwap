@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   StyleSheet,
   Dimensions,
-  SafeAreaView,
   StatusBar,
   Platform,
 } from "react-native";
@@ -27,12 +26,12 @@ import {
   generateModalActions,
   truncateText,
 } from "@/utils/helper";
-import { ActionSheet } from "@/components/ActionSheet";
+import { ActionSheet } from "@/components/shared/ActionSheet";
 import { AppDispatch } from "@/store";
 import i18n from "@/i18n";
-import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
+import { InfoDialogBox } from "@/components/modal/InfoDialogBox";
 import { addBookToListAsync } from "@/store/profile/thunks";
-import { ListTypes, BookCollections } from "@/types/book.types";
+import { BookCollection, BookCollections } from "@/types/book.types";
 
 export default function BarcodeScannerScreen({
   navigation,
@@ -49,7 +48,7 @@ export default function BarcodeScannerScreen({
   const [edition, setEdition] = useState(null);
   const [error, setError] = useState(null);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
-  const [selectedAction, setSelectedAction] = useState<BookCollections | null>(
+  const [selectedAction, setSelectedAction] = useState< BookCollection | null>(
     null
   );
   const [selectedItem, setSelectedItem] = useState(null);
@@ -116,7 +115,7 @@ export default function BarcodeScannerScreen({
       const response = await dispatch(
         addBookToListAsync({
           ...edition,
-          type: mode === "Wishlist" ? ListTypes.WISHLIST : ListTypes.LIBRARY,
+          type: mode === "Wishlist" ? BookCollections.WISHLIST : BookCollections.LIBRARY,
         })
       );
       const payload = response.payload;
@@ -134,8 +133,8 @@ export default function BarcodeScannerScreen({
       closeActionSheet();
     } else {
       const actions = [
-        { type: ListTypes.WISHLIST, label: "add-my-wishlist" },
-        { type: ListTypes.LIBRARY, label: "add-my-library" },
+        { type: BookCollections.WISHLIST, label: "add-my-wishlist" },
+        { type: BookCollections.LIBRARY, label: "add-my-library" },
         { type: "cancel", label: "cancel" },
       ];
       setActions(generateModalActions(actions, handleAction, closeActionSheet));
@@ -143,14 +142,14 @@ export default function BarcodeScannerScreen({
     }
   };
   let title, description, buttonVariant, confirmButtonLabel, navigateToScreen;
-  if (selectedAction === ListTypes.WISHLIST) {
+  if (selectedAction === BookCollections.WISHLIST) {
     title = i18n.t("successfully-added");
     description = i18n.t("the-book-added-to-wishlist");
     buttonVariant = "outline";
     confirmButtonLabel = i18n.t("see-my-wishlist");
     navigateToScreen = () =>
       navigation.navigate("ProfileStack", { screen: "Wishlist" });
-  } else if (selectedAction === ListTypes.LIBRARY) {
+  } else if (selectedAction === BookCollections.LIBRARY) {
     title = i18n.t("successfully-added");
     description = i18n.t("the-book-added-to-library");
     buttonVariant = "outline";

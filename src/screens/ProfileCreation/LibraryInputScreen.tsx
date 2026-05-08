@@ -10,11 +10,11 @@ import {
   Spacer,
 } from "native-base";
 import i18n from "@/i18n";
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 import SearchBar from "@/components/shared/SearchBar";
 import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
-import StepHeader from "@/components/StepHeader";
+import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
+import StepHeader from "@/components/shared/StepHeader";
 import { setIsNewUser } from "@/store/auth/slice";
 import { updateProfileAsync } from "@/store/profile/thunks";
 

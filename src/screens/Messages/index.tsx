@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 import {
   Avatar,
   Badge,
@@ -20,7 +20,7 @@ import {
 import i18n from "@/i18n";
 import { useSelector } from "react-redux";
 import { useMessageSubscription } from "@/hooks/use-message-subscription";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import {
   formatLastMessageTime,
   generateConversationId,

@@ -17,7 +17,7 @@ import {
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfileImageUrl } from "@/api/service";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import i18n from "@/i18n";
 
 import { formatText, getImageSource, truncateText } from "@/utils/helper";

@@ -11,7 +11,7 @@ import {
 } from "native-base";
 import i18n from "@/i18n";
 import { setProfileData } from "@/store/profile/slice";
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 
 
 export default function NameInputScreen({ navigation }) {

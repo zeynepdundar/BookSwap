@@ -15,7 +15,7 @@ import {
 } from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import i18n from "@/i18n";
-import { ErrorAlert } from "./shared/ErrorAlert";
+import { ErrorAlert } from "./ErrorAlert";
 
 const avatarImage = require("../assets/images/avatar.png");
 const MAX_IMAGE_SIZE_MB = 10; // Maximum allowed size in MB

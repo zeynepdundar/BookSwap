@@ -28,11 +28,11 @@ import {
   Flex,
   Divider,
 } from "native-base";
-import Screen from "@/components/Screen";
-import { ActionSheet } from "@/components/ActionSheet";
+import Screen from "@/components/shared/Screen";
+import { ActionSheet } from "@/components/shared/ActionSheet";
 import { generateModalActions } from "@/utils/helper";
 import i18n from "@/i18n";
-import BlockUserModal from "@/components/Modal/BlockUserModal";
+import BlockUserModal from "@/components/modal/BlockUserModal";
 import { useSelector } from "react-redux";
 import { initializeConversation, updateLastMessage } from "@/store/messages/messages-actions";
 

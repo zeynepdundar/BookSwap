@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   Button,
@@ -20,11 +20,13 @@ import {
   CloseIcon,
 } from "native-base";
 import i18n from "@/i18n";
-import Screen from "@/components/Screen";
 import { AppDispatch } from "@/store";
-import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
-import { getImageSource } from "@/utils/helper";
 import { sendOfferAsync } from "@/store/profile/thunks";
+import { getImageSource } from "@/utils/helper";
+import { InfoDialogBox } from "@/components/modal/InfoDialogBox";
+import Screen from "@/components/shared/Screen";
+
+
 
 interface TradeProposal {
   receiverId: string;

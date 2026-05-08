@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 import { BookListVertical } from "@/components/shared/BookListVertical";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";

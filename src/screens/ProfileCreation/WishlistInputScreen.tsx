@@ -10,10 +10,10 @@ import {
 } from "native-base";
 import { setProfileData } from "@/store/profile/slice";
 import i18n from "@/i18n";
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 import SearchBar from "@/components/shared/SearchBar";
 import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
-import StepHeader from "@/components/StepHeader";
+import StepHeader from "@/components/shared/StepHeader";
 
 
 export default function WishlistInputScreen({ navigation }) {

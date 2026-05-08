@@ -13,9 +13,9 @@ import {
   Box,
 } from "native-base";
 import i18n from "@/i18n";
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 import { setProfileData } from "@/store/profile/slice";
-import StepHeader from "@/components/StepHeader";
+import StepHeader from "@/components/shared/StepHeader";
 
 export default function BirthdateInputScreen({ navigation }) {
 

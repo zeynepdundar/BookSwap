@@ -14,7 +14,7 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 
 import i18n from "@/i18n";
-import Screen from "@/components/Screen";
+import Screen from "@/components/shared/Screen";
 import { BookListVertical } from "@/components/shared/BookListVertical";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store";
