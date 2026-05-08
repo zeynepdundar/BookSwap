@@ -18,15 +18,16 @@ import TradeProposal from "@/screens/TradeProposal";
 import OtherLibraryScreen from "@/screens/OtherLibraryScreen";
 import TradeOfferAcceptedScreen from "@/screens/TradeOfferAcceptedScreen";
 import { RootState } from "@/store/types";
-import { RootStackParamList } from "@/types/navigation";
+import { RootStackParamList } from "@/types/navigation.types";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function Navigation() {
-  const { loading, user } = useSelector((state: RootState) => state.auth);
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
+
+  const { loading, user, isAuthenticated } = useSelector(
+  (state: RootState) => state.auth
+);
+
 
   if (loading) {
     return <LoadingOverlay />;

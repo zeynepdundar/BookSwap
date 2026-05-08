@@ -21,7 +21,7 @@ import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { fetchProfileImageUrl } from "@/api/service";
 import { useFocusEffect } from "@react-navigation/native";
 import i18n from "@/i18n";
-import { fetchTradeHistoryAsync } from "@/store/profile/profile-actions";
+import { fetchTradeHistoryAsync } from "@/store/profile/thunks";
 
 export default function HistoryScreen({ navigation }) {
   const tradeIcon = require("@/assets/images/icon/trade-in.png");

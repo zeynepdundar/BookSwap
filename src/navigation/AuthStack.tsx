@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSelector } from "react-redux";
 import { WelcomeScreen, AuthVerificationScreen } from "@/screens/Auth";
-import { AuthStackParamList } from "@/types/navigation";
+import { AuthStackParamList } from "@/types/navigation.types";
 import { RootState } from "@/store/types";
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();

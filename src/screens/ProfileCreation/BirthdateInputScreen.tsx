@@ -14,7 +14,7 @@ import {
 } from "native-base";
 import i18n from "@/i18n";
 import Screen from "@/components/Screen";
-import { setProfileData } from "@/store/profile/profile-slice";
+import { setProfileData } from "@/store/profile/slice";
 import StepHeader from "@/components/StepHeader";
 
 export default function BirthdateInputScreen({ navigation }) {
@@ -53,7 +53,6 @@ export default function BirthdateInputScreen({ navigation }) {
   }, [birthMonth]);
 
   const pressHandler = () => {
-    console.log("birt", mergeDate())
     dispatch(setProfileData({ birthdate: mergeDate() }));
     navigation.navigate("GenderInput");
   };

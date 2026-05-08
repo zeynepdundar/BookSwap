@@ -57,7 +57,7 @@ export const CoverListHorizontal = ({
             //              key={item.id}
             //              onPress={() => {
             //                navigation.navigate("BookSearch", {
-            //                  relatedScreen: "Home",
+            //                  sourceScreen: "Home",
             //                  // searchedBook: item.title,
             //                });
             //               }}

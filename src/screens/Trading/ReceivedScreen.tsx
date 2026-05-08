@@ -23,7 +23,7 @@ import i18n from "@/i18n";
 
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { ErrorAlert } from "../BarcodeScannerScreen";
-import { acceptOfferAsync, fetchReceivedOffersAsync, rejectOfferAsync } from "@/store/profile/profile-actions";
+import { acceptOfferAsync, fetchReceivedOffersAsync, rejectOfferAsync } from "@/store/profile/thunks";
 
 export default function ReceivedScreen({ navigation }) {
   const tra = require("@/assets/images/icon/Icons.png");

@@ -1,8 +1,9 @@
 import { EditionEndpoints, FeedbackEndpoints, ProfileEndpoints, TradeEndpoints } from "./endpoints";
 import { createBookData, structureOfferData } from "@/utils/helper";
 import AsyncStore from "@/utils/AsyncStore";
+import { UserProfile } from "@/store/profile/types";
+import { BookCollection, BookCollections } from "@/types/book.types";
 
-import { UserProfile, WISHLIST } from "../constants";
 
 export const updateUserProfileData = async (
   profileData,
@@ -10,7 +11,7 @@ export const updateUserProfileData = async (
 ) => {
   const wishlistBookIds =
     Array.isArray(profileData.wishlistBook) &&
-    profileData.wishlistBook.length > 0
+      profileData.wishlistBook.length > 0
       ? profileData.wishlistBook.map((item: any) => item.id).filter(Boolean)
       : undefined;
 
@@ -92,7 +93,7 @@ export const fetchProfileImageUrl = async (userId: string) => {
       const body = await response.text();
       throw new Error(`Failed to fetch user profile image. Status: ${response.status}, Body: ${body}`);
     }
-    
+
 
     const data = await response.json();
 
@@ -277,55 +278,62 @@ export const fetchHistory = async (userId) => {
     return []; // Return an empty array in case of an error
   }
 };
-export const addBookToList = async (userId, bookData) => {
-  const editionIds = Array.isArray(bookData)
-    ? bookData.map((book) => book.id)
-    : [bookData.id];
-  const bookType = Array.isArray(bookData) ? bookData[0].type : bookData.type;
+export const addBookToList = async (
+  userId: string,
+  bookData: any,
+  token?: string
+) => {
+  const books = Array.isArray(bookData) ? bookData : [bookData];
+
+  const editionIds = books.map((book) => book.id);
+  const bookType = books[0]?.type;
 
   const url =
-    bookType === WISHLIST
+    bookType === BookCollections.WISHLIST
       ? ProfileEndpoints.ADD_BOOK_TO_WISHLIST(userId)
       : ProfileEndpoints.ADD_BOOK_TO_LIBRARY(userId);
 
-  const response = await fetch(`${url}`, {
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${"eyJhbGciOiJSUzI1NiIsImtpZCI6IjAzMmNjMWNiMjg5ZGQ0NjI2YTQzNWQ3Mjk4OWFlNDMyMTJkZWZlNzgiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vYm9vay1zd2FwLTJkOWE1IiwiYXVkIjoiYm9vay1zd2FwLTJkOWE1IiwiYXV0aF90aW1lIjoxNzAzMjQ4MjUwLCJ1c2VyX2lkIjoiMnZXNFJhRUpCc1RCYVI0VTloTHpudUtsTzZJMiIsInN1YiI6IjJ2VzRSYUVKQnNUQmFSNFU5aEx6bnVLbE82STIiLCJpYXQiOjE3MDM0MjU0MzMsImV4cCI6MTcwMzQyOTAzMywicGhvbmVfbnVtYmVyIjoiKzE1NTU2NjYxMjM0IiwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJwaG9uZSI6WyIrMTU1NTY2NjEyMzQiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwaG9uZSJ9fQ.p4gFmzGQKYv22zrsbo-zatwMeTs8WhbrFn6FFTkLY76PsfF2flZyEQ3hLFfDU3zy0BmS8SFgLyA6DQVp4uDGebtYNfxdCkHc6AB1Ni0fAF7FXoI_J3jQ8dUDA2cUQ9wQOzjaVcboiciX89Begp_GtM19EcOoK045Q1DIw-cWta0NGY-BjngJ11jWEYDJb1pzexsjTZiA6CuQghhq8sTZsvstwueCdhre4gwQzARJaXVzEQMfHWMekUacGqjkDa90onwNChlMzQtxdOu0KDrpgsZj7-8Oi5EQODnFl6xHp5g42vB64HNS2Kc2_frgQA1yxyxNeYaKVMB1ia6y_QmuOw"}`,
+      Authorization: `Bearer ${"token"}`,
     },
     body: JSON.stringify({ edition_ids: editionIds }),
   });
 
-  const responseData = await response.json();
+  const data = await response.json().catch(() => null);
 
+  // -----------------------------
+  // ERROR CASE (API-controlled)
+  // -----------------------------
   if (!response.ok) {
-    if (responseData.status === "error" && responseData.message) {
-      // Handle the specific error message
-      console.error(responseData.message);
-      return {
-        status: responseData.status,
-        message: responseData.message,
-        existingEditionIds: responseData.existing_edition_ids,
-      };
-    }
-    throw new Error("Failed to add book to list [addBookToList]");
+
+    return {
+      ok: false,
+      code: data?.status === "error" ? "BOOK_ADD_ERROR" : "GENERIC_ERROR",
+      message: data?.message || "Failed to add book to list",
+      existingEditionIds: data?.existing_edition_ids ?? [],
+    };
   }
-  const addedBooks = Array.isArray(bookData) ? bookData : [bookData];
 
-  const addedBookDetails = addedBooks.map((book) => ({
-    id: book.id,
-    title: book.title,
-    author: book.author,
-    publisher: book.publisher,
-    coverUrl: book.coverUrl,
-  }));
-
-  return addedBookDetails;
+  // -----------------------------
+  // SUCCESS CASE
+  // -----------------------------
+  return {
+    ok: true,
+    books: books.map((book) => ({
+      id: book.id,
+      title: book.title,
+      author: book.author,
+      publisher: book.publisher,
+      coverUrl: book.coverUrl,
+    })),
+  };
 };
 export const removeBookFromList = async (userId, bookData) => {
   const url =
-    bookData.type === WISHLIST
+    bookData.type === BookCollections.WISHLIST
       ? ProfileEndpoints.ADD_BOOK_TO_WISHLIST(userId)
       : ProfileEndpoints.ADD_BOOK_TO_LIBRARY(userId);
 

@@ -22,12 +22,12 @@ import { useEffect, useRef, useState } from "react";
 import { AlertDialogBox } from "@/components/Modal/AlertDialogBox";
 import ImagePicker from "@/components/ImagePicker";
 import auth from "@react-native-firebase/auth";
-import { signOut } from "@/store/auth/auth-slice";
+import { signOut } from "@/store/auth";
 import { clearMessages } from "@/store/messages/messages-slice";
-import { clearProfileData, setProfileData } from "@/store/profile/profile-slice";
+import { clearProfileData, setProfileData } from "@/store/profile";
 import { RootState } from "@/store/types";
 import AsyncStore from "@/utils/AsyncStore";
-import { updateProfileAsync } from "@/store/profile/profile-actions";
+import { updateProfileAsync } from "@/store/profile";
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("@/assets/images/icon/library-icon.png");

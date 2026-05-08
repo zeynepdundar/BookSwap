@@ -24,7 +24,7 @@ import Screen from "@/components/Screen";
 import { AppDispatch } from "@/store";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { getImageSource } from "@/utils/helper";
-import { sendOfferAsync } from "@/store/profile/profile-actions";
+import { sendOfferAsync } from "@/store/profile/thunks";
 
 interface TradeProposal {
   receiverId: string;

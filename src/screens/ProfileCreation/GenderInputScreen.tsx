@@ -16,7 +16,7 @@ import {
 import i18n from "@/i18n";
 import Screen from "@/components/Screen";
 
-import { setProfileData } from "@/store/profile/profile-slice";
+import { setProfileData } from "@/store/profile/slice";
 import StepHeader from "@/components/StepHeader";
 
 const OPTIONS = [

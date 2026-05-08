@@ -1,5 +1,6 @@
-import { LIBRARY, WISHLIST } from "../constants";
-import i18n from "../i18n";
+import i18n from "@/i18n";
+import { BookCollections } from "@/types/book.types";
+
 
 export const getCoverUrl = (bookData) => {
   const isbn = bookData.isbn_13 || bookData.isbn_10;
@@ -184,14 +185,14 @@ export const truncateText = (text, maxLength = 100) => {
 };
 export const generateActions = (handleAction, closeActionSheet) => [
   {
-    type: WISHLIST,
+    type: BookCollections.WISHLIST,
     label: "add-my-wishlist",
-    onPress: () => handleAction(WISHLIST),
+    onPress: () => handleAction(BookCollections.WISHLIST),
   },
   {
-    type: LIBRARY,
+    type: BookCollections.LIBRARY,
     label: "add-my-library",
-    onPress: () => handleAction(LIBRARY),
+    onPress: () => handleAction(BookCollections.LIBRARY),
   },
   { type: "cancel", label: "cancel", onPress: closeActionSheet },
   // Add more actions as needed

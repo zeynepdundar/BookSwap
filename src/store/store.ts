@@ -1,20 +1,21 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import rootReducer from "./rootReducer";
-import { authListener } from "./middleware/auth-listener";
+import rootReducer from "@/store/rootReducer";
+import {  authListener } from "@/store/auth";
 
 const store = configureStore({
   reducer: rootReducer,
 
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [
           "messages/subscriber",
           "messages/resetUnseenCount",
         ],
       },
-    }).prepend(authListener.middleware),
+    }).concat(authListener.middleware)
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;

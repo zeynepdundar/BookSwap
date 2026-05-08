@@ -15,8 +15,8 @@ import SearchBar from "@/components/shared/SearchBar";
 import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import StepHeader from "@/components/StepHeader";
-import { setIsNewUser } from "@/store/auth/auth-slice";
-import { updateProfileAsync } from "@/store/profile/profile-actions";
+import { setIsNewUser } from "@/store/auth/slice";
+import { updateProfileAsync } from "@/store/profile/thunks";
 
 
 export default function LibraryInputScreen({ navigation }) {
@@ -86,20 +86,20 @@ export default function LibraryInputScreen({ navigation }) {
           <SearchBar
             onSearchBook={() => {
               navigation.navigate("BookSearchOnCreation", {
-                relatedScreen: "Library",
+                sourceScreen: "Library",
                 onDonePress: handleAddToLibrary,
               });
             }}
             onScanBarcode={() => {
               navigation.navigate("BarcodeScannerOnProfileCreation", {
-                relatedScreen: "Library",
+                sourceScreen: "Library",
                 onAddBook: handleAddToLibrary
 
               });
             }}
             onFocus={() => {
               navigation.navigate("BookSearchOnCreation", {
-                relatedScreen: "Library",
+                sourceScreen: "Library",
                 onDonePress: handleAddToLibrary,
               });
             }}

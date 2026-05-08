@@ -8,7 +8,7 @@ import {
   VStack,
   Spacer,
 } from "native-base";
-import { setProfileData } from "@/store/profile/profile-slice";
+import { setProfileData } from "@/store/profile/slice";
 import i18n from "@/i18n";
 import Screen from "@/components/Screen";
 import SearchBar from "@/components/shared/SearchBar";
@@ -64,18 +64,18 @@ export default function WishlistInputScreen({ navigation }) {
           <SearchBar
             onSearchBook={() => {
               navigation.navigate("BookSearchOnCreation", {
-                relatedScreen: "Wishlist",
+                sourceScreen: "Wishlist",
               });
             }}
             onScanBarcode={() => {
               navigation.navigate("BarcodeScannerOnProfileCreation", {
-                relatedScreen: "Wishlist",
+                sourceScreen: "Wishlist",
                 onAddBook: handleAddToWishlist
               });
             }}
             onFocus={() => {
               navigation.navigate("BookSearchOnCreation", {
-                relatedScreen: "Wishlist",
+                sourceScreen: "Wishlist",
                 onDonePress: handleAddToWishlist,
               });
             }}

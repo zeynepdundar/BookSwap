@@ -7,7 +7,7 @@ import {
   WishlistInputScreen,
   LibraryInputScreen,
 } from "@/screens/ProfileCreation";
-import {  ProfileCreationStackParamList} from "@/types/navigation";
+import {  ProfileCreationStackParamList} from "@/types/navigation.types";
 
 const Stack = createNativeStackNavigator<ProfileCreationStackParamList>();
 

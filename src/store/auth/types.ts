@@ -1,12 +1,7 @@
-export type ConfirmationResult = {
-  confirm: (code: string) => Promise<unknown>;
-};
-
 export type AuthState = {
   loading: boolean;
   error: AuthError | null;
   user: {
-    id: string;
     isNewUser: boolean;
     firebaseUserId: string | null;
   };

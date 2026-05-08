@@ -21,7 +21,7 @@ import { AppDispatch } from "@/store";
 import { useNavigationState } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { WISHLIST } from "@/constants";
-import { removeBookFromListAsync } from "@/store/profile/profile-actions";
+import { removeBookFromListAsync } from "@/store/profile/thunks";
 
 const RemoveBookButton = ({ onPress }) => (
   <Icon
@@ -120,7 +120,7 @@ export default function WishlistScreen({ navigation }) {
         <Fab
           onPress={() =>
             navigation.navigate("BookSearch", {
-              relatedScreen: "Wishlist",
+              sourceScreen: "Wishlist",
             })
           }
           renderInPortal={false}

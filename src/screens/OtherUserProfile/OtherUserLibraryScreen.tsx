@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";
 import { ErrorAlert } from "../BarcodeScannerScreen";
-import { addBookToListAsync } from "@/store/profile/profile-actions";
+import { addBookToListAsync } from "@/store/profile/thunks";
 
 export default function OtherUserWishlistScreen({
   navigation,

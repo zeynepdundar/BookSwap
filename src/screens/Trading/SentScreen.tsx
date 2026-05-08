@@ -22,7 +22,7 @@ import i18n from "@/i18n";
 
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { ErrorAlert } from "../BarcodeScannerScreen";
-import { fetchSentOffersAsync, takeBackOfferAsync } from "@/store/profile/profile-actions";
+import { fetchSentOffersAsync, takeBackOfferAsync } from "@/store/profile/thunks";
 
 export default function SentScreen({ navigation }) {
   const tra = require("@/assets/images/icon/Icons.png");

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Box, Flex, Heading, Image, Pressable, Text } from "native-base";
-import i18n from "../i18n";
-import Screen from "../components/Screen";
-import { CoverListHorizontal } from "../components/shared/CoverListHorizontal";
-import SearchBar from "../components/shared/SearchBar";
-import { LoadingOverlay } from "../components/LoadingOverlay";
-import { fetchMostPopularBooks } from "../api/service";
+import i18n from "@/i18n";
+import Screen from "@/components/Screen";
+import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
+import SearchBar from "@/components/shared/SearchBar";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
+import { fetchMostPopularBooks } from "@/api/service";
 
 export default function HomeScreen({ navigation }) {
   const importUrl = require("../assets/images/avatar.png");
@@ -17,13 +17,14 @@ export default function HomeScreen({ navigation }) {
     (state: any) => state.profile
   );
 
+  console.log("Profile", profileLoading, profile)
+
   useEffect(() => {
     (async () => {
       const data = await fetchMostPopularBooks();
       setBooks(data);
     })();
   }, []);
-  const [loading, setLoading] = useState(true);
 
   if (profileLoading) {
     return <LoadingOverlay></LoadingOverlay>;
@@ -53,19 +54,19 @@ export default function HomeScreen({ navigation }) {
       <SearchBar
         onSearchBook={() => {
           navigation.navigate("BookSearch", {
-            relatedScreen: "Home",
+            sourceScreen: "Home",
           });
         }}
         onScanBarcode={() => {
           navigation.navigate("BarcodeScanner", {
-            relatedScreen: "Home",
+            sourceScreen: "Home",
           });
         }}
-        onFocus={() => {}}
+        onFocus={() => { }}
         disableKeyboard={true}
         navigateOnPress={() =>
           navigation.navigate("BookSearch", {
-            relatedScreen: "Home",
+            sourceScreen: "Home",
           })
         }
       />
@@ -74,7 +75,7 @@ export default function HomeScreen({ navigation }) {
           <Text color="black.400" fontWeight="700">
             {i18n.t("recently-added")}
           </Text>
-          <CoverListHorizontal data={books}  navigation={navigation}/>
+          <CoverListHorizontal data={books} navigation={navigation} />
         </Box>
       )}
       {books.length > 0 && (

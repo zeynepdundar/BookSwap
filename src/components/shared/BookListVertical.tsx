@@ -1,4 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { Keyboard } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+
 import {
   FlatList,
   Image,
@@ -14,14 +18,12 @@ import {
   Button,
 } from "native-base";
 import { InfoDialogBox } from "../Modal/InfoDialogBox";
-import { MaterialIcons } from "@expo/vector-icons";
+
 import { ActionSheet } from "../ActionSheet";
 import { formatText, generateActions, truncateText } from "@/utils/helper";
 import i18n from "@/i18n";
 import { useSelector } from "react-redux";
-import { LIBRARY, WISHLIST } from "@/constants";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { Keyboard } from "react-native";
+import { BookCollections } from "@/types/book.types";
 interface BookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
   onPrimaryAction?: (id: string) => void;
@@ -203,14 +205,14 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
 
   // Prepare dialog content based on selected action
   let title, description, buttonVariant, confirmButtonLabel, navigateToScreen;
-  if (selectedAction === WISHLIST) {
+  if (selectedAction === BookCollections.WISHLIST) {
     title = i18n.t("successfully-added");
     description = i18n.t("the-book-added-to-wishlist");
     buttonVariant = "outline";
     confirmButtonLabel = i18n.t("see-my-wishlist");
     navigateToScreen = () =>
       navigation.navigate("ProfileStack", { screen: "Wishlist" });
-  } else if (selectedAction === LIBRARY) {
+  } else if (selectedAction === BookCollections.LIBRARY) {
     title = i18n.t("successfully-added");
     description = i18n.t("the-book-added-to-library");
     buttonVariant = "outline";

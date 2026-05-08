@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ProfileScreen, WishlistScreen, LibraryScreen, FeedbackScreen } from "@/screens";
-import { ProfileStackParamList } from "@/types/navigation";
+import { ProfileStackParamList } from "@/types/navigation.types";
 
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();

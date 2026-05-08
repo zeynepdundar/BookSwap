@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import {
-  addUserToDatabaseAsync,
+  createUserInDatabaseAsync,
   checkVerificationCode,
   verifyPhoneNumber,
-} from "./auth-actions";
-import { AuthError, AuthState } from "./auth.types";
+} from "./thunks";
+import { AuthError, AuthState } from "./types";
 
 const initialState: AuthState = {
   loading: false,
   error: null,
-  user: { id: "", isNewUser: false, firebaseUserId: null },
+  user: { isNewUser: false, firebaseUserId: null },
   authToken: null,
   verificationCode: "",
   verificationId: null,
@@ -64,40 +64,43 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as AuthError;
       })
-    // -------------------------
-    // CHECK VERIFICATION CODE
-    // -------------------------
-    builder
+      // -------------------------
+      // CHECK VERIFICATION CODE
+      // -------------------------
+
       .addCase(checkVerificationCode.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
+
+      // NOTE: Avoid race condition between auth state and profile hydration
+      // Navigation should not rely on checkVerificationCode.fulfilled payload
+      // because profile/user state is resolved asynchronously via listener flow
+
+      // NOTE: avoid race condition — isAuthenticated is already handled by setToken; navigation should wait for full auth flow (token + profile)
+
       .addCase(checkVerificationCode.fulfilled, (state, action) => {
         state.loading = false;
-        state.isAuthenticated = true;
-        state.user.firebaseUserId = action.payload.user.firebaseUserId;
-        state.user.isNewUser = action.payload.user.isNewUser;
-
-        state.authToken = action.payload.token;
+        //  state.isAuthenticated = true;
+        //  state.user = action.payload.user;
+        //  state.authToken = action.payload.token;
       })
       .addCase(checkVerificationCode.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as AuthError;
       })
 
-    // -------------------------
-    // ADD USER TO DATABASE
-    // -------------------------
-    builder
-      .addCase(addUserToDatabaseAsync.pending, (state) => {
+      // -------------------------
+      // ADD USER TO DATABASE
+      // -------------------------
+      .addCase(createUserInDatabaseAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addUserToDatabaseAsync.fulfilled, (state, action) => {
+      .addCase(createUserInDatabaseAsync.fulfilled, (state) => {
         state.loading = false;
-        state.user.id = action.payload.user_id;
       })
-      .addCase(addUserToDatabaseAsync.rejected, (state, action) => {
+      .addCase(createUserInDatabaseAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as AuthError;
       });
@@ -105,11 +108,11 @@ const authSlice = createSlice({
 });
 
 export const {
-  setVerificationCode,
   setUser,
+  setVerificationCode,
   setToken,
-  signOut,
   setIsNewUser,
+  signOut,
 } = authSlice.actions;
 
-export default authSlice.reducer;
+export const authReducer = authSlice.reducer;

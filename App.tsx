@@ -11,7 +11,6 @@ import AsyncStore from "./src/utils/AsyncStore";
 import { theme } from "./src/theme";
 import Navigation from "./src/navigation";
 import { AppDispatch, store } from "./src/store";
-import { setToken } from "./src/store/auth/auth-slice";
 
 ///  PUSH NOTIFICATIONS - START  ///
 

@@ -1,5 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "@/store/types";
 
 import {
   addBookToList,
@@ -11,7 +10,7 @@ import {
   sendOffer,
   updateUserProfileData,
 } from "@/api/service";
-import { ProfileEndpoints, TradeEndpoints } from "@/api/endpoints";
+import { TradeEndpoints } from "@/api/endpoints";
 
 export const fetchUserProfileAsync = createAsyncThunk(
   "profile/fetchUserProfile",
@@ -39,7 +38,7 @@ export const updateProfileAsync = createAsyncThunk(
   async ({ profileData, fullUpdate = false }: { profileData: any; fullUpdate?: boolean }, { rejectWithValue }) => {
     try {
       await updateUserProfileData(profileData, fullUpdate);
-      return profileData; 
+      return profileData;
     } catch (error) {
       console.error("Profile update failed:", error.message);
       return rejectWithValue(error.message);
@@ -49,19 +48,43 @@ export const updateProfileAsync = createAsyncThunk(
 
 export const addBookToListAsync = createAsyncThunk(
   "profile/addBookToList",
-  async (book: any, { getState }) => {
+  async (book: any, thunkAPI) => {
     try {
-      const userId = (getState() as RootState).profile.profile.id;
-      const response = await addBookToList(userId, book);
-      const bookType = Array.isArray(book) ? book[0].type : book.type;
+      const state = thunkAPI.getState() as any;
+      const userId = state.profile.profile.id;
 
-      if (response.status === "error") {
-        return response; // Return the error response
+      const response = await addBookToList(userId, book);
+
+      const bookType = Array.isArray(book)
+        ? book[0].type
+        : book.type;
+
+      // -----------------------------
+      // API ERROR CASE
+      // -----------------------------
+      if (response?.ok === false) {
+        console.log("!!!!!!!!!!!!!")
+        return thunkAPI.rejectWithValue({
+          code: response.code,
+          message: response.message,
+          existingEditionIds: response.existingEditionIds ?? [],
+        });
       }
-      return { book: response, listType: bookType };
-    } catch (error) {
-      console.error(error);
-      throw error;
+
+      // -----------------------------
+      // SUCCESS
+      // -----------------------------
+      return {
+        book: response.books,
+        listType: bookType,
+      };
+    } catch (error: any) {
+        console.log("!!!!!!!!!!!!!++")
+
+      return thunkAPI.rejectWithValue({
+        code: "GENERIC_ERROR",
+        message: error?.message ?? "Failed to add book",
+      });
     }
   }
 );
@@ -70,7 +93,7 @@ export const removeBookFromListAsync = createAsyncThunk(
   "profile/removeBookFromList",
   async (book: any, { getState }) => {
     try {
-      const userId = (getState() as RootState).profile.profile.id;
+      const userId = (getState() as any).profile.profile.id;
       await removeBookFromList(userId, book);
       return { id: book.id, listType: book.type };
     } catch (error) {
@@ -84,7 +107,7 @@ export const sendOfferAsync = createAsyncThunk(
   "profile/sendOffer",
   async (createdOffer: any, { getState }) => {
     try {
-      const userId = (getState() as RootState).profile.profile.id;
+      const userId = (getState() as any).profile.profile.id;
       await sendOffer(userId, createdOffer);
       const allSentOffers = await fetchSentOffer(userId);
       return allSentOffers;
@@ -99,8 +122,8 @@ export const acceptOfferAsync = createAsyncThunk(
   "profile/acceptOffer",
   async (offerId: any, { getState }) => {
     try {
-      const uid = (getState() as RootState).auth.user.firebaseUserId;
-      const id = (getState() as RootState).profile.profile.id;
+      const uid = (getState() as any).auth.user.firebaseUserId;
+      const id = (getState() as any).profile.profile.id;
 
       const response = await fetch(TradeEndpoints.ACCEPT_OFFER, {
         method: "POST",
@@ -136,7 +159,7 @@ export const rejectOfferAsync = createAsyncThunk(
   "profile/rejectOffer",
   async (offerId: any, { getState }) => {
     try {
-      const id = (getState() as RootState).profile.profile.id;
+      const id = (getState() as any).profile.profile.id;
 
       const response = await fetch(TradeEndpoints.REJECT_OFFER, {
         method: "POST",
@@ -167,7 +190,7 @@ export const takeBackOfferAsync = createAsyncThunk(
   "profile/takeBackOffer",
   async (offerId: any, { getState }) => {
     try {
-      const id = (getState() as RootState).profile.profile.id;
+      const id = (getState() as any).profile.profile.id;
 
       const response = await fetch(TradeEndpoints.TAKE_BACK_OFFER, {
         method: "POST",

@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
   HStack,
   VStack,
   Text,
-  Spacer,
   Icon,
   Box,
   AspectRatio,
@@ -16,11 +15,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import i18n from "@/i18n";
 import { Keyboard } from "react-native";
 import { formatText, truncateText } from "@/utils/helper";
+import { BookCollections } from "@/types/book.types";
 
 interface BorderedBookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
   onDonePress?: (item: any) => void;
-  listType?: string;
+  listType?: BookCollections;
 }
 const ListRow = React.memo(function ListRow({ item, changeListStatusHandler, isSelectedBook }: any) {
   return (

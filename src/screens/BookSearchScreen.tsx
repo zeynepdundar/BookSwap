@@ -1,4 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import {
+  getFocusedRouteNameFromRoute,
+  useNavigationState,
+} from "@react-navigation/native";
 import {
   Heading,
   Box,
@@ -10,33 +15,28 @@ import {
   Divider,
   Input,
 } from "native-base";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import Screen from "@/components/Screen";
 import i18n from "@/i18n";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { BookListVertical } from "@/components/shared/BookListVertical";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/store";
 import { fetchBooksByTitle } from "@/api/service";
-import {
-  getFocusedRouteNameFromRoute,
-  useNavigationState,
-} from "@react-navigation/native";
 import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";
 import { ErrorAlert } from "./BarcodeScannerScreen";
-import { addBookToListAsync } from "@/store/profile/profile-actions";
+import { BookCollections } from "@/types/book.types";
+import { useAddBookToList } from "@/hooks/api/useAddBookToList";
 
 export default function BookSearchScreen({ navigation, route = null }) {
-  const { relatedScreen, onDonePress } = route.params;
+  const { sourceScreen, onDonePress } = route.params ?? {};
   // const { searchedBook } = route.params || {};
+
+  const inputRef = useRef(null);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [listType, setListType] = useState<string>("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [selectedBooks, setSelectedBooks] = useState([]);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [listError, setListError] = useState<string | null>(null);
 
   // useEffect(() => {
@@ -45,56 +45,21 @@ export default function BookSearchScreen({ navigation, route = null }) {
   //   }
   // }, [searchedBook]);
 
-  const dispatch = useDispatch<AppDispatch>();
-  const addBookToListHandler = async (selectedItem: any) => {
-    Keyboard.dismiss();
-    inputRef.current?.blur?.();
-    try {
-      const response = await dispatch(addBookToListAsync
-        (selectedItem));
-      const payload = (response as any).payload as {
-        status?: string;
-        existingEditionIds?: any[];
-        message?: string;
-      } | undefined;
 
-      if (payload?.status === "error") {
-        if (payload.existingEditionIds?.length > 0) {
-          setListError(i18n.t("already-have-book"));
-        } else {
-          setListError(payload.message);
-        }
-        setTimeout(() => {
-          setListError(null);
-        }, 5000);
+  const { addBookToList } = useAddBookToList(setListError);
 
-        return { success: false, message: payload.message };
-      }
-      return { success: true };
-    } catch (error) {
-      setListError(i18n.t("something-went-wrong"));
-      setTimeout(() => {
-        setListError(null);
-      }, 5000);
-
-      return { success: false, message: i18n.t("something-went-wrong") };
-    }
-  };
 
   const pressDoneHandler = async (selectedItem: any) => {
     Keyboard.dismiss();
     inputRef.current?.blur?.();
-    let result;
+    const items = Array.isArray(selectedItem)
+      ? selectedItem
+      : [selectedItem];
 
-    if (Array.isArray(selectedItem) && selectedItem.length > 0) {
-      result = await addBookToListHandler(selectedItem);
-    } else {
-      result = await addBookToListHandler([selectedItem]);
-    }
+    const result = await addBookToList(items);
 
     if (result.success) {
       navigation.goBack();
-    } else {
     }
   };
   const navigateUserList = (item) => {
@@ -118,7 +83,6 @@ export default function BookSearchScreen({ navigation, route = null }) {
         setLoading(false);
       });
   };
-  const inputRef = useRef(null);
 
   // useEffect(() => {
   //   // Focus on the input when the component mounts
@@ -157,7 +121,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
   const scanBarcodeHandler = () => {
     navigation.navigate("BarcodeScanner", {
-      relatedScreen: relatedScreen,
+      sourceScreen: sourceScreen,
     });
   };
 
@@ -232,7 +196,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
                 ) : (
                   <BookListVertical
                     data={searchResults}
-                    onSecondaryAction={addBookToListHandler}
+                    onSecondaryAction={addBookToList}
                     onNavigateList={navigateUserList}
                   />
                 )}
@@ -246,7 +210,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
                 <Center w="100%">
                   <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
                   <Text textAlign="center" mx="30" fontWeight="200">
-                    {relatedScreen === "Wishlist"
+                    {sourceScreen === BookCollections.WISHLIST
                       ? i18n.t("add-books-to-your-wishlist-to-start-swap")
                       : i18n.t("add-books-to-your-library-to-start-swap")}
                   </Text>

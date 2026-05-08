@@ -15,7 +15,7 @@ import {
 } from "native-base";
 import Screen from "@/components/Screen";
 import i18n from "@/i18n";
-import { setProfileData } from "@/store/profile/profile-slice";
+import { setProfileData } from "@/store/profile/slice";
 
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { EditionEndpoints } from "@/api/endpoints";
@@ -27,7 +27,7 @@ export default function BookSearchOnCreationScreen({
   navigation,
   route = null,
 }) {
-  const { relatedScreen } = route.params;
+  const { sourceScreen } = route.params;
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -116,17 +116,17 @@ export default function BookSearchOnCreationScreen({
 
   const scanBarcodeHandler = () => {
     navigation.navigate("BarcodeScannerOnProfileCreation", {
-      relatedScreen: "Library",
+      sourceScreen: "Library",
     });
   };
 
 
   const pressDoneHandler = (selectedItem) => {
-  if (relatedScreen === "wishlist") {
+  if (sourceScreen === "wishlist") {
     dispatch(setProfileData({ wishlistBook: selectedItem }));
   }
 
-  if (relatedScreen === "library") {
+  if (sourceScreen === "library") {
     dispatch(setProfileData({ libraryBook: selectedItem }));
   }
 
@@ -193,7 +193,7 @@ export default function BookSearchOnCreationScreen({
               <BorderedBookListVertical
                 data={searchResults}
                 onDonePress={pressDoneHandler}
-                listType={relatedScreen}
+                listType={sourceScreen}
               />
             )}
             {searchQuery.length < 5 && (
@@ -204,7 +204,7 @@ export default function BookSearchOnCreationScreen({
                 <Center w="100%">
                   <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
                   <Text textAlign="center" mx="30" fontWeight="200">
-                    {relatedScreen === "Wishlist"
+                    {sourceScreen === "Wishlist"
                       ? i18n.t("add-books-to-your-wishlist-to-start-swap")
                       : i18n.t("add-books-to-your-library-to-start-swap")}
                   </Text>

@@ -5,7 +5,7 @@ import Screen from "@/components/Screen";
 
 import i18n from "@/i18n";
 import { ReceivedScreen, SentScreen, HistoryScreen } from "@/screens";
-import { TradingTabsParamList } from "@/types/navigation";
+import { TradingTabsParamList } from "@/types/navigation.types";
 
 const Tab = createMaterialTopTabNavigator<TradingTabsParamList>();
 
