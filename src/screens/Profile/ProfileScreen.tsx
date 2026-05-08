@@ -19,7 +19,6 @@ import Screen from "@/components/shared/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store";
 import { useEffect, useRef, useState } from "react";
-import { AlertDialogBox } from "@/components/modal/AlertDialogBox";
 import ImagePicker from "@/components/shared/ImagePicker";
 import auth from "@react-native-firebase/auth";
 import { signOut } from "@/store/auth";

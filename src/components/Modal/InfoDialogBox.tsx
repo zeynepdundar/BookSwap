@@ -34,8 +34,6 @@ export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(
   }) => {
     const cancelRef = useRef(null);
 
-    console.log("whaqq")
-
     const handlePrimaryPress = async () => {
       await primaryAction?.onPress?.();
       onClose();

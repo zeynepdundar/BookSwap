@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import {
   Actionsheet,
   AddIcon,
@@ -17,7 +17,7 @@ import * as FileSystem from "expo-file-system";
 import i18n from "@/i18n";
 import { ErrorAlert } from "./ErrorAlert";
 
-const avatarImage = require("../assets/images/avatar.png");
+const avatarImage = require("../../assets/images/avatar.png");
 const MAX_IMAGE_SIZE_MB = 10; // Maximum allowed size in MB
 
 const ImagePicker = ({

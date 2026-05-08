@@ -14,7 +14,6 @@ authListener.startListening({
   matcher: (action): action is ReturnType<typeof checkVerificationCode.fulfilled> =>
     action.type === "auth/checkVerificationCode/fulfilled",
   effect: async (action, listenerApi) => {
-    console.log("[effect-2] triggered");
     try {
       const { user, token } = action.payload;
 
