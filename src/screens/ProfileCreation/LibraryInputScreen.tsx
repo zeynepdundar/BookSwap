@@ -26,7 +26,7 @@ export default function LibraryInputScreen({ navigation }) {
   const { loading: authLoading } = useSelector((state: any) => state.auth);
   const { profile } = useSelector((state: any) => state.profile);
 
-  const deviceLanguage = Localization.locale.split("-")[0];
+  const deviceLanguage = Localization.getLocales()[0]?.languageCode ?? "en";
 
   const handleAddToLibrary = (data) => {
     setSelectedBooks((prevSelectedBooks) => {
