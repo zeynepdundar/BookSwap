@@ -23,7 +23,7 @@ import { formatText, generateActions, truncateText } from "@/utils/helper";
 import i18n from "@/i18n";
 import { useSelector } from "react-redux";
 import { BookCollections } from "@/types/book.types";
-import { InfoDialogBox } from "@/components/modal/InfoDialogBox";
+import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 interface BookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
   onPrimaryAction?: (id: string) => void;

@@ -29,7 +29,7 @@ import {
 import { ActionSheet } from "@/components/shared/ActionSheet";
 import { AppDispatch } from "@/store";
 import i18n from "@/i18n";
-import { InfoDialogBox } from "@/components/modal/InfoDialogBox";
+import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { addBookToListAsync } from "@/store/profile/thunks";
 import { BookCollection, BookCollections } from "@/types/book.types";
 

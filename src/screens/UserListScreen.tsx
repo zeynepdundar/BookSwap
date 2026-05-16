@@ -15,7 +15,7 @@ import {
 import i18n from "../i18n";
 import Screen from "@/components/shared/Screen";
 import { useSelector } from "react-redux";
-import { AlertDialogBox } from "@/components/modal/AlertDialogBox";
+import { AlertDialogBox } from "@/components/Modal/AlertDialogBox";
 import { fetchProfileImageUrl } from "@/api/service";
 import { useFocusEffect } from "@react-navigation/native";
 import { getImageSource } from "@/utils/helper";

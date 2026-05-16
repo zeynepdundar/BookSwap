@@ -23,7 +23,7 @@ import i18n from "@/i18n";
 import { AppDispatch } from "@/store";
 import { sendOfferAsync } from "@/store/profile/thunks";
 import { getImageSource } from "@/utils/helper";
-import { InfoDialogBox } from "@/components/modal/InfoDialogBox";
+import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import Screen from "@/components/shared/Screen";
 
 
