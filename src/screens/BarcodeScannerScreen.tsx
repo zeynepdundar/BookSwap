@@ -6,7 +6,7 @@ import {
   Platform,
 } from "react-native";
 import { useDispatch } from "react-redux";
-import { BarCodeScanner } from "expo-barcode-scanner";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   Box,
@@ -43,7 +43,8 @@ export default function BarcodeScannerScreen({
   const mode = route?.params?.sourceScreen;
   onAddBook = onAddBook || route?.params?.onAddBook;
 
-  const [hasPermission, setHasPermission] = useState(null);
+  const [permission, requestPermission] = useCameraPermissions();
+
   const [scanned, setScanned] = useState(false);
   const [edition, setEdition] = useState(null);
   const [error, setError] = useState(null);
@@ -56,16 +57,10 @@ export default function BarcodeScannerScreen({
   const [actions, setActions] = useState([]);
 
   useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-    };
-
-    // Only request permissions if not previously determined
-    if (hasPermission === null) {
-      getBarCodeScannerPermissions();
+    if (!permission) {
+      requestPermission();
     }
-  }, [hasPermission]);
+  }, [permission]);
 
   useEffect(() => {
     const resetScannedResult = () => {
@@ -80,7 +75,7 @@ export default function BarcodeScannerScreen({
     return () => clearTimeout(timer);
   }, [scanned]);
 
-  const handleBarCodeScanned = async ({ type, data }) => {
+  const handleBarCodeScanned = async ({ data }) => {
     try {
       setScanned(true);
       const fetchedEditions = await fetchBooksByISBN(data);
@@ -97,10 +92,10 @@ export default function BarcodeScannerScreen({
     }
   };
 
-  if (hasPermission === null) {
+  if (!permission) {
     return <Text>Requesting for camera permission</Text>;
   }
-  if (hasPermission === false) {
+  if (!permission.granted) {
     return <Text>No access to camera</Text>;
   }
   const handleAddBook = async () => {
@@ -210,10 +205,10 @@ export default function BarcodeScannerScreen({
         }
       />
       {/* Ensure full screen coverage */}
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+      <CameraView
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={styles.fullScreenContainer}
-        barCodeTypes={[BarCodeScanner.Constants.BarCodeType.ean13]}
+        barcodeScannerSettings={{ barcodeTypes: ["ean13"] }}
       />
       {edition && (
         <Center>
