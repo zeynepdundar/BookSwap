@@ -2,6 +2,7 @@
   "expo": {
     "name": "Book Swaps",
     "slug": "book-swap",
+    "scheme": "bookswap",
     "version": "1.0.6",
     "newArchEnabled": false,
     "orientation": "portrait",
