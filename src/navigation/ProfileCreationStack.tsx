@@ -21,7 +21,6 @@ export default function ProfileCreationStack() {
         animation: "none",
       }}
     >
-      <Stack.Group>
         <Stack.Screen name="NameInput" component={NameInputScreen}></Stack.Screen>
         <Stack.Screen
           name="GenderInput"
@@ -40,7 +39,6 @@ export default function ProfileCreationStack() {
           name="LibraryInput"
           component={LibraryInputScreen}
         ></Stack.Screen>
-      </Stack.Group>
     </Stack.Navigator>
   );
 }

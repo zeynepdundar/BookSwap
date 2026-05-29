@@ -28,8 +28,6 @@ export default function Navigation() {
   (state: RootState) => state.auth
 );
 
-console.log("Navigation state:", loading, user, isAuthenticated );
-
 
   if (loading) {
     return <LoadingOverlay />;
