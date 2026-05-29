@@ -20,25 +20,30 @@ export const verifyPhoneNumber = createAsyncThunk<
       };
 
     } catch (error: any) {
-      console.error("Error verifying phone number", error);
-      let errorMessage = "Failed to verify phone number";
+      let errorMessage = "Something went wrong. Please try again";
+
       switch (error?.code) {
         case "auth/invalid-phone-number":
-          errorMessage =
-            "Invalid phone number.";
-          break;
-        case "auth/missing-phone-number":
-          errorMessage =
-            "Phone number is required";
-          break;
-        case "auth/too-many-requests":
-          errorMessage = "Too many requests. Try again later";
-          break;
-        case "auth/quota-exceeded":
-          errorMessage = "Quota exceeded. Try again later.";
+          errorMessage = "Please enter a valid phone number";
           break;
 
+        case "auth/missing-phone-number":
+          errorMessage = "Phone number is required";
+          break;
+
+        case "auth/too-many-requests":
+          errorMessage = "Too many attempts. Please try again later";
+          break;
+
+        case "auth/quota-exceeded":
+          errorMessage = "Service limit reached. Please try again later";
+          break;
+
+        default:
+          errorMessage = "Something went wrong. Please try again";
+          break;
       }
+
       return thunkAPI.rejectWithValue({
         type: "verifyPhoneNumberError",
         message: errorMessage,
@@ -78,13 +83,34 @@ export const checkVerificationCode = createAsyncThunk<
       };
 
       return result;
-    } catch (error: any) {
+    }
+    catch (error: any) {
+      let message = "Verification failed. Please try again";
+
+      switch (error?.code) {
+        case "auth/invalid-verification-code":
+        case "auth/invalid-code":
+          message = "The code is incorrect or has expired";
+          break;
+
+        case "auth/session-expired":
+          message = "Code has expired. Please request a new one";
+          break;
+
+        case "auth/too-many-requests":
+          message = "Too many attempts. Try again later";
+          break;
+
+        default:
+          message = "Verification failed. Please try again";
+      }
 
       return thunkAPI.rejectWithValue({
         type: "checkVerificationCodeError",
-        message: error?.message ?? "Verification failed",
+        message,
       });
     }
+
   }
 );
 
@@ -92,7 +118,7 @@ export const checkVerificationCode = createAsyncThunk<
  * Safely extracts `isNewUser` from Firebase userCredential.
  * `additionalUserInfo` can be undefined or occasionally throw in @react-native-firebase/auth.
  */
-const safeGetIsNewUser=(userCredential: any): boolean =>{
+const safeGetIsNewUser = (userCredential: any): boolean => {
   try {
     const info = userCredential?.additionalUserInfo;
     return info?.isNewUser ?? false;

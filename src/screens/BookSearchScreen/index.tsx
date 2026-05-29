@@ -22,7 +22,7 @@ import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { BookListVertical } from "@/components/shared/BookListVertical";
 import { fetchBooksByTitle } from "@/api/service";
 import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";
-import { ErrorAlert } from "./BarcodeScannerScreen";
+import { ErrorAlert } from "../BarcodeScannerScreen";
 import { BookCollections } from "@/types/book.types";
 import { useAddBookToList } from "@/hooks/api/useAddBookToList";
 

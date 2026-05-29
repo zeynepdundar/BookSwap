@@ -9,7 +9,7 @@ import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { fetchMostPopularBooks } from "@/api/service";
 
 export default function HomeScreen({ navigation }) {
-  const importUrl = require("../assets/images/avatar.png");
+  const importUrl = require("@/assets/images/avatar.png");
 
   const [books, setBooks] = useState([]);
 

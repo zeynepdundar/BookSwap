@@ -11,11 +11,11 @@ import {
   Avatar,
   Flex,
 } from "native-base";
-import Screen from "../../components/shared/Screen";
+import Screen from "../../../components/shared/Screen";
 
 export default function OtherSwapHistory({ historyList }) {
-  const tradeIcon = require("../../assets/images/icon/trade-in.png");
-  const profilePhoto = require("../../assets/images/lalo-salamanca.png");
+  const tradeIcon = require("../../../assets/images/icon/trade-in.png");
+  const profilePhoto = require("../../../assets/images/lalo-salamanca.png");
 
   return (
       <Center mt="6">

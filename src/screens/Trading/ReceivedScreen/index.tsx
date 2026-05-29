@@ -2,6 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import {
   AspectRatio,
+  Avatar,
   Box,
   Button,
   Center,
@@ -21,66 +22,24 @@ import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import i18n from "@/i18n";
 
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
-import { ErrorAlert } from "../BarcodeScannerScreen";
-import { fetchSentOffersAsync, takeBackOfferAsync } from "@/store/profile/thunks";
+import { ErrorAlert } from "../../BarcodeScannerScreen";
+import { acceptOfferAsync, fetchReceivedOffersAsync, rejectOfferAsync } from "@/store/profile/thunks";
 
-export default function SentScreen({ navigation }) {
+export default function ReceivedScreen({ navigation }) {
   const tra = require("@/assets/images/icon/Icons.png");
   const avatar = require("@/assets/images/avatar.png");
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [loadingImages, setLoadingImages] = useState(true);
-
-  const sentOffers = useSelector(
-    (state: any) => state.profile.profile.sentOffer
+  const receivedOffers = useSelector(
+    (state: any) => state.profile.profile.receivedOffer
   );
-  const [sentOffersWithUserPhoto, setSentOffersWithUserPhoto] =
-    useState(sentOffers);
-
+  const [receivedOffersWithUserPhoto, setReceivedOffersWithUserPhoto] =
+    useState(receivedOffers);
+  const [refreshing, setRefreshing] = useState(false);
   const { loading, profile } = useSelector((state: any) => state.profile);
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const [error, setError] = useState<string | null>(null);
 
-  const takeBackOfferHandler = async (offerId: string) => {
-    try {
-      const response = await dispatch(takeBackOfferAsync(offerId));
-
-      const payload = response.payload;
-
-      if (!payload.success) {
-        const errorMessage =
-          payload.message === "Offer not found or not eligible for taking back"
-            ? i18n.t("offer-not-found-or-eligible-for-taking-back")
-            : payload.message;
-
-        setError(errorMessage);
-        setTimeout(() => {
-          setError(null);
-        }, 5000);
-
-        await dispatch(fetchSentOffersAsync(profile.id));
-
-        return;
-      }
-    } catch (error) {
-      setError(i18n.t("something-went-wrong"));
-      setTimeout(() => {
-        setError(null);
-      }, 5000);
-
-      await dispatch(fetchSentOffersAsync(profile.id));
-
-      return;
-    }
-  };
-  const onNavigateProfile = (selectedUser) => {
-    navigation.navigate("OtherUserProfile", {
-      user: selectedUser,
-    });
-  };
   const fetchProfileImages = async () => {
-    setLoadingImages(true);
     const updatedOffers = await Promise.all(
-      sentOffers.map(async (offer) => {
+      receivedOffers.map(async (offer) => {
         const photoUrl = await fetchProfileImageUrl(
           offer.participantProfile.id
         );
@@ -93,57 +52,152 @@ export default function SentScreen({ navigation }) {
         };
       })
     );
-    setSentOffersWithUserPhoto(updatedOffers);
-    setLoadingImages(false);
+    setReceivedOffersWithUserPhoto(updatedOffers);
   };
+  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   useFocusEffect(
     useCallback(() => {
       fetchProfileImages();
-    }, [sentOffers])
+    }, [receivedOffers])
   );
+  const refreshReceivedOffers = useCallback(async () => {
+    await dispatch(((fetchReceivedOffersAsync as any)(profile.id)));
+  }, [dispatch, profile.id]);
 
-  // TODO: This is coded for providing asynchronous data fetching from the database.
-  // Profile fetching happens when logged in. The API should ideally use sockets.
-  // Remove this when the socket-based implementation is ready.
+  const showError = useCallback((message: string, durationMs: number = 5000) => {
+    setError(message);
+    setTimeout(() => {
+      setError(null);
+    }, durationMs);
+  }, []);
+  const acceptOfferHandler = async (offer: any) => {
+    try {
+      const response = await dispatch(acceptOfferAsync(offer.id));
+      const payload = (response as any).payload as any;
+
+      if (!payload.success) {
+        const errorMessage =
+          payload.message === "Offer not found or not eligible for acceptance"
+            ? i18n.t("offer-not-found-or-eligible-for-acceptance")
+            : payload.message;
+
+        showError(errorMessage, 50000);
+        await refreshReceivedOffers();
+
+        return;
+      }
+      // Navigate to the TradeOfferAcceptedScreen on success
+      navigation.push("TradeOfferAcceptedScreen", {
+        user: {
+          id: offer.participantProfile.id,
+          name: offer.participantProfile.name,
+        },
+        receivedBook: offer.requestedBook,
+        offeredBook: offer.offeredBook,
+        conversationId: payload.conversationId,
+      });
+    } catch (error) {
+      showError(i18n.t("something-went-wrong"));
+      await refreshReceivedOffers();
+
+      return;
+    }
+  };
+
+  const rejectOfferHandler = async (offerId: any) => {
+    try {
+      const response = await dispatch(rejectOfferAsync(offerId));
+
+      const payload = (response as any).payload as any;
+
+      if (!payload.success) {
+        const errorMessage =
+          payload.message === "Offer not found or not eligible for rejection"
+            ? i18n.t("offer-not-found-or-eligible-for-rejection")
+            : payload.message;
+
+        showError(errorMessage);
+        await refreshReceivedOffers();
+
+        return;
+      }
+    } catch (error) {
+      showError(i18n.t("something-went-wrong"));
+      await refreshReceivedOffers();
+
+      return;
+    }
+  };
+
+  const onNavigateProfile = (selectedUser) => {
+    navigation.navigate("OtherUserProfile", {
+      user: selectedUser,
+    });
+  };
+
+  const renderEmptyItem = () => null; // Empty renderItem function
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    dispatch(fetchSentOffersAsync(profile.id)).finally(() =>
-      setRefreshing(false)
-    );
+    (dispatch(((fetchReceivedOffersAsync as any)(profile.id)))) // Replace with your API call action
+      .finally(() => setRefreshing(false));
   }, [dispatch]);
 
   if (loading && !refreshing) {
     return <LoadingOverlay />;
   }
+
   return (
     <>
-      {!sentOffers ||
-        (sentOffers.length === 0 && (
-          <VStack width="100%" height="100%" pt="100" bg="#fff">
-            <Center>
-              <Text fontSize="md" textAlign="center">
-                {i18n.t("start-searching-for-new-books")}
-              </Text>
-            </Center>
-            <Center w="100%">
-              <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-              <Text textAlign="center" mx="30" fontWeight="200">
-                {i18n.t("you-have-not-sent-any-offer-yet")}
-              </Text>
-            </Center>
+      {!receivedOffers ||
+        (receivedOffers.length === 0 && (
+          <VStack width="100%" height="100%" bg="#fff" position="relative">
+            <Box position="absolute" top={0} left={0} right={0} zIndex={1}>
+              <Center pt="100">
+                <Text fontSize="md">
+                  {i18n.t("start-searching-for-new-books")}
+                </Text>
+              </Center>
+              <Center w="100%">
+                <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
+                <Text textAlign="center" mx="30" fontWeight="200">
+                  {i18n.t("you-have-not-received-any-offer-yet")}
+                </Text>
+
+                <Text textAlign="center" mx="30" fontWeight="200">
+                  {i18n.t("scroll-down-to-get-latest-request-if-exists")}
+                </Text>
+              </Center>
+            </Box>
+
+            <Box flex={1}>
+              <FlatList
+                data={[]}
+                refreshing={refreshing} // Show refresh indicator while fetching data
+                onRefresh={onRefresh} // Enable pull-to-refresh
+                ListEmptyComponent={<></>} // Optional empty component for spacing
+                renderItem={renderEmptyItem} // Provide empty renderItem function
+                contentContainerStyle={{
+                  flexGrow: 1,
+                  justifyContent: "center",
+                }} // Center content in FlatList
+                showsVerticalScrollIndicator={false}
+              />
+            </Box>
           </VStack>
         ))}
-      {sentOffers && sentOffers.length > 0 && (
-        <FlatList
+
+      {receivedOffers && receivedOffers.length > 0 && (
+        <FlatList<any>
           maxWidth="100%"
           bg="#fff"
           height="75%"
-          data={sentOffersWithUserPhoto}
+          data={receivedOffersWithUserPhoto}
           showsVerticalScrollIndicator={false}
           pt="3"
           refreshing={refreshing}
           onRefresh={onRefresh}
-          renderItem={({ item }) => (
+          renderItem={({ item }: { item: any }) => (
             <Box pb="6" overflow="hidden" alignItems="center" key={item.id}>
               <Flex
                 direction="row"
@@ -168,7 +222,6 @@ export default function SentScreen({ navigation }) {
                     rounded="full"
                   />
                 </Box>
-
                 <Pressable
                   flex={1}
                   alignItems="flex-end"
@@ -191,7 +244,7 @@ export default function SentScreen({ navigation }) {
                         fontSize="12px"
                         mx={1}
                         textAlign="right"
-                        mt="-1"
+                        mt="-1.5"
                       >
                         {item.createdAt}
                       </Text>
@@ -239,15 +292,6 @@ export default function SentScreen({ navigation }) {
                           base: 45 / 68,
                         }}
                       >
-                        {/* <Image
-                          source={
-                            item.offeredBook.coverUrl
-                              ? { uri: item.offeredBook.coverUrl }
-                              : importUrl
-                          }
-                          alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
-                          roundedRight="6"
-                        /> */}
                         <Image
                           source={
                             item.offeredBook.coverUrl
@@ -268,11 +312,11 @@ export default function SentScreen({ navigation }) {
                       >
                         {truncateText(formatText(item.offeredBook.title), 36)}
                       </Text>
-                      <Text color="#8c8c8c" fontSize="11">
-                        {item.offeredBook.author}
+                      <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
+                        {truncateText(formatText(item.offeredBook.author), 30)}
                       </Text>
                     </VStack>
-                    <Center height={150}>
+                    <Center height={110}>
                       <Image source={tra} alt="Library icon" />
                     </Center>
                     <VStack flex={1} alignItems="center">
@@ -298,29 +342,46 @@ export default function SentScreen({ navigation }) {
                         color="#000000"
                         fontSize="12"
                         fontWeight={500}
-                        numberOfLines={3}
+                        numberOfLines={2}
                       >
-                        {item.requestedBook.title}
+                        {truncateText(formatText(item.requestedBook.title), 36)}
                       </Text>
-                      <Text color="#8c8c8c" fontSize="11">
-                        {item.requestedBook.author}
+                      <Text color="#8c8c8c" fontSize="11" numberOfLines={2}>
+                        {truncateText(
+                          formatText(item.requestedBook.author),
+                          30
+                        )}
                       </Text>
                     </VStack>
                   </HStack>
                   {/* <Divider my={3} color="#E5E7F3" thickness="1" /> */}
-                  <Flex direction="row" marginLeft="auto" pt="3">
+                  <Flex direction="row" justifyContent="space-between" pt="3">
                     <Button
-                      variant="outline"
-                      onPress={() => takeBackOfferHandler(item.id)}
+                      variant="ghost"
+                      _text={{ color: "#9395A4" }}
+                      onPress={() => rejectOfferHandler(item.id)}
                     >
-                      {i18n.t("take-back")}
+                      {i18n.t("decline")}
+                    </Button>
+                    <Divider
+                      color="#E5E7F3"
+                      thickness="1"
+                      orientation="vertical"
+                      height={6}
+                      marginY="2"
+                    />
+                    <Button
+                      variant="ghost"
+                      onPress={() => acceptOfferHandler(item)}
+                    >
+                      {i18n.t("accept")}
                     </Button>
                   </Flex>
                 </VStack>
               </Box>
             </Box>
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item: any) => item.id}
         />
       )}
       {error && <ErrorAlert message={error} />}

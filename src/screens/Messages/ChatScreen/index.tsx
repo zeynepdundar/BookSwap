@@ -296,7 +296,7 @@ export default function ChatScreen({ navigation, route }) {
       <Text>From CustomView</Text>
     </View>
   );
-  const avatarImage = require("../../assets/images/avatar.png");
+  const avatarImage = require("@/assets/images/avatar.png");
   const [isBlockUserModalOpen, setIsBlockUserModalOpen] =
     useState<boolean>(false);
 

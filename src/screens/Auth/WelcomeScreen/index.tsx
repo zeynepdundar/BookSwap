@@ -8,10 +8,12 @@ import {
   VStack,
 } from "native-base";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useDispatch } from "react-redux";
 
 import i18n from "@/i18n";
 import { AuthStackParamList } from "@/types/navigation.types";
 import Screen from "@/components/shared/Screen";
+import { clearVerification } from "@/store/auth/slice";
 
 type WelcomeScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -27,9 +29,18 @@ const ASSETS = {
 export default function WelcomeScreen({
   navigation,
 }: WelcomeScreenProps) {
-  const handleGetStarted = useCallback(() => {
-    navigation.navigate("AuthVerification");
-  }, [navigation]);
+  const dispatch = useDispatch();
+
+const handleGetStarted = useCallback(() => {
+  dispatch(clearVerification());
+
+  requestAnimationFrame(() => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "PhoneInput" }],
+    });
+  });
+}, [navigation, dispatch]);
 
   return (
     <Screen>

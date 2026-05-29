@@ -1,6 +1,6 @@
 import { Heading, HStack, Text } from "native-base";
-import i18n from "../i18n";
-import Screen from "../components/shared/Screen";
+import i18n from "../../i18n";
+import Screen from "../../components/shared/Screen";
 
 export default function NotificationScreen({ navigation }) {
   return (

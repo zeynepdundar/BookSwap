@@ -12,7 +12,7 @@ import {
   Image,
   Box,
 } from "native-base";
-import i18n from "../i18n";
+import i18n from "../../i18n";
 import Screen from "@/components/shared/Screen";
 import { useSelector } from "react-redux";
 import { AlertDialogBox } from "@/components/Modal/AlertDialogBox";
@@ -24,7 +24,7 @@ export default function UserListScreen({ navigation, route }) {
   const usersTemp = route?.params?.data?.usersOwning;
   const book = route?.params?.data;
 
-  const avatar = require("../assets/images/avatar.png");
+  const avatar = require("../../assets/images/avatar.png");
 
   const { libraryBook } = useSelector((state: any) => state.profile.profile);
 

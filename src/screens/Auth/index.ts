@@ -1,2 +1,3 @@
 export { default as WelcomeScreen } from "./WelcomeScreen";
-export { default as AuthVerificationScreen } from "./AuthVerificationScreen";
+export { default as PhoneInputScreen } from "./PhoneInputScreen";
+export { default as CodeVerificationScreen } from "./CodeVerificationScreen";

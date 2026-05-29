@@ -8,7 +8,7 @@ import {
   IconButton,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import Screen from "../components/shared/Screen";
+import Screen from "../../components/shared/Screen";
 import { ImageBackground } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -16,7 +16,7 @@ export default function TradeOfferAcceptedScreen({ navigation, route }) {
   const { user, conversationId } = route.params || {};
   const { firebaseUserId } = useSelector((state: any) => state.auth.user);
 
-  const importUrl = require("../assets/images/radar.png");
+  const importUrl = require("../../assets/images/radar.png");
 
   const goToChatScreen = () => {
     navigation.replace("ChatScreen", {

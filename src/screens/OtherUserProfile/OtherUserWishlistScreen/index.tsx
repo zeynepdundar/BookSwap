@@ -1,40 +1,16 @@
-import { Box, Button, Center } from "native-base";
-import i18n from "@/i18n";
+import { useState } from "react";
 import Screen from "@/components/shared/Screen";
 import { BookListVertical } from "@/components/shared/BookListVertical";
-import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store";
-import { ErrorAlert } from "../BarcodeScannerScreen";
+import i18n from "@/i18n";
+import { ErrorAlert } from "../../BarcodeScannerScreen";
+import { Box, Center } from "native-base";
 import { addBookToListAsync } from "@/store/profile/thunks";
 
-export default function OtherUserWishlistScreen({
-  navigation,
-  profile,
-  libraryBook,
-}) {
-  const [userProfile, setUserProfile] = useState(profile);
-  const [libraryBooks, setLibraryBooks] = useState(libraryBook);
+export default function OtherUserWishlistScreen({ wishedBook }) {
+  const [wishedBooks, setWishedBook] = useState(wishedBook);
   const [listError, setListError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setUserProfile(profile);
-  }, [profile]);
-
-  const sendOfferHandler = async (selectedItem: any) => {
-    navigation.navigate("TradeProposal", {
-      data: {
-        user: userProfile,
-        book: {
-          author: selectedItem.item.author,
-          coverUrl: selectedItem.item.coverUrl,
-          id: selectedItem.item.id,
-          publisher: selectedItem.item.publisher,
-          title: selectedItem.item.title,
-        },
-      },
-    });
-  };
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -69,9 +45,8 @@ export default function OtherUserWishlistScreen({
   return (
     <Center mt="6">
       <BookListVertical
-        data={libraryBooks}
+        data={wishedBooks}
         onSecondaryAction={addBookToListHandler}
-        onSendOffer={sendOfferHandler}
       />
       {listError && (
         <>
