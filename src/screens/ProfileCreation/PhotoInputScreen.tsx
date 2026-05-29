@@ -17,7 +17,7 @@ import StepHeader from "@/components/shared/StepHeader";
 export default function PhotoInputScreen({ navigation }) {
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
   const profileData = useSelector((state: any) => state.profile.profile);
-  const initialImage = profileData.imageData || "";
+  const initialImage = profileData?.imageData || "";
   const [image, setImage] = useState<any>(initialImage);
 
   const handleImageUpload = (imageUri) => {

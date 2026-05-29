@@ -16,7 +16,8 @@ import { AppDispatch, store } from "./src/store";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: false,
     shouldSetBadge: false,
   }),
@@ -94,13 +95,11 @@ export default function App() {
     // Cleanup subscriptions when unmounting
     return () => {
       if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(
-          notificationListener.current
-        );
+        notificationListener.current.remove();
         notificationListener.current = null; // Reset the ref
       }
       if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
+        responseListener.current.remove();
         responseListener.current = null; // Reset the ref
       }
     };

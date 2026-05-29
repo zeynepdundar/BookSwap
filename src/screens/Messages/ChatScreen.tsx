@@ -32,7 +32,7 @@ import Screen from "@/components/shared/Screen";
 import { ActionSheet } from "@/components/shared/ActionSheet";
 import { generateModalActions } from "@/utils/helper";
 import i18n from "@/i18n";
-import BlockUserModal from "@/components/modal/BlockUserModal";
+import BlockUserModal from "@/components/Modal/BlockUserModal";
 import { useSelector } from "react-redux";
 import { initializeConversation, updateLastMessage } from "@/store/messages/messages-actions";
 

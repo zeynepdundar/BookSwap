@@ -5,35 +5,46 @@ import {
   createUserInDatabaseAsync,
 } from "./thunks";
 import { fetchUserProfileAsync } from "@/store/profile";
-import { setToken } from "./slice";
+import { setProfileData } from "@/store/profile/slice";
+import { setToken, setUser } from "./slice";
 
 export const authListener = createListenerMiddleware();
 
 
 authListener.startListening({
-  matcher: (action): action is ReturnType<typeof checkVerificationCode.fulfilled> =>
+  matcher: (
+    action
+  ): action is ReturnType<typeof checkVerificationCode.fulfilled> =>
     action.type === "auth/checkVerificationCode/fulfilled",
+
   effect: async (action, listenerApi) => {
     try {
       const { user, token } = action.payload;
 
-      // 1. Persist token
+      // AUTH FIRST
       await AsyncStore.setItem("authToken", token);
 
-      // 2. Create user if new
+      console.log("Auth token stored successfully:", user);
+
+      // Set user state before token so navigation reads isNewUser correctly on first render
+      listenerApi.dispatch(setUser(user));
+
+      listenerApi.dispatch(setToken(token));
+
+            console.log("Auth token stored successfully2:", user);
+
+      // THEN background sync
       if (user.isNewUser) {
-        await listenerApi
+        const { user_id } = await listenerApi
           .dispatch(createUserInDatabaseAsync(token))
           .unwrap();
+        listenerApi.dispatch(setProfileData({ id: user_id }));
       }
 
-      // 3. Fetch profile
-      await listenerApi.dispatch(
+      else {await listenerApi.dispatch(
         fetchUserProfileAsync(user.firebaseUserId)
       );
-
-      // 4. Set the auth flag
-      listenerApi.dispatch(setToken(token));
+      }
     } catch (error) {
       console.error("Auth listener failed:", error);
     }

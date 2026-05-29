@@ -1,8 +1,8 @@
-const BASE_URL = "http://159.223.22.255";
+const BASE_URL = "https://api.bookswapapp.com";
 //"http://localhost"; // Change this based on your environment
 const PORT = "3050";
 
-const api = (path: string) => `${BASE_URL}:${PORT}${path}`;
+const api = (path: string) => `${BASE_URL}${path}`;
 
 /* ------------------- AUTH ------------------- */
 const AuthEndpoints = {

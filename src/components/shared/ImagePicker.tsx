@@ -13,7 +13,7 @@ import {
   useCameraPermissions,
   PermissionStatus,
 } from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import i18n from "@/i18n";
 import { ErrorAlert } from "./ErrorAlert";
 

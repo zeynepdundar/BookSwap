@@ -27,6 +27,7 @@ import { clearProfileData, setProfileData } from "@/store/profile";
 import { RootState } from "@/store/types";
 import AsyncStore from "@/utils/AsyncStore";
 import { updateProfileAsync } from "@/store/profile";
+import { AlertDialogBox } from "@/components/Modal/AlertDialogBox";
 
 export default function ProfileScreen({ navigation }) {
   const libraryIcon = require("@/assets/images/icon/library-icon.png");
@@ -41,7 +42,16 @@ export default function ProfileScreen({ navigation }) {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
 
-  // Destructure specific attributes from the profileData
+  if (!profileData) {
+    return (
+      <Screen>
+        <Center flex={1}>
+          <Spinner size="lg" />
+        </Center>
+      </Screen>
+    );
+  }
+
   const { name, wishlistBook, libraryBook, languagePreference, imageData } =
     profileData;
 

@@ -11,6 +11,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       process.env.GOOGLE_SERVICE_INFO_PLIST ||
       "./keys/firebase/GoogleService-Info.plist",
     bundleIdentifier: "com.harmony.bookswap",
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
+    },
   },
   android: {
     versionCode: 4,

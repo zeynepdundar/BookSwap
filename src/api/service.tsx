@@ -26,6 +26,7 @@ export const updateUserProfileData = async (
   );
 
   // Initialize updatedAttributes with mandatory fields (id is required)
+ console.log("profileData", profileData)
   const updatedAttributes: any = {
     id: profileData.id.toString(),
   };

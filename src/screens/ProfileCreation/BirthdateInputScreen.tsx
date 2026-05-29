@@ -20,7 +20,7 @@ import StepHeader from "@/components/shared/StepHeader";
 export default function BirthdateInputScreen({ navigation }) {
 
   const profileData = useSelector((state: any) => state.profile.profile);
-  const birthdate = profileData.birthdate || ""
+  const birthdate = profileData?.birthdate || ""
 
   const [birthYear, setBirthYear] = useState<string>(birthdate.split("-")[0] || "");
   const [birthMonth, setBirthMonth] = useState<string>(birthdate.split("-")[1] || "");

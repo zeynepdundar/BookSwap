@@ -34,6 +34,7 @@ const authSlice = createSlice({
   reducers: {
     setUser(state, action: PayloadAction<AuthState["user"]>) {
       state.user = action.payload;
+      console.log("action",action)
     },
     setVerificationCode(state, action: PayloadAction<string>) {
       state.verificationCode = action.payload;
@@ -41,6 +42,7 @@ const authSlice = createSlice({
     setToken(state, action: PayloadAction<string | null>) {
       state.authToken = action.payload;
       state.isAuthenticated = !!action.payload;
+        console.log("action",!!action.payload, action)
     },
     setIsNewUser(state, action: PayloadAction<boolean>) {
       state.user.isNewUser = action.payload;
