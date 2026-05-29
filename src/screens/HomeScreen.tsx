@@ -16,6 +16,7 @@ export default function HomeScreen({ navigation }) {
   const { profile, loading: profileLoading } = useSelector(
     (state: any) => state.profile
   );
+  
 
   console.log("Profile", profileLoading, profile)
 
@@ -26,7 +27,7 @@ export default function HomeScreen({ navigation }) {
     })();
   }, []);
 
-  if (profileLoading) {
+  if (profileLoading || !profile) {
     return <LoadingOverlay></LoadingOverlay>;
   }
   return (

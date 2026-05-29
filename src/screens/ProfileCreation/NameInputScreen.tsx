@@ -17,7 +17,7 @@ import Screen from "@/components/shared/Screen";
 export default function NameInputScreen({ navigation }) {
   const profileData = useSelector((state: any) => state.profile.profile);
 
-  const initialName = profileData.name || "";
+  const initialName = profileData?.name || "";
   const [name, setName] = useState(initialName);
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();

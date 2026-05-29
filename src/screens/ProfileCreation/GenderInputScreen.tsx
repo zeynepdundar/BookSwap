@@ -26,7 +26,7 @@ const OPTIONS = [
 
 export default function GenderInputScreen({ navigation }) {
   const profileData = useSelector((state: any) => state.profile.profile);
-  const initialGender = profileData.gender || "";
+  const initialGender = profileData?.gender || "";
   const [gender, setGender] = useState<string>(initialGender);
 
 
