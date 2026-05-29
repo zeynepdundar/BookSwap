@@ -18,7 +18,8 @@
       "android": {
         "buildType": "app-bundle"
       },
-      "distribution": "internal"
+      "distribution": "internal",
+      "autoIncrement": true
     },
     "production": {
       "autoIncrement": true
@@ -28,11 +29,12 @@
     "production": {
       "android": {
         "serviceAccountKeyPath": "./keys/book-swap-2d9a5-905323e61694.json",
-        "track": "internal"
+        "track": "production"
       },
       "ios": {
         "appleId": "isiyok.muhammet@gmail.com",
-        "appleTeamId": "64RAWCZ6SJ"
+        "appleTeamId": "64RAWCZ6SJ",
+        "ascAppId": "6476162048"
       }
     },
     "preview": {
@@ -40,10 +42,6 @@
         "serviceAccountKeyPath": "./keys/book-swap-2d9a5-905323e61694.json",
         "track": "internal",
         "releaseStatus": "draft"
-      },
-      "ios": {
-        "appleId": "isiyok.muhammet@gmail.com",
-        "appleTeamId": "64RAWCZ6SJ"
       }
     }
   }

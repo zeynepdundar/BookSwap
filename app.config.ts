@@ -5,7 +5,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   name: "Book Swaps",
   slug: "book-swap",
   ios: {
-    buildNumber: "1.0.6",
+    buildNumber: config.ios?.buildNumber,
     supportsTablet: true,
     googleServicesFile:
       process.env.GOOGLE_SERVICE_INFO_PLIST ||
@@ -16,7 +16,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
-    versionCode: 4,
+    versionCode: config.android?.versionCode,
     googleServicesFile:
       process.env.GOOGLE_SERVICES_JSON ||
       "./keys/firebase/google-services.json",
