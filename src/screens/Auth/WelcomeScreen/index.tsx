@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import {
   Box,
   Button,
@@ -31,22 +31,20 @@ export default function WelcomeScreen({
 }: WelcomeScreenProps) {
   const dispatch = useDispatch();
 
-const handleGetStarted = useCallback(() => {
-  dispatch(clearVerification());
+  const handleGetStarted = useCallback(() => {
+    dispatch(clearVerification());
 
-  requestAnimationFrame(() => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "PhoneInput" }],
+    requestAnimationFrame(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "PhoneInput" }],
+      });
     });
-  });
-}, [navigation, dispatch]);
+  }, [navigation, dispatch]);
 
   return (
     <Screen>
       <Box flex={1} bg="white">
-
-        {/* very subtle ambient background */}
         <Box
           position="absolute"
           top={-140}
@@ -69,7 +67,6 @@ const handleGetStarted = useCallback(() => {
           opacity={0.1}
         />
 
-        {/* softer illustration integration */}
         <Image
           source={ASSETS.infiniteLibrary}
           alt={i18n.t("infinite-library")}
@@ -97,7 +94,7 @@ const handleGetStarted = useCallback(() => {
               color="black"
               maxW="320px"
             >
-              Build your infinite library
+              {i18n.t("build-your-infinite-library")}
             </Heading>
 
             <Text
@@ -106,7 +103,7 @@ const handleGetStarted = useCallback(() => {
               lineHeight="28px"
               maxW="260px"
             >
-              Discover and exchange books with people who read like you.
+              {i18n.t("discover-and-exchange-books-with-people-who-read-like-you")}
             </Text>
           </VStack>
 
@@ -127,7 +124,7 @@ const handleGetStarted = useCallback(() => {
               fontSize="sm"
               color="black.400"
             >
-              A shared world of books.
+              {i18n.t("a-shared-world-of-books")}
             </Text>
           </VStack>
         </VStack>

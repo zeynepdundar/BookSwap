@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import { useCallback, useState } from "react";
 import {
   Alert,
   Button,
@@ -23,7 +23,6 @@ import {
 import { RootState } from "@/store/types";
 import { AuthStackParamList } from "@/types/navigation.types";
 import Screen from "@/components/shared/Screen";
-import { clearAuthError } from "@/store/auth/slice";
 
 type Props = {
   navigation: NativeStackNavigationProp<
@@ -33,19 +32,29 @@ type Props = {
 };
 
 export default function CodeVerificationScreen({ navigation }: Props) {
+  const [error, setError] = useState<string | null>(null);
+
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
-  const { loading, error, verificationId, verificationCode } = useSelector(
+  const { loading, verificationId, verificationCode } = useSelector(
     (state: RootState) => state.auth
   );
 
-  const handleCheckVerificationCode = useCallback(() => {
-    if (verificationId) {
-      dispatch(checkVerificationCode({ verificationId, verificationCode }));
+  const handleCheckVerificationCode = useCallback(async () => {
+    if (!verificationId) return;
+
+    setError(null);
+    const result = await dispatch(checkVerificationCode({ verificationId, verificationCode }));
+
+    if (checkVerificationCode.rejected.match(result)) {
+      const errorMsg = typeof result.payload === "string"
+        ? result.payload
+        : (result.payload as any)?.message || "Verification failed";
+      setError(errorMsg);
     }
   }, [dispatch, verificationId, verificationCode]);
 
   const handleVerificationCodeChange = useCallback((enteredText: string) => {
-
+    setError(null);
     const numericValue = enteredText.replace(/[^0-9]/g, "");
     dispatch(setVerificationCode(numericValue));
   }, [dispatch]);
@@ -100,7 +109,7 @@ export default function CodeVerificationScreen({ navigation }: Props) {
 
           {error && (
             <Alert mt="5" w="80%" borderRadius="10px">
-              <Text fontSize="sm">{error.message}</Text>
+              <Text fontSize="sm">{error}</Text>
             </Alert>
           )}
         </VStack>

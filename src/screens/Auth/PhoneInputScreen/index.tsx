@@ -14,7 +14,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "@reduxjs/toolkit";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useFocusEffect } from "@react-navigation/native";
 
 import i18n from "@/i18n";
 import { verifyPhoneNumber } from "@/store/auth";
@@ -22,7 +21,6 @@ import { RootState } from "@/store/types";
 import { AuthStackParamList } from "@/types/navigation.types";
 import { normalizePhone } from "@/utils/helper";
 import Screen from "@/components/shared/Screen";
-import { clearAuthError } from "@/store/auth/slice";
 
 const ASSETS = {
   appLogo: require("@/assets/images/app-icon-516x516.png"),
@@ -39,32 +37,37 @@ type Props = {
 export default function PhoneInputScreen({ navigation }: Props) {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState("tr");
+  const [error, setError] = useState<string | null>(null);
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
-  const { loading, error } = useSelector(
+  const { loading } = useSelector(
     (state: RootState) => state.auth
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(clearAuthError());
-    }, [dispatch])
-  );
+  const handleVerifyPhoneNumber = useCallback(async () => {
+    const cleaned = normalizePhone(phoneNumber);
+    if (!cleaned) {
+      return;
+    }
 
-const handleVerifyPhoneNumber = useCallback(async () => {
-  const cleaned = normalizePhone(phoneNumber);
-  if (!cleaned) return;
+    setError(null);
+    const result = await dispatch(verifyPhoneNumber(cleaned));
 
-  const result = await dispatch(verifyPhoneNumber(cleaned));
+    if (verifyPhoneNumber.fulfilled.match(result)) {
+      navigation.navigate("CodeVerification");
+      console.log("Verification initiated successfully");
+    } else if (verifyPhoneNumber.rejected.match(result)) {
+      const errorMsg = typeof result.payload === "string"
+        ? result.payload
+        : (result.payload as any)?.message || "Verification failed";
+      setError(errorMsg);
+    }
+  }, [dispatch, phoneNumber, navigation]);
 
-  if (verifyPhoneNumber.fulfilled.match(result)) {
-    navigation.navigate("CodeVerification");
-  }
-}, [dispatch, phoneNumber, navigation]);
-
-const handlePhoneNumberChange = useCallback((value: string) => {
-  setPhoneNumber(value);
-}, [dispatch]);
+  const handlePhoneNumberChange = useCallback((value: string) => {
+    setError(null);
+    setPhoneNumber(value);
+  }, []);
 
   const handleCountryRef = useCallback((ref: any) => {
     if (ref) setCountryCode(ref.getCountryCode() || "tr");
@@ -149,7 +152,7 @@ const handlePhoneNumberChange = useCallback((value: string) => {
                 as={<MaterialIcons name="error-outline" />}
               />
               <Text fontSize="xs" color="error.500" px="2">
-                {error.message}
+                {error}
               </Text>
             </Flex>
           )}

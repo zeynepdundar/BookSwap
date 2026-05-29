@@ -49,10 +49,6 @@ const authSlice = createSlice({
       state.verificationId = null;
       state.verificationCode = "";
     },
-    clearAuthError(state) {
-      state.error = null;
-    },
-
     signOut: () => initialState,
   },
   extraReducers: (builder) => {
@@ -122,7 +118,6 @@ export const {
   setIsNewUser,
   clearVerification,
   signOut,
-  clearAuthError,
 } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;
