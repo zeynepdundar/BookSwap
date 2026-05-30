@@ -13,7 +13,15 @@ import {
 } from "react-native-gifted-chat";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import firestore from "@react-native-firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  addDoc,
+  Timestamp,
+} from "@react-native-firebase/firestore";
 import {
   ChevronLeftIcon,
   Avatar,
@@ -58,12 +66,12 @@ export default function ChatScreen({ navigation, route }) {
     // Initialize conversation if it doesn't exist
     initializeConversation(currentUserId, friend.userId, friend);
 
-    const subscriber = firestore()
-      .collection("Conversations")
-      .doc(conversationId)
-      .collection("messages")
-      .orderBy("createdAt", "desc")
-      .onSnapshot((querySnapshot) => {
+    const subscriber = onSnapshot(
+      query(
+        collection(getFirestore(), "Conversations", conversationId, "messages"),
+        orderBy("createdAt", "desc")
+      ),
+      (querySnapshot) => {
         const messages = querySnapshot.docs.map((doc) => ({
           _id: doc.id,
           createdAt: doc.data().createdAt.toDate(),
@@ -97,7 +105,7 @@ export default function ChatScreen({ navigation, route }) {
 
     const newMessage = messages[0];
     const messageData = {
-      createdAt: firestore.Timestamp.now(),
+      createdAt: Timestamp.now(),
       text: newMessage.text,
       senderId: currentUserId,
     };
@@ -105,11 +113,10 @@ export default function ChatScreen({ navigation, route }) {
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
     );
-    firestore()
-      .collection("Conversations")
-      .doc(conversationId)
-      .collection("messages")
-      .add(messageData)
+    addDoc(
+      collection(getFirestore(), "Conversations", conversationId, "messages"),
+      messageData
+    )
       .then(() => {
         // Update last message in the conversation only if Firestore operation is successful
         handleUpdateLastMessage(messageData);

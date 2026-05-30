@@ -1,4 +1,12 @@
-import firestore from "@react-native-firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  doc,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  Timestamp,
+} from "@react-native-firebase/firestore";
 
 import {
   messagesError,
@@ -25,17 +33,20 @@ export const subscribeToMessages = (
 
   console.log("🔥 Subscribing for user:", firebaseUserId);
 
-  const ref = firestore()
-    .collection("Users")
-    .doc(firebaseUserId)
-    .collection("conversations");
+  const ref = collection(
+    getFirestore(),
+    "Users",
+    firebaseUserId,
+    "conversations"
+  );
 
   console.log("📡 Listening to:", ref.path);
 
   let unsubscribe: (() => void) | undefined;
 
   try {
-    unsubscribe = ref.onSnapshot(
+    unsubscribe = onSnapshot(
+      ref,
       (snapshot) => {
         try {
           console.log("🔥 SNAPSHOT FIRED");
@@ -93,14 +104,16 @@ export const resetUnseenCount = async (relatedChat: any) => {
   try {
     const { friendUserId, firebaseUserId } = relatedChat;
 
-    await firestore()
-      .collection("Users")
-      .doc(firebaseUserId)
-      .collection("conversations")
-      .doc(friendUserId)
-      .update({
-        unseenCount: 0,
-      });
+    await updateDoc(
+      doc(
+        getFirestore(),
+        "Users",
+        firebaseUserId,
+        "conversations",
+        friendUserId
+      ),
+      { unseenCount: 0 }
+    );
   } catch (error) {
     console.error("Failed to reset unseen count:", error);
   }
@@ -119,28 +132,30 @@ export const updateLastMessage = async (relatedChat: any) => {
       return;
     }
 
-    const timestamp = firestore.Timestamp.fromDate(new Date());
+    const timestamp = Timestamp.fromDate(new Date());
 
     console.log("💾 Updating last message in Users collection:", {
       path: `Users/${currentUserId}/conversations/${friendUserId}`,
       text: messageData.text,
     });
 
-    await firestore()
-      .collection("Users")
-      .doc(currentUserId)
-      .collection("conversations")
-      .doc(friendUserId)
-      .set(
-        {
-          lastMessageText: messageData.text,
-          lastMessageTime: timestamp,
-          userId: friendUserId,
-          conversationId: `${currentUserId}_${friendUserId}`,
-          unseenCount: 0,
-        },
-        { merge: true }
-      );
+    await setDoc(
+      doc(
+        getFirestore(),
+        "Users",
+        currentUserId,
+        "conversations",
+        friendUserId
+      ),
+      {
+        lastMessageText: messageData.text,
+        lastMessageTime: timestamp,
+        userId: friendUserId,
+        conversationId: `${currentUserId}_${friendUserId}`,
+        unseenCount: 0,
+      },
+      { merge: true }
+    );
 
     console.log("✅ Last message updated successfully for sender");
   } catch (error) {
@@ -165,7 +180,7 @@ export const initializeConversation = async (
       userId: friendUserId,
       conversationId: `${currentUserId}_${friendUserId}`,
       lastMessageText: "",
-      lastMessageTime: firestore.Timestamp.now(),
+      lastMessageTime: Timestamp.now(),
       unseenCount: 0,
       friend: {
         id: friendUserId,
@@ -174,12 +189,17 @@ export const initializeConversation = async (
     };
 
     // Initialize for current user
-    await firestore()
-      .collection("Users")
-      .doc(currentUserId)
-      .collection("conversations")
-      .doc(friendUserId)
-      .set(conversationData, { merge: true });
+    await setDoc(
+      doc(
+        getFirestore(),
+        "Users",
+        currentUserId,
+        "conversations",
+        friendUserId
+      ),
+      conversationData,
+      { merge: true }
+    );
 
     console.log("✅ Conversation initialized successfully");
   } catch (error) {
