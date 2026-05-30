@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import {
   Button,
   Center,
@@ -15,7 +15,7 @@ import ImagePicker from "@/components/shared/ImagePicker";
 import StepHeader from "@/components/shared/StepHeader";
 
 export default function PhotoInputScreen({ navigation }) {
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useAppDispatch();
   const profileData = useSelector((state: any) => state.profile.profile);
   const initialImage = profileData?.imageData || "";
   const [image, setImage] = useState<any>(initialImage);

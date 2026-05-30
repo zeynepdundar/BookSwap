@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   Button,
@@ -25,6 +24,7 @@ import { sendOfferAsync } from "@/store/profile/thunks";
 import { getImageSource } from "@/utils/helper";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import Screen from "@/components/shared/Screen";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 
 
 
@@ -53,8 +53,7 @@ export default function TradeProposal({ navigation, route }) {
     initialState
   );
 
-  const dispatch = useDispatch<AppDispatch>();
-
+  const dispatch = useAppDispatch();
   const proposeTradeHandler = async (): Promise<void> => {
     try {
       await dispatch(sendOfferAsync(sentPropasal)).unwrap();

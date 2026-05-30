@@ -1,7 +1,7 @@
 import { useState } from "react";
 import * as Localization from "expo-localization";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import {
   Button,
   Center,
@@ -22,7 +22,7 @@ import { updateProfileAsync } from "@/store/profile/thunks";
 export default function LibraryInputScreen({ navigation }) {
   const [selectedBooks, setSelectedBooks] = useState([]);
 
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useAppDispatch();
   const { loading: authLoading } = useSelector((state: any) => state.auth);
   const { profile } = useSelector((state: any) => state.profile);
 

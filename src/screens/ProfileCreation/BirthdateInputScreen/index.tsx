@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+import {  useSelector } from "react-redux";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import {
   Button,
   Center,
@@ -8,9 +8,7 @@ import {
   Heading,
   Input,
   Spacer,
-  ChevronLeftIcon,
   VStack,
-  Box,
 } from "native-base";
 import i18n from "@/i18n";
 import Screen from "@/components/shared/Screen";
@@ -30,7 +28,7 @@ export default function BirthdateInputScreen({ navigation }) {
   const monthInputRef = useRef(null);
   const yearInputRef = useRef(null);
 
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useAppDispatch();
 
   const currentYear = new Date().getFullYear();
   const minYear = currentYear - 150; // Assume a reasonable minimum age

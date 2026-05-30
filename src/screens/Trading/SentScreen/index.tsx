@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import {
   AspectRatio,
   Box,
@@ -15,7 +15,7 @@ import {
   VStack,
 } from "native-base";
 import { useCallback, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { fetchProfileImageUrl } from "@/api/service";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import i18n from "@/i18n";
@@ -38,7 +38,7 @@ export default function SentScreen({ navigation }) {
     useState(sentOffers);
 
   const { loading, profile } = useSelector((state: any) => state.profile);
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useAppDispatch();
 
   const takeBackOfferHandler = async (offerId: string) => {
     try {

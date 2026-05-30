@@ -11,8 +11,8 @@ import {
 import { KeyboardAvoidingView, Platform } from "react-native";
 import PhoneInput from "react-native-phone-input";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import i18n from "@/i18n";
@@ -39,7 +39,7 @@ export default function PhoneInputScreen({ navigation }: Props) {
   const [countryCode, setCountryCode] = useState("tr");
   const [error, setError] = useState<string | null>(null);
 
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useAppDispatch();
   const { loading } = useSelector(
     (state: RootState) => state.auth
   );

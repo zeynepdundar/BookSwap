@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import {
   Button,
   Center,
@@ -28,62 +28,61 @@ export default function GenderInputScreen({ navigation }) {
   const [gender, setGender] = useState<string>(initialGender);
 
 
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useAppDispatch();
 
-const pressHandler = () => {
-  if (!gender) return;
+  const pressHandler = () => {
+  const payload = gender ? { gender } : {};
 
-  dispatch(setProfileData({ gender }));
-  navigation.navigate("PhotoInput");
-};
+  dispatch(setProfileData(payload));
+    navigation.navigate("PhotoInput");
+  };
 
   return (
     <Screen>
       <VStack space={1} alignItems="center" height={"50%"}>
-        {/* Backend requires gender, so requirements and Skip behavior should be reviewed together. */}
         <StepHeader
           onBack={() => navigation.goBack()}
-          //onSkip={pressHandler} 
-          />
+        onSkip={pressHandler} 
+        />
         <Spacer></Spacer>
         <Heading w="100%" h="8" px={10}>
           {i18n.t("my-gender")}
         </Heading>
         <Center w="100%" h="40" px={8} pt="8">
-{OPTIONS.map((option) => {
-  const isSelected = gender === option.value;
+          {OPTIONS.map((option) => {
+            const isSelected = gender === option.value;
 
-  return (
-    <Pressable
-      key={option.value}
-      onPress={() => setGender(option.value)}
-    >
-      <Box
-        width={{ base: 250, lg: 200 }}
-        height={60}
-        justifyContent="center"
-        alignItems="center"
-        rounded="4px"
-        borderWidth={isSelected ? 2 : 1}
-        borderColor={isSelected ? "primary.50" : "black.400"}
-        mb={5}
-        bg={isSelected ? "primary.50:alpha.10" : "transparent"}
-      >
-        <Text
-          color={isSelected ? "primary.50" : "black.400"}
-          textTransform="uppercase"
-          fontWeight="500"
-        >
-          {option.label}
-        </Text>
-      </Box>
-    </Pressable>
-  );
-})}
+            return (
+              <Pressable
+                key={option.value}
+                onPress={() => setGender(option.value)}
+              >
+                <Box
+                  width={{ base: 250, lg: 200 }}
+                  height={60}
+                  justifyContent="center"
+                  alignItems="center"
+                  rounded="4px"
+                  borderWidth={isSelected ? 2 : 1}
+                  borderColor={isSelected ? "primary.50" : "black.400"}
+                  mb={5}
+                  bg={isSelected ? "primary.50:alpha.10" : "transparent"}
+                >
+                  <Text
+                    color={isSelected ? "primary.50" : "black.400"}
+                    textTransform="uppercase"
+                    fontWeight="500"
+                  >
+                    {option.label}
+                  </Text>
+                </Box>
+              </Pressable>
+            );
+          })}
         </Center>
         <Spacer />
         <Center p={4}>
-          <Button variant="primary" isDisabled={!gender} onPress={pressHandler}>
+          <Button variant="primary" onPress={pressHandler}>
             {i18n.t("continue")}
           </Button>
         </Center>

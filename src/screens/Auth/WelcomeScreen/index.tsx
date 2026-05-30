@@ -8,12 +8,13 @@ import {
   VStack,
 } from "native-base";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useDispatch } from "react-redux";
+
 
 import i18n from "@/i18n";
 import { AuthStackParamList } from "@/types/navigation.types";
 import Screen from "@/components/shared/Screen";
 import { clearVerification } from "@/store/auth/slice";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 
 type WelcomeScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -29,7 +30,7 @@ const ASSETS = {
 export default function WelcomeScreen({
   navigation,
 }: WelcomeScreenProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleGetStarted = useCallback(() => {
     dispatch(clearVerification());

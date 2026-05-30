@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import {
   Button,
   Center,
@@ -23,7 +23,7 @@ export default function WishlistInputScreen({ navigation }) {
   const [selectedBooks, setSelectedBooks] = useState(initialWishlistBooks);
 
 
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useAppDispatch();
 
   const handleAddToWishlist = (data) => {
     setSelectedBooks((prevSelectedBooks) => {

@@ -3,7 +3,7 @@ import i18n from "@/i18n";
 import Screen from "@/components/shared/Screen";
 import { BookListVertical } from "@/components/shared/BookListVertical";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+
 import { AppDispatch } from "@/store";
 import { ErrorAlert } from "../../BarcodeScannerScreen";
 import { addBookToListAsync } from "@/store/profile/thunks";

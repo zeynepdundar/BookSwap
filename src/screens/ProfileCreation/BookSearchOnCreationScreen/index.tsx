@@ -20,8 +20,8 @@ import { setProfileData } from "@/store/profile/slice";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { EditionEndpoints } from "@/api/endpoints";
 import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";
-import { useDispatch } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 
 export default function BookSearchOnCreationScreen({
   navigation,
@@ -34,7 +34,7 @@ export default function BookSearchOnCreationScreen({
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState([]);
 
-    const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+    const dispatch = useAppDispatch();
 
 
   const fetchBooks = async (title) => {

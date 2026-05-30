@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Screen from "@/components/shared/Screen";
 import { BookListVertical } from "@/components/shared/BookListVertical";
-import { useDispatch } from "react-redux";
+
 import { AppDispatch } from "@/store";
 import i18n from "@/i18n";
 import { ErrorAlert } from "../../BarcodeScannerScreen";

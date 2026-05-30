@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import {
   Button,
   Center,
@@ -20,7 +20,7 @@ export default function NameInputScreen({ navigation }) {
   const initialName = profileData?.name || "";
   const [name, setName] = useState(initialName);
 
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useAppDispatch();
 
     const isButtonDisabled = name.trim().length <= 2;
 

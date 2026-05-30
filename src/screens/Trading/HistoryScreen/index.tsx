@@ -12,11 +12,10 @@ import {
   Pressable,
   Divider,
 } from "native-base";
-import Screen from "@/components/shared/Screen";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { fetchProfileImageUrl } from "@/api/service";
 import { useFocusEffect } from "@react-navigation/native";
@@ -36,7 +35,7 @@ export default function HistoryScreen({ navigation }) {
   const [historyListWithUserPhoto, setHistoryListWithUserPhoto] =
     useState(historyList);
   const { loading, profile } = useSelector((state: any) => state.profile);
-  const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
+  const dispatch = useAppDispatch();
   const fetchProfileImages = async () => {
     const updatedOffers = await Promise.all(
       historyList.map(async (offer) => {

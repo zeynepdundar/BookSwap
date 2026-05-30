@@ -5,7 +5,7 @@ import {
   StatusBar,
   Platform,
 } from "react-native";
-import { useDispatch } from "react-redux";
+
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
