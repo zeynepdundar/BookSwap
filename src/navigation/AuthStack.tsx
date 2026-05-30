@@ -22,6 +22,7 @@ export default function AuthStack() {
       <Stack.Screen
         name="CodeVerification"
         component={CodeVerificationScreen}
+        options={{ gestureEnabled: false }}
       />
     </Stack.Navigator>
   );

@@ -6,12 +6,10 @@ import {
   Center,
   Heading,
   Box,
-  ChevronLeftIcon,
-  Radio,
   VStack,
   Text,
   Spacer,
-  HStack,
+  Pressable,
 } from "native-base";
 import i18n from "@/i18n";
 import Screen from "@/components/shared/Screen";
@@ -32,68 +30,60 @@ export default function GenderInputScreen({ navigation }) {
 
   const dispatch = useDispatch<ThunkDispatch<any, any, any>>();
 
-  const pressHandler = () => {
-    dispatch(setProfileData({ gender: gender }));
-    navigation.navigate("PhotoInput");
-  };
+const pressHandler = () => {
+  if (!gender) return;
+
+  dispatch(setProfileData({ gender }));
+  navigation.navigate("PhotoInput");
+};
 
   return (
     <Screen>
       <VStack space={1} alignItems="center" height={"50%"}>
+        {/* Backend requires gender, so requirements and Skip behavior should be reviewed together. */}
         <StepHeader
           onBack={() => navigation.goBack()}
-          onSkip={pressHandler} />
+          //onSkip={pressHandler} 
+          />
         <Spacer></Spacer>
         <Heading w="100%" h="8" px={10}>
           {i18n.t("my-gender")}
         </Heading>
         <Center w="100%" h="40" px={8} pt="8">
-          <Radio.Group
-            name="genderRadioGroup"
-            accessibilityLabel="Gender selection"
-            value={gender}
-            onChange={(nextValue) => {
-              setGender(nextValue);
-            }}
-          >
-            {OPTIONS.map((option) => (
-              <Box
-                key={option.value}
-                width={{
-                  base: 250,
-                  lg: 200,
-                }}
-                height={60}
-                alignItems="center"
-                rounded="4px"
-                borderColor={gender === option.value ? "primary.50" : "black.400"}
-                borderWidth={gender === option.value ? "2" : "1"}
-                py="12px"
-                mb={5}
-              >
-                <Radio
-                  value={option.value}
-                  my="2"
-                  ml="-5"
-                  borderWidth={0}
-                  bg="transparent"
-                  icon={<Box boxSize={5} />}
-                  colorScheme="primary"
-                  _text={{
-                    color: gender === option.value ? "primary.50" : "black.400",
-                    textTransform: "uppercase",
-                    fontWeight: "500",
-                  }}
-                >
-                  {option.label}
-                </Radio>
-              </Box>
-            ))}
-          </Radio.Group>
+{OPTIONS.map((option) => {
+  const isSelected = gender === option.value;
+
+  return (
+    <Pressable
+      key={option.value}
+      onPress={() => setGender(option.value)}
+    >
+      <Box
+        width={{ base: 250, lg: 200 }}
+        height={60}
+        justifyContent="center"
+        alignItems="center"
+        rounded="4px"
+        borderWidth={isSelected ? 2 : 1}
+        borderColor={isSelected ? "primary.50" : "black.400"}
+        mb={5}
+        bg={isSelected ? "primary.50:alpha.10" : "transparent"}
+      >
+        <Text
+          color={isSelected ? "primary.50" : "black.400"}
+          textTransform="uppercase"
+          fontWeight="500"
+        >
+          {option.label}
+        </Text>
+      </Box>
+    </Pressable>
+  );
+})}
         </Center>
         <Spacer />
         <Center p={4}>
-          <Button variant="primary" onPress={pressHandler}>
+          <Button variant="primary" isDisabled={!gender} onPress={pressHandler}>
             {i18n.t("continue")}
           </Button>
         </Center>

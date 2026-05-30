@@ -45,15 +45,23 @@ export default function LibraryInputScreen({ navigation }) {
       currentLibraryItems.filter((item) => item.id !== id)
     );
   };
-  const handleProfileUpdate = async (specificAction) => {
+  const handleProfileUpdate = async (specificAction: "pressContinue" | "pressSkip") => {
+    const updatedProfile = {
+      ...profile,
+      languagePreference: deviceLanguage,
+    };
+
     if (specificAction === "pressContinue") {
-      const updatedProfile = {
-        ...profile,
-        libraryBook: selectedBooks,
-        languagePreference: deviceLanguage,
-      };
-      dispatch(updateProfileAsync({ profileData: updatedProfile, fullUpdate: true }));
+      updatedProfile.libraryBook = selectedBooks;
     }
+
+    await dispatch(
+      updateProfileAsync({
+        profileData: updatedProfile,
+        fullUpdate: true,
+      })
+    );
+
     dispatch(setIsNewUser(false));
   };
 

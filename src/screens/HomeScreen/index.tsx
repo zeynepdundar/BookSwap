@@ -17,9 +17,6 @@ export default function HomeScreen({ navigation }) {
     (state: any) => state.profile
   );
   
-
-  console.log("Profile", profileLoading, profile)
-
   useEffect(() => {
     (async () => {
       const data = await fetchMostPopularBooks();

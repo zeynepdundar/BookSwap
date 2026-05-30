@@ -24,14 +24,11 @@ authListener.startListening({
       // AUTH FIRST
       await AsyncStore.setItem("authToken", token);
 
-      console.log("Auth token stored successfully:", user);
 
-      // Set user state before token so navigation reads isNewUser correctly on first render
       listenerApi.dispatch(setUser(user));
 
       listenerApi.dispatch(setToken(token));
 
-            console.log("Auth token stored successfully2:", user);
 
       // THEN background sync
       if (user.isNewUser) {

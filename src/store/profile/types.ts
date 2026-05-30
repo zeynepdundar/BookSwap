@@ -10,7 +10,6 @@ export interface UserProfile {
   languagePreference: string;
   wishlistBook: Book[];
   libraryBook: Book[];
-
   receivedOffer: Offer[];
   sentOffer: Offer[];
   historyList: HistoryItem[];

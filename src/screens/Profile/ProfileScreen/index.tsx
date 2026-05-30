@@ -154,7 +154,7 @@ export default function ProfileScreen({ navigation }) {
                 }}
                 bg="primary.50"
               >
-                {wishlistBook.length}
+                {wishlistBook?.length ?? 0}
               </Box>
             </Flex>
           </Pressable>
@@ -191,7 +191,7 @@ export default function ProfileScreen({ navigation }) {
                 }}
                 bg="primary.50"
               >
-                {libraryBook.length}
+                {libraryBook?.length ?? 0}
               </Box>
             </Flex>
           </Pressable>
