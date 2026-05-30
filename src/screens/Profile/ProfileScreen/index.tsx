@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store";
 import { useEffect, useRef, useState } from "react";
 import ImagePicker from "@/components/shared/ImagePicker";
-import auth from "@react-native-firebase/auth";
+import { getAuth, signOut as firebaseSignOut } from "@react-native-firebase/auth";
 import { signOut } from "@/store/auth";
 import { clearMessages } from "@/store/messages/messages-slice";
 import { clearProfileData, setProfileData } from "@/store/profile";
@@ -77,7 +77,7 @@ export default function ProfileScreen({ navigation }) {
 
   const signOutHandler = async (): Promise<void> => {
     try {
-      await auth().signOut();
+      await firebaseSignOut(getAuth());
       dispatch(clearMessages());
       await AsyncStore.removeItem("authToken");
       dispatch(signOut());

@@ -1,5 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import auth from "@react-native-firebase/auth";
+import {
+  getAuth,
+  signInWithPhoneNumber,
+  signInWithCredential,
+  PhoneAuthProvider,
+  getIdToken,
+} from "@react-native-firebase/auth";
 import { AuthEndpoints } from "@/api/endpoints";
 import { AuthError, VerifyCodePayload } from "./types";
 
@@ -12,9 +18,13 @@ export const verifyPhoneNumber = createAsyncThunk<
   async (phoneNumber: string, thunkAPI) => {
 
     try {
-      const confirmationResult = await auth().signInWithPhoneNumber(
+      const confirmationResult = await signInWithPhoneNumber(
+        getAuth(),
         phoneNumber
       );
+      if (!confirmationResult.verificationId) {
+        throw new Error("Missing verificationId from Firebase");
+      }
       return {
         verificationId: confirmationResult.verificationId,
       };
@@ -62,14 +72,14 @@ export const checkVerificationCode = createAsyncThunk<
     try {
       const { verificationId, verificationCode } = payload;
 
-      const credential = auth.PhoneAuthProvider.credential(
+      const credential = PhoneAuthProvider.credential(
         verificationId,
         verificationCode
       );
 
-      const userCredential = await auth().signInWithCredential(credential);
+      const userCredential = await signInWithCredential(getAuth(), credential);
 
-      const token = await userCredential.user.getIdToken();
+      const token = await getIdToken(userCredential.user);
 
       // TODO(AUTH): Verify `additionalUserInfo` reliability in @react-native-firebase/auth (may be undefined or unstable across flows)
       const isNewUser = safeGetIsNewUser(userCredential);
