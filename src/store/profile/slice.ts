@@ -142,7 +142,6 @@ const profileSlice = createSlice({
       .addCase(fetchUserProfileAsync.fulfilled, (state, action: any) => {
         state.loading = false;
         state.profile = action.payload;
-        console.log("Profile data updated in store:",action, state.profile);
         state.error = null;
       })
       .addCase(updateProfileAsync.pending, (state) => {

@@ -20,8 +20,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/store";
 import { useNavigationState } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { WISHLIST } from "@/constants";
 import { removeBookFromListAsync } from "@/store/profile/thunks";
+import { BookCollection, BookCollections } from "@/types/book.types";
+
 
 const RemoveBookButton = ({ onPress }) => (
   <Icon
@@ -58,7 +59,7 @@ export default function WishlistScreen({ navigation }) {
   const removeBookButton = (book) => (
     <RemoveBookButton
       onPress={() =>
-        dispatch(removeBookFromListAsync({ ...book, type: WISHLIST }))
+        dispatch(removeBookFromListAsync({ ...book, type: BookCollections.WISHLIST } as BookCollection))
       }
     />
   );

@@ -113,7 +113,7 @@ export default function WelcomeScreen({
               size="lg"
               borderRadius="full"
               py={4}
-              bg="primary.50"
+              variant="primary" 
               shadow={1}
               onPress={handleGetStarted}
             >

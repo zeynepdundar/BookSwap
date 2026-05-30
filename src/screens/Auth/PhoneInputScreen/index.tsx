@@ -55,7 +55,6 @@ export default function PhoneInputScreen({ navigation }: Props) {
 
     if (verifyPhoneNumber.fulfilled.match(result)) {
       navigation.navigate("CodeVerification");
-      console.log("Verification initiated successfully");
     } else if (verifyPhoneNumber.rejected.match(result)) {
       const errorMsg = typeof result.payload === "string"
         ? result.payload

@@ -2,12 +2,10 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import {
   AspectRatio,
-  Avatar,
   Box,
   Button,
   Center,
   Divider,
-  FlatList,
   Flex,
   HStack,
   Image,
@@ -15,6 +13,7 @@ import {
   Text,
   VStack,
 } from "native-base";
+import { FlatList } from "react-native";
 import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { fetchProfileImageUrl } from "@/api/service";
@@ -183,18 +182,19 @@ export default function ReceivedScreen({ navigation }) {
                 }} // Center content in FlatList
                 showsVerticalScrollIndicator={false}
               />
+              
             </Box>
           </VStack>
         ))}
 
       {receivedOffers && receivedOffers.length > 0 && (
-        <FlatList<any>
-          maxWidth="100%"
-          bg="#fff"
-          height="75%"
+        <FlatList
+    
+
+  
           data={receivedOffersWithUserPhoto}
           showsVerticalScrollIndicator={false}
-          pt="3"
+
           refreshing={refreshing}
           onRefresh={onRefresh}
           renderItem={({ item }: { item: any }) => (

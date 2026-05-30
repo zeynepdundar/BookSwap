@@ -17,7 +17,6 @@ export const fetchUserProfileAsync = createAsyncThunk(
   async (firebaseUserId: string, { rejectWithValue }) => {
     try {
       const profile = await fetchUserProfileData(firebaseUserId);
-      console.log("Fetched user profile successfully:", profile);
       return profile;
     } catch (error) {
       console.error(
