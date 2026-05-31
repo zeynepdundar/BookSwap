@@ -30,6 +30,12 @@ export const verifyPhoneNumber = createAsyncThunk<
       };
 
     } catch (error: any) {
+      console.warn("[verifyPhoneNumber] failed", {
+        code: error?.code,
+        message: error?.message,
+        nativeErrorMessage: error?.nativeErrorMessage,
+        userInfo: error?.userInfo,
+      });
       let errorMessage = "Something went wrong. Please try again";
 
       switch (error?.code) {
