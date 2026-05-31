@@ -34,7 +34,9 @@ export const verifyPhoneNumber = createAsyncThunk<
         code: error?.code,
         message: error?.message,
         nativeErrorMessage: error?.nativeErrorMessage,
-        userInfo: error?.userInfo,
+        nsErrorDomain: error?.userInfo?.nsErrorDomain,
+        nsErrorCode: error?.userInfo?.nsErrorCode,
+        nsErrorUserInfo: error?.userInfo?.nsErrorUserInfo,
       });
       let errorMessage = "Something went wrong. Please try again";
 
