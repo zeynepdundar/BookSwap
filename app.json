@@ -38,7 +38,10 @@
         "expo-build-properties",
         {
           "ios": {
-            "useFrameworks": "static"
+            "useFrameworks": "static",
+            "extraPods": [
+              { "name": "RecaptchaEnterprise", "version": "18.7.0" }
+            ]
           }
         }
       ],
