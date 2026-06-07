@@ -24,15 +24,11 @@ import ScreenHeader from "@/components/shared/ScreenHeader";
 import { clearOffers } from "@/store/offers/slice";
 import { clearBooks } from "@/store/books/slice";
 import { signOut } from "@/store/auth/slice";
+import { PROFILE_SCREEN_ICONS } from "@/constants/image";
 
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useAppDispatch();
-  const libraryIcon = require("@/assets/images/icon/library-icon.png");
-  const wishlistIcon = require("@/assets/images/icon/wishlist-icon.png");
-  const languageIcon = require("@/assets/images/icon/language-icon.png");
-  const feedbackIcon = require("@/assets/images/icon/feedback-icon.png");
-  const logoutIcon = require("@/assets/images/icon/logout-icon.png");
 
   const profileData = useSelector((state: any) => state.profile.profile);
   const wishlistBookIds = useSelector(selectWishlistBookIds);
@@ -74,7 +70,7 @@ export default function ProfileScreen({ navigation }) {
   const menuItems = [
     {
       key: "wishlist",
-      icon: wishlistIcon,
+      icon: PROFILE_SCREEN_ICONS.wishlist,
       label: i18n.t("my-wishlist"),
       onPress: () => navigation.navigate("Wishlist"),
       rightContent: (
@@ -92,7 +88,7 @@ export default function ProfileScreen({ navigation }) {
     },
     {
       key: "library",
-      icon: libraryIcon,
+      icon: PROFILE_SCREEN_ICONS.library,
       label: i18n.t("my-library"),
       onPress: () => navigation.navigate("Library"),
       rightContent: (
@@ -110,7 +106,7 @@ export default function ProfileScreen({ navigation }) {
     },
     {
       key: "language",
-      icon: languageIcon,
+      icon: PROFILE_SCREEN_ICONS.language,
       label: i18n.t("language"),
       onPress: () => { },
       rightContent: (
@@ -147,13 +143,13 @@ export default function ProfileScreen({ navigation }) {
     },
     {
       key: "feedback",
-      icon: feedbackIcon,
+      icon: PROFILE_SCREEN_ICONS.feedback,
       label: i18n.t("feedback"),
       onPress: () => navigation.navigate("Feedback"),
     },
     {
       key: "logout",
-      icon: logoutIcon,
+      icon: PROFILE_SCREEN_ICONS.logout,
       label: i18n.t("logout"),
       onPress: () => setIsOpen(true),
     },

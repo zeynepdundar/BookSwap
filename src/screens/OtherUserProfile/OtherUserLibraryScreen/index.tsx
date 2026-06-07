@@ -3,8 +3,8 @@ import i18n from "@/i18n";
 import { BookListVertical } from "@/components/shared/BookListVertical";
 import { useEffect, useState } from "react";
 
-import { ErrorAlert } from "../../BarcodeScannerScreen";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
+import { ErrorAlert } from "@/components/shared/ErrorAlert";
 
 export default function OtherUserWishlistScreen({
   navigation,

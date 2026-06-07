@@ -1,21 +1,54 @@
 import React from "react";
-import { Center, Alert, Text } from "native-base";
+import { Platform } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { Box, Center, HStack, Text } from "native-base";
 
-export const ErrorAlert = ({ message }) => (
-  <Center>
-    <Alert
-      w="80%"
-      borderRadius="10px"
-      backgroundColor="black.700"
-      shadow="9"
-      py="5"
-      position="absolute"  // Set to absolute
-      bottom={10}          // Adjust bottom spacing as needed
-      zIndex={100}  
+interface ErrorAlertProps {
+  message: string | null | undefined;
+  hint?: string | null;
+}
+
+export const ErrorAlert: React.FC<ErrorAlertProps> = ({ message, hint = null }) => {
+  if (!message) return null;
+
+  return (
+    <Center
+      position="absolute"
+      bottom={Platform.OS === "ios" ? "105px" : "95px"}
+      left={0}
+      right={0}
+      zIndex={999}
     >
-      <Text fontSize="sm" fontWeight="medium" color="#dddddd">
-        {message}
-      </Text>
-    </Alert>
-  </Center>
-);
+      <Box
+        px="5"
+        py="3"
+        borderRadius="30px" 
+        bg="rgba(26, 26, 36, 0.96)" 
+        shadow="7"
+        borderWidth="1px"
+        borderColor="rgba(255, 255, 255, 0.12)" 
+        maxW="85%"
+      >
+        <HStack space={2.5} alignItems="center" justifyContent="center">
+          <Feather name="alert-circle" size={16} color="#FF6B6B" />
+
+          <Text
+            fontSize="xs"
+            fontWeight="700"
+            color="#FFFFFF"
+            letterSpacing="0.4px"
+            textAlign="center"
+          >
+            {message}
+            {hint && (
+              <Text fontWeight="400" color="#A0A0B0">
+                {" • "}
+                {hint}
+              </Text>
+            )}
+          </Text>
+        </HStack>
+      </Box>
+    </Center>
+  );
+};

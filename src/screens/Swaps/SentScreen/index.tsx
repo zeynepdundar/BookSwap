@@ -20,10 +20,10 @@ import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import i18n from "@/i18n";
 
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
-import { ErrorAlert } from "../../BarcodeScannerScreen";
 import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 import { fetchSentOffersAsync, takeBackOfferAsync } from "@/store/offers/thunks";
 import { offersSelectors } from "@/store/offers/slice";
+import { ErrorAlert } from "@/components/shared/ErrorAlert";
 
 export default function SentScreen({ navigation }) {
   const tra = require("@/assets/images/icon/Icons.png");
@@ -329,7 +329,7 @@ export default function SentScreen({ navigation }) {
           keyExtractor={(item) => item.id}
         />
       )}
-      {error && <ErrorAlert message={error} />}
+      <ErrorAlert message={error} />
     </>
   );
 }

@@ -16,8 +16,9 @@ import {
 import * as FileSystem from "expo-file-system/legacy";
 import i18n from "@/i18n";
 import { ErrorAlert } from "./ErrorAlert";
+import { IMAGE_FALLBACKS } from "@/constants/image";
 
-const avatarImage = require("../../assets/images/avatar.png");
+
 const MAX_IMAGE_SIZE_MB = 10; // Maximum allowed size in MB
 
 const ImagePicker = ({
@@ -134,7 +135,7 @@ const ImagePicker = ({
         borderRadius="full"
       >
         <Image
-          source={pickedImage ? { uri: pickedImage } : avatarImage}
+          source={pickedImage ? { uri: pickedImage } : IMAGE_FALLBACKS.USER_AVATAR}
           alt="Profile Image"
           rounded="full"
           size={120}
@@ -151,7 +152,7 @@ const ImagePicker = ({
           <AddIcon color="#545454" />
         </Badge>
       </Pressable>
-      {error && <ErrorAlert message={error} />}
+      <ErrorAlert message={error} />
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content>
           <Actionsheet.Item onPress={uploadImageHandler}>

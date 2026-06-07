@@ -58,7 +58,6 @@ export const updateUserProfileData = async (profileData: any) => {
     null
   );
 
-  console.log("Updcccc:", profileData);
   const payload: any = {
     id: profileData.id.toString(),
   };

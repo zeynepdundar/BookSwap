@@ -18,7 +18,6 @@ import {
   Text,
   Icon,
   IconButton,
-  Alert,
 } from "native-base";
 
 import {
@@ -31,6 +30,7 @@ import i18n from "@/i18n";
 import { BookCollection, BookCollections } from "@/types/book.types";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { fetchBooksByISBN } from "@/services/books/books.service";
+import { ErrorAlert } from "@/components/shared/ErrorAlert";
 
 export default function BarcodeScannerScreen({
   navigation,
@@ -187,12 +187,7 @@ export default function BarcodeScannerScreen({
           {/* <Button onPress={() => setScanned(false)}>Tap to Scan Again</Button> */}
         </Center>
       )}
-      {error && (
-        <>
-          <ErrorAlert message={error} />
-          {/* <Button onPress={() => setScanned(false)}>Tap to Scan Again</Button> */}
-        </>
-      )}
+      <ErrorAlert message={error} />
       <ActionSheet
         isOpen={isActionSheetOpen}
         onClose={closeActionSheet}
@@ -269,57 +264,7 @@ const BookInfoBox = ({ edition, onAddBooks }) => (
 
 
 
-import { Feather } from "@expo/vector-icons"; // Switching to Feather for cleaner line-art icons
 
-export const ErrorAlert = ({ message, hint = null }) => {
-  if (!message) return null;
-
-  const paddingTop = Platform.OS === "android" ? StatusBar.currentHeight : 0;
-
-return (
-    <Center 
-      position="absolute" 
-      // Safely floats right above your 80px bottom tabs + چentik margins
-      bottom={Platform.OS === "ios" ? "105px" : "95px"}
-      left={0} 
-      right={0} 
-      zIndex={999}
-    >
-      {/* Soft neon shadow border wrapper */}
-      <Box
-        px="5"
-        py="3"
-        borderRadius="30px" // Fully rounded pill shape
-        bg="rgba(26, 26, 36, 0.96)" // Rich glassmorphic dark tint
-        shadow="7"
-        borderWidth="1px"
-        borderColor="rgba(255, 255, 255, 0.12)" // Subtle highlight on the rim
-        maxW="85%"
-      >
-        <HStack space={2.5} alignItems="center" justifyContent="center">
-          {/* Minimalist icon with a smooth warning color */}
-          <Feather name="alert-circle" size={16} color="#FF6B6B" />
-          
-          <Text 
-            fontSize="xs" 
-            fontWeight="700" 
-            color="#FFFFFF" 
-            letterSpacing="0.4px"
-            textAlign="center"
-          >
-            {message}
-            {hint && (
-              <Text fontWeight="400" color="#A0A0B0">
-                {" • "}
-                {hint}
-              </Text>
-            )}
-          </Text>
-        </HStack>
-      </Box>
-    </Center>
-  );
-};
 const styles = StyleSheet.create({
   container: {
     flex: 1, // Take up the full screen height

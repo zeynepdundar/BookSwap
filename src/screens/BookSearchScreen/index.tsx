@@ -18,11 +18,11 @@ import i18n from "@/i18n";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { BookListVertical } from "@/components/shared/BookListVertical";
 import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";
-import { ErrorAlert } from "../BarcodeScannerScreen";
 import { BookCollections } from "@/types/book.types";
 import { fetchBooksByTitle } from "@/services/books/books.service";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
 import { useFocusEffect } from "@react-navigation/native";
+import { ErrorAlert } from "@/components/shared/ErrorAlert";
 
 export default function BookSearchScreen({ navigation, route = null }) {
   const { sourceScreen } = route.params ?? {};
