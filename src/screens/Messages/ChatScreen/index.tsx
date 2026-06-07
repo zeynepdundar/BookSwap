@@ -368,7 +368,7 @@ export default function ChatScreen({ navigation, route }) {
 
   const handleAction = async (actionType) => {
     // const response = await dispatch(
-    //   addBookToListAsync({ ...edition, type: actionType })
+    //   addBookToCollectionsAsync({ ...edition, type: actionType })
     // );
     // const payload = response.payload;
     // if (payload?.status === "error") {

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import * as Localization from "expo-localization";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
@@ -16,53 +15,45 @@ import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import StepHeader from "@/components/shared/StepHeader";
 import { setIsNewUser } from "@/store/auth/slice";
-import { updateProfileAsync } from "@/store/profile/thunks";
+import { fetchUserProfileAsync } from "@/store/profile/thunks";
+import { selectOnboardingLibraryBooks } from "@/store/selectors";
+import { BookCollections } from "@/types/book.types";
+import { removeFromOnboardingLibrary, resetOnboarding, setOnboardingLanguage } from "@/store/onboarding/slice";
+import { RootState } from "@/store/types";
+import { completeOnboardingAsync } from "@/store/onboarding/thunks";
 
 
 export default function LibraryInputScreen({ navigation }) {
-  const [selectedBooks, setSelectedBooks] = useState([]);
 
   const dispatch = useAppDispatch();
-  const { loading: authLoading } = useSelector((state: any) => state.auth);
-  const { profile } = useSelector((state: any) => state.profile);
+
+  const libraryBooks = useSelector(selectOnboardingLibraryBooks);
+
+  const { loading: authLoading, user } = useSelector(
+    (state: RootState) => state.auth
+  );
+
 
   const deviceLanguage = Localization.getLocales()[0]?.languageCode ?? "en";
 
-  const handleAddToLibrary = (data) => {
-    setSelectedBooks((prevSelectedBooks) => {
-      const newItemIds = data.map((item) => item.id);
-      const filteredData = data.filter(
-        (item) =>
-          !prevSelectedBooks.some((selectedItem) => selectedItem.id === item.id)
-      );
-      const updatedSelectedBooks = [...prevSelectedBooks, ...filteredData];
-      return updatedSelectedBooks;
-    });
-  };
 
   const handleRemoveFromLibrary = (id) => {
-    setSelectedBooks((currentLibraryItems) =>
-      currentLibraryItems.filter((item) => item.id !== id)
-    );
+    dispatch(removeFromOnboardingLibrary(id));
   };
-  const handleProfileUpdate = async (specificAction: "pressContinue" | "pressSkip") => {
-    const updatedProfile = {
-      ...profile,
-      languagePreference: deviceLanguage,
-    };
+  const handleProfileUpdate = async (
+    specificAction: "pressContinue" | "pressSkip"
+  ) => {
+    try {
+      dispatch(setOnboardingLanguage(deviceLanguage));
 
-    if (specificAction === "pressContinue") {
-      updatedProfile.libraryBook = selectedBooks;
+      await dispatch(completeOnboardingAsync()).unwrap();
+      await dispatch(fetchUserProfileAsync(user.firebaseUserId)).unwrap();
+      dispatch(resetOnboarding());
+      dispatch(setIsNewUser(false));
+
+    } catch (error) {
+      console.log("Profile update failed:", error);
     }
-
-    await dispatch(
-      updateProfileAsync({
-        profileData: updatedProfile,
-        fullUpdate: true,
-      })
-    );
-
-    dispatch(setIsNewUser(false));
   };
 
 
@@ -92,31 +83,33 @@ export default function LibraryInputScreen({ navigation }) {
         </Heading>
         <Center w="96%" h="20" px={8}>
           <SearchBar
-            onSearchBook={() => {
+            onSearchPress={() => {
               navigation.navigate("BookSearchOnCreation", {
-                sourceScreen: "Library",
-                onDonePress: handleAddToLibrary,
+                sourceScreen: BookCollections.LIBRARY,
               });
             }}
-            onScanBarcode={() => {
+            onScanPress={() => {
               navigation.navigate("BarcodeScannerOnProfileCreation", {
-                sourceScreen: "Library",
-                onAddBook: handleAddToLibrary
-
+                sourceScreen: BookCollections.LIBRARY,
               });
             }}
             onFocus={() => {
               navigation.navigate("BookSearchOnCreation", {
-                sourceScreen: "Library",
-                onDonePress: handleAddToLibrary,
+                sourceScreen: BookCollections.LIBRARY,
               });
             }}
+            navigateOnPress={() =>
+              navigation.navigate("BookSearchOnCreation", {
+                sourceScreen: BookCollections.LIBRARY,
+              })
+            }
+            disableKeyboard={true}
           />
         </Center>
-        {selectedBooks.length > 0 && (
+        {libraryBooks.length > 0 && (
           <Center w="100%" px={6}>
             <CoverListHorizontal
-              data={selectedBooks}
+              data={libraryBooks}
               removeBook={handleRemoveFromLibrary}
             />
           </Center>

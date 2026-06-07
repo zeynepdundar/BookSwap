@@ -10,28 +10,27 @@ import {
   Spacer,
 } from "native-base";
 import i18n from "@/i18n";
-import { setProfileData } from "@/store/profile/slice";
 import Screen from "@/components/shared/Screen";
 
+import { setOnboardingName } from "@/store/onboarding";
 
 export default function NameInputScreen({ navigation }) {
-  const profileData = useSelector((state: any) => state.profile.profile);
+  const onboardingName = useSelector(
+    (state: any) => state.onboarding.name
+  );
 
-  const initialName = profileData?.name || "";
-  const [name, setName] = useState(initialName);
+  const [name, setName] = useState(onboardingName || "");
 
   const dispatch = useAppDispatch();
 
-    const isButtonDisabled = name.trim().length <= 2;
-
+  const isButtonDisabled = name.trim().length <= 2;
 
   const handleNameChange = (newName: string) => {
     setName(newName);
   };
 
-
   const pressHandler = () => {
-    dispatch(setProfileData({ name: name.trim() }));
+    dispatch(setOnboardingName(name.trim()));
     navigation.navigate("BirthdateInput");
   };
 
@@ -39,9 +38,11 @@ export default function NameInputScreen({ navigation }) {
     <Screen>
       <VStack space={1} alignItems="center" height={"50%"}>
         <Center h="118px" />
+
         <Heading w="100%" h="8" px={10}>
           {i18n.t("my-name")}
         </Heading>
+
         <Center w="100%" h="20" px={8}>
           <Input
             value={name}
@@ -49,7 +50,6 @@ export default function NameInputScreen({ navigation }) {
             maxLength={25}
             width={250}
             fontSize={20}
-            borderTopColor="none"
             borderBottomColor="black.400"
             color="black.400"
             textAlign="center"
@@ -58,7 +58,9 @@ export default function NameInputScreen({ navigation }) {
             onChangeText={handleNameChange}
           />
         </Center>
+
         <Spacer />
+
         <Center p={4}>
           <Button
             variant={isButtonDisabled ? "disabled" : "primary"}

@@ -15,12 +15,11 @@ import { MaterialIcons } from "@expo/vector-icons";
 import i18n from "@/i18n";
 import { Keyboard } from "react-native";
 import { formatText, truncateText } from "@/utils/helper";
-import { BookCollections } from "@/types/book.types";
+import { Book } from "@/types/book.types";
 
 interface BorderedBookListVerticalProps {
   data: any[]; // Replace YourItemType with the actual type of your data items
   onDonePress?: (item: any) => void;
-  listType?: BookCollections;
 }
 const ListRow = React.memo(function ListRow({ item, changeListStatusHandler, isSelectedBook }: any) {
   return (
@@ -43,8 +42,8 @@ const ListRow = React.memo(function ListRow({ item, changeListStatusHandler, isS
                 item.coverUrl
                   ? { uri: item.coverUrl }
                   : {
-                      uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                    }
+                    uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                  }
               }
               alt={`Cover of ${item.title} by ${item.author}`}
               roundedRight="4"
@@ -84,19 +83,19 @@ const ListRow = React.memo(function ListRow({ item, changeListStatusHandler, isS
 const keyExtractor = (item) => item.id;
 export const BorderedBookListVertical: React.FC<
   BorderedBookListVerticalProps
-> = ({ data, onDonePress, listType, ...props }) => {
+> = ({ data, onDonePress, ...props }) => {
   const [selectedBooks, setSelectedBooks] = useState([]);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
 
   const handleDonePress = () => {
-    // Pass selected items to the parent using the callback
-    onDonePress(selectedBooks);
+    onDonePress({
+      books: selectedBooks,
+    });
   };
-  const addBookToListHandler = (selectedItem: any) => {
+  const addBookToCollectionsHandler = (selectedItem: Book) => {
     setSelectedBooks((currentLibraryItems) => [
       ...currentLibraryItems,
       {
-        type: listType,
         id: selectedItem?.id,
         title: selectedItem.title,
         author: selectedItem.author,
@@ -106,14 +105,14 @@ export const BorderedBookListVertical: React.FC<
     ]);
   };
 
-  // const addBookToListHandler = (selectedItem: any) => {
+  // const addBookToCollectionsHandler = (selectedItem: any) => {
   //   if (selectedItem.type === "wishlist")
   //     dispatch(addBookToWishlistAsync(selectedItem));
   //   else if (selectedItem.type === "library")
   //     dispatch(addBookToLibraryAsync(selectedItem));
   // };
 
-  const removeBookFromListHandler = (id) => {
+  const removeBookFromCollectionHandler = (id) => {
     setSelectedBooks((currentLibraryItems) =>
       currentLibraryItems.filter((item) => item.id !== id)
     );
@@ -122,9 +121,9 @@ export const BorderedBookListVertical: React.FC<
     const bookIsInList = isSelectedBook(item.id);
 
     if (bookIsInList) {
-      removeBookFromListHandler(item.id);
+      removeBookFromCollectionHandler(item.id);
     } else {
-      addBookToListHandler(item);
+      addBookToCollectionsHandler(item);
     }
   };
 

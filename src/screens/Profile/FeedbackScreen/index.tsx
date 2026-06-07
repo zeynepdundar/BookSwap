@@ -2,21 +2,18 @@ import { useState } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { useSelector } from "react-redux";
 import {
-  Heading,
-  ChevronLeftIcon,
   Button,
-  Spacer,
-  HStack,
   VStack,
   TextArea,
   Text,
 } from "native-base";
 
 import i18n from "@/i18n";
-import { submitFeedback } from "@/api/service";
 import { RootState } from "@/store/types";
 import Screen from "@/components/shared/Screen";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
+import { submitFeedback } from "@/services/feedback/feedback.service";
+import ScreenHeader from "@/components/shared/ScreenHeader";
 
 
 export default function FeedbackScreen({ navigation }) {
@@ -57,24 +54,10 @@ export default function FeedbackScreen({ navigation }) {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Screen>
-        <HStack
-          alignItems="center"
-          space="24%"
-          justifyContent="space-between"
-          w="100%"
-          h="50px"
-        >
-          <Button
-            variant="ghost"
-            leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
-            _pressed={{
-              bg: "transparent",
-            }}
-            onPress={() => navigation.goBack()}
-          />
-          <Heading>{i18n.t("feedback")}</Heading>
-          <Spacer />
-        </HStack>
+        <ScreenHeader
+          title={i18n.t("feedback")}
+          onBack={() => navigation.goBack()}
+        />
         <VStack space={3} mx="4">
           <Text fontWeight="200" color="gray.400">
             {i18n.t("feedback-description")}

@@ -1,6 +1,4 @@
-import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import {
   Button,
   Center,
@@ -8,43 +6,30 @@ import {
   VStack,
   Spacer,
 } from "native-base";
-import { setProfileData } from "@/store/profile/slice";
+
+
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import i18n from "@/i18n";
 import Screen from "@/components/shared/Screen";
-import SearchBar from "@/components/shared/SearchBar";
 import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
 import StepHeader from "@/components/shared/StepHeader";
-
+import SearchBar from "@/components/shared/SearchBar";
+import { removeFromOnboardingWishlist } from "@/store/onboarding/slice";
+import { BookCollections } from "@/types/book.types";
+import { selectOnboardingWishlistBooks } from "@/store/selectors";
 
 export default function WishlistInputScreen({ navigation }) {
-
-  const profileData = useSelector((state: any) => state.profile.profile);
-  const initialWishlistBooks = profileData.wishlistBook || []; // Assuming wishlistBook contains selected books
-  const [selectedBooks, setSelectedBooks] = useState(initialWishlistBooks);
-
-
   const dispatch = useAppDispatch();
 
-  const handleAddToWishlist = (data) => {
-    setSelectedBooks((prevSelectedBooks) => {
-      const newItemIds = data.map((item) => item.id);
-      const filteredData = data.filter(
-        (item) =>
-          !prevSelectedBooks.some((selectedItem) => selectedItem.id === item.id)
-      );
-      const updatedSelectedBooks = [...prevSelectedBooks, ...filteredData];
-      return updatedSelectedBooks;
-    });
-  };
+  const wishlistBooks = useSelector(
+    selectOnboardingWishlistBooks
+  );
 
-  const handleRemoveFromWishlist = (id) => {
-    setSelectedBooks((currentLibraryItems) =>
-      currentLibraryItems.filter((item) => item.id !== id)
-    );
+  const handleRemoveFromWishlist = (id: string) => {
+    dispatch(removeFromOnboardingWishlist(id));
   };
 
   const pressHandler = () => {
-    dispatch(setProfileData({ wishlistBook: selectedBooks }));
     navigation.navigate("LibraryInput");
   };
 
@@ -56,45 +41,56 @@ export default function WishlistInputScreen({ navigation }) {
           onBack={() => navigation.goBack()}
           onSkip={() => navigation.navigate("LibraryInput")}
         />
-        <Spacer></Spacer>
+
+        <Spacer />
+
         <Heading w="100%" h="8" px={10}>
           {i18n.t("add-books-to-wishlist")}
         </Heading>
+
         <Center w="96%" h="20" px={8}>
           <SearchBar
-            onSearchBook={() => {
+            onSearchPress={() => {
               navigation.navigate("BookSearchOnCreation", {
-                sourceScreen: "Wishlist",
+                sourceScreen: BookCollections.WISHLIST,
               });
             }}
-            onScanBarcode={() => {
+            onScanPress={() => {
               navigation.navigate("BarcodeScannerOnProfileCreation", {
-                sourceScreen: "Wishlist",
-                onAddBook: handleAddToWishlist
+                sourceScreen: BookCollections.WISHLIST,
               });
             }}
             onFocus={() => {
               navigation.navigate("BookSearchOnCreation", {
-                sourceScreen: "Wishlist",
-                onDonePress: handleAddToWishlist,
+                sourceScreen: BookCollections.WISHLIST,
               });
             }}
+            disableKeyboard={true}
+            navigateOnPress={() =>
+              navigation.navigate("BookSearchOnCreation", {
+                sourceScreen: BookCollections.WISHLIST
+              })
+            }
           />
         </Center>
-        {selectedBooks.length > 0 && (
+
+        {wishlistBooks.length > 0 && (
           <Center w="100%" px={6}>
             <CoverListHorizontal
-              data={selectedBooks}
+              data={wishlistBooks}
               removeBook={handleRemoveFromWishlist}
             />
           </Center>
         )}
+
         <Spacer />
+
         <Center p={4}>
           <Button variant="primary" onPress={pressHandler}>
             {i18n.t("continue")}
           </Button>
         </Center>
+
       </VStack>
     </Screen>
   );

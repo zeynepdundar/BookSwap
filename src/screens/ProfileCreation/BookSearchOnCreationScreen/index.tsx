@@ -15,22 +15,25 @@ import {
 } from "native-base";
 import Screen from "@/components/shared/Screen";
 import i18n from "@/i18n";
-import { setProfileData } from "@/store/profile/slice";
 
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
-import { EditionEndpoints } from "@/api/endpoints";
 import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";
 
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
+import { fetchBooksByTitle } from "@/services/books/books.service";
+import { addBooksToOnboarding } from "@/store/onboarding/slice";
 
 export default function BookSearchOnCreationScreen({
   navigation,
   route = null,
 }) {
-  const { sourceScreen } = route.params;
+  const { sourceScreen } = route.params ?? {};
+
+
+  const collectionType = sourceScreen?.toLowerCase();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState([]);
 
@@ -38,55 +41,19 @@ export default function BookSearchOnCreationScreen({
 
 
   const fetchBooks = async (title) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch(
-        EditionEndpoints.FETCH_EDITION_BY_TITLE(title)
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP request failed with status ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (!data || !data.editions || !Array.isArray(data.editions)) {
-        throw new Error("Invalid or missing data structure from the server.");
-      }
-
-      const transformedData = data.editions.map((item) => ({
-        id: item.id,
-        title: item.title,
-        publisher: item.publishers ? item.publishers[0] : "",
-        // isbn_13: item.isbn_13 || item.isbn_11,
-        coverUrl:
-          item.isbn_13 && item.isbn_13 > 0
-            ? EditionEndpoints.FETCH_COVER_OL(undefined, item.isbn_13)
-            : null,
-        author: item.author ? item.author : "",
-      }));
-
-      setSearchResults(transformedData);
-      setLoading(false);
-
-      return transformedData;
-    } catch (error) {
-      if (
-        error instanceof TypeError &&
-        error.message === "Network request failed"
-      ) {
-        setError(
-          "Network request failed. Please check your internet connection."
-        );
-      } else {
-        setError(`An error occurred: ${error.message} `);
-      }
-      console.error("Error fetching books:", error);
-    } finally {
-      setLoading(false);
-    }
+    fetchBooksByTitle(title)
+      .then((books) => {
+        setSearchResults(books);
+        setSearchError(null);
+      })
+      .catch((err) => {
+        setSearchError(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
+
   const inputRef = useRef(null);
 
   // useEffect(() => {
@@ -119,16 +86,13 @@ export default function BookSearchOnCreationScreen({
       sourceScreen: "Library",
     });
   };
-
-
-  const pressDoneHandler = (selectedItem) => {
-  if (sourceScreen === "wishlist") {
-    dispatch(setProfileData({ wishlistBook: selectedItem }));
-  }
-
-  if (sourceScreen === "library") {
-    dispatch(setProfileData({ libraryBook: selectedItem }));
-  }
+  const  pressDoneHandler = (selectedItem) => {
+    dispatch(
+      addBooksToOnboarding({
+        collection: collectionType,
+        books: selectedItem.books,
+      })
+    );
 
   navigation.goBack();
 };
@@ -189,11 +153,10 @@ export default function BookSearchOnCreationScreen({
                 <LoadingOverlay />
               </Box>
             )}
-            {!loading && !error && searchResults?.length > 0 && (
+            {!loading && !searchError && searchResults?.length > 0 && (
               <BorderedBookListVertical
                 data={searchResults}
                 onDonePress={pressDoneHandler}
-                listType={sourceScreen}
               />
             )}
             {searchQuery.length < 5 && (
@@ -211,7 +174,7 @@ export default function BookSearchOnCreationScreen({
                 </Center>
               </VStack>
             )}
-            {!error && searchResults.length === 0 && searchQuery.length > 4 && (
+            {!searchError && searchResults.length === 0 && searchQuery.length > 4 && (
               <VStack width="100%" height={200} mt="100">
                 <Center w="100%">
                   <Text
@@ -232,7 +195,7 @@ export default function BookSearchOnCreationScreen({
                 </Center>
               </VStack>
             )}
-            {error && searchQuery?.length > 4 && (
+            {searchError && searchQuery?.length > 4 && (
               <Box h="75%" alignItems="center" justifyContent="center">
                 <WarningTwoIcon size="5" mt="0.5" mx="2" color="error.500" />
                 <Text
@@ -242,7 +205,7 @@ export default function BookSearchOnCreationScreen({
                   color="error.500"
                   textAlign="center"
                 >
-                  {error}
+                  {searchError}
                 </Text>
               </Box>
             )}

@@ -1,4 +1,9 @@
 {
+
+  "resolutions": {
+    "use-latest-callback": "0.1.9"
+  },
+
   "name": "book-swap",
   "version": "1.0.0",
   "engines": {
@@ -58,13 +63,6 @@
     "@babel/core": "^7.12.9",
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0"
-  },
-  "expo": {
-    "install": {
-      "exclude": [
-        "react-native-reanimated"
-      ]
-    }
   },
   "private": true
 }

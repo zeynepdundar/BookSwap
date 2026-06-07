@@ -3,7 +3,7 @@ import { Icon } from "native-base";
 import HomeScreen from "@/screens/HomeScreen";
 import NotificationScreen from "@/screens/NotificationScreen";
 import MessagesScreen from "@/screens/Messages";
-import TradingTabs from "./TradingTabs";
+import SwapsTabs from "./SwapsTabs";
 import { MaterialIcons } from "@expo/vector-icons";
 import { HomeTabsParamList } from "@/types/navigation.types";
 
@@ -57,8 +57,8 @@ export default function HomeTabs() {
         }}
       /> */}
       <BottomTab.Screen
-        name="Trading"
-        component={TradingTabs}
+        name="Swaps"
+        component={SwapsTabs}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon

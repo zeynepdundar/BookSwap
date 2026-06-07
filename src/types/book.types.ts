@@ -6,11 +6,7 @@ export interface Book {
     title: string;
     author: string;
     publisher: string;
-    type: BookCollection;
-    coverImage?: string;
-    isbn?: string;
-    description?: string;
-    publishedYear?: number;
+    coverUrl?: string;
 }
 
 /**
@@ -21,24 +17,20 @@ export const BookCollections = {
   LIBRARY: "library",
 } as const;
 
-
-
 export type BookCollection =
   (typeof BookCollections)[keyof typeof BookCollections];
-/**
- * Payload for adding books to a list
- */
-export interface AddBookPayload {
-    book: Book | Book[];
-    listType: BookCollection;
-}
 
 /**
- * Payload for removing books from a list
+ * Payload for adding or removing books
  */
-export interface RemoveBookPayload {
-    id: string;
-    listType: BookCollection;
+export interface AddBooksPayload {
+  books: Book[];
+  collection: BookCollection;
+}
+
+export interface RemoveBooksPayload {
+  bookIds: string[];
+  collection: BookCollection;
 }
 
 /**
@@ -50,7 +42,7 @@ export interface BookSearchResult {
     author: string;
     publisher?: string;
     isbn?: string;
-    coverImage?: string;
+    coverUrl?: string;
 }
 
 /**

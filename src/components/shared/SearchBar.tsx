@@ -5,8 +5,8 @@ import i18n from "@/i18n";
 import { useState } from "react";
 
 export default function SearchBar({
-  onSearchBook,
-  onScanBarcode,
+  onSearchPress,
+  onScanPress,
   onFocus,
   disableKeyboard = false,
   navigateOnPress,
@@ -29,7 +29,7 @@ export default function SearchBar({
         py="3"
         px="1"
         fontSize="14"
-        onChangeText={onSearchBook}
+        onChangeText={onSearchPress}
         onFocus={onFocus}
         editable
         focusable
@@ -58,7 +58,7 @@ export default function SearchBar({
             mr="3"
             size="6"
             color="gray.400"
-            onPress={onScanBarcode}
+            onPress={onScanPress}
             as={<MaterialIcons name="crop-free" />}
           />
         }

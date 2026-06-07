@@ -27,9 +27,9 @@ import {
   getImageSource,
   truncateText,
 } from "@/utils/helper";
-import { fetchUserProfileData } from "@/api/service";
 import { RootState } from "@/store/types";
 import { resetUnseenCount } from "@/store/messages/messages-actions";
+import { fetchUserProfileData } from "@/services/profile/profile.service";
 
 export default function MessagesScreen({ navigation }) {
   const [isFetchingUserData, setIsFetchingUserData] = useState(true);

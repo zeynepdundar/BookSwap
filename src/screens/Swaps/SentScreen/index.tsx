@@ -16,13 +16,14 @@ import {
 } from "native-base";
 import { useCallback, useState } from "react";
 import {  useSelector } from "react-redux";
-import { fetchProfileImageUrl } from "@/api/service";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import i18n from "@/i18n";
 
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { ErrorAlert } from "../../BarcodeScannerScreen";
-import { fetchSentOffersAsync, takeBackOfferAsync } from "@/store/profile/thunks";
+import { fetchProfileImageUrl } from "@/services/profile/profile.service";
+import { fetchSentOffersAsync, takeBackOfferAsync } from "@/store/offers/thunks";
+import { offersSelectors } from "@/store/offers/slice";
 
 export default function SentScreen({ navigation }) {
   const tra = require("@/assets/images/icon/Icons.png");
@@ -30,12 +31,10 @@ export default function SentScreen({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingImages, setLoadingImages] = useState(true);
+  const sentOffers = useSelector(offersSelectors.sent.selectAll);
 
-  const sentOffers = useSelector(
-    (state: any) => state.profile.profile.sentOffer
-  );
   const [sentOffersWithUserPhoto, setSentOffersWithUserPhoto] =
-    useState(sentOffers);
+    useState<any[]>(sentOffers);
 
   const { loading, profile } = useSelector((state: any) => state.profile);
   const dispatch = useAppDispatch();
@@ -107,7 +106,7 @@ export default function SentScreen({ navigation }) {
   // Remove this when the socket-based implementation is ready.
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    dispatch(fetchSentOffersAsync(profile.id)).finally(() =>
+    dispatch(fetchSentOffersAsync()).finally(() =>
       setRefreshing(false)
     );
   }, [dispatch]);
@@ -115,6 +114,13 @@ export default function SentScreen({ navigation }) {
   if (loading && !refreshing) {
     return <LoadingOverlay />;
   }
+
+    useFocusEffect(
+    useCallback(() => {
+      //dispatch(fetchReceivedOffersAsync()); // No more tracking down userIds here
+      dispatch(fetchSentOffersAsync());
+    }, [dispatch])
+  );
   return (
     <>
       {!sentOffers ||

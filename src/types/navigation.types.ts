@@ -12,7 +12,7 @@ export type ProfileCreationStackParamList = {
   BirthdateInput: undefined;
   GenderInput: undefined;
   PhotoInput: undefined;
-  BookSearch: undefined;
+  BookSearchOnCreation: undefined;
   LibraryInput: undefined;
   WishlistInput: undefined;
 };
@@ -26,12 +26,12 @@ export type ProfileStackParamList = {
 
 export type HomeTabsParamList = {
   Home: undefined;
-  Trading: NavigatorScreenParams<TradingTabsParamList>;
+  Swaps: NavigatorScreenParams<SwapsTabsParamList>;
   Messages: undefined;
   // Notification: undefined; // Commented out but available for future use
 };
 
-export type TradingTabsParamList = {
+export type SwapsTabsParamList = {
   History: undefined;
   Received: undefined;
   Sent: undefined;
@@ -45,18 +45,18 @@ export type RootStackParamList = {
   // Profile Creation Flow (for new users)
   ProfileCreation: NavigatorScreenParams<ProfileCreationStackParamList>;
   BarcodeScannerOnProfileCreation: undefined;
-  BookSearchOnCreation: undefined;
   
   // Main App Flow (for existing users)
   HomeTabs: NavigatorScreenParams<HomeTabsParamList>;
+  SwapsTabs: NavigatorScreenParams<SwapsTabsParamList>;
   ProfileStack: NavigatorScreenParams<ProfileStackParamList>;
   UserList: undefined;
   OtherUserProfile: undefined;
   BarcodeScanner: undefined;
   BookSearchFromList: undefined;
   BookSearch: undefined;
-  TradeProposal: undefined;
-  TradeOfferAcceptedScreen: undefined;
+  SwapOfferProposal: undefined;
+  SwapOfferAcceptedScreen: undefined;
   OtherLibrary: undefined;
   ChatScreen: undefined;
 };
@@ -65,5 +65,5 @@ export type RootStackParamList = {
 export type AuthStackNavigationProp = NativeStackNavigationProp<AuthStackParamList>;
 export type ProfileStackNavigationProp = NativeStackNavigationProp<ProfileStackParamList>;
 export type ProfileCreationStackNavigationProp = NativeStackNavigationProp<ProfileCreationStackParamList>;
-export type TradingTabsNavigationProp = NativeStackNavigationProp<TradingTabsParamList>;
+export type SwapsTabsNavigationProp = NativeStackNavigationProp<SwapsTabsParamList>;
 export type RootStackNavigationProp = NativeStackNavigationProp<RootStackParamList>;

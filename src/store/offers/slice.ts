@@ -1,25 +1,76 @@
-import { createEntityAdapter, createSlice, EntityState } from "@reduxjs/toolkit";
-import { TradeOffer } from "@/types/offer.types";
 import {
-  fetchUserProfileAsync,
+  createEntityAdapter,
+  createSlice,
+  EntityState,
+} from "@reduxjs/toolkit";
+
+import {
+  acceptOfferAsync,
   fetchReceivedOffersAsync,
   fetchSentOffersAsync,
+  fetchTradeHistoryAsync,
+  rejectOfferAsync,
   sendOfferAsync,
-} from "@/store/profile/thunks";
+  takeBackOfferAsync,
+} from "./thunks";
 
-const offersAdapter = createEntityAdapter<TradeOffer>({
-  selectId: (offer) => offer.id,
-});
+import { Offer } from "./types";
+import { RootState } from "../types";
 
-interface OffersState extends EntityState<TradeOffer> {
+/* -------------------------------------------------------------------------- */
+/*                               ADAPTER FACTORY                              */
+/* -------------------------------------------------------------------------- */
+
+export const createOfferAdapter = () =>
+  createEntityAdapter<Offer>({
+    selectId: (offer) => offer.id,
+  });
+
+/* -------------------------------------------------------------------------- */
+/*                                   STATE                                    */
+/* -------------------------------------------------------------------------- */
+
+interface OffersState {
+  received: EntityState<Offer>;
+  sent: EntityState<Offer>;
+  history: EntityState<Offer>;
+
   loading: boolean;
   error: string | null;
 }
 
-const initialState: OffersState = offersAdapter.getInitialState({
+const receivedAdapter = createOfferAdapter();
+const sentAdapter = createOfferAdapter();
+const historyAdapter = createOfferAdapter();
+
+const initialState: OffersState = {
+  received: receivedAdapter.getInitialState(),
+  sent: sentAdapter.getInitialState(),
+  history: historyAdapter.getInitialState(),
+
   loading: false,
   error: null,
-});
+};
+
+/* -------------------------------------------------------------------------- */
+/*                                 SELECTORS                                  */
+/* -------------------------------------------------------------------------- */
+
+export const offersSelectors = {
+  received: receivedAdapter.getSelectors(
+    (state: RootState) => state.offers.received
+  ),
+  sent: sentAdapter.getSelectors(
+    (state: RootState) => state.offers.sent
+  ),
+  history: historyAdapter.getSelectors(
+    (state: RootState) => state.offers.history
+  ),
+};
+
+/* -------------------------------------------------------------------------- */
+/*                                   SLICE                                    */
+/* -------------------------------------------------------------------------- */
 
 const offersSlice = createSlice({
   name: "offers",
@@ -28,23 +79,72 @@ const offersSlice = createSlice({
     clearOffers: () => initialState,
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchUserProfileAsync.fulfilled, (state, action: any) => {
-        const { receivedOffer, sentOffer } = action.payload;
-        offersAdapter.setAll(state, [...(receivedOffer ?? []), ...(sentOffer ?? [])]);
-      })
-      .addCase(sendOfferAsync.fulfilled, (state, action) => {
-        offersAdapter.upsertMany(state, action.payload as TradeOffer[]);
-      })
-      .addCase(fetchSentOffersAsync.fulfilled, (state, action) => {
-        offersAdapter.upsertMany(state, action.payload as TradeOffer[]);
-      })
-      .addCase(fetchReceivedOffersAsync.fulfilled, (state, action) => {
-        offersAdapter.upsertMany(state, action.payload as TradeOffer[]);
-      });
+    // RECEIVED
+    builder.addCase(fetchReceivedOffersAsync.fulfilled, (state, action) => {
+      receivedAdapter.setAll(state.received, action.payload);
+    });
+
+    // SENT
+    builder.addCase(fetchSentOffersAsync.fulfilled, (state, action) => {
+      sentAdapter.setAll(state.sent, action.payload);
+    });
+
+    // HISTORY
+    builder.addCase(fetchTradeHistoryAsync.fulfilled, (state, action) => {
+      historyAdapter.setAll(state.history, action.payload);
+    });
+
+    // SEND
+    builder.addCase(sendOfferAsync.fulfilled, (state, action) => {
+      sentAdapter.addOne(state.sent, action.payload);
+    });
+
+    // ACCEPT
+    builder.addCase(acceptOfferAsync.fulfilled, (state, action) => {
+      receivedAdapter.removeOne(state.received, action.payload.id);
+      historyAdapter.addOne(state.history, action.payload);
+    });
+
+    // REJECT
+    builder.addCase(rejectOfferAsync.fulfilled, (state, action) => {
+      receivedAdapter.removeOne(state.received, action.payload.id);
+    });
+
+    // TAKE BACK
+    builder.addCase(takeBackOfferAsync.fulfilled, (state, action) => {
+      sentAdapter.removeOne(state.sent, action.payload.id);
+    });
+
+    // GLOBAL LOADING
+    builder.addMatcher(
+      (action) => action.type.endsWith("/pending"),
+      (state) => {
+        state.loading = true;
+        state.error = null;
+      }
+    );
+
+    builder.addMatcher(
+      (action) => action.type.endsWith("/fulfilled"),
+      (state) => {
+        state.loading = false;
+      }
+    );
+
+    builder.addMatcher(
+      (action: any) => action.type.endsWith("/rejected"),
+      (state, action) => {
+        state.loading = false;
+        state.error = action.error?.message ?? "Error";
+      }
+    );
   },
 });
 
+/* -------------------------------------------------------------------------- */
+/*                                EXPORTS                                     */
+/* -------------------------------------------------------------------------- */
+
 export const { clearOffers } = offersSlice.actions;
+
 export const offersReducer = offersSlice.reducer;
-export const offersSelectors = offersAdapter.getSelectors();

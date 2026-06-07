@@ -12,7 +12,7 @@ import Screen from "../../components/shared/Screen";
 import { ImageBackground } from "react-native";
 import { useSelector } from "react-redux";
 
-export default function TradeOfferAcceptedScreen({ navigation, route }) {
+export default function SwapOfferAcceptedScreen({ navigation, route }) {
   const { user, conversationId } = route.params || {};
   const { firebaseUserId } = useSelector((state: any) => state.auth.user);
 

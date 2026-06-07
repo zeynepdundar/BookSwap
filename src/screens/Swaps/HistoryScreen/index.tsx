@@ -14,13 +14,14 @@ import {
 } from "native-base";
 import { useCallback, useState } from "react";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
-import { useSelector } from "react-redux";
-import { useAppDispatch } from "@/hooks/common/useAppDispatch";
+import {  useSelector } from "react-redux";
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
-import { fetchProfileImageUrl } from "@/api/service";
 import { useFocusEffect } from "@react-navigation/native";
 import i18n from "@/i18n";
-import { fetchTradeHistoryAsync } from "@/store/profile/thunks";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
+import { fetchProfileImageUrl } from "@/services/profile/profile.service";
+import { fetchTradeHistoryAsync } from "@/store/offers/thunks";
+import { offersSelectors } from "@/store/offers/slice";
 
 export default function HistoryScreen({ navigation }) {
   const tradeIcon = require("@/assets/images/icon/trade-in.png");
@@ -28,12 +29,10 @@ export default function HistoryScreen({ navigation }) {
 
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+ const historyList  = useSelector(offersSelectors.history.selectAll);
 
-  const historyList = useSelector(
-    (state: any) => state.profile.profile.historyList
-  );
   const [historyListWithUserPhoto, setHistoryListWithUserPhoto] =
-    useState(historyList);
+    useState<any[]>(historyList);
   const { loading, profile } = useSelector((state: any) => state.profile);
   const dispatch = useAppDispatch();
   const fetchProfileImages = async () => {
