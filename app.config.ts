@@ -13,6 +13,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: "com.harmony.bookswap",
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
+      UIBackgroundModes: ["remote-notification"],
     },
   },
   android: {

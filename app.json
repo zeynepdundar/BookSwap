@@ -38,7 +38,10 @@
         "expo-build-properties",
         {
           "ios": {
-            "useFrameworks": "static"
+            "useFrameworks": "static",
+            "extraPods": [
+              { "name": "RecaptchaEnterprise", "version": "18.7.0" }
+            ]
           }
         }
       ],
@@ -55,7 +58,7 @@
       }
     },
     "ios": {
-      "buildNumber": "3"
+      "buildNumber": "4"
     },
     "android": {
       "versionCode": 1
