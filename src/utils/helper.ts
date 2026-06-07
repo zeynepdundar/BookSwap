@@ -11,9 +11,11 @@ export const getCoverUrl = (bookData) => {
     return null;
   }
 };
+
 export const getImageSource = (photoUrl, fallbackImage) => {
   return photoUrl ? { uri: photoUrl } : fallbackImage;
 };
+
 export const createBookData = (books) => {
   if (Array.isArray(books)) {
     // If books is an array, map over it and apply createBookData for each item
@@ -34,6 +36,7 @@ export const createBookData = (books) => {
         : books.author || null,
   };
 };
+
 export const structureOfferData = (offers, type) => {
   if (type === "history") {
     const receivedOffers = offers.received_offers.map((offer) =>
@@ -83,6 +86,7 @@ export const structureOfferData = (offers, type) => {
     },
   };
 };
+
 export const timeAgo = (date) => {
   const currentDate = new Date();
   const targetDate = new Date(date);
@@ -115,6 +119,7 @@ export const timeAgo = (date) => {
       : i18n.t("just-now");
   }
 };
+
 export const formatText = (inputText) => {
   if (!inputText) {
     return ""; // Return an empty string or handle other falsy values as needed
@@ -129,6 +134,7 @@ export const formatText = (inputText) => {
 
   return formattedText;
 };
+
 export const formatLastMessageTime = (timestamp, languagePreference) => {
   const messageDate = new Date(timestamp);
   const currentDate = new Date();
@@ -176,6 +182,7 @@ export const formatLastMessageTime = (timestamp, languagePreference) => {
 
   return formattedTime;
 };
+
 export const truncateText = (text, maxLength = 100) => {
   if (text.length <= maxLength) {
     return text;
@@ -183,6 +190,7 @@ export const truncateText = (text, maxLength = 100) => {
     return text.slice(0, maxLength) + "...";
   }
 };
+
 export const generateActions = (handleAction, closeActionSheet) => [
   {
     type: BookCollections.WISHLIST,
@@ -197,7 +205,9 @@ export const generateActions = (handleAction, closeActionSheet) => [
   { type: "cancel", label: "cancel", onPress: closeActionSheet },
   // Add more actions as needed
 ];
+
 export const generateModalActions = (actions, handleAction, closeModal) => {
+  console.log("Generating modal actions with:", actions);
   return actions.map((action) => ({
     type: action.type,
     label: action.label,
@@ -205,13 +215,16 @@ export const generateModalActions = (actions, handleAction, closeModal) => {
       action.type === "cancel" ? closeModal() : handleAction(action.type),
   }));
 };
+
 export const generateConversationId = (friendUserId, currentUserId) => {
   return [friendUserId, currentUserId].sort().join('_');
 };
+
 export const reverseConversationId = (conversationId) => {
   const ids = conversationId.split("_");
   return { userId: ids[1], friendId: ids[0] };
 };
+
 export const normalizePhone = (value: string): string => {
   return value.replace(/[^\d+]/g, "");
 };

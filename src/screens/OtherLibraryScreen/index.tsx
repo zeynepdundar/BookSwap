@@ -16,9 +16,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Screen from "../../components/shared/Screen";
 import i18n from "../../i18n";
 import { BookListVertical } from "../../components/shared/BookListVertical";
-import { fetchUserProfileData } from "../../api/service";
 import { LoadingOverlay } from "../../components/shared/LoadingOverlay";
 import { BorderedBookListVertical } from "../../components/shared/BorderedBookListVertical";
+import { fetchUserProfileData } from "@/services/profile/profile.service";
 
 const AddBookToProposalButton = ({ onPress }) => (
   <Icon
@@ -43,7 +43,7 @@ export default function OtherLibraryScreen({ navigation, route }) {
     <AddBookToProposalButton
       onPress={() => {
         navigation.navigate({
-          name: "TradeProposal",
+          name: "SwapOfferProposal",
           params: { requestedBook: book },
           merge: true,
         } as any);

@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Keyboard } from "react-native";
+import React, { useCallback, useState } from "react";
+import { Keyboard,FlatList } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-
+ 
 import {
-  FlatList,
   Image,
   HStack,
   VStack,
@@ -22,11 +21,13 @@ import { ActionSheet } from "@/components/shared/ActionSheet";
 import { formatText, generateActions, truncateText } from "@/utils/helper";
 import i18n from "@/i18n";
 import { useSelector } from "react-redux";
-import { BookCollections } from "@/types/book.types";
-import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
+import { Book, BookCollections } from "@/types/book.types";
+import { InfoDialogBox } from "../Modal/InfoDialogBox";
+
 interface BookListVerticalProps {
-  data: any[]; // Replace YourItemType with the actual type of your data items
-  onPrimaryAction?: (id: string) => void;
+  data: Book[]; 
+  showOwners?: boolean;
+  onPrimaryAction?: (book:Book) => void;
   onSecondaryAction?: (item: any) => void;
   onNavigateList?: (item: any) => void;
   onSendOffer?: (id: any) => void;
@@ -40,6 +41,7 @@ const ListRow = React.memo(function ListRow({
   onPrimaryAction,
   openActionSheet,
   onSendOffer,
+  showOwners,
 }: any) {
   return (
     <>
@@ -76,7 +78,7 @@ const ListRow = React.memo(function ListRow({
             ""
           )}
 
-          {item?.usersOwning && (
+          {showOwners && item?.usersOwning && (
             <Pressable
               onPress={() => handleNavigateList(item, onNavigateList, userId)}
               borderColor="#323232"
@@ -140,6 +142,7 @@ const handleNavigateList = (item, onNavigateList, userId) => {
 };
 export const BookListVertical: React.FC<BookListVerticalProps> = ({
   data,
+  showOwners,
   onPrimaryAction,
   onSecondaryAction,
   onNavigateList,
@@ -169,25 +172,32 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
     }, [])
   );
 
-  const handleAction = async (actionType) => {
-    Keyboard.dismiss();
-    const result: any = await onSecondaryAction({
-      type: actionType,
-      id: selectedItem?.id,
-      title: selectedItem.title,
-      author: selectedItem.author,
-      publisher: selectedItem.publisher,
-      coverUrl: selectedItem.coverUrl,
-    });
+const handleAction = async (actionType) => {
+  Keyboard.dismiss();
 
-    if (!result.success) {
-      // Handle the error message if action failed
-    } else {
-      setSelectedAction(actionType);
-      setIsInfoDialogOpen(true);
-    }
-    closeActionSheet();
-  };
+  const items = Array.isArray(selectedItem)
+    ? selectedItem
+    : [selectedItem];
+
+setIsActionSheetOpen(false);
+  const result: any = await onSecondaryAction({
+    books: items,
+    collection: actionType, 
+  });
+
+
+// If it failed or was canceled, reset selectedItem and stop execution
+  if (!result?.success) {
+    setSelectedItem(null);
+    return;
+  }
+
+  // 2. Use setTimeout to defer mounting the dialog until the sheets unmount transition finishes completely
+  setTimeout(() => {
+    setSelectedAction(actionType);
+    setIsInfoDialogOpen(true);
+  }, 100);
+};
   const openActionSheet = (item) => {
     Keyboard.dismiss();
     setSelectedItem(item);
@@ -232,6 +242,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
         onPrimaryAction={onPrimaryAction}
         openActionSheet={openActionSheet}
         onSendOffer={onSendOffer}
+        showOwners={showOwners}
       />
     ),
     [onNavigateList, userId, onPrimaryAction, onSendOffer]
@@ -242,8 +253,6 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   return (
     <>
       <FlatList
-        maxWidth="100%"
-        height="100%"
         data={data}
         initialNumToRender={10}
         maxToRenderPerBatch={10}

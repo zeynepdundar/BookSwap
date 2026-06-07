@@ -12,13 +12,15 @@ import {
 } from "native-base";
 import i18n from "@/i18n";
 import Screen from "@/components/shared/Screen";
-import { setProfileData } from "@/store/profile/slice";
 import StepHeader from "@/components/shared/StepHeader";
+import { setOnboardingBirthdate } from "@/store/onboarding/slice";
 
 export default function BirthdateInputScreen({ navigation }) {
 
-  const profileData = useSelector((state: any) => state.profile.profile);
-  const birthdate = profileData?.birthdate || ""
+  const onboardingBirthday = useSelector(
+    (state: any) => state.onboarding.birthdate
+  );
+  const birthdate = onboardingBirthday || "";
 
   const [birthYear, setBirthYear] = useState<string>(birthdate.split("-")[0] || "");
   const [birthMonth, setBirthMonth] = useState<string>(birthdate.split("-")[1] || "");
@@ -51,7 +53,7 @@ export default function BirthdateInputScreen({ navigation }) {
   }, [birthMonth]);
 
   const pressHandler = () => {
-    dispatch(setProfileData({ birthdate: mergeDate() }));
+    dispatch(setOnboardingBirthdate(mergeDate()));
     navigation.navigate("GenderInput");
   };
 

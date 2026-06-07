@@ -6,7 +6,9 @@ import Screen from "@/components/shared/Screen";
 import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
 import SearchBar from "@/components/shared/SearchBar";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
-import { fetchMostPopularBooks } from "@/api/service";
+import { fetchMostPopularBooks } from "@/services/books/books.service";
+import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
+
 
 export default function HomeScreen({ navigation }) {
   const importUrl = require("@/assets/images/avatar.png");
@@ -15,14 +17,25 @@ export default function HomeScreen({ navigation }) {
 
   const { profile, loading: profileLoading } = useSelector(
     (state: any) => state.profile
+    
   );
-  
+
   useEffect(() => {
     (async () => {
       const data = await fetchMostPopularBooks();
       setBooks(data);
     })();
   }, []);
+
+  const { addBooksToCollection } = useAddBooksToCollection();
+
+  const pressDoneHandler = async ({ collection, books }) => {
+
+    await addBooksToCollection({
+      collection: collection,
+      books,
+    });
+  };
 
   if (profileLoading || !profile) {
     return <LoadingOverlay></LoadingOverlay>;
@@ -50,22 +63,16 @@ export default function HomeScreen({ navigation }) {
         </Pressable>
       </Flex>
       <SearchBar
-        onSearchBook={() => {
-          navigation.navigate("BookSearch", {
-            sourceScreen: "Home",
-          });
+        onSearchPress={() => {
+          navigation.navigate("BookSearch");
         }}
-        onScanBarcode={() => {
-          navigation.navigate("BarcodeScanner", {
-            sourceScreen: "Home",
-          });
+        onScanPress={() => {
+          navigation.navigate("BarcodeScanner", { onAddBook: pressDoneHandler });
         }}
         onFocus={() => { }}
         disableKeyboard={true}
         navigateOnPress={() =>
-          navigation.navigate("BookSearch", {
-            sourceScreen: "Home",
-          })
+          navigation.navigate("BookSearch")
         }
       />
       {books.length > 0 && (

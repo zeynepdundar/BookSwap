@@ -6,7 +6,7 @@ import {
 } from "./thunks";
 import { fetchUserProfileAsync } from "@/store/profile";
 import { setProfileData } from "@/store/profile/slice";
-import { setToken, setUser } from "./slice";
+import { setIsNewUser, setToken, setUser } from "./slice";
 
 export const authListener = createListenerMiddleware();
 
@@ -21,29 +21,31 @@ authListener.startListening({
     try {
       const { user, token } = action.payload;
 
-      // AUTH FIRST
       await AsyncStore.setItem("authToken", token);
 
-
       listenerApi.dispatch(setUser(user));
-
       listenerApi.dispatch(setToken(token));
 
+      let userId;
 
-      // THEN background sync
       if (user.isNewUser) {
-        const { user_id } = await listenerApi
+        const result = await listenerApi
           .dispatch(createUserInDatabaseAsync(token))
           .unwrap();
-        listenerApi.dispatch(setProfileData({ id: user_id }));
+
+        userId = result.user_id;
+        listenerApi.dispatch(setIsNewUser(true));
+        listenerApi.dispatch(setProfileData({ id: userId }));
+        return;
       }
 
-      else {await listenerApi.dispatch(
-        fetchUserProfileAsync(user.firebaseUserId)
-      );
-      }
+      const profile = await listenerApi
+        .dispatch(fetchUserProfileAsync(user.firebaseUserId))
+        .unwrap();
+
+      listenerApi.dispatch(setProfileData(profile));
     } catch (error) {
       console.error("Auth listener failed:", error);
     }
-  },
+  }
 });

@@ -16,22 +16,21 @@ import {
 import { FlatList } from "react-native";
 import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
-import { fetchProfileImageUrl } from "@/api/service";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import i18n from "@/i18n";
 
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { ErrorAlert } from "../../BarcodeScannerScreen";
-import { acceptOfferAsync, fetchReceivedOffersAsync, rejectOfferAsync } from "@/store/profile/thunks";
+import { fetchProfileImageUrl } from "@/services/profile/profile.service";
+import { acceptOfferAsync, fetchReceivedOffersAsync, rejectOfferAsync } from "@/store/offers/thunks";
+import { offersSelectors } from "@/store/offers/slice";
 
 export default function ReceivedScreen({ navigation }) {
   const tra = require("@/assets/images/icon/Icons.png");
   const avatar = require("@/assets/images/avatar.png");
-  const receivedOffers = useSelector(
-    (state: any) => state.profile.profile.receivedOffer
-  );
+  const receivedOffers = useSelector(offersSelectors.received.selectAll);
   const [receivedOffersWithUserPhoto, setReceivedOffersWithUserPhoto] =
-    useState(receivedOffers);
+    useState<any[]>(receivedOffers);
   const [refreshing, setRefreshing] = useState(false);
   const { loading, profile } = useSelector((state: any) => state.profile);
   const [error, setError] = useState<string | null>(null);
@@ -85,8 +84,8 @@ export default function ReceivedScreen({ navigation }) {
 
         return;
       }
-      // Navigate to the TradeOfferAcceptedScreen on success
-      navigation.push("TradeOfferAcceptedScreen", {
+      // Navigate to the SwapOfferAcceptedScreen on success
+      navigation.push("SwapOfferAcceptedScreen", {
         user: {
           id: offer.participantProfile.id,
           name: offer.participantProfile.name,
@@ -138,13 +137,20 @@ export default function ReceivedScreen({ navigation }) {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    (dispatch(((fetchReceivedOffersAsync as any)(profile.id)))) // Replace with your API call action
+    (dispatch((fetchReceivedOffersAsync()))) // Replace with your API call action
       .finally(() => setRefreshing(false));
   }, [dispatch]);
 
   if (loading && !refreshing) {
     return <LoadingOverlay />;
   }
+
+  useFocusEffect(
+  useCallback(() => {
+    dispatch(fetchReceivedOffersAsync()); // No more tracking down userIds here
+    //dispatch(fetchSentOffersAsync());
+  }, [dispatch])
+);
 
   return (
     <>
@@ -182,19 +188,15 @@ export default function ReceivedScreen({ navigation }) {
                 }} // Center content in FlatList
                 showsVerticalScrollIndicator={false}
               />
-              
+
             </Box>
           </VStack>
         ))}
 
       {receivedOffers && receivedOffers.length > 0 && (
         <FlatList
-    
-
-  
           data={receivedOffersWithUserPhoto}
           showsVerticalScrollIndicator={false}
-
           refreshing={refreshing}
           onRefresh={onRefresh}
           renderItem={({ item }: { item: any }) => (
@@ -297,8 +299,8 @@ export default function ReceivedScreen({ navigation }) {
                             item.offeredBook.coverUrl
                               ? { uri: item.offeredBook.coverUrl }
                               : {
-                                  uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                                }
+                                uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                              }
                           }
                           alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
                           roundedRight="4"
@@ -331,8 +333,8 @@ export default function ReceivedScreen({ navigation }) {
                             item.requestedBook.coverUrl
                               ? { uri: item.requestedBook.coverUrl }
                               : {
-                                  uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                                }
+                                uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                              }
                           }
                           alt={`Cover of: ${item.requestedBook.title} by ${item.requestedBook.author}`}
                           roundedRight="4"
@@ -381,7 +383,7 @@ export default function ReceivedScreen({ navigation }) {
               </Box>
             </Box>
           )}
-          keyExtractor={(item: any) => item.id}
+          keyExtractor={(item) => `received-offer-${item.id}`}
         />
       )}
       {error && <ErrorAlert message={error} />}

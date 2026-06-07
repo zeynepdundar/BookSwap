@@ -20,39 +20,32 @@ import {
   IconButton,
   Alert,
 } from "native-base";
-import { fetchBooksByISBN } from "@/api/service";
+
 import {
   formatText,
   generateModalActions,
   truncateText,
 } from "@/utils/helper";
 import { ActionSheet } from "@/components/shared/ActionSheet";
-import { AppDispatch } from "@/store";
 import i18n from "@/i18n";
-import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
-import { addBookToListAsync } from "@/store/profile/thunks";
 import { BookCollection, BookCollections } from "@/types/book.types";
+import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
+import { fetchBooksByISBN } from "@/services/books/books.service";
 
 export default function BarcodeScannerScreen({
   navigation,
   route = null,
-  onAddBook,
 }) {
-  const dispatch = useDispatch<AppDispatch>();
 
-  const mode = route?.params?.sourceScreen;
-  onAddBook = onAddBook || route?.params?.onAddBook;
-
+  const { sourceScreen, onAddBook } = route.params ?? {};
   const [permission, requestPermission] = useCameraPermissions();
-
   const [scanned, setScanned] = useState(false);
   const [edition, setEdition] = useState(null);
   const [error, setError] = useState(null);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
-  const [selectedAction, setSelectedAction] = useState< BookCollection | null>(
+  const [selectedAction, setSelectedAction] = useState<BookCollection | null>(
     null
   );
-  const [selectedItem, setSelectedItem] = useState(null);
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
   const [actions, setActions] = useState([]);
 
@@ -99,34 +92,18 @@ export default function BarcodeScannerScreen({
     return <Text>No access to camera</Text>;
   }
   const handleAddBook = async () => {
-    //For profile creation flow library/wishlist add book
-    if (onAddBook) {
-      onAddBook([edition]);
+
+    //For profile updates flow library/wishlist add book
+    if (sourceScreen) {
+      onAddBook({
+        books: [edition]
+      });
+      setSelectedAction(sourceScreen);
+      setIsInfoDialogOpen(true);
       setEdition(null);
-      navigation.goBack();
-
-      //TODO : Refactor to handle Wishlist and Library cases generically using a function passed as a prop.
-    } else if (mode === "Wishlist" || mode === "Library") {
-      const response = await dispatch(
-        addBookToListAsync({
-          ...edition,
-          type: mode === "Wishlist" ? BookCollections.WISHLIST : BookCollections.LIBRARY,
-        })
-      );
-      const payload = response.payload;
-
-      if (payload?.status === "error") {
-        if (payload.existingEditionIds?.length > 0) {
-          setError(i18n.t("already-have-book"));
-        } else {
-          setError(payload.message);
-        }
-        setTimeout(() => {
-          setError(null);
-        }, 8000);
-      } else navigation.navigate(mode);
-      closeActionSheet();
-    } else {
+    }
+    // show ActionSheet and select collection to add book to
+    else {
       const actions = [
         { type: BookCollections.WISHLIST, label: "add-my-wishlist" },
         { type: BookCollections.LIBRARY, label: "add-my-library" },
@@ -163,26 +140,20 @@ export default function BarcodeScannerScreen({
   };
 
   const { width, height } = Dimensions.get("window");
-  const handleAction = async (actionType) => {
-    const response = await dispatch(
-      addBookToListAsync({ ...edition, type: actionType })
-    );
-    const payload = response.payload;
 
-    if (payload?.status === "error") {
-      if (payload.existingEditionIds?.length > 0) {
-        setError(i18n.t("already-have-book"));
-      } else {
-        setError(payload.message);
-      }
-      setTimeout(() => {
-        setError(null);
-      }, 8000);
-    } else {
-      setSelectedAction(actionType);
-      setIsInfoDialogOpen(true);
-    }
+  const handleAction = async (actionType) => {
+    console.log("handleAction", actionType, edition, onAddBook);
+
+    onAddBook({
+      books: [edition],
+      collection: actionType
+    });
+
     closeActionSheet();
+    // const payload = response.payload;
+    setSelectedAction(actionType);
+    setIsInfoDialogOpen(true);
+    setEdition(null);
   };
 
   return (
@@ -227,7 +198,7 @@ export default function BarcodeScannerScreen({
         onClose={closeActionSheet}
         actions={actions}
         defaultLabel={
-          mode === "Wishlist" || mode === "Library" ? "the-book-added" : null
+          sourceScreen === BookCollections.WISHLIST || sourceScreen === BookCollections.LIBRARY ? "the-book-added" : null
         }
       />
 
@@ -295,26 +266,60 @@ const BookInfoBox = ({ edition, onAddBooks }) => (
     </HStack>
   </Box>
 );
-export const ErrorAlert = ({ message }) => (
-  <Center>
-    <Alert
-      w="80%"
-      borderRadius="10px"
-      backgroundColor="black.700"
-      mt={5}
-      shadow="9"
-      py="5"
-      position="absolute"
-      zIndex={99}
-      bottom={60}
-    >
-      <Text fontSize="sm" fontWeight="medium" color="#dddddd">
-        {message}
-      </Text>
-    </Alert>
-  </Center>
-);
 
+
+
+import { Feather } from "@expo/vector-icons"; // Switching to Feather for cleaner line-art icons
+
+export const ErrorAlert = ({ message, hint = null }) => {
+  if (!message) return null;
+
+  const paddingTop = Platform.OS === "android" ? StatusBar.currentHeight : 0;
+
+return (
+    <Center 
+      position="absolute" 
+      // Safely floats right above your 80px bottom tabs + چentik margins
+      bottom={Platform.OS === "ios" ? "105px" : "95px"}
+      left={0} 
+      right={0} 
+      zIndex={999}
+    >
+      {/* Soft neon shadow border wrapper */}
+      <Box
+        px="5"
+        py="3"
+        borderRadius="30px" // Fully rounded pill shape
+        bg="rgba(26, 26, 36, 0.96)" // Rich glassmorphic dark tint
+        shadow="7"
+        borderWidth="1px"
+        borderColor="rgba(255, 255, 255, 0.12)" // Subtle highlight on the rim
+        maxW="85%"
+      >
+        <HStack space={2.5} alignItems="center" justifyContent="center">
+          {/* Minimalist icon with a smooth warning color */}
+          <Feather name="alert-circle" size={16} color="#FF6B6B" />
+          
+          <Text 
+            fontSize="xs" 
+            fontWeight="700" 
+            color="#FFFFFF" 
+            letterSpacing="0.4px"
+            textAlign="center"
+          >
+            {message}
+            {hint && (
+              <Text fontWeight="400" color="#A0A0B0">
+                {" • "}
+                {hint}
+              </Text>
+            )}
+          </Text>
+        </HStack>
+      </Box>
+    </Center>
+  );
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1, // Take up the full screen height

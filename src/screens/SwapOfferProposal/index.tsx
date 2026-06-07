@@ -19,21 +19,16 @@ import {
   CloseIcon,
 } from "native-base";
 import i18n from "@/i18n";
-import { AppDispatch } from "@/store";
-import { sendOfferAsync } from "@/store/profile/thunks";
 import { getImageSource } from "@/utils/helper";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import Screen from "@/components/shared/Screen";
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
+import { sendOfferAsync } from "@/store/offers/thunks";
+import { IMAGE_FALLBACKS } from "@/constants/image";
+import { SwapProposalForm } from "@/store/offers/types";
 
 
-
-interface TradeProposal {
-  receiverId: string;
-  offeredBook: any;
-  requestedBook: any;
-}
-export default function TradeProposal({ navigation, route }) {
+export default function SwapOfferProposal({ navigation, route }) {
   const user = route?.params?.data?.user || route?.params?.user;
   const book = route?.params?.data?.book || route?.params?.book;
   const offeredBookFromParams = route?.params?.offeredBook;
@@ -41,21 +36,17 @@ export default function TradeProposal({ navigation, route }) {
 
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
-  const avatar = require("@/assets/images/avatar.png");
 
-  const initialState: TradeProposal = {
+  const [sentPropasal, setSentProposal] = useState<SwapProposalForm>(() => ({
     receiverId: user?.id || "",
-    offeredBook: null,
-    requestedBook: book,
-  };
-
-  const [sentPropasal, setSentProposal] = useState<TradeProposal | null>(
-    initialState
-  );
+    offeredBook: route?.params?.offeredBook || null,
+    requestedBook: book || route?.params?.requestedBook || null,
+  }));
 
   const dispatch = useAppDispatch();
   const proposeTradeHandler = async (): Promise<void> => {
     try {
+      console.log("Proposing trade with proposal data:", sentPropasal);
       await dispatch(sendOfferAsync(sentPropasal)).unwrap();
       setIsInfoDialogOpen(true);
     } catch (error) {
@@ -115,7 +106,7 @@ export default function TradeProposal({ navigation, route }) {
           }}
           onPress={() => navigation.goBack()}
         />
-        <Heading>{i18n.t("trade-proposal")}</Heading>
+        <Heading>{i18n.t("swap-proposal")}</Heading>
         <Spacer></Spacer>
       </HStack>
       <VStack>
@@ -154,7 +145,7 @@ export default function TradeProposal({ navigation, route }) {
                             ? { uri: sentPropasal.offeredBook.coverUrl }
                             : {
                               //TODO Use the static import URL here
-                              uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                              uri: IMAGE_FALLBACKS.BOOK_COVER,
                             }
                         }
                         alt={`Cover of`}
@@ -197,7 +188,7 @@ export default function TradeProposal({ navigation, route }) {
                     navigation.navigate("ProfileStack", {
                       screen: "Library",
                       params: {
-                        data: "TradeProposal",
+                        data: "SwapOfferProposal",
                       },
                     });
                   }}
@@ -257,7 +248,7 @@ export default function TradeProposal({ navigation, route }) {
                             ? { uri: sentPropasal.requestedBook.coverUrl }
                             : {
                               //TODO Use the static import URL here
-                              uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                              uri: IMAGE_FALLBACKS.BOOK_COVER,
                             }
                         }
                         alt={`Cover of`}
@@ -340,7 +331,7 @@ export default function TradeProposal({ navigation, route }) {
             overflow="hidden"
           >
             <Image
-              source={getImageSource(user.photo_file_name, avatar)}
+              source={getImageSource(user.photo_file_name, IMAGE_FALLBACKS.USER_AVATAR)}
               alt="Profile Image"
               size={12}
               rounded="full"

@@ -1,16 +1,20 @@
+import "react-native-reanimated";
+import "expo-dev-client";
+
 import { useState, useEffect, useRef } from "react";
 import { Platform } from "react-native";
-import { Provider, useDispatch } from "react-redux";
-import "expo-dev-client";
+import { Provider } from "react-redux";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
 import { useFonts } from "expo-font";
-import { NativeBaseProvider } from "native-base";
-import AsyncStore from "./src/utils/AsyncStore";
-import { theme } from "./src/theme";
-import Navigation from "./src/navigation";
-import { AppDispatch, store } from "./src/store";
+import { NativeBaseProvider, Text } from "native-base";
+import AsyncStore from "@/utils/AsyncStore";
+import { theme } from "@/theme";
+import Navigation from "@/navigation";
+import { useAppDispatch } from "@/hooks/common/useAppDispatch";
+import store from "@/store/store";
+
 
 ///  PUSH NOTIFICATIONS - START  ///
 
@@ -120,7 +124,7 @@ export default function App() {
   }
 
   function Root() {
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
       // async function fetchToken() {
@@ -137,10 +141,10 @@ export default function App() {
   }
 
   return (
-    <NativeBaseProvider theme={theme}>
-      <Provider store={store}>
+    <Provider store={store}>
+      <NativeBaseProvider theme={theme}>
         <Root />
-      </Provider>
-    </NativeBaseProvider>
+      </NativeBaseProvider>
+    </Provider>
   );
 }

@@ -9,36 +9,47 @@ import {
   VStack,
 } from "native-base";
 import i18n from "@/i18n";
-import { setProfileData } from "@/store/profile/slice";
 import Screen from "@/components/shared/Screen";
 import ImagePicker from "@/components/shared/ImagePicker";
 import StepHeader from "@/components/shared/StepHeader";
+import { setOnboardingImage } from "@/store/onboarding";
+
 
 export default function PhotoInputScreen({ navigation }) {
   const dispatch = useAppDispatch();
-  const profileData = useSelector((state: any) => state.profile.profile);
-  const initialImage = profileData?.imageData || "";
-  const [image, setImage] = useState<any>(initialImage);
+
+  const onboardingImage = useSelector(
+    (state: any) => state.onboarding.imageData
+  );
+
+   const onboardin = useSelector(
+    (state: any) => state.onboarding
+  );
+
+  const [image, setImage] = useState<any>(onboardingImage || "");
 
   const handleImageUpload = (imageUri) => {
     setImage(imageUri);
   };
 
   const pressHandler = () => {
-    dispatch(setProfileData({ imageData: image }));
+    if (image) {
+      dispatch(setOnboardingImage(image));  
+    }
     navigation.navigate("WishlistInput");
   };
 
   return (
     <Screen>
       <VStack space={1} alignItems="center" height={"50%"}>
-        <StepHeader
-          onBack={() => navigation.goBack()}
-        />
-        <Spacer></Spacer>
+        <StepHeader onBack={() => navigation.goBack()} />
+
+        <Spacer />
+
         <Heading w="100%" h="8" px={10}>
           {i18n.t("my-photo")}
         </Heading>
+
         <Center
           w="100%"
           h="40%"
@@ -46,9 +57,14 @@ export default function PhotoInputScreen({ navigation }) {
           justifyItems="center"
           alignItems="center"
         >
-          <ImagePicker selectedImage={handleImageUpload} initialImage={image} />
+          <ImagePicker
+            selectedImage={handleImageUpload}
+            initialImage={image}
+          />
         </Center>
+
         <Spacer />
+
         <Center p={4}>
           <Button variant="primary" onPress={pressHandler}>
             {i18n.t("continue")}

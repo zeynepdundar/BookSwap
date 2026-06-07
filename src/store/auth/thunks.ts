@@ -6,8 +6,8 @@ import {
   PhoneAuthProvider,
   getIdToken,
 } from "@react-native-firebase/auth";
-import { AuthEndpoints } from "@/api/endpoints";
 import { AuthError, VerifyCodePayload } from "./types";
+import { AuthEndpoints } from "@/api/auth.endpoints";
 
 export const verifyPhoneNumber = createAsyncThunk<
   { verificationId: string },
@@ -30,6 +30,7 @@ export const verifyPhoneNumber = createAsyncThunk<
       };
 
     } catch (error: any) {
+      console.error("Phone number verification error:", error);
       let errorMessage = "Something went wrong. Please try again";
 
       switch (error?.code) {

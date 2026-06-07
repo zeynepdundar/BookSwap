@@ -14,8 +14,9 @@ import {
 import i18n from "@/i18n";
 import Screen from "@/components/shared/Screen";
 
-import { setProfileData } from "@/store/profile/slice";
 import StepHeader from "@/components/shared/StepHeader";
+
+import { setOnboardingGender } from "@/store/onboarding";
 
 const OPTIONS = [
   { value: "f", label: i18n.t("woman") },
@@ -23,17 +24,26 @@ const OPTIONS = [
 ];
 
 export default function GenderInputScreen({ navigation }) {
-  const profileData = useSelector((state: any) => state.profile.profile);
-  const initialGender = profileData?.gender || "";
-  const [gender, setGender] = useState<string>(initialGender);
+  // ✅ read from onboarding slice instead of profile
+  const onboardingGender = useSelector(
+    (state: any) => state.onboarding.gender
+  );
 
+  const [gender, setGender] = useState<string>(onboardingGender || "");
 
   const dispatch = useAppDispatch();
 
   const pressHandler = () => {
-  const payload = gender ? { gender } : {};
+    if (gender) {
+      dispatch(setOnboardingGender(gender as "m" | "f"));
+    }
 
-  dispatch(setProfileData(payload));
+    navigation.navigate("PhotoInput");
+  };
+
+  const skipHandler = () => {
+    setGender("");
+    dispatch(setOnboardingGender(null));
     navigation.navigate("PhotoInput");
   };
 
@@ -42,12 +52,15 @@ export default function GenderInputScreen({ navigation }) {
       <VStack space={1} alignItems="center" height={"50%"}>
         <StepHeader
           onBack={() => navigation.goBack()}
-        onSkip={pressHandler} 
+          onSkip={skipHandler}
         />
-        <Spacer></Spacer>
+
+        <Spacer />
+
         <Heading w="100%" h="8" px={10}>
           {i18n.t("my-gender")}
         </Heading>
+
         <Center w="100%" h="40" px={8} pt="8">
           {OPTIONS.map((option) => {
             const isSelected = gender === option.value;
@@ -80,7 +93,9 @@ export default function GenderInputScreen({ navigation }) {
             );
           })}
         </Center>
+
         <Spacer />
+
         <Center p={4}>
           <Button variant="primary" onPress={pressHandler}>
             {i18n.t("continue")}

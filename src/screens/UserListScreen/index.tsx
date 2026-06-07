@@ -16,9 +16,10 @@ import i18n from "../../i18n";
 import Screen from "@/components/shared/Screen";
 import { useSelector } from "react-redux";
 import { AlertDialogBox } from "@/components/Modal/AlertDialogBox";
-import { fetchProfileImageUrl } from "@/api/service";
 import { useFocusEffect } from "@react-navigation/native";
 import { getImageSource } from "@/utils/helper";
+import { fetchProfileImageUrl } from "@/services/profile/profile.service";
+import { selectLibraryBooks } from "@/store/selectors";
 
 export default function UserListScreen({ navigation, route }) {
   const usersTemp = route?.params?.data?.usersOwning;
@@ -26,7 +27,7 @@ export default function UserListScreen({ navigation, route }) {
 
   const avatar = require("../../assets/images/avatar.png");
 
-  const { libraryBook } = useSelector((state: any) => state.profile.profile);
+  const libraryBooks = useSelector(selectLibraryBooks);
 
 
   const [isOpen, setIsOpen] = useState(false);
@@ -49,12 +50,13 @@ export default function UserListScreen({ navigation, route }) {
   );
 
   const sendOfferHandler = (data) => {
-    if (libraryBook.length === 0) {
+    console.log("sendOfferHandler called with data:", data);
+    if (libraryBooks.length === 0) {
       // Library is empty, show an alert
       setIsOpen(true);
     } else {
       // Library is not empty, proceed with navigation
-      navigation.navigate("TradeProposal", { data });
+      navigation.navigate("SwapOfferProposal", { data });
     }
   };
   const onClose = () => setIsOpen(false);

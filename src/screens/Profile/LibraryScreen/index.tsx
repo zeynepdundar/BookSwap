@@ -1,12 +1,7 @@
 import {
   Center,
-  Heading,
   Icon,
   Fab,
-  ChevronLeftIcon,
-  Button,
-  Spacer,
-  HStack,
   Text,
   Divider,
   VStack,
@@ -16,12 +11,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import i18n from "@/i18n";
 import Screen from "@/components/shared/Screen";
 import { BookListVertical } from "@/components/shared/BookListVertical";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "@/store";
+import { useSelector } from "react-redux";
+import { selectLibraryBooks } from "@/store/selectors";
+import { useAppDispatch } from "@/store";
 import { useNavigationState } from "@react-navigation/native";
-import { useEffect, useMemo, useState } from "react";
-import { LIBRARY } from "@/constants";
-import { removeBookFromListAsync } from "@/store/profile/thunks";
+import { BookCollections } from "@/types/book.types";
+import { removeBookFromCollectionAsync } from "@/store/books/thunks";
+import ScreenHeader from "@/components/shared/ScreenHeader";
 
 const RemoveBookButton = ({ onPress }) => (
   <Icon
@@ -46,80 +42,47 @@ const AddBookToProposalButton = ({ onPress }) => (
 );
 
 export default function LibraryScreen({ navigation, route }) {
+  const dispatch = useAppDispatch();
+
   const navigationState = useNavigationState((state) => state);
 
+  const libraryBooks = useSelector(selectLibraryBooks);
 
   const { params } = route;
-  const isTradeProposal = params?.data === "TradeProposal";
+  const isTradeProposal = params?.data === "SwapOfferProposal";
   const addBookToProposalButton = (book) => (
     <AddBookToProposalButton
-      onPress={() => {        
+      onPress={() => {
         navigation.navigate({
-          name: "TradeProposal",
+          name: "SwapOfferProposal",
           params: { offeredBook: book },
           merge: true,
         } as any);
       }}
     />
   );
-  const { libraryBook } = useSelector((state: any) => state.profile.profile);
-
-  const dispatch = useDispatch<AppDispatch>();
-
-  const [selectedBooks, setSelectedBooks] = useState(libraryBook);
 
   const previousRoute = navigationState?.routes?.[navigationState.index - 1];
-  const showFab =  previousRoute?.name === "Profile" ?? false;
+  const showFab = previousRoute?.name === "Profile" ?? false;
 
-  useEffect(() => {
-    return () => {
-      // Cleanup or additional actions when the component is unmounted
-      // Make your API call to update user libraryBook here
-      // For example, you can dispatch an action to update the libraryBook in Redux
-      // dispatch(updateLibraryBookAsync(selectedBooks));
-    };
-  }, [dispatch, selectedBooks]);
 
   const removeBookButton = (book) => (
     <RemoveBookButton
       onPress={() =>
-        dispatch(removeBookFromListAsync({ ...book, type: LIBRARY }))
+        dispatch(removeBookFromCollectionAsync({ bookIds: [book.id], collection: BookCollections.LIBRARY }))
       }
     />
   );
+  console.log("LibraryBooks in LibraryScreen:", params);
   const selectedBooksAction = isTradeProposal ? addBookToProposalButton : removeBookButton;
-
-  const handleAddToLibrary = (books) => {
-    setSelectedBooks((prevList) => [...prevList, ...books]);
-  };
-
-
-  useEffect(() => {
-    // Update the local state when libraryBook changes
-    setSelectedBooks(libraryBook);
-  }, [libraryBook]);
 
   return (
     <Screen>
-      <HStack
-        alignItems="center"
-        space="20%"
-        justifyContent="space-between"
-        w="100%"
-        h="50px"
->        
-        <Button
-          variant="ghost"
-          leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
-          _pressed={{
-            bg: "transparent",
-          }}
-          onPress={() => navigation.goBack()}
-        />
-        <Heading>{i18n.t("my-library")}</Heading>
-        <Spacer></Spacer>
-      </HStack>
-      {selectedBooks.length === 0 && (
+      <ScreenHeader
+        title={i18n.t("my-library")}
+        onBack={() => navigation.goBack()}
+      />
+      {libraryBooks.length === 0 && (
         <VStack width="100%" height={200} mt="100">
           <Center>
             <Icon
@@ -142,23 +105,17 @@ export default function LibraryScreen({ navigation, route }) {
         </VStack>
       )}
 
-      {selectedBooks.length > 0 && (
-          <BookListVertical
-            data={selectedBooks}
-            onPrimaryAction={selectedBooksAction}
-          />
+      {libraryBooks.length > 0 && (
+        <BookListVertical
+          data={libraryBooks}
+          onPrimaryAction={selectedBooksAction}
+        />
       )}
       {showFab && (
         <Fab
-          // onPress={() =>
-          //   navigation.navigate('BookSearch', {
-          //     sourceScreen: 'Library',
-          //   })
-          // }
           onPress={() =>
             navigation.navigate("BookSearch", {
-              sourceScreen: "Library",
-              // onDonePress: handleAddToLibrary,
+              sourceScreen: BookCollections.LIBRARY,
             })
           }
           renderInPortal={false}

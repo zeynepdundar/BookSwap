@@ -12,22 +12,23 @@ import {
   useColorModeValue,
   Image,
 } from "native-base";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SceneMap, TabView } from "react-native-tab-view";
 import { StatusBar, Animated } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
 import Screen from "../../components/shared/Screen";
 import { LoadingOverlay } from "../../components/shared/LoadingOverlay";
 import OtherLibraryScreen from "./OtherUserLibraryScreen";
 import OtherWishlistScreen from "./OtherUserWishlistScreen";
 import OtherSwapHistory from "./OtherUserSwapHistory";
-import { fetchUserProfileData } from "../../api/service";
 import { getImageSource } from "../../utils/helper";
+import { fetchUserProfileData } from "@/services/profile/profile.service";
+import { OfferParticipant } from "@/store/offers/types";
+import { IMAGE_FALLBACKS } from "@/constants/image";
 
 export default function OtherUserProfileScreen({ navigation, route }) {
   const selectedUser = route?.params?.user;
 
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState<OfferParticipant | null>(null);
   const [libraryBook, setLibraryBook] = useState(null);
   const [wishedBook, setWishedBook] = useState(null);
   const [historyList, setHistoryList] = useState(null);
@@ -156,7 +157,6 @@ export default function OtherUserProfileScreen({ navigation, route }) {
   if (loading) {
     return <LoadingOverlay></LoadingOverlay>;
   }
-  const avatar = require("../../assets/images/avatar.png");
 
   return (
     <Screen>
@@ -190,7 +190,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
               overflow="hidden"
             >
               <Image
-                source={getImageSource(selectedUser.photo_file_name, avatar)}
+                source={getImageSource(selectedUser.photo_file_name, IMAGE_FALLBACKS.USER_AVATAR)}
                 alt="Profile Image"
                 size={60}
                 rounded="full"

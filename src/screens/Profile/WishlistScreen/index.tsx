@@ -1,28 +1,24 @@
 import {
   Center,
-  Heading,
   Icon,
   Fab,
-  ChevronLeftIcon,
-  Button,
-  Spacer,
-  HStack,
   Text,
   Divider,
   VStack,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
+import { selectWishlistBooks } from "@/store/selectors";
 
 import i18n from "@/i18n";
 import Screen from "@/components/shared/Screen";
 import { BookListVertical } from "@/components/shared/BookListVertical";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "@/store";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/store";
 import { useNavigationState } from "@react-navigation/native";
-import { useEffect, useState } from "react";
-import { removeBookFromListAsync } from "@/store/profile/thunks";
-import { BookCollection, BookCollections } from "@/types/book.types";
-
+import { useCallback } from "react";
+import { Book, BookCollections } from "@/types/book.types";
+import { removeBookFromCollectionAsync } from "@/store/books/thunks";
+import ScreenHeader from "@/components/shared/ScreenHeader";
 
 const RemoveBookButton = ({ onPress }) => (
   <Icon
@@ -36,59 +32,32 @@ const RemoveBookButton = ({ onPress }) => (
 );
 
 export default function WishlistScreen({ navigation }) {
-  const { wishlistBook } = useSelector((state: any) => state.profile.profile);
-  const [selectedBooks, setSelectedBooks] = useState(wishlistBook);
-
-  const dispatch = useDispatch<AppDispatch>();
-
+  const dispatch = useAppDispatch();
+  const wishlistBooks = useSelector(selectWishlistBooks);
   const navigationState = useNavigationState((state) => state);
-
   const previousRoute = navigationState?.routes?.[navigationState.index - 1];
-  const showFab =  previousRoute?.name === "Profile" ?? false;
+  const showFab = previousRoute?.name === "Profile" ?? false;
 
-
-  useEffect(() => {
-    return () => {
-      // Cleanup or additional actions when the component is unmounted
-      // Make your API call to update user libraryBook here
-      // For example, you can dispatch an action to update the libraryBook in Redux
-      // dispatch(updateLibraryBookAsync(selectedBooks));
-    };
-  }, [dispatch, selectedBooks]);
-
-  const removeBookButton = (book) => (
+  const renderRemoveButton = useCallback((book: Book) => (
     <RemoveBookButton
       onPress={() =>
-        dispatch(removeBookFromListAsync({ ...book, type: BookCollections.WISHLIST } as BookCollection))
+        dispatch(
+          removeBookFromCollectionAsync({
+            bookIds: [book.id],
+            collection: BookCollections.WISHLIST,
+          })
+        )
       }
     />
-  );
-  useEffect(() => {
-    // Update the local state when wishlistBook changes
-    setSelectedBooks(wishlistBook);
-  }, [wishlistBook]);
+  ), [dispatch]);
 
   return (
     <Screen>
-      <HStack
-        alignItems="center"
-        space="22%"
-        justifyContent="space-between"
-        w="100%"
-        h="50px"
-      >
-        <Button
-          variant="ghost"
-          leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
-          _pressed={{
-            bg: "transparent",
-          }}
-          onPress={() => navigation.goBack()}
-        />
-        <Heading fontWeight={500}>{i18n.t("my-wishlist")}</Heading>
-        <Spacer></Spacer>
-      </HStack>
-      {selectedBooks.length === 0 && (
+      <ScreenHeader
+        title={i18n.t("my-wishlist")}
+        onBack={() => navigation.goBack()}
+      />
+      {wishlistBooks.length === 0 && (
         <VStack width="100%" height={200} mt="100">
           <Center>
             <Icon
@@ -111,17 +80,17 @@ export default function WishlistScreen({ navigation }) {
         </VStack>
       )}
 
-      {selectedBooks.length > 0 && (
+      {wishlistBooks.length > 0 && (
         <BookListVertical
-          data={selectedBooks}
-          onPrimaryAction={removeBookButton}
+          data={wishlistBooks}
+          onPrimaryAction={renderRemoveButton}
         />
       )}
       {showFab && (
         <Fab
           onPress={() =>
             navigation.navigate("BookSearch", {
-              sourceScreen: "Wishlist",
+              sourceScreen: BookCollections.WISHLIST,
             })
           }
           renderInPortal={false}
