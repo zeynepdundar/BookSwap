@@ -1,5 +1,5 @@
 import { OfferEndpoints } from "@/api/offers.endpoints";
-import { fetchHistory, fetchReceivedOffer, fetchSentOffer, sendOffer } from "@/services/offers/offers.service";
+import { acceptOffer, fetchHistory, fetchReceivedOffer, fetchSentOffer, sendOffer } from "@/services/offers/offers.service";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../types";
 
@@ -24,29 +24,8 @@ export const acceptOfferAsync = createAsyncThunk(
     try {
       const uid = (getState() as any).auth.user.firebaseUserId;
       const id = (getState() as any).profile.profile.id;
-      const response = await fetch(OfferEndpoints.ACCEPT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${"your_access_token"}`, // Replace with your actual access token
-        },
-        body: JSON.stringify({
-          user_id: id,
-          firebase_uid: uid,
-          offer_id: offerId,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return { success: false, message: data.message }; // Return the error response {"message": "Offer not found or not eligible for acceptance"}
-      }
-      return {
-        success: true,
-        id: offerId,
-        conversationId: data.conversation_Id,
-      };
+      await acceptOffer(id, uid, offerId);
+      return ;
     } catch (error) {
       console.error(error);
       throw error;
@@ -131,7 +110,7 @@ export const fetchReceivedOffersAsync = createAsyncThunk(
   "offers/fetchReceivedOffers",
   async (_, { getState, rejectWithValue }) => {
     try {
-      const state = getState() as RootState; 
+      const state = getState() as RootState;
       const userId = state.profile.profile?.id;
 
       if (!userId) {
@@ -151,7 +130,7 @@ export const fetchSentOffersAsync = createAsyncThunk(
   "offers/fetchSentOffers",
   async (_, { getState, rejectWithValue }) => {
     try {
-      const state = getState() as RootState; 
+      const state = getState() as RootState;
       const userId = state.profile.profile?.id;
 
       if (!userId) {
@@ -167,9 +146,19 @@ export const fetchSentOffersAsync = createAsyncThunk(
 
 export const fetchTradeHistoryAsync = createAsyncThunk(
   "offers/fetchTradeHistory",
-  async (userId: number, { rejectWithValue }) => {
+  async (_, { getState, rejectWithValue }) => {
     try {
+      const state = getState() as RootState;
+      const userId = state.profile.profile?.id;
+
+      console.log("Fetching trade history for user ID:", userId);
+
+      if (!userId) {
+        return rejectWithValue("Active user session not found");
+      }
+
       const offers = await fetchHistory(userId);
+      console.log("Fetched trade history offers:", offers);
       return offers;
     } catch (error) {
       return rejectWithValue(error.message);

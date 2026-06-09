@@ -20,6 +20,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { getImageSource } from "@/utils/helper";
 import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 import { selectLibraryBooks } from "@/store/selectors";
+    import { IMAGE_FALLBACKS } from "@/constants/image";
 
 export default function UserListScreen({ navigation, route }) {
   const usersTemp = route?.params?.data?.usersOwning;
@@ -126,7 +127,7 @@ export default function UserListScreen({ navigation, route }) {
                     overflow="hidden"
                   >
                     <Image
-                      source={getImageSource(item.photo_file_name, avatar)}
+                      source={getImageSource(item.photo_file_name, IMAGE_FALLBACKS.USER_AVATAR)}
                       alt="Profile Image"
                       size={10}
                       rounded="full"

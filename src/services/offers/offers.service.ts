@@ -29,6 +29,32 @@ export const sendOffer = async (userId, proposal) => {
   return;
 };
 
+export const acceptOffer = async (
+  userId,
+  firebaseUid,
+  offerId,
+) => {
+  const response = await fetch(OfferEndpoints.ACCEPT, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${"your_access_token"}`,
+    },
+    body: JSON.stringify({
+      user_id: userId,
+      firebase_uid: firebaseUid,
+      offer_id: offerId,
+    }),
+  });
+
+  const data = await response.json();
+
+  return {
+    ok: response.ok,
+    data,
+  };
+};
+
 export const fetchReceivedOffer = async (userId) => {
   try {
     const response = await fetch(

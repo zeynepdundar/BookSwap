@@ -1,8 +1,7 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 
 import Screen from "@/components/shared/Screen";
 import {
-  Avatar,
   Badge,
   Box,
   Center,
@@ -10,10 +9,8 @@ import {
   FlatList,
   Flex,
   Heading,
-  HStack,
   Image,
   Pressable,
-  Spacer,
   Text,
   VStack,
 } from "native-base";
@@ -30,6 +27,7 @@ import {
 import { RootState } from "@/store/types";
 import { resetUnseenCount } from "@/store/messages/messages-actions";
 import { fetchUserProfileData } from "@/services/profile/profile.service";
+import { IMAGE_FALLBACKS } from "@/constants/image";
 
 export default function MessagesScreen({ navigation }) {
   const [isFetchingUserData, setIsFetchingUserData] = useState(true);
@@ -157,7 +155,7 @@ export default function MessagesScreen({ navigation }) {
                     overflow="hidden"
                   >
                     <Image
-                      source={getImageSource(friendProfile.imageData, avatar)}
+                      source={getImageSource(friendProfile.imageData, IMAGE_FALLBACKS.USER_AVATAR)}
                       alt="Profile Image"
                       size={12}
                       rounded="full"

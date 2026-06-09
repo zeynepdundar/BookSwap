@@ -24,10 +24,10 @@ import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 import { acceptOfferAsync, fetchReceivedOffersAsync, rejectOfferAsync } from "@/store/offers/thunks";
 import { offersSelectors } from "@/store/offers/slice";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
+import { IMAGE_FALLBACKS } from "@/constants/image";
 
 export default function ReceivedScreen({ navigation }) {
   const tra = require("@/assets/images/icon/Icons.png");
-  const avatar = require("@/assets/images/avatar.png");
   const receivedOffers = useSelector(offersSelectors.received.selectAll);
   const [receivedOffersWithUserPhoto, setReceivedOffersWithUserPhoto] =
     useState<any[]>(receivedOffers);
@@ -59,7 +59,7 @@ export default function ReceivedScreen({ navigation }) {
     }, [receivedOffers])
   );
   const refreshReceivedOffers = useCallback(async () => {
-    await dispatch(((fetchReceivedOffersAsync as any)(profile.id)));
+    await dispatch(((fetchReceivedOffersAsync as any)()));
   }, [dispatch, profile.id]);
 
   const showError = useCallback((message: string, durationMs: number = 5000) => {
@@ -85,15 +85,7 @@ export default function ReceivedScreen({ navigation }) {
         return;
       }
       // Navigate to the SwapOfferAcceptedScreen on success
-      navigation.push("SwapOfferAcceptedScreen", {
-        user: {
-          id: offer.participantProfile.id,
-          name: offer.participantProfile.name,
-        },
-        receivedBook: offer.requestedBook,
-        offeredBook: offer.offeredBook,
-        conversationId: payload.conversationId,
-      });
+
     } catch (error) {
       showError(i18n.t("something-went-wrong"));
       await refreshReceivedOffers();
@@ -200,7 +192,7 @@ export default function ReceivedScreen({ navigation }) {
           refreshing={refreshing}
           onRefresh={onRefresh}
           renderItem={({ item }: { item: any }) => (
-            <Box pb="6" overflow="hidden" alignItems="center" key={item.id}>
+            <Box pb="6" overflow="hidden" alignItems="center" key={item?.id}>
               <Flex
                 direction="row"
                 justifyContent="space-between"
@@ -218,7 +210,7 @@ export default function ReceivedScreen({ navigation }) {
                   overflow="hidden"
                 >
                   <Image
-                    source={getImageSource(profile.imageData, avatar)}
+                    source={getImageSource(profile.imageData, IMAGE_FALLBACKS.USER_AVATAR)}
                     alt="Profile Image"
                     size={10}
                     rounded="full"
@@ -228,7 +220,7 @@ export default function ReceivedScreen({ navigation }) {
                   flex={1}
                   alignItems="flex-end"
                   onPress={() => {
-                    onNavigateProfile(item.participantProfile);
+                    onNavigateProfile(item?.participantProfile);
                   }}
                 >
                   <HStack>
@@ -239,7 +231,7 @@ export default function ReceivedScreen({ navigation }) {
                         fontSize="14px"
                         mx={1}
                       >
-                        {item.participantProfile.name}
+                        {item?.participantProfile?.name}
                       </Text>
                       <Text
                         color="coolGray.400"
@@ -248,7 +240,7 @@ export default function ReceivedScreen({ navigation }) {
                         textAlign="right"
                         mt="-1.5"
                       >
-                        {item.createdAt}
+                        {item?.createdAt}
                       </Text>
                     </VStack>
                     <Box
@@ -259,8 +251,8 @@ export default function ReceivedScreen({ navigation }) {
                     >
                       <Image
                         source={getImageSource(
-                          item.participantProfile.photo_file_name,
-                          avatar
+                          item?.participantProfile.photo_file_name,
+                          IMAGE_FALLBACKS.USER_AVATAR
                         )}
                         alt="Profile Image"
                         size={10}
@@ -296,13 +288,13 @@ export default function ReceivedScreen({ navigation }) {
                       >
                         <Image
                           source={
-                            item.offeredBook.coverUrl
-                              ? { uri: item.offeredBook.coverUrl }
+                            item?.offeredBook?.coverUrl
+                              ? { uri: item?.offeredBook?.coverUrl }
                               : {
                                 uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
                               }
                           }
-                          alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
+                          alt={`Cover of: ${item?.offeredBook?.title} by ${item?.offeredBook?.author}`}
                           roundedRight="4"
                         />
                       </AspectRatio>
@@ -312,10 +304,10 @@ export default function ReceivedScreen({ navigation }) {
                         fontWeight={500}
                         numberOfLines={2}
                       >
-                        {truncateText(formatText(item.offeredBook.title), 36)}
+                        {truncateText(formatText(item?.offeredBook?.title), 36)}
                       </Text>
                       <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
-                        {truncateText(formatText(item.offeredBook.author), 30)}
+                        {truncateText(formatText(item?.offeredBook?.author), 30)}
                       </Text>
                     </VStack>
                     <Center height={110}>
@@ -330,13 +322,13 @@ export default function ReceivedScreen({ navigation }) {
                       >
                         <Image
                           source={
-                            item.requestedBook.coverUrl
-                              ? { uri: item.requestedBook.coverUrl }
+                            item?.requestedBook?.coverUrl
+                              ? { uri: item?.requestedBook?.coverUrl }
                               : {
                                 uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
                               }
                           }
-                          alt={`Cover of: ${item.requestedBook.title} by ${item.requestedBook.author}`}
+                          alt={`Cover of: ${item?.requestedBook?.title} by ${item?.requestedBook?.author}`}
                           roundedRight="4"
                         />
                       </AspectRatio>
@@ -346,11 +338,11 @@ export default function ReceivedScreen({ navigation }) {
                         fontWeight={500}
                         numberOfLines={2}
                       >
-                        {truncateText(formatText(item.requestedBook.title), 36)}
+                        {truncateText(formatText(item?.requestedBook?.title), 36)}
                       </Text>
                       <Text color="#8c8c8c" fontSize="11" numberOfLines={2}>
                         {truncateText(
-                          formatText(item.requestedBook.author),
+                          formatText(item?.requestedBook?.author),
                           30
                         )}
                       </Text>

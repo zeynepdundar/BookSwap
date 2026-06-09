@@ -1,136 +1,83 @@
-import React, { memo, useRef } from "react";
-import { Button, Center, CheckCircleIcon, Modal, Text } from "native-base";
-
-type ButtonVariant = "primary" | "secondary" | "ghost" | "outline" | "subtle";
+import React, { memo } from "react";
+import { Button, CheckCircleIcon, Modal, Text, VStack } from "native-base";
+import i18n from "@/i18n";
+import { BookCollections } from "@/types/book.types";
 
 interface InfoDialogBoxProps {
   isOpen: boolean;
   onClose: () => void;
-
-  title: string;
-  description: string;
-
-  primaryAction?: {
-    label: string;
-    onPress?: () => void;
-    variant?: ButtonVariant;
-  };
-
-  secondaryAction?: {
-    label: string;
-    onPress?: () => void;
-    variant?: ButtonVariant;
-  };
+  selectedAction: string | null;
+  navigation: any;
 }
 
-export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(
-  ({
-    isOpen,
-    onClose,
-    title,
-    description,
-    primaryAction,
-    secondaryAction,
-  }) => {
-    const cancelRef = useRef(null);
+export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(({ 
+  isOpen, 
+  onClose, 
+  selectedAction,
+  navigation 
+}) => {
+  
+  let title = "Success";
+  let description = "Action completed successfully.";
+  let confirmButtonLabel = "OK";
+  
+  const handlePrimaryPress = () => {
+    onClose(); 
 
-    const handlePrimaryPress = async () => {
-      await primaryAction?.onPress?.();
-      onClose();
-    };
+    console.log("sele",selectedAction)
 
-    const handleSecondaryPress = () => {
-      secondaryAction?.onPress?.();
-      onClose();
-    };
+    if (selectedAction === BookCollections.WISHLIST) {
+      navigation.navigate("ProfileStack", { screen: "Wishlist" });
+    } else if (selectedAction === BookCollections.LIBRARY) {
+      navigation.navigate("ProfileStack", { screen: "Library" });
+    }
+  };
 
-    return (
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        closeOnOverlayClick={true}
-        isKeyboardDismissable={true}
-      >
-        <Modal.Content
-          maxW="320px"
-          w="90%"
-          alignSelf="center"
-          px="4"
-          py="3"
-          rounded="lg"
-        >
-          <Modal.Header
-            borderBottomWidth={0}
-            alignItems="center"
-            mt="3"
-            mb="1"
-            px="0"
-          >
-            <Center>
-              <CheckCircleIcon size="8" color="primary.50" />
-            </Center>
+  if (selectedAction === BookCollections.WISHLIST) {
+    title = i18n.t("successfully-added");
+    description = i18n.t("the-book-added-to-wishlist");
+    confirmButtonLabel = i18n.t("see-my-wishlist");
+  } else if (selectedAction === BookCollections.LIBRARY) {
+    title = i18n.t("successfully-added");
+    description = i18n.t("the-book-added-to-library");
+    confirmButtonLabel = i18n.t("see-my-library");
+  }
 
-            <Text
-              fontSize="18px"
-              fontWeight="600"
-              color="black.400"
-              textAlign="center"
-              mt="1"
-              lineHeight="24px"
-            >
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={true} isKeyboardDismissable={true}>
+      <Modal.Content maxW="320px" w="90%" alignSelf="center" px="4" py="3" rounded="lg">
+        
+        <Modal.Header borderBottomWidth={0} px="0" mt="3" mb="1">
+          <VStack alignItems="center" space={1} width="100%">
+            <CheckCircleIcon size="8" color="primary.50" />
+            <Text fontSize="18px" fontWeight="600" color="black.400" textAlign="center" lineHeight="24px">
               {title}
             </Text>
-          </Modal.Header>
-          <Modal.Body
-            _text={{
-              fontSize: "15px",
-              fontWeight: "400",
-              color: "black.200",
-              textAlign: "center",
-              lineHeight: "20px",
-            }}
-            pt="1"
-            pb="3"
-            px="2"
-          >
+          </VStack>
+        </Modal.Header>
+
+        <Modal.Body pt="1" pb="3" px="2">
+          <Text fontSize="15px" fontWeight="400" color="black.200" textAlign="center" lineHeight="20px">
             {description}
-          </Modal.Body>
-          <Modal.Footer
-            borderTopWidth={0}
-            justifyContent="center"
-            pt="1"
-            pb="3"
+          </Text>
+        </Modal.Body>
+
+        <Modal.Footer borderTopWidth={0} justifyContent="center" pt="1" pb="3">
+          <Button
+            variant="outline"
+            onPress={handlePrimaryPress} // <-- Executes our dynamic navigation wrapper
+            px="5"
+            py="2.5"
+            w="100%"
+            rounded="md"
           >
-            <Button.Group space={2} width="100%" justifyContent="center">
-              {secondaryAction && (
-                <Button
-                  ref={cancelRef}
-                  variant={secondaryAction.variant ?? "ghost"}
-                  onPress={handleSecondaryPress}
-                  px="5"
-                  py="2.5"
-                  rounded="md"
-                  fontSize="15px"
-                >
-                  {secondaryAction.label?.toUpperCase()}
-                </Button>
-              )}
-              {primaryAction && (
-                <Button
-                  variant={primaryAction.variant ?? "primary"}
-                  onPress={handlePrimaryPress}
-                  px="5"
-                  py="2.5"
-                  rounded="md"
-                  fontSize="15px"
-                >
-                  {primaryAction.label?.toUpperCase()}
-                </Button>
-              )}
-            </Button.Group>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
-    );
-  }
-);
+            <Text fontSize="15px" fontWeight="600">
+              {confirmButtonLabel?.toUpperCase()}
+            </Text>
+          </Button>
+        </Modal.Footer>
+
+      </Modal.Content>
+    </Modal>
+  );
+});

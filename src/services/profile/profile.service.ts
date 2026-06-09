@@ -92,7 +92,7 @@ export const updateUserProfileData = async (profileData: any) => {
 
   // Image upload (side-effect, correct place)
   try {
-    
+console.log("jbhhj",profileData)    
     if (profileData.imageData) {
       await uploadProfileImage(
         profileData.id,

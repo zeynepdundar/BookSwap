@@ -14,8 +14,8 @@ import {
   Text,
   VStack,
 } from "native-base";
-import { useCallback, useState } from "react";
-import {  useSelector } from "react-redux";
+import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import i18n from "@/i18n";
 
@@ -30,14 +30,14 @@ export default function SentScreen({ navigation }) {
   const avatar = require("@/assets/images/avatar.png");
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loadingImages, setLoadingImages] = useState(true);
   const sentOffers = useSelector(offersSelectors.sent.selectAll);
 
-  const [sentOffersWithUserPhoto, setSentOffersWithUserPhoto] =
-    useState<any[]>(sentOffers);
+  const [sentOffersWithUserPhoto, setSentOffersWithUserPhoto] = useState([]);
 
   const { loading, profile } = useSelector((state: any) => state.profile);
   const dispatch = useAppDispatch();
+
+  console.log("sentOffers", sentOffers);
 
   const takeBackOfferHandler = async (offerId: string) => {
     try {
@@ -77,7 +77,6 @@ export default function SentScreen({ navigation }) {
     });
   };
   const fetchProfileImages = async () => {
-    setLoadingImages(true);
     const updatedOffers = await Promise.all(
       sentOffers.map(async (offer) => {
         const photoUrl = await fetchProfileImageUrl(
@@ -93,7 +92,6 @@ export default function SentScreen({ navigation }) {
       })
     );
     setSentOffersWithUserPhoto(updatedOffers);
-    setLoadingImages(false);
   };
   useFocusEffect(
     useCallback(() => {
@@ -115,12 +113,15 @@ export default function SentScreen({ navigation }) {
     return <LoadingOverlay />;
   }
 
-    useFocusEffect(
+  useFocusEffect(
     useCallback(() => {
       //dispatch(fetchReceivedOffersAsync()); // No more tracking down userIds here
       dispatch(fetchSentOffersAsync());
     }, [dispatch])
   );
+  useEffect(() => {
+    setSentOffersWithUserPhoto(sentOffers); // immediate paint
+  }, [sentOffers]);
   return (
     <>
       {!sentOffers ||
@@ -140,7 +141,7 @@ export default function SentScreen({ navigation }) {
           </VStack>
         ))}
       {sentOffers && sentOffers.length > 0 && (
-        <FlatList
+        < FlatList
           maxWidth="100%"
           bg="#fff"
           height="75%"
@@ -179,7 +180,7 @@ export default function SentScreen({ navigation }) {
                   flex={1}
                   alignItems="flex-end"
                   onPress={() => {
-                    onNavigateProfile(item.participantProfile);
+                    onNavigateProfile(item?.participantProfile);
                   }}
                 >
                   <HStack>
@@ -190,7 +191,7 @@ export default function SentScreen({ navigation }) {
                         fontSize="14px"
                         mx={1}
                       >
-                        {item.participantProfile.name}
+                        {item?.participantProfile?.name}
                       </Text>
                       <Text
                         color="coolGray.400"
@@ -199,7 +200,7 @@ export default function SentScreen({ navigation }) {
                         textAlign="right"
                         mt="-1"
                       >
-                        {item.createdAt}
+                        {item?.createdAt}
                       </Text>
                     </VStack>
                     <Box
@@ -210,7 +211,7 @@ export default function SentScreen({ navigation }) {
                     >
                       <Image
                         source={getImageSource(
-                          item.participantProfile.photo_file_name,
+                          item?.participantProfile?.photo_file_name,
                           avatar
                         )}
                         alt="Profile Image"
@@ -256,13 +257,13 @@ export default function SentScreen({ navigation }) {
                         /> */}
                         <Image
                           source={
-                            item.offeredBook.coverUrl
-                              ? { uri: item.offeredBook.coverUrl }
+                            item?.offeredBook?.coverUrl
+                              ? { uri: item?.offeredBook?.coverUrl }
                               : {
-                                  uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                                }
+                                uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                              }
                           }
-                          alt={`Cover of: ${item.offeredBook.title} by ${item.offeredBook.author}`}
+                          alt={`Cover of: ${item?.offeredBook?.title} by ${item?.offeredBook?.author}`}
                           roundedRight="4"
                         />
                       </AspectRatio>
@@ -272,10 +273,10 @@ export default function SentScreen({ navigation }) {
                         fontWeight={500}
                         numberOfLines={2}
                       >
-                        {truncateText(formatText(item.offeredBook.title), 36)}
+                        {truncateText(formatText(item?.offeredBook?.title), 36)}
                       </Text>
                       <Text color="#8c8c8c" fontSize="11">
-                        {item.offeredBook.author}
+                        {item?.offeredBook?.author}
                       </Text>
                     </VStack>
                     <Center height={150}>
@@ -290,13 +291,13 @@ export default function SentScreen({ navigation }) {
                       >
                         <Image
                           source={
-                            item.requestedBook.coverUrl
-                              ? { uri: item.requestedBook.coverUrl }
+                            item?.requestedBook?.coverUrl
+                              ? { uri: item?.requestedBook?.coverUrl }
                               : {
-                                  uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
-                                }
+                                uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                              }
                           }
-                          alt={`Cover of: ${item.requestedBook.title} by ${item.requestedBook.author}`}
+                          alt={`Cover of: ${item?.requestedBook?.title} by ${item?.requestedBook?.author}`}
                           roundedRight="4"
                         />
                       </AspectRatio>
@@ -306,10 +307,10 @@ export default function SentScreen({ navigation }) {
                         fontWeight={500}
                         numberOfLines={3}
                       >
-                        {item.requestedBook.title}
+                        {item?.requestedBook?.title}
                       </Text>
                       <Text color="#8c8c8c" fontSize="11">
-                        {item.requestedBook.author}
+                        {item?.requestedBook?.author}
                       </Text>
                     </VStack>
                   </HStack>

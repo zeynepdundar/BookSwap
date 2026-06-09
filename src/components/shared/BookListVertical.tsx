@@ -28,7 +28,7 @@ interface BookListVerticalProps {
   data: Book[]; 
   showOwners?: boolean;
   onPrimaryAction?: (book:Book) => void;
-  onSecondaryAction?: (item: any) => void;
+  onOpenActions?: (item: any) => void;
   onNavigateList?: (item: any) => void;
   onSendOffer?: (id: any) => void;
   showSendOfferButton?: boolean;
@@ -39,10 +39,12 @@ const ListRow = React.memo(function ListRow({
   onNavigateList,
   userId,
   onPrimaryAction,
+  onOpenActions,
   openActionSheet,
   onSendOffer,
   showOwners,
 }: any) {
+
   return (
     <>
       <Box height="125" mx="2" pl="2" ml="2" key={item.id} overflow="hidden">
@@ -144,14 +146,13 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   data,
   showOwners,
   onPrimaryAction,
-  onSecondaryAction,
+  onOpenActions,
   onNavigateList,
   onSendOffer,
   showSendOfferButton,
   ...props
 }) => {
-  const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
-  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
+
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
 
@@ -160,8 +161,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   useFocusEffect(
     useCallback(() => {
       // Reset state when the screen is focused
-      setIsInfoDialogOpen(false);
-      setIsActionSheetOpen(false);
+
       setSelectedItem(null);
       setSelectedAction(null);
 
@@ -179,37 +179,12 @@ const handleAction = async (actionType) => {
     ? selectedItem
     : [selectedItem];
 
-setIsActionSheetOpen(false);
-  const result: any = await onSecondaryAction({
-    books: items,
-    collection: actionType, 
-  });
 
 
-// If it failed or was canceled, reset selectedItem and stop execution
-  if (!result?.success) {
-    setSelectedItem(null);
-    return;
-  }
 
-  // 2. Use setTimeout to defer mounting the dialog until the sheets unmount transition finishes completely
-  setTimeout(() => {
-    setSelectedAction(actionType);
-    setIsInfoDialogOpen(true);
-  }, 100);
+
 };
-  const openActionSheet = (item) => {
-    Keyboard.dismiss();
-    setSelectedItem(item);
-    setIsActionSheetOpen(true);
-  };
-  const closeActionSheet = () => {
-    setSelectedItem(null);
-    setIsActionSheetOpen(false);
-  };
-  const closeInfoDialog = () => {
-    setIsInfoDialogOpen(false);
-  };
+
 
   const navigation = useNavigation<any>();
 
@@ -231,7 +206,6 @@ setIsActionSheetOpen(false);
       navigation.navigate("ProfileStack", { screen: "Library" });
   }
 
-  const actions = generateActions(handleAction, closeActionSheet);
 
   const renderItemCb = useCallback(
     ({ item }) => (
@@ -240,7 +214,7 @@ setIsActionSheetOpen(false);
         onNavigateList={onNavigateList}
         userId={userId}
         onPrimaryAction={onPrimaryAction}
-        openActionSheet={openActionSheet}
+        openActionSheet={onOpenActions}
         onSendOffer={onSendOffer}
         showOwners={showOwners}
       />
@@ -264,20 +238,8 @@ setIsActionSheetOpen(false);
         windowSize={7}
         removeClippedSubviews
       />
-      {onSecondaryAction && (
-        <ActionSheet
-          isOpen={isActionSheetOpen}
-          onClose={closeActionSheet}
-          actions={actions}
-        />
-      )}
-      <InfoDialogBox
-        isOpen={isInfoDialogOpen}
-        onClose={closeInfoDialog}
-        title={title}
-        description={description}
-        primaryAction={{ label: confirmButtonLabel, variant: buttonVariant, onPress: navigateToScreen }}
-      />
+
+
     </>
   );
 };

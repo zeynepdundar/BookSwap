@@ -1,37 +1,27 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
-
-import {
-  Heading,
-  Box,
-  Text,
-  VStack,
-  Flex,
-  Center,
-  Icon,
-  Divider,
-  Input,
-} from "native-base";
-import { MaterialIcons } from "@expo/vector-icons";
-import Screen from "@/components/shared/Screen";
-import i18n from "@/i18n";
-import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
-import { BookListVertical } from "@/components/shared/BookListVertical";
-import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";
-import { BookCollections } from "@/types/book.types";
-import { fetchBooksByTitle } from "@/services/books/books.service";
-import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
 import { useFocusEffect } from "@react-navigation/native";
+import { Box, Flex, Center, Heading, Input, Icon, VStack, Text, Divider } from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
+import i18n from "@/i18n";
+
+import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
+import { fetchBooksByTitle } from "@/services/books/books.service";
+import { Book, BookCollections } from "@/types/book.types";
+import { BookListVertical } from "@/components/shared/BookListVertical";
+import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
+import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";
+import Screen from "@/components/shared/Screen";
+import { generateActions } from "@/utils/helper";
+import { ActionSheet } from "@/components/shared/ActionSheet";
+import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 
 export default function BookSearchScreen({ navigation, route = null }) {
   const { sourceScreen } = route.params ?? {};
-  // const { searchedBook } = route.params || {};
-
   const collectionType = sourceScreen?.toLowerCase();
 
   const { addBooksToCollection } = useAddBooksToCollection();
-
   const inputRef = useRef(null);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,41 +30,83 @@ export default function BookSearchScreen({ navigation, route = null }) {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [listError, setListError] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   if (searchedBook) {
-  //     setSearchQuery(searchedBook || ""); // Set search query to the book's title
-  //   }
-  // }, [searchedBook]);
+  // ActionSheet and Dialog states
+  const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
+  const [selectedBook, setSelectedBook] = useState<any>(null);
+  const [selectedAction, setSelectedAction] = useState<string | null>(null);
 
-
-
-  const pressDoneHandler = async ({ collection, books }) => {
-    Keyboard.dismiss();
-    inputRef.current?.blur?.();
-
-    setListError(null);
-    
-
-    try {
-      await addBooksToCollection({
-        collection: collection ?? collectionType,
-        books: [books].flat(),
-      });
-      //navigation.goBack();
-    } catch (error) {
-      setListError(error.message);
+  // Dynamic Dialog Strings Configuration
+  const getDialogContent = () => {
+    if (selectedAction === BookCollections.WISHLIST) {
+      return {
+        title: i18n.t("successfully-added"),
+        description: i18n.t("the-book-added-to-wishlist"),
+        buttonVariant: "outline" as const,
+        confirmButtonLabel: i18n.t("see-my-wishlist"),
+        onPress: () => {
+          setIsInfoDialogOpen(false);
+          navigation.navigate("ProfileStack", { screen: "Wishlist" });
+        }
+      };
     }
 
+    if (selectedAction === BookCollections.LIBRARY) {
+      return {
+        title: i18n.t("successfully-added"),
+        description: i18n.t("the-book-added-to-library"),
+        buttonVariant: "outline" as const,
+        confirmButtonLabel: i18n.t("see-my-library"),
+        onPress: () => {
+          setIsInfoDialogOpen(false);
+          navigation.navigate("ProfileStack", { screen: "Library" });
+        }
+      };
+    }
+
+    return {
+      title: "Success",
+      description: "Book processed successfully",
+      buttonVariant: "outline" as const,
+      confirmButtonLabel: "OK",
+      onPress: () => setIsInfoDialogOpen(false)
+    };
   };
 
-  const navigateUserList = (item) => {
-    const { photo_file_name, ...userWithoutPhoto } = item; // Destructure to omit photo_file_name
-    navigation.navigate("UserList", {
-      data: userWithoutPhoto, // Pass the user object without the photo_file_name
-    });
+  const dialogContent = getDialogContent();
+
+  const handleOpenActions = (book: Book) => {
+    Keyboard.dismiss();
+    setSelectedBook(book);
+    setIsActionSheetOpen(true);
   };
+
+  const handleActionExecute = async (actionType: string) => {
+    setIsActionSheetOpen(false);
+
+    if (!selectedBook) return;
+
+    const result = await pressDoneHandler({
+      books: [selectedBook].flat(),
+      collection: actionType,
+    });
+
+    if (result?.success) {
+      setSelectedAction(actionType);
+
+      // Delay mounting the Dialog until the ActionSheet unmounts cleanly
+      setTimeout(() => {
+        setIsInfoDialogOpen(true);
+      }, 300);
+    } else {
+      setSelectedBook(null);
+    }
+  };
+
+  const actions = generateActions(handleActionExecute, () => setIsActionSheetOpen(false));
 
   const fetchBooks = async (title) => {
+    setLoading(true);
     fetchBooksByTitle(title)
       .then((books) => {
         setSearchResults(books);
@@ -88,27 +120,51 @@ export default function BookSearchScreen({ navigation, route = null }) {
       });
   };
 
-  // useEffect(() => {
-  //   // Focus on the input when the component mounts
-  //   console.log("Entering", inputRef.current?._inputElement);
-  //   inputRef.current?.inputElement?.focus();
-  // }, []);
-
-
+  // Debounced Auto-Search
   useEffect(() => {
     if (searchQuery.length >= 3) {
       const searchTimeout = setTimeout(async () => {
         try {
           await fetchBooks(searchQuery);
-        } catch (error) {
-          console.error("Error fetching or transforming data:", error.message);
-        } finally {
+        } catch (error: any) {
+          console.error("Error fetching data:", error.message);
         }
       }, 500);
 
       return () => clearTimeout(searchTimeout);
+    } else {
+      setSearchResults([]);
     }
   }, [searchQuery]);
+
+  const pressDoneHandler = async ({ collection, books }) => {
+    Keyboard.dismiss();
+    inputRef.current?.blur?.();
+    setListError(null);
+
+    const targetCollection = collection ?? collectionType;
+
+    if (!targetCollection) {
+      setListError("No collection type specified.");
+      return { success: false };
+    }
+
+    try {
+      await addBooksToCollection({
+        collection: targetCollection.toLowerCase(),
+        books: [books].flat(),
+      });
+      return { success: true };
+    } catch (error: any) {
+      setListError(error.message || "Failed to add book.");
+      return { success: false };
+    }
+  };
+
+  const navigateUserList = (item) => {
+    const { photo_file_name, ...userWithoutPhoto } = item;
+    navigation.navigate("UserList", { data: userWithoutPhoto });
+  };
 
   const scanBarcodeHandler = () => {
     navigation.navigate("BarcodeScanner", {
@@ -117,41 +173,40 @@ export default function BookSearchScreen({ navigation, route = null }) {
     });
   };
 
+  // Safe error clearance handler wrapper
+  useEffect(() => {
+    if (listError) {
+      const timer = setTimeout(() => {
+        setListError(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [listError]);
+
   useFocusEffect(
     useCallback(() => {
       return () => {
         setListError(null);
+        setIsInfoDialogOpen(false);
+        setIsActionSheetOpen(false);
       };
     }, [])
   );
 
-  // TODO: Consider lifting selection state from child component (BorderedBookListVertical) to parent
-  // so that selection and error state can be coordinated more reliably
-  setTimeout(() => {
-    setListError(null);
-  }, 5000);
-
-return (
+  return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Screen>
-        <Box
-          w="100%"
-          h={9}
-          alignItems="flex"
-          justifyContent="center"
-          px={4}
-        >
+        <Box w="100%" h={9} justifyContent="center" px={4}>
           <Heading>{i18n.t("keep-exploring")}</Heading>
         </Box>
-        
+
         <Flex h="80%">
-          {/* Search Bar Section */}
           <Center w="100%" h={16} px={2}>
             <Input
               placeholder={i18n.t("search-book-by-title")}
               width="100%"
               value={searchQuery}
-              onChangeText={(text) => setSearchQuery(text)}
+              onChangeText={setSearchQuery}
               borderRadius="6"
               py="3"
               px="1"
@@ -169,14 +224,14 @@ return (
               onSubmitEditing={Keyboard.dismiss}
             />
           </Center>
-          
-          <Box flex={1}> {/* Made this box flexible to safely fill the remaining h="80%" layout */}
+
+          <Box flex={1}>
             {loading && (
               <Box h="75%" alignItems="center" justifyContent="center">
                 <LoadingOverlay />
               </Box>
             )}
-            
+
             {!loading && !searchError && searchResults?.length > 0 && (
               <>
                 {collectionType ? (
@@ -184,14 +239,14 @@ return (
                 ) : (
                   <BookListVertical
                     data={searchResults}
-                    onSecondaryAction={pressDoneHandler}
+                    onOpenActions={handleOpenActions}
                     onNavigateList={navigateUserList}
                     showOwners={!collectionType}
                   />
                 )}
               </>
             )}
-            
+
             {searchQuery.length < 3 && (
               <VStack width="100%" height={200} mt="100">
                 <Center>
@@ -207,7 +262,7 @@ return (
                 </Center>
               </VStack>
             )}
-            
+
             {!searchError && searchResults.length === 0 && searchQuery.length >= 3 && (
               <VStack width="100%" height={200} mt="100">
                 <Center w="100%">
@@ -226,8 +281,23 @@ return (
           </Box>
         </Flex>
 
+        <ActionSheet
+          isOpen={isActionSheetOpen}
+          onClose={() => setIsActionSheetOpen(false)}
+          actions={actions}
+        />
+
+<InfoDialogBox
+  isOpen={isInfoDialogOpen}
+  onClose={() => {
+    setIsInfoDialogOpen(false);
+    setSelectedAction(null);
+  }}
+  selectedAction={selectedAction}
+  navigation={navigation} // <-- Pass navigation here
+/>
+
         <ErrorAlert message={listError} />
-        
       </Screen>
     </TouchableWithoutFeedback>
   );

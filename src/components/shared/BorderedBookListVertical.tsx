@@ -22,6 +22,7 @@ interface BorderedBookListVerticalProps {
   onDonePress?: (item: any) => void;
 }
 const ListRow = React.memo(function ListRow({ item, changeListStatusHandler, isSelectedBook }: any) {
+    console.log("jhb",item)
   return (
     <Pressable key={item.id} onPress={() => changeListStatusHandler(item)}>
       <Box

@@ -22,14 +22,15 @@ import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 import { fetchTradeHistoryAsync } from "@/store/offers/thunks";
 import { offersSelectors } from "@/store/offers/slice";
+import { IMAGE_FALLBACKS } from "@/constants/image";
 
 export default function HistoryScreen({ navigation }) {
   const tradeIcon = require("@/assets/images/icon/trade-in.png");
-  const avatar = require("@/assets/images/avatar.png");
 
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
  const historyList  = useSelector(offersSelectors.history.selectAll);
+  console.log("historyList", historyList);
 
   const [historyListWithUserPhoto, setHistoryListWithUserPhoto] =
     useState<any[]>(historyList);
@@ -59,7 +60,7 @@ export default function HistoryScreen({ navigation }) {
   );
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    dispatch(fetchTradeHistoryAsync(profile.id)) // Replace with your API call action
+    dispatch(fetchTradeHistoryAsync()) // Replace with your API call action
       .finally(() => setRefreshing(false));
   }, [dispatch]);
 
@@ -72,6 +73,12 @@ export default function HistoryScreen({ navigation }) {
   if (loading && !refreshing) {
     return <LoadingOverlay />;
   }
+
+    useFocusEffect(
+    useCallback(() => {
+      dispatch(fetchTradeHistoryAsync()); 
+    }, [dispatch])
+  );
   return (
     <>
       {!historyList ||
@@ -184,7 +191,7 @@ export default function HistoryScreen({ navigation }) {
                         <Image
                           source={getImageSource(
                             item.participantProfile.photo_file_name,
-                            avatar
+                            IMAGE_FALLBACKS.USER_AVATAR
                           )}
                           alt="Profile Image"
                           size={10}
