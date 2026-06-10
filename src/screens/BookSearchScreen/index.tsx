@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import { Keyboard, TouchableWithoutFeedback, DeviceEventEmitter } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Box, Flex, Center, Heading, Input, Icon, VStack, Text, Divider } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -16,6 +16,7 @@ import Screen from "@/components/shared/Screen";
 import { generateActions } from "@/utils/helper";
 import { ActionSheet } from "@/components/shared/ActionSheet";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
+import { AppSearchBar } from "@/components/shared/AppSearchBar";
 
 export default function BookSearchScreen({ navigation, route = null }) {
   const { sourceScreen } = route.params ?? {};
@@ -30,62 +31,50 @@ export default function BookSearchScreen({ navigation, route = null }) {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [listError, setListError] = useState<string | null>(null);
 
-  // ActionSheet and Dialog states
+  // Unified ActionSheet and Dialog UI Overlay states
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
 
-  // Dynamic Dialog Strings Configuration
-  const getDialogContent = () => {
-    if (selectedAction === BookCollections.WISHLIST) {
-      return {
-        title: i18n.t("successfully-added"),
-        description: i18n.t("the-book-added-to-wishlist"),
-        buttonVariant: "outline" as const,
-        confirmButtonLabel: i18n.t("see-my-wishlist"),
-        onPress: () => {
-          setIsInfoDialogOpen(false);
-          navigation.navigate("ProfileStack", { screen: "Wishlist" });
-        }
-      };
+  const pressDoneHandler = async ({ collection, books }) => {
+    Keyboard.dismiss();
+    inputRef.current?.blur?.();
+    setListError(null);
+
+    const targetCollection = collection ?? collectionType;
+
+    if (!targetCollection) {
+      setListError("No collection type specified.");
+      return { success: false };
     }
 
-    if (selectedAction === BookCollections.LIBRARY) {
-      return {
-        title: i18n.t("successfully-added"),
-        description: i18n.t("the-book-added-to-library"),
-        buttonVariant: "outline" as const,
-        confirmButtonLabel: i18n.t("see-my-library"),
-        onPress: () => {
-          setIsInfoDialogOpen(false);
-          navigation.navigate("ProfileStack", { screen: "Library" });
-        }
-      };
+    try {
+      await addBooksToCollection({
+        collection: targetCollection.toLowerCase(),
+        books: [books].flat(),
+      });
+      return { success: true };
+    } catch (error: any) {
+      setListError(error.message || "Failed to add book.");
+      return { success: false };
     }
-
-    return {
-      title: "Success",
-      description: "Book processed successfully",
-      buttonVariant: "outline" as const,
-      confirmButtonLabel: "OK",
-      onPress: () => setIsInfoDialogOpen(false)
-    };
   };
 
-  const dialogContent = getDialogContent();
-
-  const handleOpenActions = (book: Book) => {
+  const handleOpenActions = useCallback((book: Book) => {
     Keyboard.dismiss();
     setSelectedBook(book);
     setIsActionSheetOpen(true);
-  };
+  }, []); 
 
+// 1. Action Sheet Execution Handler (For normal text list search selection)
   const handleActionExecute = async (actionType: string) => {
+    // Step A: Slide down the ActionSheet immediately
     setIsActionSheetOpen(false);
 
     if (!selectedBook) return;
 
+    // Step B: Dispatch the database API call
     const result = await pressDoneHandler({
       books: [selectedBook].flat(),
       collection: actionType,
@@ -94,10 +83,11 @@ export default function BookSearchScreen({ navigation, route = null }) {
     if (result?.success) {
       setSelectedAction(actionType);
 
-      // Delay mounting the Dialog until the ActionSheet unmounts cleanly
+      // Step C: Wait for the ActionSheet's fade/slide animation to finish 
+      // completely on the native thread before popping up the Dialog Box
       setTimeout(() => {
         setIsInfoDialogOpen(true);
-      }, 300);
+      }, 300); // 300ms is the sweet spot for native animation unmounts
     } else {
       setSelectedBook(null);
     }
@@ -105,6 +95,44 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
   const actions = generateActions(handleActionExecute, () => setIsActionSheetOpen(false));
 
+
+  // 2. Barcode Event Listener Handler (For camera scanning passes)
+  useEffect(() => {
+    const barcodeSubscription = DeviceEventEmitter.addListener(
+      "BARCODE_BOOK_SCANNED",
+      async (payload) => {
+        
+        // PATH A: Scanned from a specific collection (e.g., Wishlist view -> straight to Dialog)
+        if (payload.collection) {
+          const result = await pressDoneHandler({
+            collection: payload.collection,
+            books: payload.books,
+          });
+
+          if (result?.success) {
+            setSelectedAction(payload.collection);
+            DeviceEventEmitter.emit("BARCODE_SAVE_RESPONSE", { success: true, actionType: payload.collection });
+            
+            // Safe unwrap delay
+            setTimeout(() => {
+              setIsInfoDialogOpen(true);
+            }, 300);
+          } else {
+            DeviceEventEmitter.emit("BARCODE_SAVE_RESPONSE", { success: false, error: "Failed to add book." });
+          }
+        } 
+        
+        // PATH B: Scanned without collection stack (Opens ActionSheet overlay first!)
+        else {
+          setSelectedBook(payload.books[0]);
+          setIsActionSheetOpen(true);
+          DeviceEventEmitter.emit("BARCODE_SAVE_RESPONSE", { success: true, actionType: null });
+        }
+      }
+    );
+
+    return () => barcodeSubscription.remove();
+  }, [collectionType, sourceScreen, selectedBook]);
   const fetchBooks = async (title) => {
     setLoading(true);
     fetchBooksByTitle(title)
@@ -137,30 +165,6 @@ export default function BookSearchScreen({ navigation, route = null }) {
     }
   }, [searchQuery]);
 
-  const pressDoneHandler = async ({ collection, books }) => {
-    Keyboard.dismiss();
-    inputRef.current?.blur?.();
-    setListError(null);
-
-    const targetCollection = collection ?? collectionType;
-
-    if (!targetCollection) {
-      setListError("No collection type specified.");
-      return { success: false };
-    }
-
-    try {
-      await addBooksToCollection({
-        collection: targetCollection.toLowerCase(),
-        books: [books].flat(),
-      });
-      return { success: true };
-    } catch (error: any) {
-      setListError(error.message || "Failed to add book.");
-      return { success: false };
-    }
-  };
-
   const navigateUserList = (item) => {
     const { photo_file_name, ...userWithoutPhoto } = item;
     navigation.navigate("UserList", { data: userWithoutPhoto });
@@ -168,12 +172,10 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
   const scanBarcodeHandler = () => {
     navigation.navigate("BarcodeScanner", {
-      sourceScreen: sourceScreen,
-      onAddBook: pressDoneHandler,
+      sourceScreen: sourceScreen, // Pass clean primitive serializable data rules
     });
   };
 
-  // Safe error clearance handler wrapper
   useEffect(() => {
     if (listError) {
       const timer = setTimeout(() => {
@@ -199,43 +201,28 @@ export default function BookSearchScreen({ navigation, route = null }) {
         <Box w="100%" h={9} justifyContent="center" px={4}>
           <Heading>{i18n.t("keep-exploring")}</Heading>
         </Box>
-
-        <Flex h="80%">
-          <Center w="100%" h={16} px={2}>
-            <Input
-              placeholder={i18n.t("search-book-by-title")}
-              width="100%"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              borderRadius="6"
-              py="3"
-              px="1"
-              fontSize="14"
-              autoFocus
-              _focus={{ borderColor: "#EFEFEF", bg: "#F4F4F6" }}
-              ref={inputRef}
-              InputLeftElement={
-                <Icon m="2" ml="3" size="6" color="gray.400" as={<MaterialIcons name="search" />} />
-              }
-              InputRightElement={
-                <Icon m="2" mr="3" size="6" color="gray.400" onPress={scanBarcodeHandler} as={<MaterialIcons name="crop-free" />} />
-              }
-              returnKeyType="done"
-              onSubmitEditing={Keyboard.dismiss}
-            />
-          </Center>
-
-          <Box flex={1}>
-            {loading && (
+        <Box px={2}>
+          <AppSearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            scanBarcodeHandler={scanBarcodeHandler}
+            inputRef={inputRef}
+          />
+        </Box>
+        <Box flex={1} mt="2">
+           {loading && (
               <Box h="75%" alignItems="center" justifyContent="center">
                 <LoadingOverlay />
               </Box>
             )}
 
+      
+ 
+
             {!loading && !searchError && searchResults?.length > 0 && (
               <>
                 {collectionType ? (
-                  <BorderedBookListVertical data={searchResults} onDonePress={pressDoneHandler} />
+                  <BorderedBookListVertical data={searchResults} onDonePress={pressDoneHandler}/>
                 ) : (
                   <BookListVertical
                     data={searchResults}
@@ -279,25 +266,28 @@ export default function BookSearchScreen({ navigation, route = null }) {
               </VStack>
             )}
           </Box>
-        </Flex>
+   
 
+        {/* Global UI sheets share state variables interchangeably */}
         <ActionSheet
           isOpen={isActionSheetOpen}
           onClose={() => setIsActionSheetOpen(false)}
           actions={actions}
         />
 
-<InfoDialogBox
-  isOpen={isInfoDialogOpen}
-  onClose={() => {
-    setIsInfoDialogOpen(false);
-    setSelectedAction(null);
-  }}
-  selectedAction={selectedAction}
-  navigation={navigation} // <-- Pass navigation here
-/>
+        <InfoDialogBox
+          isOpen={isInfoDialogOpen}
+          onClose={() => {
+            setIsInfoDialogOpen(false);
+            setSelectedAction(null);
+          }}
+          selectedAction={selectedAction}
+          navigation={navigation}
+        />
 
         <ErrorAlert message={listError} />
+
+
       </Screen>
     </TouchableWithoutFeedback>
   );

@@ -4,10 +4,10 @@ import { Box, Flex, Heading, Image, Pressable, Text } from "native-base";
 import i18n from "@/i18n";
 import Screen from "@/components/shared/Screen";
 import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
-import SearchBar from "@/components/shared/SearchBar";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { fetchMostPopularBooks } from "@/services/books/books.service";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
+import { HomeSearchWidget } from "@/components/shared/HomeSearchWidget";
 
 
 export default function HomeScreen({ navigation }) {
@@ -17,7 +17,7 @@ export default function HomeScreen({ navigation }) {
 
   const { profile, loading: profileLoading } = useSelector(
     (state: any) => state.profile
-    
+
   );
 
   useEffect(() => {
@@ -62,19 +62,11 @@ export default function HomeScreen({ navigation }) {
           />
         </Pressable>
       </Flex>
-      <SearchBar
-        onSearchPress={() => {
-          navigation.navigate("BookSearch");
-        }}
-        onScanPress={() => {
-          navigation.navigate("BarcodeScanner", { onAddBook: pressDoneHandler });
-        }}
-        onFocus={() => { }}
-        disableKeyboard={true}
-        navigateOnPress={() =>
-          navigation.navigate("BookSearch")
-        }
+      <HomeSearchWidget
+        navigation={navigation}
+        isHome
       />
+
       {books.length > 0 && (
         <Box mt="6">
           <Text color="black.400" fontWeight="700">

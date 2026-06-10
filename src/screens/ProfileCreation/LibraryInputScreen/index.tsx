@@ -6,11 +6,10 @@ import {
   Center,
   Heading,
   VStack,
-  Spacer,
+  Box,
 } from "native-base";
 import i18n from "@/i18n";
 import Screen from "@/components/shared/Screen";
-import SearchBar from "@/components/shared/SearchBar";
 import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import StepHeader from "@/components/shared/StepHeader";
@@ -21,6 +20,7 @@ import { BookCollections } from "@/types/book.types";
 import { removeFromOnboardingLibrary, resetOnboarding, setOnboardingLanguage } from "@/store/onboarding/slice";
 import { RootState } from "@/store/types";
 import { completeOnboardingAsync } from "@/store/onboarding/thunks";
+import { HomeSearchWidget } from "@/components/shared/HomeSearchWidget";
 
 
 export default function LibraryInputScreen({ navigation }) {
@@ -71,56 +71,56 @@ export default function LibraryInputScreen({ navigation }) {
   }
   return (
     <Screen>
-      <VStack space={1} alignItems="center" height={"50%"}>
-
+      <Box w="100%" pt="2">
         <StepHeader
           onBack={() => navigation.goBack()}
           onSkip={pressSkipHandler}
         />
-        <Spacer></Spacer>
-        <Heading w="100%" h="8" px={10}>
-          {i18n.t("add-books-to-library")}
-        </Heading>
-        <Center w="96%" h="20" px={8}>
-          <SearchBar
-            onSearchPress={() => {
-              navigation.navigate("BookSearchOnCreation", {
-                sourceScreen: BookCollections.LIBRARY,
-              });
-            }}
-            onScanPress={() => {
-              navigation.navigate("BarcodeScannerOnProfileCreation", {
-                sourceScreen: BookCollections.LIBRARY,
-              });
-            }}
-            onFocus={() => {
-              navigation.navigate("BookSearchOnCreation", {
-                sourceScreen: BookCollections.LIBRARY,
-              });
-            }}
-            navigateOnPress={() =>
-              navigation.navigate("BookSearchOnCreation", {
-                sourceScreen: BookCollections.LIBRARY,
-              })
-            }
-            disableKeyboard={true}
+      </Box>
+
+      <VStack
+        flex={1}
+        justifyContent="flex-start"
+        pt="10"
+        px={6}
+        pb="10"
+        space={6}
+        width="100%"
+      >
+        <VStack space={3} width="100%">
+          <Heading>
+            {i18n.t("add-books-to-library")}
+          </Heading>
+
+          <HomeSearchWidget
+            navigation={navigation}
+            sourceScreen={BookCollections.LIBRARY}
+            isHome={false}
           />
-        </Center>
+        </VStack>
+
         {libraryBooks.length > 0 && (
-          <Center w="100%" px={6}>
+          <Box maxH="40" w="100%" justifyContent="center" alignItems="center">
             <CoverListHorizontal
               data={libraryBooks}
               removeBook={handleRemoveFromLibrary}
             />
-          </Center>
+          </Box>
         )}
-        <Spacer />
-        <Center p={4}>
-          <Button variant="primary" onPress={pressContinueHandler}>
+
+        <Center w="100%" pt="4">
+          <Button
+            variant="primary"
+            onPress={pressContinueHandler}
+            w={{ base: "250", lg: "200" }}
+            h="12"
+            borderRadius="16"
+          >
             {i18n.t("continue")}
           </Button>
         </Center>
       </VStack>
     </Screen>
+
   );
 }

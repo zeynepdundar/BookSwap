@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   Dimensions,
   StatusBar,
   Platform,
+  DeviceEventEmitter, // 1. Added listener broadcaster
 } from "react-native";
 
 import { CameraView, useCameraPermissions } from "expo-camera";
@@ -32,22 +33,18 @@ import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { fetchBooksByISBN } from "@/services/books/books.service";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
 
-export default function BarcodeScannerScreen({
-  navigation,
-  route = null,
-}) {
-
-  const { sourceScreen, onAddBook } = route.params ?? {};
+export default function BarcodeScannerScreen({ navigation, route = null }) {
+  // 1. ALL HOOKS DECLARATIONS MUST BE AT THE ABSOLUTE TOP
+  const { sourceScreen } = route.params ?? {};
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [edition, setEdition] = useState(null);
   const [error, setError] = useState(null);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
-  const [selectedAction, setSelectedAction] = useState<BookCollection | null>(
-    null
-  );
+  const [selectedAction, setSelectedAction] = useState<BookCollection | null>(null);
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
   const [actions, setActions] = useState([]);
+  const scanTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (!permission) {
@@ -68,6 +65,41 @@ export default function BarcodeScannerScreen({
     return () => clearTimeout(timer);
   }, [scanned]);
 
+  useEffect(() => {
+    const responseSubscription = DeviceEventEmitter.addListener(
+      "BARCODE_SAVE_RESPONSE",
+      (response) => {
+        if (response?.success) {
+          setSelectedAction(response.actionType);
+          setTimeout(() => {
+            setIsInfoDialogOpen(true);
+          }, 200);
+          setEdition(null);
+        } else if (response?.error) {
+          setError(response.error);
+        }
+      }
+    );
+
+    return () => responseSubscription.remove();
+  }, []);
+
+  // 2. HELPER METHODS & TIMERS
+  const startBoxExpiryTimer = (duration = 5000) => {
+    stopBoxExpiryTimer();
+    scanTimerRef.current = setTimeout(() => {
+      setEdition(null);
+      setScanned(false);
+    }, duration);
+  };
+
+  const stopBoxExpiryTimer = () => {
+    if (scanTimerRef.current) {
+      clearTimeout(scanTimerRef.current);
+      scanTimerRef.current = null;
+    }
+  };
+
   const handleBarCodeScanned = async ({ data }) => {
     try {
       setScanned(true);
@@ -78,57 +110,40 @@ export default function BarcodeScannerScreen({
         setError("Multiple books found with this ISBN.");
       } else {
         setEdition(fetchedEditions[0]);
-        console.log("Book found with this ISBN", fetchedEditions[0]);
+        startBoxExpiryTimer(6000);
       }
     } catch (error) {
       setError("Error fetching editions. Please try again later.");
     }
   };
 
-  if (!permission) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (!permission.granted) {
-    return <Text>No access to camera</Text>;
-  }
-  const handleAddBook = async () => {
-
-    //For profile updates flow library/wishlist add book
+  const handleAddBook = () => {
     if (sourceScreen) {
-      onAddBook({
-        books: [edition]
+      DeviceEventEmitter.emit("BARCODE_BOOK_SCANNED", {
+        books: [edition].flat(),
+        collection: sourceScreen,
       });
-      setSelectedAction(sourceScreen);
-      setIsInfoDialogOpen(true);
-      setEdition(null);
-    }
-    // show ActionSheet and select collection to add book to
-    else {
-      const actions = [
+    } else {
+      const actionsConfig = [
         { type: BookCollections.WISHLIST, label: "add-my-wishlist" },
         { type: BookCollections.LIBRARY, label: "add-my-library" },
         { type: "cancel", label: "cancel" },
       ];
-      setActions(generateModalActions(actions, handleAction, closeActionSheet));
+      setActions(generateModalActions(actionsConfig, handleAction, closeActionSheet));
+      stopBoxExpiryTimer();
       setIsActionSheetOpen(true);
     }
   };
-  let title, description, buttonVariant, confirmButtonLabel, navigateToScreen;
-  if (selectedAction === BookCollections.WISHLIST) {
-    title = i18n.t("successfully-added");
-    description = i18n.t("the-book-added-to-wishlist");
-    buttonVariant = "outline";
-    confirmButtonLabel = i18n.t("see-my-wishlist");
-    navigateToScreen = () =>
-      navigation.navigate("ProfileStack", { screen: "Wishlist" });
-  } else if (selectedAction === BookCollections.LIBRARY) {
-    title = i18n.t("successfully-added");
-    description = i18n.t("the-book-added-to-library");
-    buttonVariant = "outline";
-    confirmButtonLabel = i18n.t("see-my-library");
-    navigateToScreen = () =>
-      navigation.navigate("ProfileStack", { screen: "Library" });
-  }
+
+  const handleAction = (actionType: string) => {
+    setIsActionSheetOpen(false);
+    if (actionType === "cancel") return;
+
+    DeviceEventEmitter.emit("BARCODE_BOOK_SCANNED", {
+      books: [edition].flat(),
+      collection: actionType,
+    });
+  };
 
   const closeActionSheet = () => {
     setIsActionSheetOpen(false);
@@ -137,25 +152,17 @@ export default function BarcodeScannerScreen({
 
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);
+    setSelectedAction(null);
+    startBoxExpiryTimer(5000);
   };
 
-  const { width, height } = Dimensions.get("window");
+  const { height } = Dimensions.get("window");
 
-  const handleAction = async (actionType) => {
-    console.log("handleAction", actionType, edition, onAddBook);
+  // 3. SAFE EARLY CONDITIONAL RETURNS (Placed after all hooks ran successfully)
+  if (!permission) return <Center flex={1} bg="black"><Text color="white">Requesting for camera permission</Text></Center>;
+  if (!permission.granted) return <Center flex={1} bg="black"><Text color="white">No access to camera</Text></Center>;
 
-    onAddBook({
-      books: [edition],
-      collection: actionType
-    });
-
-    closeActionSheet();
-    // const payload = response.payload;
-    setSelectedAction(actionType);
-    setIsInfoDialogOpen(true);
-    setEdition(null);
-  };
-
+  // 4. MAIN LAYOUT RENDER
   return (
     <View style={[styles.container, { height }]}>
       <StatusBar hidden />
@@ -168,14 +175,9 @@ export default function BarcodeScannerScreen({
         bg="#dddddd"
         zIndex={99}
         variant="solid"
-        _pressed={{
-          bg: "primary.100",
-        }}
-        icon={
-          <Icon color="black" name={"close"} as={MaterialIcons} size="lg" />
-        }
+        _pressed={{ bg: "primary.100" }}
+        icon={<Icon color="black" name={"close"} as={MaterialIcons} size="lg" />}
       />
-      {/* Ensure full screen coverage */}
       <CameraView
         onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={styles.fullScreenContainer}
@@ -183,8 +185,7 @@ export default function BarcodeScannerScreen({
       />
       {edition && (
         <Center>
-          <BookInfoBox edition={edition} onAddBooks={handleAddBook} />
-          {/* <Button onPress={() => setScanned(false)}>Tap to Scan Again</Button> */}
+          <BookInfoBox edition={edition} handleAddBookPress={handleAddBook} />
         </Center>
       )}
       <ErrorAlert message={error} />
@@ -196,86 +197,31 @@ export default function BarcodeScannerScreen({
           sourceScreen === BookCollections.WISHLIST || sourceScreen === BookCollections.LIBRARY ? "the-book-added" : null
         }
       />
-
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
         onClose={closeInfoDialog}
-        title={title}
-        description={description}
-        primaryAction={{ label: confirmButtonLabel, variant: buttonVariant, onPress: navigateToScreen }}
+        selectedAction={selectedAction}
+        navigation={navigation}
       />
     </View>
   );
 }
-const BookInfoBox = ({ edition, onAddBooks }) => (
-  <Box
-    width="80"
-    height="120px"
-    shadow="9"
-    backgroundColor="white"
-    borderWidth="2"
-    borderRadius="15"
-    borderColor="#ffffff"
-    p="2"
-    m="2"
-    position="absolute"
-    bottom={150}
-  >
-    <HStack
-      justifyContent="space-between"
-      alignItems="center"
-      width="100%"
-      height="100%"
-      p={1}
-      space={2.5}
-    >
-      <Image
-        source={{ uri: edition?.coverUrl }}
-        alt="Library"
-        width="60"
-        height="82"
-        roundedRight="4"
-      />
+
+const BookInfoBox = ({ edition, handleAddBookPress }) => (
+  <Box width="80" height="120px" shadow="9" backgroundColor="white" borderWidth="2" borderRadius="15" borderColor="#ffffff" p="2" m="2" position="absolute" bottom={150}>
+    <HStack justifyContent="space-between" alignItems="center" width="100%" height="100%" p={1} space={2.5}>
+      <Image source={{ uri: edition?.coverUrl }} alt="Library" width="60" height="82" roundedRight="4" />
       <VStack width="40" height="82">
-        <Text color="#8c8c8c" fontSize="xs" letterSpacing="2xl">
-          {truncateText(formatText(edition?.author), 19)}
-        </Text>
-        <Text color="#494949" fontSize="16" numberOfLines={2}>
-          {truncateText(formatText(edition?.title), 36)}
-        </Text>
-        <Text color="#494949" fontSize="11">
-          {truncateText(formatText(edition?.publisher), 23)}
-        </Text>
+        <Text color="#8c8c8c" fontSize="xs" letterSpacing="2xl">{truncateText(formatText(edition?.author), 19)}</Text>
+        <Text color="#494949" fontSize="16" numberOfLines={2}>{truncateText(formatText(edition?.title), 36)}</Text>
+        <Text color="#494949" fontSize="11">{truncateText(formatText(edition?.publisher), 23)}</Text>
       </VStack>
-      <IconButton
-        onPress={onAddBooks}
-        m="8px"
-        borderRadius="11"
-        bg="primary.50"
-        variant="solid"
-        p="3"
-        size={10}
-        _pressed={{ bg: "primary.100" }}
-        icon={<Icon color="white" name={"add"} as={MaterialIcons} size="md" />}
-      />
+      <IconButton onPress={handleAddBookPress} m="8px" borderRadius="11" bg="primary.50" variant="solid" p="3" size={10} _pressed={{ bg: "primary.100" }} icon={<Icon color="white" name={"add"} as={MaterialIcons} size="md" />} />
     </HStack>
   </Box>
 );
 
-
-
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, // Take up the full screen height
-    backgroundColor: "black", // Match the background color of the scanner
-    margin: 0,
-    padding: 0,
-  },
-  fullScreenContainer: {
-    flex: 1, // Merged to ensure full-screen coverage
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "black", // Optional background color to match scanner
-  },
+  container: { flex: 1, backgroundColor: "black", margin: 0, padding: 0 },
+  fullScreenContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "black" },
 });

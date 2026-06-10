@@ -73,7 +73,6 @@ export default function LibraryScreen({ navigation, route }) {
       }
     />
   );
-  console.log("LibraryBooks in LibraryScreen:", params);
   const selectedBooksAction = isTradeProposal ? addBookToProposalButton : removeBookButton;
 
   return (

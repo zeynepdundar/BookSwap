@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from "react";
-import { Keyboard,FlatList } from "react-native";
+import { Keyboard, FlatList } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
- 
+
 import {
   Image,
   HStack,
@@ -17,21 +16,18 @@ import {
   Button,
 } from "native-base";
 
-import { ActionSheet } from "@/components/shared/ActionSheet";
-import { formatText, generateActions, truncateText } from "@/utils/helper";
+import { formatText, truncateText } from "@/utils/helper";
 import i18n from "@/i18n";
 import { useSelector } from "react-redux";
-import { Book, BookCollections } from "@/types/book.types";
-import { InfoDialogBox } from "../Modal/InfoDialogBox";
+import { Book } from "@/types/book.types";
 
 interface BookListVerticalProps {
-  data: Book[]; 
+  data: Book[];
   showOwners?: boolean;
-  onPrimaryAction?: (book:Book) => void;
+  onPrimaryAction?: (book: Book) => void;
   onOpenActions?: (item: any) => void;
   onNavigateList?: (item: any) => void;
   onSendOffer?: (id: any) => void;
-  showSendOfferButton?: boolean;
 }
 
 const ListRow = React.memo(function ListRow({
@@ -40,7 +36,6 @@ const ListRow = React.memo(function ListRow({
   userId,
   onPrimaryAction,
   onOpenActions,
-  openActionSheet,
   onSendOffer,
   showOwners,
 }: any) {
@@ -48,85 +43,85 @@ const ListRow = React.memo(function ListRow({
   return (
     <>
       <Box height="125" mx="2" pl="2" ml="2" key={item.id} overflow="hidden">
-      <HStack justifyContent="space-between" width="100%" space={3} py={1}>
-        <AspectRatio w={{ base: "22%", md: "18%" }} ratio={40 / 62} maxWidth="80px">
-          <Image
-            source={
-              item.coverUrl
-                ? { uri: item?.coverUrl }
-                : {
+        <HStack justifyContent="space-between" width="100%" space={3} py={1}>
+          <AspectRatio w={{ base: "22%", md: "18%" }} ratio={40 / 62} maxWidth="80px">
+            <Image
+              source={
+                item.coverUrl
+                  ? { uri: item?.coverUrl }
+                  : {
                     uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
                   }
-            }
-            alt={`Cover of ${item.title} by ${item.author}`}
-            roundedRight="4"
-          />
-        </AspectRatio>
-        <VStack width={198}>
-          <Text color="#000000" fontSize="15" numberOfLines={2} lineHeight="18">
-            {truncateText(formatText(item.title), 44)}
-          </Text>
-          <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
-            {truncateText(formatText(item.author), 30)}
-          </Text>
-          {item.publisher ||
-          (Array.isArray(item.publishers) && item.publishers.length > 0) ? (
-            <Text color="#8c8c8c" fontSize="13" fontWeight="200" numberOfLines={item?.usersOwning ? 1 : 2}>
-              {Array.isArray(item.publishers) && item.publishers.length > 0
-                ? truncateText(formatText(item.publishers[0]), 30)
-                : truncateText(formatText(item.publisher), 50)}
-            </Text>
-          ) : (
-            ""
-          )}
-
-          {showOwners && item?.usersOwning && (
-            <Pressable
-              onPress={() => handleNavigateList(item, onNavigateList, userId)}
-              borderColor="#323232"
-              borderWidth="0.5"
-              borderRadius="9"
-              p="1"
-              mt="4"
-              width="90px"
-              disabled={item.usersOwning.filter((owner) => owner.id !== userId).length === 0}
-            >
-              <Text alignSelf="center" color="#323232" fontSize="12px">
-                {item.usersOwning.filter((owner) => owner.id !== userId).length} Owner
-              </Text>
-            </Pressable>
-          )}
-        </VStack>
-        <Spacer />
-        <VStack>
-          {onPrimaryAction && onPrimaryAction(item)}
-          {!onPrimaryAction && (
-            <Icon
-              onPress={() => openActionSheet(item)}
-              name="more-vert"
-              variant="solid"
-              size="lg"
-              as={MaterialIcons}
+              }
+              alt={`Cover of ${item.title} by ${item.author}`}
+              roundedRight="4"
             />
-          )}
-          {onSendOffer && (
-            <Button
-              onPress={() => onSendOffer({ item })}
-              variant="primary"
-              right={2}
-              bottom={0}
-              position="absolute"
-              py="6px"
-              px={0}
-              rounded="6"
-              width={126}
-            >
-              {i18n.t("send-offer")}
-            </Button>
-          )}
+          </AspectRatio>
+          <VStack width={198}>
+            <Text color="#000000" fontSize="15" numberOfLines={2} lineHeight="18">
+              {truncateText(formatText(item.title), 44)}
+            </Text>
+            <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
+              {truncateText(formatText(item.author), 30)}
+            </Text>
+            {item.publisher ||
+              (Array.isArray(item.publishers) && item.publishers.length > 0) ? (
+              <Text color="#8c8c8c" fontSize="13" fontWeight="200" numberOfLines={item?.usersOwning ? 1 : 2}>
+                {Array.isArray(item.publishers) && item.publishers.length > 0
+                  ? truncateText(formatText(item.publishers[0]), 30)
+                  : truncateText(formatText(item.publisher), 50)}
+              </Text>
+            ) : (
+              ""
+            )}
+
+            {showOwners && item?.usersOwning && (
+              <Pressable
+                onPress={() => handleNavigateList(item, onNavigateList, userId)}
+                borderColor="#323232"
+                borderWidth="0.5"
+                borderRadius="9"
+                p="1"
+                mt="4"
+                width="90px"
+                disabled={item.usersOwning.filter((owner) => owner.id !== userId).length === 0}
+              >
+                <Text alignSelf="center" color="#323232" fontSize="12px">
+                  {item.usersOwning.filter((owner) => owner.id !== userId).length} Owner
+                </Text>
+              </Pressable>
+            )}
+          </VStack>
           <Spacer />
-        </VStack>
-      </HStack>
+          <VStack>
+            {onPrimaryAction && onPrimaryAction(item)}
+            {!onPrimaryAction && (
+              <Icon
+                onPress={() => onOpenActions(item)}
+                name="more-vert"
+                variant="solid"
+                size="lg"
+                as={MaterialIcons}
+              />
+            )}
+            {onSendOffer && (
+              <Button
+                onPress={() => onSendOffer({ item })}
+                variant="primary"
+                right={2}
+                bottom={0}
+                position="absolute"
+                py="6px"
+                px={0}
+                rounded="6"
+                width={126}
+              >
+                {i18n.t("send-offer")}
+              </Button>
+            )}
+            <Spacer />
+          </VStack>
+        </HStack>
       </Box>
       <Box w="100%" alignSelf="center">
         <Divider my={2} mx="auto" w="90%" bg="#EEEEEE" />
@@ -135,7 +130,6 @@ const ListRow = React.memo(function ListRow({
   );
 });
 
-const keyExtractor = (item) => item.id;
 
 const handleNavigateList = (item, onNavigateList, userId) => {
   const filteredOwners = item.usersOwning.filter((owner) => owner.id !== userId);
@@ -149,63 +143,9 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   onOpenActions,
   onNavigateList,
   onSendOffer,
-  showSendOfferButton,
-  ...props
 }) => {
 
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedAction, setSelectedAction] = useState<string | null>(null);
-
   const { id: userId } = useSelector((state: any) => state.profile.profile);
-
-  useFocusEffect(
-    useCallback(() => {
-      // Reset state when the screen is focused
-
-      setSelectedItem(null);
-      setSelectedAction(null);
-
-      // Optionally, return a cleanup function if needed
-      return () => {
-        // Cleanup actions if necessary
-      };
-    }, [])
-  );
-
-const handleAction = async (actionType) => {
-  Keyboard.dismiss();
-
-  const items = Array.isArray(selectedItem)
-    ? selectedItem
-    : [selectedItem];
-
-
-
-
-
-};
-
-
-  const navigation = useNavigation<any>();
-
-  // Prepare dialog content based on selected action
-  let title, description, buttonVariant, confirmButtonLabel, navigateToScreen;
-  if (selectedAction === BookCollections.WISHLIST) {
-    title = i18n.t("successfully-added");
-    description = i18n.t("the-book-added-to-wishlist");
-    buttonVariant = "outline";
-    confirmButtonLabel = i18n.t("see-my-wishlist");
-    navigateToScreen = () =>
-      navigation.navigate("ProfileStack", { screen: "Wishlist" });
-  } else if (selectedAction === BookCollections.LIBRARY) {
-    title = i18n.t("successfully-added");
-    description = i18n.t("the-book-added-to-library");
-    buttonVariant = "outline";
-    confirmButtonLabel = i18n.t("see-my-library");
-    navigateToScreen = () =>
-      navigation.navigate("ProfileStack", { screen: "Library" });
-  }
-
 
   const renderItemCb = useCallback(
     ({ item }) => (
@@ -214,32 +154,29 @@ const handleAction = async (actionType) => {
         onNavigateList={onNavigateList}
         userId={userId}
         onPrimaryAction={onPrimaryAction}
-        openActionSheet={onOpenActions}
+        onOpenActions={onOpenActions} // ✅ Changed from openActionSheet={onOpenActions}
         onSendOffer={onSendOffer}
         showOwners={showOwners}
       />
     ),
-    [onNavigateList, userId, onPrimaryAction, onSendOffer]
+    [onNavigateList, userId, onPrimaryAction, onOpenActions, onSendOffer, showOwners]
   );
 
   const keyExtractorCb = useCallback((item: any) => item.id, []);
 
   return (
-    <>
-      <FlatList
-        data={data}
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
-        showsVerticalScrollIndicator={false}
-        onScrollBeginDrag={Keyboard.dismiss}
-        keyboardShouldPersistTaps="handled"
-        renderItem={renderItemCb}
-        keyExtractor={keyExtractorCb}
-        windowSize={7}
-        removeClippedSubviews
-      />
+    <FlatList
+      data={data}
+      initialNumToRender={10}
+      maxToRenderPerBatch={10}
+      showsVerticalScrollIndicator={false}
+      onScrollBeginDrag={Keyboard.dismiss}
+      keyboardShouldPersistTaps="handled"
+      renderItem={renderItemCb}
+      keyExtractor={keyExtractorCb}
+      windowSize={7}
+      removeClippedSubviews
+    />
 
-
-    </>
   );
 };

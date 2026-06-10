@@ -207,7 +207,6 @@ export const generateActions = (handleAction, closeActionSheet) => [
 ];
 
 export const generateModalActions = (actions, handleAction, closeModal) => {
-  console.log("Generating modal actions with:", actions);
   return actions.map((action) => ({
     type: action.type,
     label: action.label,

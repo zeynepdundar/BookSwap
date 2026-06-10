@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
-  FlatList,
   Image,
   HStack,
   VStack,
@@ -13,16 +13,15 @@ import {
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import i18n from "@/i18n";
-import { Keyboard } from "react-native";
+import { FlatList, Keyboard } from "react-native";
 import { formatText, truncateText } from "@/utils/helper";
 import { Book } from "@/types/book.types";
 
 interface BorderedBookListVerticalProps {
-  data: any[]; // Replace YourItemType with the actual type of your data items
-  onDonePress?: (item: any) => void;
+  data: any[];
+  onDonePress: (payload: { books: any[] }) => Promise<{ success: boolean }>;
 }
 const ListRow = React.memo(function ListRow({ item, changeListStatusHandler, isSelectedBook }: any) {
-    console.log("jhb",item)
   return (
     <Pressable key={item.id} onPress={() => changeListStatusHandler(item)}>
       <Box
@@ -88,10 +87,15 @@ export const BorderedBookListVertical: React.FC<
   const [selectedBooks, setSelectedBooks] = useState([]);
   const [isButtonDisabled, setButtonDisabled] = useState(true);
 
-  const handleDonePress = () => {
-    onDonePress({
+  const navigation = useNavigation<any>()
+  const handleDonePress = async () => {
+    const result = await onDonePress({
       books: selectedBooks,
     });
+
+    if (result?.success) {
+      navigation.goBack();
+    }
   };
   const addBookToCollectionsHandler = (selectedItem: Book) => {
     setSelectedBooks((currentLibraryItems) => [
@@ -145,28 +149,28 @@ export const BorderedBookListVertical: React.FC<
 
   return (
     <>
-      <FlatList
-        maxWidth="100%"
-        height="94%"
-        mx="3"
-        data={data}
-        keyExtractor={keyExtractor}
-        extraData={data}
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
-        showsVerticalScrollIndicator={false}
-        onScrollBeginDrag={Keyboard.dismiss}
-        keyboardShouldPersistTaps="handled"
-        renderItem={({ item }) => (
-          <ListRow
-            item={item}
-            changeListStatusHandler={changeListStatusHandler}
-            isSelectedBook={isSelectedBook}
-          />
-        )}
-        windowSize={7}
-        removeClippedSubviews
-      />
+      <Box maxWidth="100%" height="94%" mx="3">
+        <FlatList
+          data={data}
+          keyExtractor={keyExtractor}
+          extraData={data}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          showsVerticalScrollIndicator={false}
+          onScrollBeginDrag={Keyboard.dismiss}
+          keyboardShouldPersistTaps="handled"
+          renderItem={({ item }) => (
+            <ListRow
+              item={item}
+              changeListStatusHandler={changeListStatusHandler}
+              isSelectedBook={isSelectedBook}
+            />
+          )}
+          windowSize={7}
+          removeClippedSubviews
+        />
+      </Box>
+
       <Box alignItems="center" h="20" mx="2">
         <Button
           variant={isButtonDisabled ? "disabledOutline" : "outline"}

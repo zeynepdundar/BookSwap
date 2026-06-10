@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
 import {
   Heading,
   Box,
@@ -9,9 +8,7 @@ import {
   Flex,
   WarningTwoIcon,
   Center,
-  Icon,
   Divider,
-  Input,
 } from "native-base";
 import Screen from "@/components/shared/Screen";
 import i18n from "@/i18n";
@@ -22,6 +19,7 @@ import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVe
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import { fetchBooksByTitle } from "@/services/books/books.service";
 import { addBooksToOnboarding } from "@/store/onboarding/slice";
+import { AppSearchBar } from "@/components/shared/AppSearchBar";
 
 export default function BookSearchOnCreationScreen({
   navigation,
@@ -37,7 +35,7 @@ export default function BookSearchOnCreationScreen({
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState([]);
 
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
 
   const fetchBooks = async (title) => {
@@ -86,16 +84,19 @@ export default function BookSearchOnCreationScreen({
       sourceScreen: "Library",
     });
   };
-  const  pressDoneHandler = (selectedItem) => {
-    dispatch(
-      addBooksToOnboarding({
-        collection: collectionType,
-        books: selectedItem.books,
-      })
-    );
+  const pressDoneHandler = async (selectedItem) => {
+    try {
+      dispatch(
 
-  navigation.goBack();
-};
+        addBooksToOnboarding({
+          collection: collectionType, books: selectedItem.books,
+        })
+      );
+      return { success: true };
+    } catch (error) {
+      return { success: false };
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -110,41 +111,12 @@ export default function BookSearchOnCreationScreen({
           <Heading>{i18n.t("keep-exploring")}</Heading>
         </Box>
         <Flex h="80%">
-          {/* Search Bar Section */}
           <Center w="100%" h={16} px={2}>
-            <Input
-              placeholder={i18n.t("search-book-by-title")}
-              width="100%"
-              value={searchQuery}
-              onChangeText={(text) => setSearchQuery(text)}
-              borderRadius="6"
-              py="3"
-              px="1"
-              fontSize="14"
-              _focus={{
-                borderColor: "#EFEFEF",
-                bg: "#F4F4F6",
-              }}
-              ref={inputRef}
-              InputLeftElement={
-                <Icon
-                  m="2"
-                  ml="3"
-                  size="6"
-                  color="gray.400"
-                  as={<MaterialIcons name="search" />}
-                />
-              }
-              InputRightElement={
-                <Icon
-                  m="2"
-                  mr="3"
-                  size="6"
-                  color="gray.400"
-                  onPress={scanBarcodeHandler}
-                  as={<MaterialIcons name="crop-free" />}
-                />
-              }
+            <AppSearchBar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              scanBarcodeHandler={scanBarcodeHandler}
+              inputRef={inputRef}
             />
           </Center>
           <Box>

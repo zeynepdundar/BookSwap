@@ -17,31 +17,33 @@ export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(({
   navigation 
 }) => {
   
+  // 1. Centralized fallbacks/defaults
   let title = "Success";
-  let description = "Action completed successfully.";
+  let description = "Book processed successfully";
   let confirmButtonLabel = "OK";
-  
-  const handlePrimaryPress = () => {
-    onClose(); 
+  let screenTarget: string | null = null;
 
-    console.log("sele",selectedAction)
-
-    if (selectedAction === BookCollections.WISHLIST) {
-      navigation.navigate("ProfileStack", { screen: "Wishlist" });
-    } else if (selectedAction === BookCollections.LIBRARY) {
-      navigation.navigate("ProfileStack", { screen: "Library" });
-    }
-  };
-
+  // 2. Map actions dynamically based on your collections enum
   if (selectedAction === BookCollections.WISHLIST) {
     title = i18n.t("successfully-added");
     description = i18n.t("the-book-added-to-wishlist");
     confirmButtonLabel = i18n.t("see-my-wishlist");
+    screenTarget = "Wishlist";
   } else if (selectedAction === BookCollections.LIBRARY) {
     title = i18n.t("successfully-added");
     description = i18n.t("the-book-added-to-library");
     confirmButtonLabel = i18n.t("see-my-library");
+    screenTarget = "Library";
   }
+
+  // 3. Centralized click action wrapper
+  const handlePrimaryPress = () => {
+    onClose(); // Clean up state in the parent search screen first
+
+    if (screenTarget) {
+      navigation.navigate("ProfileStack", { screen: screenTarget });
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={true} isKeyboardDismissable={true}>
@@ -65,7 +67,7 @@ export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(({
         <Modal.Footer borderTopWidth={0} justifyContent="center" pt="1" pb="3">
           <Button
             variant="outline"
-            onPress={handlePrimaryPress} // <-- Executes our dynamic navigation wrapper
+            onPress={handlePrimaryPress}
             px="5"
             py="2.5"
             w="100%"
