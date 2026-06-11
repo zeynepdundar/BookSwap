@@ -47,8 +47,9 @@ export const acceptOffer = async (
     }),
   });
 
+ 
   const data = await response.json();
-
+ console.log("api",data)
   return {
     ok: response.ok,
     data,

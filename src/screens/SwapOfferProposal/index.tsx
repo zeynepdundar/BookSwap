@@ -115,7 +115,7 @@ export default function SwapOfferProposal({ navigation, route }) {
                   <Text w={100} textAlign="center" fontSize={11} numberOfLines={2}>{sentPropasal.offeredBook.title}</Text>
                 </>
               ) : (
-                <Fab onPress={() => navigation.navigate("ProfileStack", { screen: "Library", params: { data: "SwapOfferProposal" } })} renderInPortal={false} shadow={2} size="9" mr="7" mb="12" bgColor="primary.50" icon={<Icon color="white" as={MaterialIcons} name="add" size="md" />} />
+                <Fab onPress={() => navigation.navigate("ProfileStack", { screen: "Library", params: { data: "SwapOfferProposal" } })} renderInPortal={false} shadow={2} size="9" mr="7" mb="12" bgColor="primary.500" icon={<Icon color="white" as={MaterialIcons} name="add" size="md" />} />
               )}
             </Center>
           </Center>
@@ -145,7 +145,7 @@ export default function SwapOfferProposal({ navigation, route }) {
                   <Text w={100} textAlign="center" fontSize={11} numberOfLines={2}>{sentPropasal.requestedBook.title}</Text>
                 </>
               ) : (
-                <Fab onPress={() => navigation.navigate("OtherLibrary", { user })} renderInPortal={false} shadow={2} size="9" mr="7" mb="12" bgColor="primary.50" alignSelf="center" icon={<Icon color="white" as={MaterialIcons} name="add" size="md" />} />
+                <Fab onPress={() => navigation.navigate("OtherLibrary", { user })} renderInPortal={false} shadow={2} size="9" mr="7" mb="12" bgColor="primary.500" alignSelf="center" icon={<Icon color="white" as={MaterialIcons} name="add" size="md" />} />
               )}
             </Center>
           </Center>

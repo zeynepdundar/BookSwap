@@ -11,16 +11,11 @@ export const theme = extendTheme({
   },
   colors: {
     primary: {
-      50: "#7F3DFF",
-      100: "#E7DCFF",
-      200: "#F2ECFF",
-      300: "#7AC1E4",
-      400: "#47A9DA",
-      500: "#0088CC",
-      600: "#007AB8",
-      700: "#006BA1",
-      800: "#005885",
-      900: "#003F5E",
+      50: "#F5F0FF",  // background tint
+      100: "#E7DCFF",  // surfaces
+      500: "#7F3DFF",  // primary
+      600: "#6E2EE6",  // pressed
+      700: "#5A23C7",
     },
     black: {
       100: "#161719",
@@ -72,7 +67,8 @@ export const theme = extendTheme({
           px: 4,
         },
         _pressed: {
-          opacity: 0.8,
+          bg: "primary.600",
+          transform: [{ scale: 0.98 }],
         },
         _disabled: {
           bg: "gray.300",
@@ -82,25 +78,25 @@ export const theme = extendTheme({
       },
       variants: {
         primary: () => ({
-          bg: "primary.50",
+          bg: "primary.500",
           _text: { color: "#fff" },
-          _pressed: { bg: "primary.100" }, // ✅ pressed feedback
+          _pressed: { bg: "primary.600" },
         }),
         secondary: () => ({
           bg: "primary.100",
-          _text: { color: "primary.50" },
+          _text: { color: "primary.500" },
           _pressed: { bg: "primary.200" },
         }),
         outline: () => ({
           bg: "transparent",
           borderWidth: 1,
-          borderColor: "primary.50",
-          _text: { color: "primary.50" },
-          _pressed: { bg: "primary.50:alpha.10" }, // ✅ subtle feedback
+          borderColor: "primary.500",
+          _text: { color: "primary.500" },
+          _pressed: { bg: "primary.500:alpha.10" }, // ✅ subtle feedback
         }),
         ghost: () => ({
           bg: "transparent",
-          _text: { color: "primary.50" },
+          _text: { color: "primary.500" },
           _pressed: { opacity: 0.6 }, // ✅ feedback without background
         }),
       },

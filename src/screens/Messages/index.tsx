@@ -183,7 +183,7 @@ export default function MessagesScreen({ navigation }) {
                     </Text>
                     {item.unseenCount > 0 && (
                       <Badge
-                        bg="primary.50"
+                        bg="primary.500"
                         rounded="5"
                         zIndex={1}
                         variant="solid"

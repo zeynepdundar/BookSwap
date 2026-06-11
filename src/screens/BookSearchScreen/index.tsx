@@ -65,9 +65,9 @@ export default function BookSearchScreen({ navigation, route = null }) {
     Keyboard.dismiss();
     setSelectedBook(book);
     setIsActionSheetOpen(true);
-  }, []); 
+  }, []);
 
-// 1. Action Sheet Execution Handler (For normal text list search selection)
+  // 1. Action Sheet Execution Handler (For normal text list search selection)
   const handleActionExecute = async (actionType: string) => {
     // Step A: Slide down the ActionSheet immediately
     setIsActionSheetOpen(false);
@@ -101,7 +101,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
     const barcodeSubscription = DeviceEventEmitter.addListener(
       "BARCODE_BOOK_SCANNED",
       async (payload) => {
-        
+
         // PATH A: Scanned from a specific collection (e.g., Wishlist view -> straight to Dialog)
         if (payload.collection) {
           const result = await pressDoneHandler({
@@ -112,7 +112,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
           if (result?.success) {
             setSelectedAction(payload.collection);
             DeviceEventEmitter.emit("BARCODE_SAVE_RESPONSE", { success: true, actionType: payload.collection });
-            
+
             // Safe unwrap delay
             setTimeout(() => {
               setIsInfoDialogOpen(true);
@@ -120,8 +120,8 @@ export default function BookSearchScreen({ navigation, route = null }) {
           } else {
             DeviceEventEmitter.emit("BARCODE_SAVE_RESPONSE", { success: false, error: "Failed to add book." });
           }
-        } 
-        
+        }
+
         // PATH B: Scanned without collection stack (Opens ActionSheet overlay first!)
         else {
           setSelectedBook(payload.books[0]);
@@ -194,7 +194,30 @@ export default function BookSearchScreen({ navigation, route = null }) {
       };
     }, [])
   );
+  const getInfoDialogConfig = (selectedAction: string | null) => {
+    if (selectedAction === BookCollections.WISHLIST) {
+      return {
+        title: i18n.t("successfully-added"),
+        description: i18n.t("the-book-added-to-wishlist"),
+        buttonLabel: i18n.t("see-my-wishlist"),
+        onConfirm: () =>
+          navigation.navigate("ProfileStack", { screen: "Wishlist" }),
+      };
+    }
 
+    if (selectedAction === BookCollections.LIBRARY) {
+      return {
+        title: i18n.t("successfully-added"),
+        description: i18n.t("the-book-added-to-library"),
+        buttonLabel: i18n.t("see-my-library"),
+        onConfirm: () =>
+          navigation.navigate("ProfileStack", { screen: "Library" }),
+      };
+    }
+
+    return null;
+  };
+  const config = getInfoDialogConfig(selectedAction);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Screen>
@@ -210,63 +233,63 @@ export default function BookSearchScreen({ navigation, route = null }) {
           />
         </Box>
         <Box flex={1} mt="2">
-           {loading && (
-              <Box h="75%" alignItems="center" justifyContent="center">
-                <LoadingOverlay />
-              </Box>
-            )}
+          {loading && (
+            <Box h="75%" alignItems="center" justifyContent="center">
+              <LoadingOverlay />
+            </Box>
+          )}
 
-      
- 
 
-            {!loading && !searchError && searchResults?.length > 0 && (
-              <>
-                {collectionType ? (
-                  <BorderedBookListVertical data={searchResults} onDonePress={pressDoneHandler}/>
-                ) : (
-                  <BookListVertical
-                    data={searchResults}
-                    onOpenActions={handleOpenActions}
-                    onNavigateList={navigateUserList}
-                    showOwners={!collectionType}
-                  />
-                )}
-              </>
-            )}
 
-            {searchQuery.length < 3 && (
-              <VStack width="100%" height={200} mt="100">
-                <Center>
-                  <Text fontSize="md">{i18n.t("find-favorite-books")}</Text>
-                </Center>
-                <Center w="100%">
-                  <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-                  <Text textAlign="center" mx="30" fontWeight="200">
-                    {sourceScreen === BookCollections.WISHLIST
-                      ? i18n.t("add-books-to-your-wishlist-to-start-swap")
-                      : i18n.t("add-books-to-your-library-to-start-swap")}
-                  </Text>
-                </Center>
-              </VStack>
-            )}
 
-            {!searchError && searchResults.length === 0 && searchQuery.length >= 3 && (
-              <VStack width="100%" height={200} mt="100">
-                <Center w="100%">
-                  <Text fontSize="md" alignSelf="center" maxWidth={360} textAlign="center">
-                    {`${i18n.t("no-results-for")} "${searchQuery}"`}
-                  </Text>
-                </Center>
-                <Center w="100%">
-                  <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-                  <Text textAlign="center" mx="30" fontWeight="200">
-                    {i18n.t("we-do-not-have-the-book-yet")}
-                  </Text>
-                </Center>
-              </VStack>
-            )}
-          </Box>
-   
+          {!loading && !searchError && searchResults?.length > 0 && (
+            <>
+              {collectionType ? (
+                <BorderedBookListVertical data={searchResults} onDonePress={pressDoneHandler} />
+              ) : (
+                <BookListVertical
+                  data={searchResults}
+                  onOpenActions={handleOpenActions}
+                  onNavigateList={navigateUserList}
+                  showOwners={!collectionType}
+                />
+              )}
+            </>
+          )}
+
+          {searchQuery.length < 3 && (
+            <VStack width="100%" height={200} mt="100">
+              <Center>
+                <Text fontSize="md">{i18n.t("find-favorite-books")}</Text>
+              </Center>
+              <Center w="100%">
+                <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
+                <Text textAlign="center" mx="30" fontWeight="200">
+                  {sourceScreen === BookCollections.WISHLIST
+                    ? i18n.t("add-books-to-your-wishlist-to-start-swap")
+                    : i18n.t("add-books-to-your-library-to-start-swap")}
+                </Text>
+              </Center>
+            </VStack>
+          )}
+
+          {!searchError && searchResults.length === 0 && searchQuery.length >= 3 && (
+            <VStack width="100%" height={200} mt="100">
+              <Center w="100%">
+                <Text fontSize="md" alignSelf="center" maxWidth={360} textAlign="center">
+                  {`${i18n.t("no-results-for")} "${searchQuery}"`}
+                </Text>
+              </Center>
+              <Center w="100%">
+                <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
+                <Text textAlign="center" mx="30" fontWeight="200">
+                  {i18n.t("we-do-not-have-the-book-yet")}
+                </Text>
+              </Center>
+            </VStack>
+          )}
+        </Box>
+
 
         {/* Global UI sheets share state variables interchangeably */}
         <ActionSheet
@@ -275,15 +298,13 @@ export default function BookSearchScreen({ navigation, route = null }) {
           actions={actions}
         />
 
-        <InfoDialogBox
-          isOpen={isInfoDialogOpen}
-          onClose={() => {
-            setIsInfoDialogOpen(false);
-            setSelectedAction(null);
-          }}
-          selectedAction={selectedAction}
-          navigation={navigation}
-        />
+        {config && (
+          <InfoDialogBox
+            isOpen={isInfoDialogOpen}
+            onClose={() => setIsInfoDialogOpen(false)}
+            config={config}
+          />
+        )}
 
         <ErrorAlert message={listError} />
 

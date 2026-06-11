@@ -120,7 +120,7 @@ export default function LibraryScreen({ navigation, route }) {
           renderInPortal={false}
           shadow={2}
           size="sm"
-          bgColor="primary.50"
+          bgColor="primary.500"
           right={35}
           bottom={70}
           icon={<Icon color="white" as={MaterialIcons} name="add" size="md" />}

@@ -120,7 +120,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
               : useColorModeValue("#8C8C8C", "#a1a1aa");
           const borderColor =
             index === i
-              ? "primary.50"
+              ? "primary.500"
               : useColorModeValue("coolGray.200", "gray.400");
           return (
             <Box

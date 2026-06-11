@@ -155,7 +155,30 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
     setSelectedAction(null);
     startBoxExpiryTimer(5000);
   };
+  const getInfoDialogConfig = (selectedAction: string | null) => {
+    if (selectedAction === BookCollections.WISHLIST) {
+      return {
+        title: i18n.t("successfully-added"),
+        description: i18n.t("the-book-added-to-wishlist"),
+        buttonLabel: i18n.t("see-my-wishlist"),
+        onConfirm: () =>
+          navigation.navigate("ProfileStack", { screen: "Wishlist" }),
+      };
+    }
 
+    if (selectedAction === BookCollections.LIBRARY) {
+      return {
+        title: i18n.t("successfully-added"),
+        description: i18n.t("the-book-added-to-library"),
+        buttonLabel: i18n.t("see-my-library"),
+        onConfirm: () =>
+          navigation.navigate("ProfileStack", { screen: "Library" }),
+      };
+    }
+
+    return null;
+  };
+  const config = getInfoDialogConfig(selectedAction);
   const { height } = Dimensions.get("window");
 
   // 3. SAFE EARLY CONDITIONAL RETURNS (Placed after all hooks ran successfully)
@@ -197,12 +220,13 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
           sourceScreen === BookCollections.WISHLIST || sourceScreen === BookCollections.LIBRARY ? "the-book-added" : null
         }
       />
-      <InfoDialogBox
-        isOpen={isInfoDialogOpen}
-        onClose={closeInfoDialog}
-        selectedAction={selectedAction}
-        navigation={navigation}
-      />
+      {config && (
+        <InfoDialogBox
+          isOpen={isInfoDialogOpen}
+          onClose={() => setIsInfoDialogOpen(false)}
+          config={config}
+        />
+      )}
     </View>
   );
 }
@@ -216,7 +240,7 @@ const BookInfoBox = ({ edition, handleAddBookPress }) => (
         <Text color="#494949" fontSize="16" numberOfLines={2}>{truncateText(formatText(edition?.title), 36)}</Text>
         <Text color="#494949" fontSize="11">{truncateText(formatText(edition?.publisher), 23)}</Text>
       </VStack>
-      <IconButton onPress={handleAddBookPress} m="8px" borderRadius="11" bg="primary.50" variant="solid" p="3" size={10} _pressed={{ bg: "primary.100" }} icon={<Icon color="white" name={"add"} as={MaterialIcons} size="md" />} />
+      <IconButton onPress={handleAddBookPress} m="8px" borderRadius="11" bg="primary.500" variant="solid" p="3" size={10} _pressed={{ bg: "primary.100" }} icon={<Icon color="white" name={"add"} as={MaterialIcons} size="md" />} />
     </HStack>
   </Box>
 );

@@ -70,11 +70,11 @@ export default function FeedbackScreen({ navigation }) {
             autoCompleteType={false}
             w="100%"
             _hover={{
-              borderColor: "primary.50",
+              borderColor: "primary.500",
               backgroundColor: "gray.50",
             }}
             _focus={{
-              borderColor: "primary.50",
+              borderColor: "primary.500",
               backgroundColor: "gray.50",
             }}
 

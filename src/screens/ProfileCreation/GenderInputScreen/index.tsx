@@ -77,12 +77,12 @@ export default function GenderInputScreen({ navigation }) {
                   alignItems="center"
                   rounded="4px"
                   borderWidth={isSelected ? 2 : 1}
-                  borderColor={isSelected ? "primary.50" : "black.400"}
+                  borderColor={isSelected ? "primary.500" : "black.400"}
                   mb={5}
-                  bg={isSelected ? "primary.50:alpha.10" : "transparent"}
+                  bg={isSelected ? "primary.500:alpha.10" : "transparent"}
                 >
                   <Text
-                    color={isSelected ? "primary.50" : "black.400"}
+                    color={isSelected ? "primary.500" : "black.400"}
                     textTransform="uppercase"
                     fontWeight="500"
                   >

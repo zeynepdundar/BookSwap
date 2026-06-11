@@ -101,8 +101,12 @@ const offersSlice = createSlice({
 
     // ACCEPT
     builder.addCase(acceptOfferAsync.fulfilled, (state, action) => {
-      receivedAdapter.removeOne(state.received, action.payload.id);
-      historyAdapter.addOne(state.history, action.payload);
+      const offer = state.received.entities[action.payload.id];
+
+      if (offer) {
+        historyAdapter.addOne(state.history, offer);
+        receivedAdapter.removeOne(state.received, action.payload.id);
+      }
     });
 
     // REJECT
