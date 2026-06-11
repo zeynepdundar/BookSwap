@@ -1,0 +1,182 @@
+import React, { useCallback, useState } from "react";
+import { Keyboard, FlatList } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+
+import {
+  Image,
+  HStack,
+  VStack,
+  Text,
+  Spacer,
+  Divider,
+  Icon,
+  Box,
+  AspectRatio,
+  Pressable,
+  Button,
+} from "native-base";
+
+import { formatText, truncateText } from "@/utils/helper";
+import i18n from "@/i18n";
+import { useSelector } from "react-redux";
+import { Book } from "@/types/book.types";
+
+interface BookListVerticalProps {
+  data: Book[];
+  showOwners?: boolean;
+  onPrimaryAction?: (book: Book) => void;
+  onOpenActions?: (item: any) => void;
+  onNavigateList?: (item: any) => void;
+  onSendOffer?: (id: any) => void;
+}
+
+const ListRow = React.memo(function ListRow({
+  item,
+  onNavigateList,
+  userId,
+  onPrimaryAction,
+  onOpenActions,
+  onSendOffer,
+  showOwners,
+}: any) {
+
+  return (
+    <>
+      <Box height="125" mx="2" pl="2" ml="2" key={item.id} overflow="hidden">
+        <HStack justifyContent="space-between" width="100%" space={3} py={1}>
+          <AspectRatio w={{ base: "22%", md: "18%" }} ratio={40 / 62} maxWidth="80px">
+            <Image
+              source={
+                item.coverUrl
+                  ? { uri: item?.coverUrl }
+                  : {
+                    uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg",
+                  }
+              }
+              alt={`Cover of ${item.title} by ${item.author}`}
+              roundedRight="4"
+            />
+          </AspectRatio>
+          <VStack width={198}>
+            <Text color="#000000" fontSize="15" numberOfLines={2} lineHeight="18">
+              {truncateText(formatText(item.title), 44)}
+            </Text>
+            <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
+              {truncateText(formatText(item.author), 30)}
+            </Text>
+            {item.publisher ||
+              (Array.isArray(item.publishers) && item.publishers.length > 0) ? (
+              <Text color="#8c8c8c" fontSize="13" fontWeight="200" numberOfLines={item?.usersOwning ? 1 : 2}>
+                {Array.isArray(item.publishers) && item.publishers.length > 0
+                  ? truncateText(formatText(item.publishers[0]), 30)
+                  : truncateText(formatText(item.publisher), 50)}
+              </Text>
+            ) : (
+              ""
+            )}
+
+            {showOwners && item?.usersOwning && (
+              <Pressable
+                onPress={() => handleNavigateList(item, onNavigateList, userId)}
+                borderColor="#323232"
+                borderWidth="0.5"
+                borderRadius="9"
+                p="1"
+                mt="4"
+                width="90px"
+                disabled={item.usersOwning.filter((owner) => owner.id !== userId).length === 0}
+              >
+                <Text alignSelf="center" color="#323232" fontSize="12px">
+                  {item.usersOwning.filter((owner) => owner.id !== userId).length} Owner
+                </Text>
+              </Pressable>
+            )}
+          </VStack>
+          <Spacer />
+          <VStack>
+            {onPrimaryAction && onPrimaryAction(item)}
+            {!onPrimaryAction && (
+              <Icon
+                onPress={() => onOpenActions(item)}
+                name="more-vert"
+                variant="solid"
+                size="lg"
+                as={MaterialIcons}
+              />
+            )}
+            {onSendOffer && (
+              <Button
+                onPress={() => onSendOffer({ item })}
+                variant="primary"
+                right={2}
+                bottom={0}
+                position="absolute"
+                py="6px"
+                px={0}
+                rounded="6"
+                width={126}
+              >
+                {i18n.t("send-offer")}
+              </Button>
+            )}
+            <Spacer />
+          </VStack>
+        </HStack>
+      </Box>
+      <Box w="100%" alignSelf="center">
+        <Divider my={2} mx="auto" w="90%" bg="#EEEEEE" />
+      </Box>
+    </>
+  );
+});
+
+
+const handleNavigateList = (item, onNavigateList, userId) => {
+  const filteredOwners = item.usersOwning.filter((owner) => owner.id !== userId);
+  const newItem = { ...item, usersOwning: filteredOwners };
+  onNavigateList(newItem);
+};
+export const BookListVertical: React.FC<BookListVerticalProps> = ({
+  data,
+  showOwners,
+  onPrimaryAction,
+  onOpenActions,
+  onNavigateList,
+  onSendOffer,
+}) => {
+
+  const { id: userId } = useSelector((state: any) => state.profile.profile);
+
+  const renderItemCb = useCallback(
+    ({ item }) => (
+      <ListRow
+        item={item}
+        onNavigateList={onNavigateList}
+        userId={userId}
+        onPrimaryAction={onPrimaryAction}
+        onOpenActions={onOpenActions} // ✅ Changed from openActionSheet={onOpenActions}
+        onSendOffer={onSendOffer}
+        showOwners={showOwners}
+      />
+    ),
+    [onNavigateList, userId, onPrimaryAction, onOpenActions, onSendOffer, showOwners]
+  );
+
+  const keyExtractorCb = useCallback((item: any) => item.id, []);
+
+  return (
+    <FlatList
+      data={data}
+      initialNumToRender={10}
+      maxToRenderPerBatch={10}
+      showsVerticalScrollIndicator={false}
+      onScrollBeginDrag={Keyboard.dismiss}
+      keyboardShouldPersistTaps="handled"
+      renderItem={renderItemCb}
+      keyExtractor={keyExtractorCb}
+      windowSize={7}
+      removeClippedSubviews
+    />
+
+  );
+};

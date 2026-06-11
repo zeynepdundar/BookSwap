@@ -1,0 +1,57 @@
+diff --git a/node_modules/@react-native-firebase/auth/ios/RNFBAuth/RNFBAuthModule.m b/node_modules/@react-native-firebase/auth/ios/RNFBAuth/RNFBAuthModule.m
+index 40ee9aa..991c5e4 100644
+--- a/node_modules/@react-native-firebase/auth/ios/RNFBAuth/RNFBAuthModule.m
++++ b/node_modules/@react-native-firebase/auth/ios/RNFBAuth/RNFBAuthModule.m
+@@ -1600,6 +1600,40 @@ RCT_EXPORT_METHOD(useEmulator
+ - (void)promiseRejectAuthException:(RCTPromiseRejectBlock)reject error:(NSError *)error {
+   NSDictionary *jsError = [self getJSError:error];
+ 
++  // DEBUG: surface the raw NSError userInfo (including Identity Toolkit response body)
++  // through the JS bridge so the actual backend error reason is visible in Metro logs.
++  NSMutableString *userInfoDump = [NSMutableString string];
++  NSInteger nsErrorCode = -1;
++  NSString *nsErrorDomain = @"";
++  if (error != nil) {
++    nsErrorCode = error.code;
++    nsErrorDomain = error.domain ?: @"";
++    NSDictionary *uinfo = [error userInfo];
++    if (uinfo != nil) {
++      for (id key in uinfo) {
++        id val = [uinfo objectForKey:key];
++        NSString *valStr;
++        if ([val isKindOfClass:[NSDictionary class]] || [val isKindOfClass:[NSArray class]]) {
++          NSError *jsonErr = nil;
++          NSData *jsonData =
++              [NSJSONSerialization dataWithJSONObject:val options:0 error:&jsonErr];
++          if (jsonData != nil && jsonErr == nil) {
++            valStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
++          } else {
++            valStr = [val description];
++          }
++        } else if ([val isKindOfClass:[NSData class]]) {
++          valStr = [[NSString alloc] initWithData:(NSData *)val encoding:NSUTF8StringEncoding] ?: [val description];
++        } else {
++          valStr = [val description];
++        }
++        [userInfoDump appendFormat:@"%@=%@ | ", key, valStr ?: @"<nil>"];
++      }
++    }
++  }
++  NSString *finalDump = ([userInfoDump length] > 0) ? userInfoDump : @"<empty>";
++  NSLog(@"[RNFB DEBUG] auth error: domain=%@ code=%ld userInfo=%@", nsErrorDomain, (long)nsErrorCode, finalDump);
++
+   [RNFBSharedUtils
+       rejectPromiseWithUserInfo:reject
+                        userInfo:(NSMutableDictionary *)@{
+@@ -1607,7 +1641,10 @@ RCT_EXPORT_METHOD(useEmulator
+                          @"message" : [jsError valueForKey:@"message"],
+                          @"nativeErrorMessage" : [jsError valueForKey:@"nativeErrorMessage"],
+                          @"authCredential" : [jsError valueForKey:@"authCredential"],
+-                         @"resolver" : [jsError valueForKey:@"resolver"]
++                         @"resolver" : [jsError valueForKey:@"resolver"],
++                         @"nsErrorDomain" : nsErrorDomain,
++                         @"nsErrorCode" : @(nsErrorCode),
++                         @"nsErrorUserInfo" : finalDump
+                        }];
+ }
+ 

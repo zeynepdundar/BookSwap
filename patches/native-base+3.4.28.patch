@@ -1,0 +1,44 @@
+diff --git a/node_modules/native-base/src/core/NativeBaseProvider.tsx b/node_modules/native-base/src/core/NativeBaseProvider.tsx
+index 43b4bd1..dd1329c 100644
+--- a/node_modules/native-base/src/core/NativeBaseProvider.tsx
++++ b/node_modules/native-base/src/core/NativeBaseProvider.tsx
+@@ -4,7 +4,6 @@ import {
+   Metrics,
+   initialWindowMetrics as defaultInitialWindowMetrics,
+ } from 'react-native-safe-area-context';
+-import { SSRProvider } from '@react-native-aria/utils';
+ import { theme as defaultTheme, ITheme } from './../theme';
+ import type { IColorModeProviderProps } from './color-mode';
+ import HybridProvider from './hybrid-overlay/HybridProvider';
+@@ -94,7 +93,7 @@ const NativeBaseProvider = (props: NativeBaseProviderProps) => {
+             <OverlayProvider isSSR>
+               <ToastProvider>
+                 <InitializeToastRef />
+-                <SSRProvider>{children}</SSRProvider>
++                {children}
+               </ToastProvider>
+             </OverlayProvider>
+           </HybridProvider>
+diff --git a/node_modules/native-base/src/hooks/useKeyboardDismissable.ts b/node_modules/native-base/src/hooks/useKeyboardDismissable.ts
+index f3cfa44..4a36a7d 100644
+--- a/node_modules/native-base/src/hooks/useKeyboardDismissable.ts
++++ b/node_modules/native-base/src/hooks/useKeyboardDismissable.ts
+@@ -48,12 +48,13 @@ export function useBackHandler({ enabled, callback }: IParams) {
+       callback();
+       return true;
+     };
++    let subscription: { remove: () => void } | undefined;
+     if (enabled) {
+-      BackHandler.addEventListener('hardwareBackPress', backHandler);
+-    } else {
+-      BackHandler.removeEventListener('hardwareBackPress', backHandler);
++      subscription = BackHandler.addEventListener(
++        'hardwareBackPress',
++        backHandler
++      );
+     }
+-    return () =>
+-      BackHandler.removeEventListener('hardwareBackPress', backHandler);
++    return () => subscription?.remove();
+   }, [enabled, callback]);
+ }

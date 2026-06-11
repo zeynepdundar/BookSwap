@@ -1,0 +1,67 @@
+{
+  "expo": {
+    "name": "Book Swaps",
+    "slug": "book-swap",
+    "scheme": "bookswap",
+    "version": "1.0.0",
+    "newArchEnabled": false,
+    "orientation": "portrait",
+    "icon": "./assets/icon-516x516.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "custom photos permission",
+          "cameraPermission": "Allow $(PRODUCT_NAME) to open the camera"
+        }
+      ],
+      "expo-localization",
+      "expo-notifications",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static",
+            "extraPods": [
+              { "name": "RecaptchaEnterprise", "version": "18.7.0" }
+            ]
+          }
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "608511f3-d47b-4ab5-a6a6-e922ab51d524"
+      }
+    },
+    "ios": {
+      "buildNumber": "4"
+    },
+    "android": {
+      "versionCode": 1
+    }
+  }
+}

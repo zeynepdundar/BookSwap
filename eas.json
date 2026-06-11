@@ -1,0 +1,48 @@
+{
+  "cli": {
+    "version": ">= 5.6.0",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "development-simulator": {
+      "extends": "development",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "distribution": "internal",
+      "autoIncrement": true
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./keys/book-swap-2d9a5-905323e61694.json",
+        "track": "production"
+      },
+      "ios": {
+        "appleId": "isiyok.muhammet@gmail.com",
+        "appleTeamId": "64RAWCZ6SJ",
+        "ascAppId": "6476162048"
+      }
+    },
+    "preview": {
+      "android": {
+        "serviceAccountKeyPath": "./keys/book-swap-2d9a5-905323e61694.json",
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
+    }
+  }
+}
