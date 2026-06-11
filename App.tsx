@@ -12,7 +12,6 @@ import { NativeBaseProvider, Text } from "native-base";
 import AsyncStore from "@/utils/AsyncStore";
 import { theme } from "@/theme";
 import Navigation from "@/navigation";
-import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import store from "@/store/store";
 
 
@@ -123,27 +122,10 @@ export default function App() {
     return null;
   }
 
-  function Root() {
-    const dispatch = useAppDispatch();
-
-    useEffect(() => {
-      // async function fetchToken() {
-      //   const storedToken = await AsyncStorage.getItem("authToken");
-      //    await AsyncStorage.removeItem("authToken");
-      //   if (storedToken) {
-      //     dispatch(setToken(storedToken));
-      //   }
-      // }
-      // fetchToken();
-    }, []);
-
-    return <Navigation />;
-  }
-
   return (
     <Provider store={store}>
       <NativeBaseProvider theme={theme}>
-        <Root />
+        <Navigation />
       </NativeBaseProvider>
     </Provider>
   );

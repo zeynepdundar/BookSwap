@@ -9,11 +9,11 @@ import {
   Flex,
   HStack,
   Image,
+  FlatList,
   Pressable,
   Text,
   VStack,
 } from "native-base";
-import { FlatList } from "react-native";
 import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
@@ -187,12 +187,13 @@ export default function ReceivedScreen({ navigation }) {
 
       {receivedOffers && receivedOffers.length > 0 && (
         <FlatList
+          bg="#fff"
           data={receivedOffersWithUserPhoto}
           showsVerticalScrollIndicator={false}
           refreshing={refreshing}
           onRefresh={onRefresh}
           renderItem={({ item }: { item: any }) => (
-            <Box pb="6" overflow="hidden" alignItems="center" key={item?.id}>
+            <Box pb="6" overflow="hidden" alignItems="center">
               <Flex
                 direction="row"
                 justifyContent="space-between"

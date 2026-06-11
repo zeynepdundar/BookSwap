@@ -96,7 +96,7 @@ const offersSlice = createSlice({
 
     // SEND
     builder.addCase(sendOfferAsync.fulfilled, (state, action) => {
-      sentAdapter.addOne(state.sent, action.payload);
+      sentAdapter.setAll(state.sent, action.payload);
     });
 
     // ACCEPT

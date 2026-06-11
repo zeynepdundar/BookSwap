@@ -10,7 +10,6 @@ interface HomeSearchWidgetProps {
 
 export function HomeSearchWidget({ navigation, sourceScreen, isHome = false, }: HomeSearchWidgetProps) {
 
-console.log("fgvsd",sourceScreen)
 const handleTextSearchPress = () => {
     const targetScreen = isHome ? "BookSearch" : "BookSearchOnCreation";
     navigation.navigate(targetScreen, !isHome ? { sourceScreen } : undefined);

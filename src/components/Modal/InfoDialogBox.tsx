@@ -6,41 +6,53 @@ import { BookCollections } from "@/types/book.types";
 interface InfoDialogBoxProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedAction: string | null;
-  navigation: any;
+  selectedAction?: string | null;
+  navigation?: any;
+  // Fallback options for dynamic cases like trade offerings
+  title?: string;
+  description?: string;
+  confirmButtonLabel?: string;
+  onConfirmPress?: () => void;
 }
 
 export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(({ 
   isOpen, 
   onClose, 
-  selectedAction,
-  navigation 
+  selectedAction = null,
+  navigation,
+  title: directTitle,
+  description: directDescription,
+  confirmButtonLabel: directLabel,
+  onConfirmPress
 }) => {
   
-  // 1. Centralized fallbacks/defaults
-  let title = "Success";
-  let description = "Book processed successfully";
-  let confirmButtonLabel = "OK";
+  // 1. Establish Default Working Parameters
+  let displayTitle = directTitle || "Success";
+  let displayDescription = directDescription || "Processed successfully";
+  let displayBtnLabel = directLabel || "OK";
   let screenTarget: string | null = null;
 
-  // 2. Map actions dynamically based on your collections enum
+  // 2. Map actions dynamically based on collection enums if specified
   if (selectedAction === BookCollections.WISHLIST) {
-    title = i18n.t("successfully-added");
-    description = i18n.t("the-book-added-to-wishlist");
-    confirmButtonLabel = i18n.t("see-my-wishlist");
+    displayTitle = i18n.t("successfully-added");
+    displayDescription = i18n.t("the-book-added-to-wishlist");
+    displayBtnLabel = i18n.t("see-my-wishlist");
     screenTarget = "Wishlist";
   } else if (selectedAction === BookCollections.LIBRARY) {
-    title = i18n.t("successfully-added");
-    description = i18n.t("the-book-added-to-library");
-    confirmButtonLabel = i18n.t("see-my-library");
+    displayTitle = i18n.t("successfully-added");
+    displayDescription = i18n.t("the-book-added-to-library");
+    displayBtnLabel = i18n.t("see-my-library");
     screenTarget = "Library";
   }
 
-  // 3. Centralized click action wrapper
+  // 3. Click handler routing rules
   const handlePrimaryPress = () => {
-    onClose(); // Clean up state in the parent search screen first
+    onClose(); 
 
-    if (screenTarget) {
+    if (onConfirmPress) {
+      // Execute the custom screen inline callback function
+      onConfirmPress();
+    } else if (screenTarget && navigation) {
       navigation.navigate("ProfileStack", { screen: screenTarget });
     }
   };
@@ -53,14 +65,14 @@ export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(({
           <VStack alignItems="center" space={1} width="100%">
             <CheckCircleIcon size="8" color="primary.50" />
             <Text fontSize="18px" fontWeight="600" color="black.400" textAlign="center" lineHeight="24px">
-              {title}
+              {displayTitle}
             </Text>
           </VStack>
         </Modal.Header>
 
         <Modal.Body pt="1" pb="3" px="2">
           <Text fontSize="15px" fontWeight="400" color="black.200" textAlign="center" lineHeight="20px">
-            {description}
+            {displayDescription}
           </Text>
         </Modal.Body>
 
@@ -74,7 +86,7 @@ export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(({
             rounded="md"
           >
             <Text fontSize="15px" fontWeight="600">
-              {confirmButtonLabel?.toUpperCase()}
+              {displayBtnLabel.toUpperCase()}
             </Text>
           </Button>
         </Modal.Footer>
