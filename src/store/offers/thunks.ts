@@ -161,14 +161,11 @@ export const fetchTradeHistoryAsync = createAsyncThunk(
       const state = getState() as RootState;
       const userId = state.profile.profile?.id;
 
-      console.log("Fetching trade history for user ID:", userId);
-
       if (!userId) {
         return rejectWithValue("Active user session not found");
       }
 
       const offers = await fetchHistory(userId);
-      console.log("Fetched trade history offers:", offers);
       return offers;
     } catch (error) {
       return rejectWithValue(error.message);

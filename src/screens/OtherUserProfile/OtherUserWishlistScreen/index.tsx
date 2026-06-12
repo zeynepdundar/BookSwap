@@ -1,15 +1,16 @@
 import { useCallback, useState } from "react";
 import { BookListVertical } from "@/components/shared/BookListVertical";
-import {  Center } from "native-base";
+import { Center } from "native-base";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
-import { Book } from "@/types/book.types";
+import { Book, BookCollections } from "@/types/book.types";
 import { Keyboard } from "react-native";
 import { ActionSheet } from "@/components/shared/ActionSheet";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { generateActions } from "@/utils/helper";
+import i18n from "@/i18n";
 
-export default function OtherUserWishlistScreen({ navigation,wishedBook }) {
+export default function OtherUserWishlistScreen({ navigation, wishedBook }) {
   const [wishedBooks, setWishedBook] = useState(wishedBook);
   const [listError, setListError] = useState<string | null>(null);
   const [selectedBook, setSelectedBook] = useState<any>(null);
@@ -19,18 +20,19 @@ export default function OtherUserWishlistScreen({ navigation,wishedBook }) {
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
 
 
-    const { addBooksToCollection } = useAddBooksToCollection();
+  const { addBooksToCollection } = useAddBooksToCollection();
 
-      const handleOpenActions = useCallback((book: Book) => {
-        Keyboard.dismiss();
-        setSelectedBook(book);
-        setIsActionSheetOpen(true);
-      }, []); 
+  const handleOpenActions = useCallback((book: Book) => {
+    console.log("hj",book)
+    Keyboard.dismiss();
+    setSelectedBook(book);
+    setIsActionSheetOpen(true);
+  }, []);
   const pressDoneHandler = async ({ collection, books }) => {
     Keyboard.dismiss();
     setListError(null);
 
-    const targetCollection = collection ;
+    const targetCollection = collection;
 
     if (!targetCollection) {
       setListError("No collection type specified.");
@@ -72,32 +74,53 @@ export default function OtherUserWishlistScreen({ navigation,wishedBook }) {
       setSelectedBook(null);
     }
   };
-    const actions = generateActions(handleActionExecute, () => setIsActionSheetOpen(false));
-  
+  const actions = generateActions(handleActionExecute, () => setIsActionSheetOpen(false));
 
+  const getInfoDialogConfig = (selectedAction: string | null) => {
+    if (selectedAction === BookCollections.WISHLIST) {
+      return {
+        title: i18n.t("successfully-added"),
+        description: i18n.t("the-book-added-to-wishlist"),
+        buttonLabel: i18n.t("see-my-wishlist"),
+        onConfirm: () =>
+          navigation.navigate("ProfileStack", { screen: "Wishlist" }),
+      };
+    }
+
+    if (selectedAction === BookCollections.LIBRARY) {
+      return {
+        title: i18n.t("successfully-added"),
+        description: i18n.t("the-book-added-to-library"),
+        buttonLabel: i18n.t("see-my-library"),
+        onConfirm: () =>
+          navigation.navigate("ProfileStack", { screen: "Library" }),
+      };
+    }
+
+    return null;
+  };
+  const config = getInfoDialogConfig(selectedAction);
   return (
     <Center mt="6">
       <BookListVertical
         data={wishedBooks}
         onOpenActions={handleOpenActions}
       />
-              {/* Global UI sheets share state variables interchangeably */}
-              <ActionSheet
-                isOpen={isActionSheetOpen}
-                onClose={() => setIsActionSheetOpen(false)}
-                actions={actions}
-              />
-      
-              <InfoDialogBox
-                isOpen={isInfoDialogOpen}
-                onClose={() => {
-                  setIsInfoDialogOpen(false);
-                  setSelectedAction(null);
-                }}
-                selectedAction={selectedAction}
-                navigation={navigation}
-              />
-        <ErrorAlert message={listError} />
+      {/* Global UI sheets share state variables interchangeably */}
+      <ActionSheet
+        isOpen={isActionSheetOpen}
+        onClose={() => setIsActionSheetOpen(false)}
+        actions={actions}
+      />
+
+      {config && (
+        <InfoDialogBox
+          isOpen={isInfoDialogOpen}
+          onClose={() => setIsInfoDialogOpen(false)}
+          config={config}
+        />
+      )}
+      <ErrorAlert message={listError} />
 
     </Center>
   );

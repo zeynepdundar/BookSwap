@@ -194,7 +194,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
       };
     }, [])
   );
-  const getInfoDialogConfig = (selectedAction: string | null) => {
+   const getInfoDialogConfig = (selectedAction: string | null) => {
     if (selectedAction === BookCollections.WISHLIST) {
       return {
         title: i18n.t("successfully-added"),

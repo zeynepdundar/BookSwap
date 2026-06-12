@@ -24,11 +24,10 @@ import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 import { acceptOfferAsync, fetchReceivedOffersAsync, rejectOfferAsync } from "@/store/offers/thunks";
 import { offersSelectors } from "@/store/offers/slice";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
-import { IMAGE_FALLBACKS } from "@/constants/image";
+import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 
 export default function ReceivedScreen({ navigation }) {
-  const tra = require("@/assets/images/icon/Icons.png");
   const receivedOffers = useSelector(offersSelectors.received.selectAll);
   const [receivedOffersWithUserPhoto, setReceivedOffersWithUserPhoto] =
     useState<any[]>(receivedOffers);
@@ -306,7 +305,7 @@ const acceptOfferHandler = async (offer: any) => {
                       </VStack>
 
                       <Center height={110}>
-                        <Image source={tra} alt="Library icon" />
+                      <Image source={APP_ICONS.swap} alt="Swap icon" />
                       </Center>
 
                       {/* Requested Book */}

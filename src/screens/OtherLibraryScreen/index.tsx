@@ -19,6 +19,7 @@ import { BookListVertical } from "../../components/shared/BookListVertical";
 import { LoadingOverlay } from "../../components/shared/LoadingOverlay";
 import { BorderedBookListVertical } from "../../components/shared/BorderedBookListVertical";
 import { fetchUserProfileData } from "@/services/profile/profile.service";
+import { IMAGE_FALLBACKS } from "@/constants/image";
 
 const AddBookToProposalButton = ({ onPress }) => (
   <Icon
@@ -73,7 +74,6 @@ export default function OtherLibraryScreen({ navigation, route }) {
     fetchProfileData();
   }, []);
 
-  const profilePhoto = require("@/assets/images/lalo-salamanca.png");
 
   return (
     <Screen>
@@ -108,7 +108,7 @@ export default function OtherLibraryScreen({ navigation, route }) {
           }}
           onPress={() => navigation.goBack()}
         />
-        <Avatar source={profilePhoto} size="50" />
+        <Avatar source={IMAGE_FALLBACKS.USER_AVATAR} size="50" />
         <Text fontWeight="500" fontSize="18">
           {i18n.t("users-library", { user: user.name })}
         </Text>

@@ -12,10 +12,9 @@ import {
   Flex,
 } from "native-base";
 import Screen from "../../../components/shared/Screen";
+import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";
 
 export default function OtherSwapHistory({ historyList }) {
-  const tradeIcon = require("../../../assets/images/icon/trade-in.png");
-  const profilePhoto = require("../../../assets/images/lalo-salamanca.png");
 
   return (
       <Center mt="6">
@@ -54,7 +53,7 @@ export default function OtherSwapHistory({ historyList }) {
                     {item.requestedBook.title}
                   </Text>
                 </VStack>
-                <Image source={tradeIcon} alt=" Library" />
+                  <Image source={APP_ICONS.swap} alt="Swap icon" />
                 <VStack w="85px" h={140} alignItems="center" pt={3}>
                   <Image
                     source={
@@ -81,7 +80,7 @@ export default function OtherSwapHistory({ historyList }) {
                   <Spacer />
                   <Flex direction="column" alignItems="flex-end">
                     <AspectRatio w="39">
-                      <Avatar source={profilePhoto} size="31" />
+                      <Avatar source={IMAGE_FALLBACKS.USER_AVATAR} size="31" />
                     </AspectRatio>
                     <Text
                       color="#8c8c8c"

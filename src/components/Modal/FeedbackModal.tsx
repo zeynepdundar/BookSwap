@@ -54,11 +54,14 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = memo(
               </Text>
               <TextArea
                 value={feedbackText}
-                onChangeText={(text) => setFeedbackText(text)}
+                onChangeText={setFeedbackText}
                 numberOfLines={8}
-                h="40"
-                autoCompleteType={false}
+                h={40}
                 w="100%"
+                _focus={{
+                  borderColor: "primary.500",
+                  backgroundColor: "gray.50",
+                }}
               />
             </VStack>
           </Modal.Body>

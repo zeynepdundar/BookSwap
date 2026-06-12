@@ -107,103 +107,99 @@ export default function MessagesScreen({ navigation }) {
     resetUnseenCount({ friendUserId, firebaseUserId });
   };
 
-  const avatar = require("@/assets/images/avatar.png");
 
   return (
-    <Screen>
-      <Center w="100%" h="50px">
-        <Heading>{i18n.t("messages")}</Heading>
-      </Center>
-      {!messages ||
-        (messages.length === 0 && (
-          <VStack width="100%" height="100%" pt="100">
-            <Center mt="48px">
-              <Text fontSize="md" textAlign="center">
-                {i18n.t("check-offers-and-begin-chatting")}
-              </Text>
-            </Center>
-            <Center w="100%">
-              <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-              <Text textAlign="center" mx="30" fontWeight="200">
-                {i18n.t("you-have-not-receive-any-message")}
-              </Text>
-            </Center>
-          </VStack>
-        ))}
-      {messages?.length > 0 && (
-        <FlatList
-          w="100%"
-          data={messages}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => {
-            const friendProfile = userProfiles[item.userId];
-            return (
-              // renderItem={({ item }) => (
-              <Pressable onPress={() => handleStartChat(friendProfile)}>
-                {/* <Box pl="4" pr="5" py="2" > */}
-                <Flex
-                  direction="row"
-                  justifyContent="space-between"
-                  w="95%"
-                  alignSelf="center"
-                  p={1}
-                >
-                  <Box
-                    size={12}
-                    rounded="full"
-                    backgroundColor="#e0e0e0"
-                    overflow="hidden"
-                  >
-                    <Image
-                      source={getImageSource(friendProfile.imageData, IMAGE_FALLBACKS.USER_AVATAR)}
-                      alt="Profile Image"
-                      size={12}
-                      rounded="full"
-                    />
-                  </Box>
-                  <VStack width="62%" px="0">
-                    <Text color="coolGray.800" fontSize="md">
-                      {/* {item.fullName} */}
-                      {friendProfile?.name || "Unknown User"}
-                    </Text>
-                    <Text color="coolGray.500" fontSize="sm">
-                      {truncateText(item.lastMessageText, 26)}
-                    </Text>
-                  </VStack>
-                  <VStack alignItems="flex-end">
-                    <Text
-                      fontSize="xs"
-                      color="coolGray.500"
-                      alignSelf="flex-end"
-                    >
-                      {formatLastMessageTime(
-                        item.lastMessageTime,
-                        languagePreference
-                      )}
-                    </Text>
-                    {item.unseenCount > 0 && (
-                      <Badge
-                        bg="primary.500"
-                        rounded="5"
-                        zIndex={1}
-                        variant="solid"
-                        alignSelf="flex-end"
-                        _text={{
-                          fontSize: 12,
-                        }}
-                      >
-                        {item.unseenCount}
-                      </Badge>
-                    )}
-                  </VStack>
-                </Flex>
-                <Divider my="2"></Divider>
-              </Pressable>
-            );
-          }}
-          keyExtractor={(item) => item.conversationId}
-        />
+<Screen>
+  {/* Header */}
+  <Center w="100%" h="60px">
+    <Heading>
+      {i18n.t("messages")}
+    </Heading>
+  </Center>
+
+  {/* EMPTY STATE */}
+  {!messages || messages.length === 0 ? (
+    <VStack flex={1} justifyContent="center" alignItems="center" px={6}>
+      <Text fontSize="md" textAlign="center" color="coolGray.700">
+        {i18n.t("check-offers-and-begin-chatting")}
+      </Text>
+
+      <Divider w="40%" my={5} bg="coolGray.200" />
+
+      <Text fontSize="sm" textAlign="center" color="coolGray.500">
+        {i18n.t("you-have-not-receive-any-message")}
+      </Text>
+    </VStack>
+  ) : (
+    <FlatList
+      data={messages}
+      keyExtractor={(item) => item.conversationId}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingVertical: 8 }}
+      ItemSeparatorComponent={() => (
+        <Divider ml={16} bg="coolGray.100" />
       )}
-    </Screen>
+      renderItem={({ item }) => {
+        const friendProfile = userProfiles[item.userId];
+
+        return (
+          <Pressable onPress={() => handleStartChat(friendProfile)}>
+            <Flex
+              direction="row"
+              alignItems="center"
+              px={4}
+              py={3}
+              bg="transparent"
+            >
+              {/* Avatar (no box, just image) */}
+              <Image
+                source={getImageSource(
+                  friendProfile.imageData,
+                  IMAGE_FALLBACKS.USER_AVATAR
+                )}
+                alt="Profile Image"
+                size={12}
+                rounded="full"
+              />
+
+              {/* Text content */}
+              <VStack flex={1} ml={3} space={0.5}>
+                <Text fontSize="md" fontWeight="600" color="coolGray.900">
+                  {friendProfile?.name || "Unknown User"}
+                </Text>
+
+                <Text fontSize="sm" color="coolGray.500" numberOfLines={1}>
+                  {truncateText(item.lastMessageText, 28)}
+                </Text>
+              </VStack>
+
+              {/* Right side meta */}
+              <VStack alignItems="flex-end" justifyContent="center">
+                <Text fontSize="xs" color="coolGray.400">
+                  {formatLastMessageTime(
+                    item.lastMessageTime,
+                    languagePreference
+                  )}
+                </Text>
+
+                {item.unseenCount > 0 && (
+                  <Badge
+                    bg="primary.500"
+                    rounded="full"
+                    px={2}
+                    py={0.5}
+                    _text={{ fontSize: 11, color: "white" }}
+                  >
+                    {item.unseenCount}
+                  </Badge>
+                )}
+              </VStack>
+            </Flex>
+          </Pressable>
+        );
+      }}
+    />
+  )}
+</Screen>
   );
 }

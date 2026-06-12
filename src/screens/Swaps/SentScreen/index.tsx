@@ -23,15 +23,17 @@ import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { fetchSentOffersAsync, takeBackOfferAsync } from "@/store/offers/thunks";
 import { offersSelectors } from "@/store/offers/slice";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
+import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";
+import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 
 export default function SentScreen({ navigation }) {
-  const tra = require("@/assets/images/icon/Icons.png");
-  const avatar = require("@/assets/images/avatar.png");
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Direct single source of truth from Redux
   const sentOffers = useSelector(offersSelectors.sent.selectAll);
+    const [sentOffersWithUserPhoto, setSentOffersWithUserPhoto] =
+    useState<any[]>(sentOffers);
   const { loading, profile } = useSelector((state: any) => state.profile);
   const dispatch = useAppDispatch();
 
@@ -44,6 +46,24 @@ export default function SentScreen({ navigation }) {
       }
     }, [dispatch, profile?.id])
   );
+
+    const fetchProfileImages = async () => {
+      const updatedOffers = await Promise.all(
+        sentOffers.map(async (offer) => {
+          const photoUrl = await fetchProfileImageUrl(
+            offer.participantProfile.id
+          );
+          return {
+            ...offer,
+            participantProfile: {
+              ...offer.participantProfile,
+              photo_file_name: photoUrl,
+            },
+          };
+        })
+      );
+      setSentOffersWithUserPhoto(updatedOffers);
+    };
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -72,6 +92,11 @@ export default function SentScreen({ navigation }) {
       dispatch(fetchSentOffersAsync());
     }
   };
+    useFocusEffect(
+    useCallback(() => {
+      fetchProfileImages();
+    }, [sentOffers])
+  );
 
   const onNavigateProfile = (selectedUser) => {
     navigation.navigate("OtherUserProfile", { user: selectedUser });
@@ -102,7 +127,7 @@ export default function SentScreen({ navigation }) {
           maxWidth="100%"
           bg="#fff"
           height="75%"
-          data={sentOffers} // Directly use the stable Redux array hook channel here
+          data={sentOffersWithUserPhoto} // Directly use the stable Redux array hook channel here
           showsVerticalScrollIndicator={false}
           pt="3"
           refreshing={refreshing}
@@ -112,7 +137,7 @@ export default function SentScreen({ navigation }) {
             <Box pb="6" overflow="hidden" alignItems="center">
               <Flex direction="row" justifyContent="space-between" w="95%" alignSelf="center" position="relative" zIndex={9} p={1}>
                 <Box size={10} rounded="full" backgroundColor="#e0e0e0" mr={3} overflow="hidden">
-                  <Image source={getImageSource(profile?.imageData, avatar)} alt="Profile Image" size={10} rounded="full" />
+                  <Image source={getImageSource(profile?.imageData, IMAGE_FALLBACKS.USER_AVATAR)} alt="Profile Image" size={10} rounded="full" />
                 </Box>
 
                 <Pressable flex={1} alignItems="flex-end" onPress={() => onNavigateProfile(item?.participantProfile)}>
@@ -127,11 +152,11 @@ export default function SentScreen({ navigation }) {
                     </VStack>
                     <Box size={10} rounded="full" backgroundColor="#e0e0e0" overflow="hidden">
                       {/* Look up dynamic file avatar string directly without local component mapping state arrays */}
-                      <Image 
-                        source={getImageSource(item?.participantProfile?.photo_file_name || item?.participantProfile?.profileImg, avatar)} 
-                        alt="Participant Image" 
-                        size={10} 
-                        rounded="full" 
+                      <Image
+                        source={getImageSource(item?.participantProfile?.photo_file_name, IMAGE_FALLBACKS.USER_AVATAR)}
+                        alt="Participant Image"
+                        size={10}
+                        rounded="full"
                       />
                     </Box>
                   </HStack>
@@ -150,11 +175,11 @@ export default function SentScreen({ navigation }) {
                       </Text>
                       <Text color="#8c8c8c" fontSize="11">{item?.offeredBook?.author}</Text>
                     </VStack>
-                    
+
                     <Center height={150}>
-                      <Image source={tra} alt="Library icon" />
+                      <Image source={APP_ICONS.swap} alt="Swap icon" />
                     </Center>
-                    
+
                     <VStack flex={1} alignItems="center">
                       <AspectRatio w="70%" ratio={45 / 68}>
                         <Image source={item?.requestedBook?.coverUrl ? { uri: item.requestedBook.coverUrl } : { uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg" }} alt="Requested Book" roundedRight="4" />
@@ -165,7 +190,7 @@ export default function SentScreen({ navigation }) {
                       <Text color="#8c8c8c" fontSize="11">{item?.requestedBook?.author}</Text>
                     </VStack>
                   </HStack>
-                  
+
                   <Flex direction="row" marginLeft="auto" pt="3">
                     <Button variant="outline" onPress={() => takeBackOfferHandler(item.id)}>
                       {i18n.t("take-back")}

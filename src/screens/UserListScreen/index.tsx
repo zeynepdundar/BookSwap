@@ -20,13 +20,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import { getImageSource } from "@/utils/helper";
 import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 import { selectLibraryBooks } from "@/store/selectors";
-    import { IMAGE_FALLBACKS } from "@/constants/image";
+import { IMAGE_FALLBACKS } from "@/constants/image";
 
 export default function UserListScreen({ navigation, route }) {
   const usersTemp = route?.params?.data?.usersOwning;
   const book = route?.params?.data;
-
-  const avatar = require("../../assets/images/avatar.png");
 
   const libraryBooks = useSelector(selectLibraryBooks);
 
@@ -72,7 +70,7 @@ export default function UserListScreen({ navigation, route }) {
     navigation.navigate("ProfileStack", { screen: "Library" });
     onClose();
   };
-  
+
   return (
     <Screen>
       <HStack

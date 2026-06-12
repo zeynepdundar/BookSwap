@@ -24,7 +24,7 @@ import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import Screen from "@/components/shared/Screen";
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import { sendOfferAsync } from "@/store/offers/thunks";
-import { IMAGE_FALLBACKS } from "@/constants/image";
+import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";
 
 export default function SwapOfferProposal({ navigation, route }) {
   const user = route?.params?.data?.user || route?.params?.user;
@@ -76,8 +76,16 @@ export default function SwapOfferProposal({ navigation, route }) {
     }
   }, [sentPropasal]);
 
-  const tradeIcon = require("@/assets/images/icon/trade-icon.png");
-
+  const config = {
+    title: i18n.t("the-offer-sent"),
+    description: i18n.t("see-sent-offers-description"),
+    buttonLabel: i18n.t("see-my-offers"),
+    onConfirm: () =>
+      navigation.navigate("HomeTabs", {
+        screen: "Swaps",
+        params: { screen: "Sent" },
+      }),
+  };
   return (
     <Screen>
       {/* Üst Bar */}
@@ -121,7 +129,7 @@ export default function SwapOfferProposal({ navigation, route }) {
           </Center>
         </Box>
 
-        <Image source={tradeIcon} alt="Trade Icon" mt="4" alignSelf="center" />
+        <Image source={APP_ICONS.swap_arrows} alt="Trade Icon" mt="4" alignSelf="center" />
 
         {/* Alınacak Kitap Alanı */}
         <Box m="2" width="90%" alignSelf="center">
@@ -176,15 +184,7 @@ export default function SwapOfferProposal({ navigation, route }) {
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
         onClose={closeInfoDialog}
-        title={i18n.t("the-offer-sent")}
-        description={i18n.t("see-sent-offers-description")}
-        confirmButtonLabel={i18n.t("see-my-offers")}
-        onConfirmPress={() =>
-          navigation.navigate("HomeTabs", {
-            screen: "Swaps",
-            params: { screen: "Sent" },
-          })
-        }
+        config={config}
       />
     </Screen>
   );
