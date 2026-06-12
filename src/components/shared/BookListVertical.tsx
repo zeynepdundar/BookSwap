@@ -97,7 +97,7 @@ const ListRow = React.memo(function ListRow({
             {onPrimaryAction && onPrimaryAction(item)}
             {!onPrimaryAction && (
               <Icon
-                onPress={() => onOpenActions(item)}
+                onPress={() => onOpenActions?.(item)}
                 name="more-vert"
                 variant="solid"
                 size="lg"
@@ -154,7 +154,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
         onNavigateList={onNavigateList}
         userId={userId}
         onPrimaryAction={onPrimaryAction}
-        onOpenActions={onOpenActions} // ✅ Changed from openActionSheet={onOpenActions}
+        onOpenActions={onOpenActions}
         onSendOffer={onSendOffer}
         showOwners={showOwners}
       />

@@ -8,11 +8,11 @@ import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import { fetchMostPopularBooks } from "@/services/books/books.service";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
 import { HomeSearchWidget } from "@/components/shared/HomeSearchWidget";
+import { getImageSource } from "@/utils/helper";
+import { IMAGE_FALLBACKS } from "@/constants/image";
 
 
 export default function HomeScreen({ navigation }) {
-  const importUrl = require("@/assets/images/avatar.png");
-
   const [books, setBooks] = useState([]);
 
   const { profile, loading: profileLoading } = useSelector(
@@ -55,7 +55,7 @@ export default function HomeScreen({ navigation }) {
           }
         >
           <Image
-            source={profile.imageData ? { uri: profile.imageData } : importUrl}
+            source={getImageSource(profile.imageData, IMAGE_FALLBACKS.USER_AVATAR)}
             alt="Profile Image"
             size={10}
             rounded="7"

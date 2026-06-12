@@ -166,7 +166,7 @@ export default function ChatScreen({ navigation, route }) {
     >
       <Icon
         size="32px"
-        color="primary.50"
+        color="primary.500"
         as={<MaterialIcons name="arrow-circle-up" />}
       />
     </Send>
@@ -303,7 +303,6 @@ export default function ChatScreen({ navigation, route }) {
       <Text>From CustomView</Text>
     </View>
   );
-  const avatarImage = require("@/assets/images/avatar.png");
   const [isBlockUserModalOpen, setIsBlockUserModalOpen] =
     useState<boolean>(false);
 

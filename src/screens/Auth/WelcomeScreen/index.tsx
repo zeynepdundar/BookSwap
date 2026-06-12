@@ -88,7 +88,7 @@ export default function WelcomeScreen({
           justifyContent="space-between"
         >
           <VStack space={6}>
-            <Text fontSize="sm" fontWeight="bold" letterSpacing="xl" color="primary.50" > BOOK SWAP </Text>
+            <Text fontSize="sm" fontWeight="bold" letterSpacing="xl" color="primary.500" > BOOK SWAP </Text>
 
             <Heading
               fontSize="4xl" lineHeight="48px" fontWeight="semibold"

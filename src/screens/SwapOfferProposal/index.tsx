@@ -24,7 +24,7 @@ import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import Screen from "@/components/shared/Screen";
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import { sendOfferAsync } from "@/store/offers/thunks";
-import { IMAGE_FALLBACKS } from "@/constants/image";
+import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";
 
 export default function SwapOfferProposal({ navigation, route }) {
   const user = route?.params?.data?.user || route?.params?.user;
@@ -76,8 +76,16 @@ export default function SwapOfferProposal({ navigation, route }) {
     }
   }, [sentPropasal]);
 
-  const tradeIcon = require("@/assets/images/icon/trade-icon.png");
-
+  const config = {
+    title: i18n.t("the-offer-sent"),
+    description: i18n.t("see-sent-offers-description"),
+    buttonLabel: i18n.t("see-my-offers"),
+    onConfirm: () =>
+      navigation.navigate("HomeTabs", {
+        screen: "Swaps",
+        params: { screen: "Sent" },
+      }),
+  };
   return (
     <Screen>
       {/* Üst Bar */}
@@ -115,13 +123,13 @@ export default function SwapOfferProposal({ navigation, route }) {
                   <Text w={100} textAlign="center" fontSize={11} numberOfLines={2}>{sentPropasal.offeredBook.title}</Text>
                 </>
               ) : (
-                <Fab onPress={() => navigation.navigate("ProfileStack", { screen: "Library", params: { data: "SwapOfferProposal" } })} renderInPortal={false} shadow={2} size="9" mr="7" mb="12" bgColor="primary.50" icon={<Icon color="white" as={MaterialIcons} name="add" size="md" />} />
+                <Fab onPress={() => navigation.navigate("ProfileStack", { screen: "Library", params: { data: "SwapOfferProposal" } })} renderInPortal={false} shadow={2} size="9" mr="7" mb="12" bgColor="primary.500" icon={<Icon color="white" as={MaterialIcons} name="add" size="md" />} />
               )}
             </Center>
           </Center>
         </Box>
 
-        <Image source={tradeIcon} alt="Trade Icon" mt="4" alignSelf="center" />
+        <Image source={APP_ICONS.swap_arrows} alt="Trade Icon" mt="4" alignSelf="center" />
 
         {/* Alınacak Kitap Alanı */}
         <Box m="2" width="90%" alignSelf="center">
@@ -145,7 +153,7 @@ export default function SwapOfferProposal({ navigation, route }) {
                   <Text w={100} textAlign="center" fontSize={11} numberOfLines={2}>{sentPropasal.requestedBook.title}</Text>
                 </>
               ) : (
-                <Fab onPress={() => navigation.navigate("OtherLibrary", { user })} renderInPortal={false} shadow={2} size="9" mr="7" mb="12" bgColor="primary.50" alignSelf="center" icon={<Icon color="white" as={MaterialIcons} name="add" size="md" />} />
+                <Fab onPress={() => navigation.navigate("OtherLibrary", { user })} renderInPortal={false} shadow={2} size="9" mr="7" mb="12" bgColor="primary.500" alignSelf="center" icon={<Icon color="white" as={MaterialIcons} name="add" size="md" />} />
               )}
             </Center>
           </Center>
@@ -176,15 +184,7 @@ export default function SwapOfferProposal({ navigation, route }) {
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
         onClose={closeInfoDialog}
-        title={i18n.t("the-offer-sent")}
-        description={i18n.t("see-sent-offers-description")}
-        confirmButtonLabel={i18n.t("see-my-offers")}
-        onConfirmPress={() =>
-          navigation.navigate("HomeTabs", {
-            screen: "Swaps",
-            params: { screen: "Sent" },
-          })
-        }
+        config={config}
       />
     </Screen>
   );

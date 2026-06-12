@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { useSelector } from "react-redux";
 import {
@@ -18,38 +18,41 @@ import ScreenHeader from "@/components/shared/ScreenHeader";
 
 export default function FeedbackScreen({ navigation }) {
   const [feedbackText, setFeedbackText] = useState("");
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const userId = useSelector((state: RootState) => state.profile.profile.id);
-  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
 
-  const isDisabled = !feedbackText?.trim()
-
+  const isDisabled = !feedbackText.trim() || isSubmitting;
 
   const closeInfoDialog = () => {
     setIsInfoDialogOpen(false);
-
     setFeedbackText("");
   };
 
   const handleSubmitFeedback = async () => {
     Keyboard.dismiss();
+    setIsSubmitting(true);
+
     try {
-      const feedback = await submitFeedback(userId, feedbackText);
+      await submitFeedback(userId, feedbackText);
       setIsInfoDialogOpen(true);
-    }
-    //TODO: Show error message toast to user and and loading state while submitting
-    catch (error) {
+    } catch (error) {
       console.error("Feedback submission error:", error);
+      // TODO: show toast error
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  //Auto-close info dialog after 3 seconds
-  //useEffect(() => {
-  //  if (!isInfoDialogOpen) return;
-  //  const timer = setTimeout(() => {
-  //    closeInfoDialog();
-  //  }, 3000);
-  /// return () => clearTimeout(timer);
-  //}, [isInfoDialogOpen]);
+  const config = useMemo(() => {
+    return {
+      title: i18n.t("thank-you"),
+      description: i18n.t("feedback-appreciation-and-update"),
+      buttonLabel: i18n.t("close"),
+      onConfirm: closeInfoDialog,
+    };
+  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -58,26 +61,22 @@ export default function FeedbackScreen({ navigation }) {
           title={i18n.t("feedback")}
           onBack={() => navigation.goBack()}
         />
+
         <VStack space={3} mx="4">
           <Text fontWeight="200" color="gray.400">
             {i18n.t("feedback-description")}
           </Text>
+
           <TextArea
             value={feedbackText}
-            onChangeText={(text) => setFeedbackText(text)}
+            onChangeText={setFeedbackText}
             numberOfLines={8}
             h="40"
-            autoCompleteType={false}
             w="100%"
-            _hover={{
-              borderColor: "primary.50",
-              backgroundColor: "gray.50",
-            }}
             _focus={{
-              borderColor: "primary.50",
+              borderColor: "primary.500",
               backgroundColor: "gray.50",
             }}
-
           />
         </VStack>
 
@@ -85,8 +84,8 @@ export default function FeedbackScreen({ navigation }) {
           <Button
             variant="primary"
             isDisabled={isDisabled}
+            isLoading={isSubmitting}
             onPress={handleSubmitFeedback}
-
           >
             {i18n.t("submit")}
           </Button>
@@ -95,15 +94,10 @@ export default function FeedbackScreen({ navigation }) {
         <InfoDialogBox
           isOpen={isInfoDialogOpen}
           onClose={closeInfoDialog}
-          title={i18n.t("thank-you")}
-          description={i18n.t("feedback-appreciation-and-update")}
-          primaryAction={{
-            label: i18n.t("close"),
-            variant: "outline",
-            onPress: closeInfoDialog,
-          }}
+          config={config}
         />
       </Screen>
     </TouchableWithoutFeedback>
   );
+
 }

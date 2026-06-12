@@ -66,7 +66,7 @@ const ListRow = React.memo(function ListRow({ item, changeListStatusHandler, isS
             <Icon
               m="1"
               size="6"
-              color={isSelectedBook(item.id) ? "primary.50" : "primary.100"}
+              color={isSelectedBook(item.id) ? "primary.500" : "primary.100"}
               as={
                 <MaterialIcons
                   name={isSelectedBook(item.id) ? "bookmark" : "bookmark-outline"}

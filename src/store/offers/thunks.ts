@@ -20,15 +20,25 @@ export const sendOfferAsync = createAsyncThunk(
 
 export const acceptOfferAsync = createAsyncThunk(
   "offers/acceptOffer",
-  async (offerId: any, { getState }) => {
+  async (offerId: number, { getState, rejectWithValue }) => {
     try {
       const uid = (getState() as any).auth.user.firebaseUserId;
       const id = (getState() as any).profile.profile.id;
-      await acceptOffer(id, uid, offerId);
-      return ;
+      const response = await acceptOffer(id, uid, offerId);
+
+        if (!response.ok) {
+        return rejectWithValue(response.data);
+      }
+
+    return {
+      id: offerId,
+      //conversationId: response.data.conversation_Id,
+      message: "Offer accepted successfully"
+    };
     } catch (error) {
-      console.error(error);
-      throw error;
+      return rejectWithValue({
+        message: "Something went wrong",
+      });
     }
   }
 );
@@ -151,14 +161,11 @@ export const fetchTradeHistoryAsync = createAsyncThunk(
       const state = getState() as RootState;
       const userId = state.profile.profile?.id;
 
-      console.log("Fetching trade history for user ID:", userId);
-
       if (!userId) {
         return rejectWithValue("Active user session not found");
       }
 
       const offers = await fetchHistory(userId);
-      console.log("Fetched trade history offers:", offers);
       return offers;
     } catch (error) {
       return rejectWithValue(error.message);

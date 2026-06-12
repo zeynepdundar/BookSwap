@@ -17,7 +17,7 @@ export default function HomeTabs() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: "primary.50",
+        tabBarActiveTintColor: "primary.500",
         tabBarInactiveTintColor: "primary.100",
         tabBarStyle: {
           backgroundColor: "#fff",

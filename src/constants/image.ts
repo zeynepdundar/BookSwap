@@ -10,3 +10,8 @@ export const PROFILE_SCREEN_ICONS = {
   feedback: require("@/assets/images/icon/feedback-icon.png"),
   logout: require("@/assets/images/icon/logout-icon.png"),
 } as const;
+
+export const APP_ICONS = {
+  swap: require("@/assets/images/icon/swap-icon.png"),
+  swap_arrows: require("@/assets/images/icon/swap-arrows-icon.png")
+} as const;

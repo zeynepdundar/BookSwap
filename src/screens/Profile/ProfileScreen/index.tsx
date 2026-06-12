@@ -74,7 +74,7 @@ export default function ProfileScreen({ navigation }) {
       label: i18n.t("my-wishlist"),
       onPress: () => navigation.navigate("Wishlist"),
       rightContent: (
-        <Box rounded="md" px={2} py={0.5} bg="primary.50">
+        <Box rounded="md" px={2} py={0.5} bg="primary.500">
           <Text
             fontSize="sm"
             fontWeight="medium"
@@ -92,7 +92,7 @@ export default function ProfileScreen({ navigation }) {
       label: i18n.t("my-library"),
       onPress: () => navigation.navigate("Library"),
       rightContent: (
-        <Box rounded="md" px={2} py={0.5} bg="primary.50">
+        <Box rounded="md" px={2} py={0.5} bg="primary.500">
           <Text
             fontSize="sm"
             fontWeight="medium"

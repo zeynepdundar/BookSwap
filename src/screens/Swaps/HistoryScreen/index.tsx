@@ -22,15 +22,13 @@ import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 import { fetchTradeHistoryAsync } from "@/store/offers/thunks";
 import { offersSelectors } from "@/store/offers/slice";
-import { IMAGE_FALLBACKS } from "@/constants/image";
+import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";
 
 export default function HistoryScreen({ navigation }) {
-  const tradeIcon = require("@/assets/images/icon/trade-in.png");
 
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
  const historyList  = useSelector(offersSelectors.history.selectAll);
-  console.log("historyList", historyList);
 
   const [historyListWithUserPhoto, setHistoryListWithUserPhoto] =
     useState<any[]>(historyList);
@@ -144,7 +142,7 @@ export default function HistoryScreen({ navigation }) {
                     {truncateText(formatText(item.requestedBook.title), 36)}
                   </Text>
                 </VStack>
-                <Image source={tradeIcon} alt=" Library" />
+                <Image source={APP_ICONS.swap} alt=" Library" />
                 <VStack w="85px" h={140} alignItems="center" pt={3}>
                   <Image
                     source={

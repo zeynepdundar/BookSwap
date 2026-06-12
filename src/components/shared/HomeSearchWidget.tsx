@@ -56,7 +56,7 @@ const handleTextSearchPress = () => {
           <Box
             h="12"
             w="12"
-            bg="primary.50"
+            bg="primary.500"
             borderRadius="16"
             justifyContent="center"
             alignItems="center"

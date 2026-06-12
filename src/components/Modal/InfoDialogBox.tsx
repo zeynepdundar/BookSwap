@@ -1,96 +1,101 @@
 import React, { memo } from "react";
-import { Button, CheckCircleIcon, Modal, Text, VStack } from "native-base";
-import i18n from "@/i18n";
-import { BookCollections } from "@/types/book.types";
+import { Box, Button, Center, CheckCircleIcon, Modal, Text } from "native-base";
+
+type InfoDialogConfig = {
+  title: string;
+  description: string;
+  buttonLabel: string;
+  onConfirm?: () => void;
+};
 
 interface InfoDialogBoxProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedAction?: string | null;
-  navigation?: any;
-  // Fallback options for dynamic cases like trade offerings
-  title?: string;
-  description?: string;
-  confirmButtonLabel?: string;
-  onConfirmPress?: () => void;
+  config: InfoDialogConfig;
 }
 
-export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(({ 
-  isOpen, 
-  onClose, 
-  selectedAction = null,
-  navigation,
-  title: directTitle,
-  description: directDescription,
-  confirmButtonLabel: directLabel,
-  onConfirmPress
+export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(({
+  isOpen,
+  onClose,
+  config
 }) => {
-  
-  // 1. Establish Default Working Parameters
-  let displayTitle = directTitle || "Success";
-  let displayDescription = directDescription || "Processed successfully";
-  let displayBtnLabel = directLabel || "OK";
-  let screenTarget: string | null = null;
-
-  // 2. Map actions dynamically based on collection enums if specified
-  if (selectedAction === BookCollections.WISHLIST) {
-    displayTitle = i18n.t("successfully-added");
-    displayDescription = i18n.t("the-book-added-to-wishlist");
-    displayBtnLabel = i18n.t("see-my-wishlist");
-    screenTarget = "Wishlist";
-  } else if (selectedAction === BookCollections.LIBRARY) {
-    displayTitle = i18n.t("successfully-added");
-    displayDescription = i18n.t("the-book-added-to-library");
-    displayBtnLabel = i18n.t("see-my-library");
-    screenTarget = "Library";
-  }
-
-  // 3. Click handler routing rules
-  const handlePrimaryPress = () => {
-    onClose(); 
-
-    if (onConfirmPress) {
-      // Execute the custom screen inline callback function
-      onConfirmPress();
-    } else if (screenTarget && navigation) {
-      navigation.navigate("ProfileStack", { screen: screenTarget });
-    }
+  const handlePress = () => {
+    onClose();
+    config.onConfirm?.();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={true} isKeyboardDismissable={true}>
-      <Modal.Content maxW="320px" w="90%" alignSelf="center" px="4" py="3" rounded="lg">
-        
-        <Modal.Header borderBottomWidth={0} px="0" mt="3" mb="1">
-          <VStack alignItems="center" space={1} width="100%">
-            <CheckCircleIcon size="8" color="primary.50" />
-            <Text fontSize="18px" fontWeight="600" color="black.400" textAlign="center" lineHeight="24px">
-              {displayTitle}
-            </Text>
-          </VStack>
-        </Modal.Header>
+    <Modal isOpen={isOpen} onClose={onClose} size="md">
+      <Modal.Content
+        w="90%"
+        maxW="340px"
+        borderRadius="2xl"
+        overflow="hidden"
+        bg="white"
+        shadow={6}
+      >
+        {/* Accent bar */}
+        <Box h="2px" bg="primary.500" />
 
-        <Modal.Body pt="1" pb="3" px="2">
-          <Text fontSize="15px" fontWeight="400" color="black.200" textAlign="center" lineHeight="20px">
-            {displayDescription}
+        <Modal.Body px="6" py="6" alignItems="center">
+
+          {/* Icon container */}
+          <Center
+            bg="primary.50"
+            w="14"
+            h="14"
+            borderRadius="full"
+            mb="4"
+          >
+            <CheckCircleIcon size="6" color="primary.500" />
+          </Center>
+
+          {/* Title */}
+          <Text
+            fontSize="18px"
+            fontWeight="700"
+            textAlign="center"
+            color="gray.900"
+            mb="2"
+          >
+            {config.title}
+          </Text>
+
+          {/* Description */}
+          <Text
+            fontSize="14px"
+            textAlign="center"
+            color="gray.500"
+            lineHeight="20px"
+          >
+            {config.description}
           </Text>
         </Modal.Body>
 
-        <Modal.Footer borderTopWidth={0} justifyContent="center" pt="1" pb="3">
+        {/* Footer */}
+        <Modal.Footer
+          borderTopWidth={0}
+          px="6"
+          pb="6"
+          pt="0"
+          justifyContent="center"
+        >
           <Button
-            variant="outline"
-            onPress={handlePrimaryPress}
-            px="5"
-            py="2.5"
+            onPress={handlePress}
             w="100%"
-            rounded="md"
+            borderRadius="xl"
+            bg="primary.500"
           >
-            <Text fontSize="15px" fontWeight="600">
-              {displayBtnLabel.toUpperCase()}
+            <Text
+              fontSize="14px"
+              fontWeight="700"
+              color="white"
+              letterSpacing="0.5px"
+            >
+              {config.buttonLabel}
             </Text>
           </Button>
         </Modal.Footer>
-
       </Modal.Content>
     </Modal>
   );
