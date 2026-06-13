@@ -68,15 +68,16 @@ export default function HistoryScreen({ navigation }) {
     });
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(fetchTradeHistoryAsync());
+    }, [dispatch])
+  );
+
   if (loading && !refreshing) {
     return <LoadingOverlay />;
   }
 
-    useFocusEffect(
-    useCallback(() => {
-      dispatch(fetchTradeHistoryAsync()); 
-    }, [dispatch])
-  );
   return (
     <>
       {!historyList ||
