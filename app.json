@@ -61,7 +61,7 @@
       }
     },
     "ios": {
-      "buildNumber": "5"
+      "buildNumber": "6"
     },
     "android": {
       "versionCode": 1
