@@ -36,7 +36,7 @@ export default function ReceivedScreen({ navigation }) {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
-  
+
   // Track the ID of the offer currently being declined (null means hidden)
   const [activeDeclineOfferId, setActiveDeclineOfferId] = useState<string | number | null>(null);
 
@@ -71,7 +71,7 @@ export default function ReceivedScreen({ navigation }) {
   };
 
   const dispatch = useAppDispatch();
-  
+
   useFocusEffect(
     useCallback(() => {
       fetchProfileImages();
@@ -89,22 +89,22 @@ export default function ReceivedScreen({ navigation }) {
     }, durationMs);
   }, []);
 
-const acceptOfferHandler = async (offer: any) => {
-  try {
-    const response = await dispatch(acceptOfferAsync(offer.id));
+  const acceptOfferHandler = async (offer: any) => {
+    try {
+      const response = await dispatch(acceptOfferAsync(offer.id));
 
-    if (acceptOfferAsync.fulfilled.match(response)) {
-      // Instantly clear it from the UI list so the user sees it disappear
-      setReceivedOffersWithUserPhoto((prev) => prev.filter((item) => item.id !== offer.id));
+      if (acceptOfferAsync.fulfilled.match(response)) {
+        // Instantly clear it from the UI list so the user sees it disappear
+        setReceivedOffersWithUserPhoto((prev) => prev.filter((item) => item.id !== offer.id));
 
-      setSuccessMessage(i18n.t("swap-accepted-start-chat"));
-      setIsInfoDialogOpen(true);
+        setSuccessMessage(i18n.t("swap-accepted-start-chat"));
+        setIsInfoDialogOpen(true);
 
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 5000);
-      return;
-    }
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000);
+        return;
+      }
       const payload = response.payload as any;
 
       const errorMessage =
@@ -285,15 +285,14 @@ const acceptOfferHandler = async (offer: any) => {
                     <HStack justifyContent="space-between" width="100%" space={1}>
                       {/* Offered Book */}
                       <VStack flex={1} alignItems="center">
+                        <Text>{item?.offeredBook?.coverUrl}</Text> 
                         <AspectRatio w="70%" ratio={{ base: 45 / 68 }}>
+
                           <Image
-                            source={
-                              item?.offeredBook?.coverUrl
-                                ? { uri: item?.offeredBook?.coverUrl }
-                                : { uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg" }
-                            }
-                            alt={`Cover of: ${item?.offeredBook?.title}`}
-                            roundedRight="4"
+                            source={getImageSource(
+                              item?.offeredBook?.coverUrl,
+                              IMAGE_FALLBACKS.BOOK_COVER
+                            )}
                           />
                         </AspectRatio>
                         <Text color="#000000" fontSize="12" fontWeight={500} numberOfLines={2}>
@@ -305,7 +304,7 @@ const acceptOfferHandler = async (offer: any) => {
                       </VStack>
 
                       <Center height={110}>
-                      <Image source={APP_ICONS.swap} alt="Swap icon" />
+                        <Image source={APP_ICONS.swap} alt="Swap icon" />
                       </Center>
 
                       {/* Requested Book */}
