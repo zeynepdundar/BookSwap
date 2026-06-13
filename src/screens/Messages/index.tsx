@@ -41,11 +41,6 @@ export default function MessagesScreen({ navigation }) {
   const { languagePreference } = profileData;
 
 
-  // Safety check for firebaseUserId
-  if (!firebaseUserId) {
-    return <LoadingOverlay />;
-  }
-
   const unseenMessagesCount =
     messages?.reduce((total, item) => total + item.unseenCount, 0) || 0;
 
@@ -85,8 +80,8 @@ export default function MessagesScreen({ navigation }) {
     }
   }, [messages, isMessagesLoading]);
 
-  // Return early if data is still loading
-  if (isFetchingUserData || isMessagesLoading) {
+  // Return early if data is still loading or user id is not ready
+  if (!firebaseUserId || isFetchingUserData || isMessagesLoading) {
     return <LoadingOverlay />;
   }
 

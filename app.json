@@ -40,7 +40,10 @@
           "ios": {
             "useFrameworks": "static",
             "extraPods": [
-              { "name": "RecaptchaEnterprise", "version": "18.7.0" }
+              {
+                "name": "RecaptchaEnterprise",
+                "version": "18.7.0"
+              }
             ]
           }
         }
@@ -58,7 +61,7 @@
       }
     },
     "ios": {
-      "buildNumber": "4"
+      "buildNumber": "6"
     },
     "android": {
       "versionCode": 1

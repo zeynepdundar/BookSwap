@@ -157,15 +157,15 @@ export default function ReceivedScreen({ navigation }) {
       .finally(() => setRefreshing(false));
   }, [dispatch]);
 
-  if (loading && !refreshing) {
-    return <LoadingOverlay />;
-  }
-
   useFocusEffect(
     useCallback(() => {
       dispatch(fetchReceivedOffersAsync());
     }, [dispatch])
   );
+
+  if (loading && !refreshing) {
+    return <LoadingOverlay />;
+  }
 
   const config = {
     title: "Offer accepted!",
@@ -285,9 +285,7 @@ export default function ReceivedScreen({ navigation }) {
                     <HStack justifyContent="space-between" width="100%" space={1}>
                       {/* Offered Book */}
                       <VStack flex={1} alignItems="center">
-                        <Text>{item?.offeredBook?.coverUrl}</Text> 
                         <AspectRatio w="70%" ratio={{ base: 45 / 68 }}>
-
                           <Image
                             source={getImageSource(
                               item?.offeredBook?.coverUrl,

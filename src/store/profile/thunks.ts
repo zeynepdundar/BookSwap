@@ -26,7 +26,6 @@ export const updateProfileAsync = createAsyncThunk(
 
     const wishlistBookIds = state.books.wishlistIds;
     const libraryBookIds = state.books.libraryIds;
-    console.log("Updating profile with data:", profileData, "Wishlist IDs:", wishlistBookIds, "Library IDs:", libraryBookIds);
 
     const payload = {
       ...profileData,

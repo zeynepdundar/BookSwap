@@ -48,7 +48,6 @@ export default function ProfileScreen({ navigation }) {
 
   const handleLanguageChange = (selectedLanguage) => {
     i18n.locale = selectedLanguage;
-    console.log("Selected language:", selectedLanguage);
 
     dispatch(updateProfileAsync({
    
