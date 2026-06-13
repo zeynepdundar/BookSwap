@@ -14,7 +14,7 @@ import {
   Text,
   VStack,
 } from "native-base";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
 import i18n from "@/i18n";
@@ -65,6 +65,13 @@ export default function SentScreen({ navigation }) {
       setSentOffersWithUserPhoto(updatedOffers);
     };
 
+  // Stable primitive key: only changes when the actual set of offers changes,
+  // not on every render (selectAll returns a new array reference each time).
+  const offersKey = useMemo(
+    () => sentOffers.map((offer) => offer.id).join(","),
+    [sentOffers]
+  );
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     dispatch(fetchSentOffersAsync()).finally(() => setRefreshing(false));
@@ -92,11 +99,17 @@ export default function SentScreen({ navigation }) {
       dispatch(fetchSentOffersAsync());
     }
   };
-    useFocusEffect(
-    useCallback(() => {
-      fetchProfileImages();
-    }, [sentOffers])
-  );
+  // Refetch participant photos only when the underlying offers actually change.
+  // Keying on `offersKey` (a primitive) avoids the infinite render loop caused
+  // by `sentOffers` getting a new array reference on every render.
+  useEffect(() => {
+    if (!sentOffers.length) {
+      setSentOffersWithUserPhoto([]);
+      return;
+    }
+    fetchProfileImages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offersKey]);
 
   const onNavigateProfile = (selectedUser) => {
     navigation.navigate("OtherUserProfile", { user: selectedUser });

@@ -1,3 +1,4 @@
+import { ImageSourcePropType } from "react-native";
 import i18n from "@/i18n";
 import { BookCollections } from "@/types/book.types";
 
@@ -12,10 +13,12 @@ export const getCoverUrl = (bookData) => {
   }
 };
 
-export const getImageSource = (photoUrl, fallbackImage) => {
-  return photoUrl ? { uri: photoUrl } : fallbackImage;
-};
-
+export const getImageSource = (
+  photoUrl: string | null | undefined,
+  fallbackImage: ImageSourcePropType
+): ImageSourcePropType =>
+  photoUrl?.trim() ? { uri: photoUrl } : fallbackImage;
+  
 export const createBookData = (books) => {
   if (Array.isArray(books)) {
     // If books is an array, map over it and apply createBookData for each item
@@ -62,10 +65,10 @@ export const structureOfferData = (offers, type) => {
         type === "received"
           ? offers.sender_user_name
           : offers.receiver_user_name,
-      firebase_uid :
-      type === "received"
-        ? offers.sender_firebase_uid
-        : offers.receiver_firebase_uid
+      firebase_uid:
+        type === "received"
+          ? offers.sender_firebase_uid
+          : offers.receiver_firebase_uid
     },
     createdAt: timeAgo(offers.created_at),
     offeredBook: {
@@ -103,9 +106,8 @@ export const timeAgo = (date) => {
   const months = Math.floor(days / 30);
 
   if (months > 1) {
-    const formattedDate = `${
-      targetDate.getMonth() + 1
-    }/${targetDate.getDate()}/${targetDate.getFullYear()}`;
+    const formattedDate = `${targetDate.getMonth() + 1
+      }/${targetDate.getDate()}/${targetDate.getFullYear()}`;
     return formattedDate;
   } else if (days > 0) {
     return i18n.t("days-ago", { count: days });
