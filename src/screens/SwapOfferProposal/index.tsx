@@ -21,7 +21,7 @@ import {
 import i18n from "@/i18n";
 import { getImageSource } from "@/utils/helper";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
-import Screen from "@/components/shared/Screen";
+import Screen from "@/components/ui/Screen";
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import { sendOfferAsync } from "@/store/offers/thunks";
 import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";

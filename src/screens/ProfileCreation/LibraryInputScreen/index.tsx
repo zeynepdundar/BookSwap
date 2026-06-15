@@ -9,10 +9,10 @@ import {
   Box,
 } from "native-base";
 import i18n from "@/i18n";
-import Screen from "@/components/shared/Screen";
-import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
-import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
-import StepHeader from "@/components/shared/StepHeader";
+import Screen from "@/components/ui/Screen";
+import { CoverListHorizontal } from "@/components/ui/CoverListHorizontal";
+import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
+import StepHeader from "@/components/ui/StepHeader";
 import { setIsNewUser } from "@/store/auth/slice";
 import { fetchUserProfileAsync } from "@/store/profile/thunks";
 import { selectOnboardingLibraryBooks } from "@/store/selectors";
@@ -20,7 +20,7 @@ import { BookCollections } from "@/types/book.types";
 import { removeFromOnboardingLibrary, resetOnboarding, setOnboardingLanguage } from "@/store/onboarding/slice";
 import { RootState } from "@/store/types";
 import { completeOnboardingAsync } from "@/store/onboarding/thunks";
-import { HomeSearchWidget } from "@/components/shared/HomeSearchWidget";
+import { HomeSearchWidget } from "@/components/ui/HomeSearchWidget";
 
 
 export default function LibraryInputScreen({ navigation }) {

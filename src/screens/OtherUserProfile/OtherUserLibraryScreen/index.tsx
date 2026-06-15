@@ -1,14 +1,14 @@
 import { Center } from "native-base";
 import i18n from "@/i18n";
-import { BookListVertical } from "@/components/shared/BookListVertical";
+import { BookListVertical } from "@/components/ui/BookListVertical";
 import { useCallback, useEffect, useState } from "react";
 
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
-import { ErrorAlert } from "@/components/shared/ErrorAlert";
+import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { Book, BookCollections } from "@/types/book.types";
 import { Keyboard } from "react-native";
-import { ActionSheet } from "@/components/shared/ActionSheet";
+import { ActionSheet } from "@/components/ui/ActionSheet";
 import { generateActions } from "@/utils/helper";
 
 export default function OtherUserWishlistScreen({

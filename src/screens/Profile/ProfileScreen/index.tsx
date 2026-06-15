@@ -10,8 +10,8 @@ import {
   VStack,
 } from "native-base";
 import i18n from "@/i18n";
-import Screen from "@/components/shared/Screen";
-import ImagePicker from "@/components/shared/ImagePicker";
+import Screen from "@/components/ui/Screen";
+import ImagePicker from "@/components/ui/ImagePicker";
 import { updateProfileAsync } from "@/store/profile";
 import { getAuth, signOut as firebaseSignOut } from "@react-native-firebase/auth";
 import { clearMessages } from "@/store/messages/messages-slice";
@@ -20,7 +20,7 @@ import ProfileMenuItem from "../components/ProfileMenuItem";
 import { AlertDialogBox } from "@/components/Modal/AlertDialogBox";
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import { selectLibraryBookIds, selectWishlistBookIds } from "@/store/selectors";
-import ScreenHeader from "@/components/shared/ScreenHeader";
+import ScreenHeader from "@/components/ui/ScreenHeader";
 import { clearOffers } from "@/store/offers/slice";
 import { clearBooks } from "@/store/books/slice";
 import { signOut } from "@/store/auth/slice";

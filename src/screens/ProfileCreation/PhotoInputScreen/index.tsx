@@ -9,9 +9,9 @@ import {
   VStack,
 } from "native-base";
 import i18n from "@/i18n";
-import Screen from "@/components/shared/Screen";
-import ImagePicker from "@/components/shared/ImagePicker";
-import StepHeader from "@/components/shared/StepHeader";
+import Screen from "@/components/ui/Screen";
+import ImagePicker from "@/components/ui/ImagePicker";
+import StepHeader from "@/components/ui/StepHeader";
 import { setOnboardingImage } from "@/store/onboarding";
 
 

@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react";
-import { BookListVertical } from "@/components/shared/BookListVertical";
+import { BookListVertical } from "@/components/ui/BookListVertical";
 import { Center } from "native-base";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
-import { ErrorAlert } from "@/components/shared/ErrorAlert";
+import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Book, BookCollections } from "@/types/book.types";
 import { Keyboard } from "react-native";
-import { ActionSheet } from "@/components/shared/ActionSheet";
+import { ActionSheet } from "@/components/ui/ActionSheet";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { generateActions } from "@/utils/helper";
 import i18n from "@/i18n";

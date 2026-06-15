@@ -13,7 +13,7 @@ import {
   Box,
 } from "native-base";
 import i18n from "../../i18n";
-import Screen from "@/components/shared/Screen";
+import Screen from "@/components/ui/Screen";
 import { useSelector } from "react-redux";
 import { AlertDialogBox } from "@/components/Modal/AlertDialogBox";
 import { useFocusEffect } from "@react-navigation/native";

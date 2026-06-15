@@ -10,15 +10,15 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { selectWishlistBooks } from "@/store/selectors";
 
 import i18n from "@/i18n";
-import Screen from "@/components/shared/Screen";
-import { BookListVertical } from "@/components/shared/BookListVertical";
+import Screen from "@/components/ui/Screen";
+import { BookListVertical } from "@/components/ui/BookListVertical";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/store";
 import { useNavigationState } from "@react-navigation/native";
 import { useCallback } from "react";
 import { Book, BookCollections } from "@/types/book.types";
 import { removeBookFromCollectionAsync } from "@/store/books/thunks";
-import ScreenHeader from "@/components/shared/ScreenHeader";
+import ScreenHeader from "@/components/ui/ScreenHeader";
 
 const RemoveBookButton = ({ onPress }) => (
   <Icon
