@@ -10,10 +10,10 @@ import {
 
 import i18n from "@/i18n";
 import { RootState } from "@/store/types";
-import Screen from "@/components/shared/Screen";
+import Screen from "@/components/ui/Screen";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { submitFeedback } from "@/services/feedback/feedback.service";
-import ScreenHeader from "@/components/shared/ScreenHeader";
+import ScreenHeader from "@/components/ui/ScreenHeader";
 
 
 export default function FeedbackScreen({ navigation }) {

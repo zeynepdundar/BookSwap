@@ -11,7 +11,7 @@ import {
   Avatar,
   Flex,
 } from "native-base";
-import Screen from "../../../components/shared/Screen";
+import Screen from "../../../components/ui/Screen";
 import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";
 
 export default function OtherSwapHistory({ historyList }) {

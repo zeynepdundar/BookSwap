@@ -36,8 +36,8 @@ import {
   Flex,
   Divider,
 } from "native-base";
-import Screen from "@/components/shared/Screen";
-import { ActionSheet } from "@/components/shared/ActionSheet";
+import Screen from "@/components/ui/Screen";
+import { ActionSheet } from "@/components/ui/ActionSheet";
 import { generateModalActions } from "@/utils/helper";
 import i18n from "@/i18n";
 import BlockUserModal from "@/components/Modal/BlockUserModal";

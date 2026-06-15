@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Box, Flex, Heading, Image, Pressable, Text } from "native-base";
 import i18n from "@/i18n";
-import Screen from "@/components/shared/Screen";
-import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
-import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
+import Screen from "@/components/ui/Screen";
+import { CoverListHorizontal } from "@/components/ui/CoverListHorizontal";
+import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 import { fetchMostPopularBooks } from "@/services/books/books.service";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
-import { HomeSearchWidget } from "@/components/shared/HomeSearchWidget";
+import { HomeSearchWidget } from "@/components/ui/HomeSearchWidget";
 import { getImageSource } from "@/utils/helper";
 import { IMAGE_FALLBACKS } from "@/constants/image";
 

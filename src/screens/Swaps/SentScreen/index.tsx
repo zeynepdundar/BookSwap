@@ -16,13 +16,13 @@ import {
 } from "native-base";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
+import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 import i18n from "@/i18n";
 
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { fetchSentOffersAsync, takeBackOfferAsync } from "@/store/offers/thunks";
 import { offersSelectors } from "@/store/offers/slice";
-import { ErrorAlert } from "@/components/shared/ErrorAlert";
+import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";
 import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 

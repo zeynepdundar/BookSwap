@@ -8,7 +8,7 @@ import {
   IconButton,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import Screen from "../../components/shared/Screen";
+import Screen from "../../components/ui/Screen";
 import { ImageBackground } from "react-native";
 import { useSelector } from "react-redux";
 

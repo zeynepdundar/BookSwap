@@ -12,9 +12,9 @@ import {
   Pressable,
 } from "native-base";
 import i18n from "@/i18n";
-import Screen from "@/components/shared/Screen";
+import Screen from "@/components/ui/Screen";
 
-import StepHeader from "@/components/shared/StepHeader";
+import StepHeader from "@/components/ui/StepHeader";
 
 import { setOnboardingGender } from "@/store/onboarding";
 

@@ -11,8 +11,8 @@ import {
   VStack,
 } from "native-base";
 import i18n from "@/i18n";
-import Screen from "@/components/shared/Screen";
-import StepHeader from "@/components/shared/StepHeader";
+import Screen from "@/components/ui/Screen";
+import StepHeader from "@/components/ui/StepHeader";
 import { setOnboardingBirthdate } from "@/store/onboarding/slice";
 
 export default function BirthdateInputScreen({ navigation }) {

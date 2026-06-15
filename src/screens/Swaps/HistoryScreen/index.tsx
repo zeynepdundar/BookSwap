@@ -13,7 +13,7 @@ import {
   Divider,
 } from "native-base";
 import { useCallback, useState } from "react";
-import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
+import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 import {  useSelector } from "react-redux";
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { useFocusEffect } from "@react-navigation/native";

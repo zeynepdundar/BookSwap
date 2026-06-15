@@ -13,11 +13,11 @@ import {
   Spacer,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import Screen from "../../components/shared/Screen";
+import Screen from "../../components/ui/Screen";
 import i18n from "../../i18n";
-import { BookListVertical } from "../../components/shared/BookListVertical";
-import { LoadingOverlay } from "../../components/shared/LoadingOverlay";
-import { BorderedBookListVertical } from "../../components/shared/BorderedBookListVertical";
+import { BookListVertical } from "../../components/ui/BookListVertical";
+import { LoadingOverlay } from "../../components/ui/LoadingOverlay";
+import { BorderedBookListVertical } from "../../components/ui/BorderedBookListVertical";
 import { fetchUserProfileData } from "@/services/profile/profile.service";
 import { IMAGE_FALLBACKS } from "@/constants/image";
 

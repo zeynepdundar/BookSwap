@@ -8,15 +8,15 @@ import i18n from "@/i18n";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
 import { fetchBooksByTitle } from "@/services/books/books.service";
 import { Book, BookCollections } from "@/types/book.types";
-import { BookListVertical } from "@/components/shared/BookListVertical";
-import { LoadingOverlay } from "@/components/shared/LoadingOverlay";
-import { ErrorAlert } from "@/components/shared/ErrorAlert";
-import { BorderedBookListVertical } from "@/components/shared/BorderedBookListVertical";
-import Screen from "@/components/shared/Screen";
+import { BookListVertical } from "@/components/ui/BookListVertical";
+import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
+import { ErrorAlert } from "@/components/ui/ErrorAlert";
+import { BorderedBookListVertical } from "@/components/ui/BorderedBookListVertical";
+import Screen from "@/components/ui/Screen";
 import { generateActions } from "@/utils/helper";
-import { ActionSheet } from "@/components/shared/ActionSheet";
+import { ActionSheet } from "@/components/ui/ActionSheet";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
-import { AppSearchBar } from "@/components/shared/AppSearchBar";
+import { AppSearchBar } from "@/components/ui/AppSearchBar";
 
 export default function BookSearchScreen({ navigation, route = null }) {
   const { sourceScreen } = route.params ?? {};

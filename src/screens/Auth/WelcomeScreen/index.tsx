@@ -12,7 +12,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import i18n from "@/i18n";
 import { AuthStackParamList } from "@/types/navigation.types";
-import Screen from "@/components/shared/Screen";
+import Screen from "@/components/ui/Screen";
 import { clearVerification } from "@/store/auth/slice";
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import { APP_IMAGES } from "@/constants/image";

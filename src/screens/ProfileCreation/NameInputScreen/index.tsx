@@ -10,7 +10,7 @@ import {
   Spacer,
 } from "native-base";
 import i18n from "@/i18n";
-import Screen from "@/components/shared/Screen";
+import Screen from "@/components/ui/Screen";
 
 import { setOnboardingName } from "@/store/onboarding";
 

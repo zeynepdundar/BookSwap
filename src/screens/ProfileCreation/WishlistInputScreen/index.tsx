@@ -9,12 +9,12 @@ import {
 
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import i18n from "@/i18n";
-import Screen from "@/components/shared/Screen";
-import { CoverListHorizontal } from "@/components/shared/CoverListHorizontal";
-import StepHeader from "@/components/shared/StepHeader";
+import Screen from "@/components/ui/Screen";
+import { CoverListHorizontal } from "@/components/ui/CoverListHorizontal";
+import StepHeader from "@/components/ui/StepHeader";
 import { removeFromOnboardingWishlist } from "@/store/onboarding/slice";
 import { selectOnboardingWishlistBooks } from "@/store/selectors";
-import { HomeSearchWidget } from "@/components/shared/HomeSearchWidget";
+import { HomeSearchWidget } from "@/components/ui/HomeSearchWidget";
 import { BookCollections } from "@/types/book.types";
 
 export default function WishlistInputScreen({ navigation }) {

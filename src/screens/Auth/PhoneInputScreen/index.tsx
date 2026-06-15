@@ -20,7 +20,7 @@ import { verifyPhoneNumber } from "@/store/auth";
 import { RootState } from "@/store/types";
 import { AuthStackParamList } from "@/types/navigation.types";
 import { normalizePhone } from "@/utils/helper";
-import Screen from "@/components/shared/Screen";
+import Screen from "@/components/ui/Screen";
 import { APP_ICONS, APP_IMAGES } from "@/constants/image";
 
 type Props = {

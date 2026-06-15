@@ -26,12 +26,12 @@ import {
   generateModalActions,
   truncateText,
 } from "@/utils/helper";
-import { ActionSheet } from "@/components/shared/ActionSheet";
+import { ActionSheet } from "@/components/ui/ActionSheet";
 import i18n from "@/i18n";
 import { BookCollection, BookCollections } from "@/types/book.types";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { fetchBooksByISBN } from "@/services/books/books.service";
-import { ErrorAlert } from "@/components/shared/ErrorAlert";
+import { ErrorAlert } from "@/components/ui/ErrorAlert";
 
 export default function BarcodeScannerScreen({ navigation, route = null }) {
   // 1. ALL HOOKS DECLARATIONS MUST BE AT THE ABSOLUTE TOP

@@ -22,7 +22,7 @@ import {
 } from "@/store/auth";
 import { RootState } from "@/store/types";
 import { AuthStackParamList } from "@/types/navigation.types";
-import Screen from "@/components/shared/Screen";
+import Screen from "@/components/ui/Screen";
 
 type Props = {
   navigation: NativeStackNavigationProp<

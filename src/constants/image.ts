@@ -4,17 +4,17 @@ export const IMAGE_FALLBACKS = {
 } as const;
 
 export const PROFILE_SCREEN_ICONS = {
-  library: require("@/assets/images/icon/library-icon.png"),
-  wishlist: require("@/assets/images/icon/wishlist-icon.png"),
-  language: require("@/assets/images/icon/language-icon.png"),
-  feedback: require("@/assets/images/icon/feedback-icon.png"),
-  logout: require("@/assets/images/icon/logout-icon.png"),
+  library: require("@/assets/icons/library-icon.png"),
+  wishlist: require("@/assets/icons/wishlist-icon.png"),
+  language: require("@/assets/icons/language-icon.png"),
+  feedback: require("@/assets/icons/feedback-icon.png"),
+  logout: require("@/assets/icons/logout-icon.png"),
 } as const;
 
 export const APP_ICONS = {
   app_logo: require("@/assets/images/app-icon-516x516.png"),
-  swap: require("@/assets/images/icon/swap-icon.png"),
-  swap_arrows: require("@/assets/images/icon/swap-arrows-icon.png")
+  swap: require("@/assets/icons/swap-icon.png"),
+  swap_arrows: require("@/assets/icons/swap-arrows-icon.png")
 } as const;
 
 export const APP_IMAGES = {

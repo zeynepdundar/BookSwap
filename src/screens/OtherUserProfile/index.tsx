@@ -15,8 +15,8 @@ import {
 import { useEffect, useState } from "react";
 import { SceneMap, TabView } from "react-native-tab-view";
 import { StatusBar, Animated } from "react-native";
-import Screen from "../../components/shared/Screen";
-import { LoadingOverlay } from "../../components/shared/LoadingOverlay";
+import Screen from "../../components/ui/Screen";
+import { LoadingOverlay } from "../../components/ui/LoadingOverlay";
 import OtherLibraryScreen from "./OtherUserLibraryScreen";
 import OtherWishlistScreen from "./OtherUserWishlistScreen";
 import OtherSwapHistory from "./OtherUserSwapHistory";
