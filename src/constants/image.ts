@@ -12,6 +12,19 @@ export const PROFILE_SCREEN_ICONS = {
 } as const;
 
 export const APP_ICONS = {
+  app_logo: require("@/assets/images/app-icon-516x516.png"),
   swap: require("@/assets/images/icon/swap-icon.png"),
   swap_arrows: require("@/assets/images/icon/swap-arrows-icon.png")
+} as const;
+
+export const APP_IMAGES = {
+  swap_book_text: require("@/assets/images/swap-book.png"),
+  infiniteLibrary: require("@/assets/images/infinite-library.png"),
+
+  // appLogo: require("@/assets/images/app-icon-516x516.png"),
+  // swapBookText: require("@/assets/images/swap-book.png"),
+  // onboardingHero: require("@/assets/images/onboarding-hero.png"),
+  // emptyWishlist: require("@/assets/images/empty-wishlist.png"),
+  // emptyLibrary: require("@/assets/images/empty-library.png"),
+  // successIllustration: require("@/assets/images/success.png"),
 } as const;

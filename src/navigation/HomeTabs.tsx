@@ -17,15 +17,21 @@ export default function HomeTabs() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: "primary.500",
-        tabBarInactiveTintColor: "primary.100",
+        tabBarActiveTintColor: "#7F3DFF",
+        tabBarInactiveTintColor: "#B8B8C0",
         tabBarStyle: {
           backgroundColor: "#fff",
           height: 80,
           paddingHorizontal: 24,
-          paddingTop:8,
-          borderTopColor: "#B3B3B3",
-        },
+          paddingTop: 8,
+          borderTopColor: "transparent",
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          position: "absolute",
+          elevation: 10,
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+        }
       }}
     >
       <BottomTab.Screen

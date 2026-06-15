@@ -21,11 +21,7 @@ import { RootState } from "@/store/types";
 import { AuthStackParamList } from "@/types/navigation.types";
 import { normalizePhone } from "@/utils/helper";
 import Screen from "@/components/shared/Screen";
-
-const ASSETS = {
-  appLogo: require("@/assets/images/app-icon-516x516.png"),
-  swapBookText: require("@/assets/images/swap-book.png"),
-} as const;
+import { APP_ICONS, APP_IMAGES } from "@/constants/image";
 
 type Props = {
   navigation: NativeStackNavigationProp<
@@ -85,7 +81,7 @@ export default function PhoneInputScreen({ navigation }: Props) {
       >
         <VStack alignItems="center" h="100%">
           <Image
-            source={ASSETS.appLogo}
+            source={APP_ICONS.app_logo}
             alt="logo"
             size={60}
             mt="16"
@@ -99,7 +95,7 @@ export default function PhoneInputScreen({ navigation }: Props) {
             onPress={() => navigation.navigate("Welcome")}
           />
           <Image
-            source={ASSETS.swapBookText}
+            source={APP_IMAGES.swap_book_text}
             alt="title"
             width={120}
             mb="6"

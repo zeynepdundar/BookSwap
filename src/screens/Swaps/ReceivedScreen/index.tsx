@@ -283,46 +283,47 @@ export default function ReceivedScreen({ navigation }) {
                 >
                   <VStack>
                     <HStack justifyContent="space-between" width="100%" space={1}>
-                      {/* Offered Book */}
-                      <VStack flex={1} alignItems="center">
-                        <AspectRatio w="70%" ratio={{ base: 45 / 68 }}>
-                          <Image
-                            source={getImageSource(
-                              item?.offeredBook?.coverUrl,
-                              IMAGE_FALLBACKS.BOOK_COVER
-                            )}
-                          />
-                        </AspectRatio>
-                        <Text color="#000000" fontSize="12" fontWeight={500} numberOfLines={2}>
-                          {truncateText(formatText(item?.offeredBook?.title), 36)}
-                        </Text>
-                        <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
-                          {truncateText(formatText(item?.offeredBook?.author), 30)}
-                        </Text>
-                      </VStack>
-
-                      <Center height={110}>
-                        <Image source={APP_ICONS.swap} alt="Swap icon" />
-                      </Center>
-
                       {/* Requested Book */}
                       <VStack flex={1} alignItems="center">
                         <AspectRatio w="70%" ratio={{ base: 45 / 68 }}>
                           <Image
-                            source={
-                              item?.requestedBook?.coverUrl
-                                ? { uri: item?.requestedBook?.coverUrl }
-                                : { uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg" }
-                            }
-                            alt={`Cover of: ${item?.requestedBook?.title}`}
-                            roundedRight="4"
+                            source={getImageSource(
+                              item?.requestedBook?.coverUrl,
+                              IMAGE_FALLBACKS.BOOK_COVER
+                            )}
+                            alt={`Book cover: ${item?.requestedBook?.title ?? "Unknown title"}`}
                           />
                         </AspectRatio>
                         <Text color="#000000" fontSize="12" fontWeight={500} numberOfLines={2}>
                           {truncateText(formatText(item?.requestedBook?.title), 36)}
                         </Text>
-                        <Text color="#8c8c8c" fontSize="11" numberOfLines={2}>
+                        <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
                           {truncateText(formatText(item?.requestedBook?.author), 30)}
+                        </Text>
+                      </VStack>
+
+                      <Center height={110}>
+                        <Image source={APP_ICONS.swap} alt="Swap books" />
+                      </Center>
+
+                      {/* Offered Book */}
+                      <VStack flex={1} alignItems="center">
+                        <AspectRatio w="70%" ratio={{ base: 45 / 68 }}>
+                          <Image
+                            source={
+                              item?.requestedBook?.coverUrl
+                                ? { uri: item?.offeredBook?.coverUrl }
+                                : { uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg" }
+                            }
+                            alt={`Book cover: ${item?.offeredBook?.title ?? "Unknown title"}`}
+                            roundedRight="4"
+                          />
+                        </AspectRatio>
+                        <Text color="#000000" fontSize="12" fontWeight={500} numberOfLines={2}>
+                          {truncateText(formatText(item?.offeredBook?.title), 36)}
+                        </Text>
+                        <Text color="#8c8c8c" fontSize="11" numberOfLines={2}>
+                          {truncateText(formatText(item?.offeredBook?.author), 30)}
                         </Text>
                       </VStack>
                     </HStack>
