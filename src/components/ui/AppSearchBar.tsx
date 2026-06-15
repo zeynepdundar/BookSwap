@@ -21,23 +21,41 @@ export function AppSearchBar({
         <Box w="100%" h={16} justifyContent="center" bg="white">
             <Input
                 placeholder={i18n.t("search-book-by-title")}
-                width="100%"
-                h="12"
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                borderRadius="10"
-                py="3"
+                autoFocus
+                ref={inputRef}
+                h="12"
+                width="100%"
+                borderRadius="16"
+                bg="#F8FAFC"
+                borderWidth="1"
+                borderColor="#EEF2F7"
                 px="2"
                 fontSize="15"
-                fontWeight="500"
-                bg="##F3F4F6"
-                borderWidth="1"
-                borderColor="#E5E7EB"
-                autoFocus
-                _focus={{ borderColor: "primary.500", bg: "#F3F4F6" }}
-                ref={inputRef}
+                fontWeight="400"
+                color="#1F2937"
+                placeholderTextColor="#94A3B8"
+                returnKeyType="done"
+                onSubmitEditing={Keyboard.dismiss}
+                _focus={{
+                    bg: "#FFFFFF",
+                    borderColor: "primary.500",
+                    style: {
+                        shadowColor: "#000",
+                        shadowOpacity: 0.08,
+                        shadowRadius: 8,
+                        shadowOffset: { width: 0, height: 2 },
+                        elevation: 3,
+                    },
+                }}
                 InputLeftElement={
-                    <Icon m="2" ml="4" size="5" color="#4B5563" as={<MaterialCommunityIcons name="magnify" />} />
+                    <Icon
+                        ml="4"
+                        size="5"
+                        color="#64748B"
+                        as={<MaterialCommunityIcons name="magnify" />}
+                    />
                 }
                 InputRightElement={
                     <Pressable
@@ -46,32 +64,27 @@ export function AppSearchBar({
                     >
                         {({ isPressed }) => (
                             <Box
-                                mr="2.5" // Tucks it neatly inside the right cushion of the input field
-                                h="9"    // Slightly smaller than full-height to create an elegant border gap
-                                w="9"    // Balanced 1:1 perfect square circle aspect ratio
-                                bg={isPressed ? "primary.500" : "transparent"} // Soft isolated background flash
-                                borderRadius="10" // Uniform chic rounding on all 4 corners
-                                borderWidth="1"
-                                borderColor={isPressed ? "primary.100" : "transparent"} // Clean bounding border frame on tap
+                                mr="3"
+                                h="9"
+                                w="9"
+                                bg={isPressed ? "primary.100" : "#F8FAFC"}
+                                borderRadius="12"
                                 justifyContent="center"
                                 alignItems="center"
                                 style={{
-                                    // Ultra-subtle, snappy micro-scale click physics
-                                    transform: [{ scale: isPressed ? 0.90 : 1 }]
+                                    transform: [{ scale: isPressed ? 0.95 : 1 }],
                                 }}
                             >
                                 <Icon
-                                    size="5" // Refined 20px glyph size to keep lines looking crisp and minimal
-                                    color={isPressed ? "white" : "primary.500"}
-                                    name="crop-free"
+                                    size="5"
+                                    color={isPressed ? "primary.600" : "primary.500"}
                                     as={MaterialCommunityIcons}
+                                    name="barcode-scan"
                                 />
                             </Box>
                         )}
                     </Pressable>
                 }
-                returnKeyType="done"
-                onSubmitEditing={Keyboard.dismiss}
             />
         </Box>
     );

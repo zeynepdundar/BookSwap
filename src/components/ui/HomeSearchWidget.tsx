@@ -10,7 +10,7 @@ interface HomeSearchWidgetProps {
 
 export function HomeSearchWidget({ navigation, sourceScreen, isHome = false, }: HomeSearchWidgetProps) {
 
-const handleTextSearchPress = () => {
+  const handleTextSearchPress = () => {
     const targetScreen = isHome ? "BookSearch" : "BookSearchOnCreation";
     navigation.navigate(targetScreen, !isHome ? { sourceScreen } : undefined);
   };
@@ -27,23 +27,32 @@ const handleTextSearchPress = () => {
         {({ isPressed }) => (
           <Box
             h="12"
-            bg={isPressed ? "#E5E7EB" : "#F3F4F6"}
+            bg={isPressed ? "#F3F4F6" : "#F8FAFC"}
             borderRadius="16"
             borderWidth="1"
             borderColor="#E5E7EB"
             justifyContent="center"
             px="4"
             style={{
-              transform: [{ scale: isPressed ? 0.99 : 1 }]
+              shadowColor: "#000",
+              shadowOpacity: 0.06,
+              shadowRadius: 8,
+              shadowOffset: { width: 0, height: 2 },
+              elevation: 2,
+              transform: [{ scale: isPressed ? 0.99 : 1 }],
             }}
           >
             <HStack space={3} alignItems="center">
               <Icon
                 size="5"
-                color="#4B5563" // Strong contrast dark charcoal icon
+                color="#64748B"
                 as={<MaterialCommunityIcons name="magnify" />}
               />
-              <Text color="#9CA3AF" fontSize="15" fontWeight="500">
+              <Text
+                color="#94A3B8"
+                fontSize="15"
+                fontWeight="400"
+              >
                 {i18n.t("search-book-by-title")}
               </Text>
             </HStack>
@@ -56,27 +65,26 @@ const handleTextSearchPress = () => {
           <Box
             h="12"
             w="12"
-            bg="primary.500"
             borderRadius="16"
             justifyContent="center"
             alignItems="center"
+            bg={isPressed ? "#F3F4F6" : "#F8FAFC"}
+            borderWidth="1"
+            borderColor=  {isPressed ? "primary.600" : "primary.500"}
             style={{
               shadowColor: "#000",
-              shadowOffset: isPressed ? { width: 0, height: 1 } : { width: 0, height: 3 },
-              shadowOpacity: isPressed ? 0.15 : 0.25,
-              shadowRadius: isPressed ? 1.5 : 3,
-              elevation: isPressed ? 2 : 5,
-              transform: [{ translateY: isPressed ? 1.5 : 0 }]
-            }}
-            _pressed={{
-              bg: "#1F2937"
+              shadowOpacity: 0.06,
+              shadowRadius: 8,
+              shadowOffset: { width: 0, height: 2 },
+              elevation: 2,
+              transform: [{ scale: isPressed ? 0.99 : 1 }],
             }}
           >
             <Icon
-              color="white"
-              name="barcode-scan"
               as={MaterialCommunityIcons}
+              name="barcode-scan"
               size="6"
+              color="primary.500"
             />
           </Box>
         )}
