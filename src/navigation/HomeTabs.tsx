@@ -8,7 +8,7 @@ import ArrowLeftRightIcon from "@/components/ui/icons/ArrowLeftRightIcon";
 import MessageSquareIcon from "@/components/ui/icons/MessageSquareIcon";
 import i18n from "@/i18n";
 import { useSelector } from "react-redux";
-import { useMessageSubscription } from "@/hooks/use-message-subscription";
+import { useMessageSubscription } from "@/hooks/useMessageSubscription";
 import { HomeTabsParamList } from "@/types/navigation.types";
 
 const BottomTab = createBottomTabNavigator<HomeTabsParamList>();
