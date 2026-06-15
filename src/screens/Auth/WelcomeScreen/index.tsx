@@ -15,6 +15,7 @@ import { AuthStackParamList } from "@/types/navigation.types";
 import Screen from "@/components/shared/Screen";
 import { clearVerification } from "@/store/auth/slice";
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
+import { APP_IMAGES } from "@/constants/image";
 
 type WelcomeScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -22,10 +23,6 @@ type WelcomeScreenProps = {
     "Welcome"
   >;
 };
-
-const ASSETS = {
-  infiniteLibrary: require("@/assets/images/infinite-library.png"),
-} as const;
 
 export default function WelcomeScreen({
   navigation,
@@ -69,7 +66,7 @@ export default function WelcomeScreen({
         />
 
         <Image
-          source={ASSETS.infiniteLibrary}
+          source={APP_IMAGES.infiniteLibrary}
           alt={i18n.t("infinite-library")}
           position="absolute"
           top="20%"

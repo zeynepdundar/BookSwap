@@ -32,7 +32,7 @@ export default function SentScreen({ navigation }) {
 
   // Direct single source of truth from Redux
   const sentOffers = useSelector(offersSelectors.sent.selectAll);
-    const [sentOffersWithUserPhoto, setSentOffersWithUserPhoto] =
+  const [sentOffersWithUserPhoto, setSentOffersWithUserPhoto] =
     useState<any[]>(sentOffers);
   const { loading, profile } = useSelector((state: any) => state.profile);
   const dispatch = useAppDispatch();
@@ -47,23 +47,23 @@ export default function SentScreen({ navigation }) {
     }, [dispatch, profile?.id])
   );
 
-    const fetchProfileImages = async () => {
-      const updatedOffers = await Promise.all(
-        sentOffers.map(async (offer) => {
-          const photoUrl = await fetchProfileImageUrl(
-            offer.participantProfile.id
-          );
-          return {
-            ...offer,
-            participantProfile: {
-              ...offer.participantProfile,
-              photo_file_name: photoUrl,
-            },
-          };
-        })
-      );
-      setSentOffersWithUserPhoto(updatedOffers);
-    };
+  const fetchProfileImages = async () => {
+    const updatedOffers = await Promise.all(
+      sentOffers.map(async (offer) => {
+        const photoUrl = await fetchProfileImageUrl(
+          offer.participantProfile.id
+        );
+        return {
+          ...offer,
+          participantProfile: {
+            ...offer.participantProfile,
+            photo_file_name: photoUrl,
+          },
+        };
+      })
+    );
+    setSentOffersWithUserPhoto(updatedOffers);
+  };
 
   // Stable primitive key: only changes when the actual set of offers changes,
   // not on every render (selectAll returns a new array reference each time).
@@ -181,7 +181,7 @@ export default function SentScreen({ navigation }) {
                   <HStack justifyContent="space-between" width="100%" space={1}>
                     <VStack flex={1} alignItems="center">
                       <AspectRatio w="70%" ratio={45 / 68}>
-                        <Image source={item?.offeredBook?.coverUrl ? { uri: item.offeredBook.coverUrl } : { uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg" }} alt="Offered Book" roundedRight="4" />
+                        <Image source={item?.offeredBook?.coverUrl ? { uri: item.offeredBook.coverUrl } : { uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg" }} alt={`Book cover: ${item?.offeredBook?.title ?? "Unknown title"}`} roundedRight="4" />
                       </AspectRatio>
                       <Text color="#000000" fontSize="12" fontWeight={500} numberOfLines={2}>
                         {truncateText(formatText(item?.offeredBook?.title), 36)}
@@ -190,12 +190,12 @@ export default function SentScreen({ navigation }) {
                     </VStack>
 
                     <Center height={150}>
-                      <Image source={APP_ICONS.swap} alt="Swap icon" />
+                      <Image source={APP_ICONS.swap} alt="Swap books" />
                     </Center>
 
                     <VStack flex={1} alignItems="center">
                       <AspectRatio w="70%" ratio={45 / 68}>
-                        <Image source={item?.requestedBook?.coverUrl ? { uri: item.requestedBook.coverUrl } : { uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg" }} alt="Requested Book" roundedRight="4" />
+                        <Image source={item?.requestedBook?.coverUrl ? { uri: item.requestedBook.coverUrl } : { uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg" }} alt={`Book cover: ${item?.requestedBook?.title ?? "Unknown title"}`} roundedRight="4" />
                       </AspectRatio>
                       <Text color="#000000" fontSize="12" fontWeight={500} numberOfLines={3}>
                         {item?.requestedBook?.title}
