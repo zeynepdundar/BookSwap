@@ -16,7 +16,7 @@ import {
 } from "native-base";
 import i18n from "@/i18n";
 import { useSelector } from "react-redux";
-import { useMessageSubscription } from "@/hooks/use-message-subscription";
+import { useMessageSubscription } from "@/hooks/useMessageSubscription";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 import {
   formatLastMessageTime,
