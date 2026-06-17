@@ -96,6 +96,15 @@
   "seconds-ago": "%{count} sn önce",
   "just-now": "şimdi",
   "already-have-book": "Bu kitap listende zaten mevcut",
+  "this-book": "Bu kitap",
+  "book-already-in-wishlist": {
+    "one": "%{titles} zaten istek listende mevcut",
+    "other": "%{titles} zaten istek listende mevcut"
+  },
+  "book-already-in-library": {
+    "one": "%{titles} zaten kitaplığında mevcut",
+    "other": "%{titles} zaten kitaplığında mevcut"
+  },
   "something-went-wrong": "Bir şeyler ters gitti",
   "block-and-report": "Engelle & Rapor et",
   "inappropriate-behavior": "Uygunsuz Davranış",

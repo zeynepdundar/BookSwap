@@ -136,6 +136,7 @@ export default function MessagesScreen({ navigation }) {
       )}
       renderItem={({ item }) => {
         const friendProfile = userProfiles[item.userId];
+        console.log("frienD", friendProfile)
 
         return (
           <Pressable onPress={() => handleStartChat(friendProfile)}>

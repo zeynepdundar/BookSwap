@@ -42,7 +42,7 @@ import { generateModalActions } from "@/utils/helper";
 import i18n from "@/i18n";
 import BlockUserModal from "@/components/Modal/BlockUserModal";
 import { useSelector } from "react-redux";
-import { initializeConversation, updateLastMessage } from "@/store/messages/messages-actions";
+import { initializeConversation, markMessagesAsSeen, updateLastMessage } from "@/store/messages/messages-actions";
 
 export default function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([]);
@@ -83,6 +83,10 @@ export default function ChatScreen({ navigation, route }) {
 
         setMessages(messages);
 
+        // The current user is viewing this chat, so mark incoming messages as
+        // seen. This clears their unseen badge in the list and bottom tab.
+        markMessagesAsSeen(conversationId, currentUserId);
+
         // Get the latest message (first in the ordered list)
         if (!querySnapshot.empty) {
           const latestDoc = querySnapshot.docs[0];
@@ -108,6 +112,8 @@ export default function ChatScreen({ navigation, route }) {
       createdAt: Timestamp.now(),
       text: newMessage.text,
       senderId: currentUserId,
+      // The recipient hasn't seen it yet; this powers their unseen badge.
+      seen: false,
     };
 
     setMessages((previousMessages) =>

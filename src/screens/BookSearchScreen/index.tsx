@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Keyboard, TouchableWithoutFeedback, DeviceEventEmitter } from "react-native";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { Box, Flex, Center, Heading, Input, Icon, VStack, Text, Divider } from "native-base";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Box, Center, Heading, VStack, Text, Divider } from "native-base";
 import i18n from "@/i18n";
 
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
@@ -95,44 +94,6 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
   const actions = generateActions(handleActionExecute, () => setIsActionSheetOpen(false));
 
-
-  // 2. Barcode Event Listener Handler (For camera scanning passes)
-  useEffect(() => {
-    const barcodeSubscription = DeviceEventEmitter.addListener(
-      "BARCODE_BOOK_SCANNED",
-      async (payload) => {
-
-        // PATH A: Scanned from a specific collection (e.g., Wishlist view -> straight to Dialog)
-        if (payload.collection) {
-          const result = await pressDoneHandler({
-            collection: payload.collection,
-            books: payload.books,
-          });
-
-          if (result?.success) {
-            setSelectedAction(payload.collection);
-            DeviceEventEmitter.emit("BARCODE_SAVE_RESPONSE", { success: true, actionType: payload.collection });
-
-            // Safe unwrap delay
-            setTimeout(() => {
-              setIsInfoDialogOpen(true);
-            }, 300);
-          } else {
-            DeviceEventEmitter.emit("BARCODE_SAVE_RESPONSE", { success: false, error: "Failed to add book." });
-          }
-        }
-
-        // PATH B: Scanned without collection stack (Opens ActionSheet overlay first!)
-        else {
-          setSelectedBook(payload.books[0]);
-          setIsActionSheetOpen(true);
-          DeviceEventEmitter.emit("BARCODE_SAVE_RESPONSE", { success: true, actionType: null });
-        }
-      }
-    );
-
-    return () => barcodeSubscription.remove();
-  }, [collectionType, sourceScreen, selectedBook]);
   const fetchBooks = async (title) => {
     setLoading(true);
     fetchBooksByTitle(title)

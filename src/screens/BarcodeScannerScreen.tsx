@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   StyleSheet,
   Dimensions,
   StatusBar,
   Platform,
-  DeviceEventEmitter, // 1. Added listener broadcaster
 } from "react-native";
 
 import { CameraView, useCameraPermissions } from "expo-camera";
+import type { BarcodeSettings } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   Box,
@@ -26,16 +26,22 @@ import {
   generateModalActions,
   truncateText,
 } from "@/utils/helper";
-import { ActionSheet } from "@/components/ui/ActionSheet";
+import { InlineActionSheet } from "@/components/ui/InlineActionSheet";
 import i18n from "@/i18n";
 import { BookCollection, BookCollections } from "@/types/book.types";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { fetchBooksByISBN } from "@/services/books/books.service";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
+import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
+
+// Hoisted so the object identity stays stable across renders and the native
+// CameraView is not re-configured (which causes a brief blue flash).
+const BARCODE_SCANNER_SETTINGS: BarcodeSettings = { barcodeTypes: ["ean13"] };
 
 export default function BarcodeScannerScreen({ navigation, route = null }) {
   // 1. ALL HOOKS DECLARATIONS MUST BE AT THE ABSOLUTE TOP
   const { sourceScreen } = route.params ?? {};
+  const { addBooksToCollection } = useAddBooksToCollection();
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [edition, setEdition] = useState(null);
@@ -65,25 +71,6 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
     return () => clearTimeout(timer);
   }, [scanned]);
 
-  useEffect(() => {
-    const responseSubscription = DeviceEventEmitter.addListener(
-      "BARCODE_SAVE_RESPONSE",
-      (response) => {
-        if (response?.success) {
-          setSelectedAction(response.actionType);
-          setTimeout(() => {
-            setIsInfoDialogOpen(true);
-          }, 200);
-          setEdition(null);
-        } else if (response?.error) {
-          setError(response.error);
-        }
-      }
-    );
-
-    return () => responseSubscription.remove();
-  }, []);
-
   // 2. HELPER METHODS & TIMERS
   const startBoxExpiryTimer = (duration = 5000) => {
     stopBoxExpiryTimer();
@@ -100,7 +87,7 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
     }
   };
 
-  const handleBarCodeScanned = async ({ data }) => {
+  const handleBarCodeScanned = useCallback(async ({ data }) => {
     try {
       setScanned(true);
       const fetchedEditions = await fetchBooksByISBN(data);
@@ -115,14 +102,31 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
     } catch (error) {
       setError("Error fetching editions. Please try again later.");
     }
+  }, []);
+
+  const saveBookToCollection = async (
+    collection: BookCollection,
+    book = edition
+  ) => {
+    if (!book) return;
+    stopBoxExpiryTimer();
+    try {
+      await addBooksToCollection({
+        collection,
+        books: [book].flat(),
+      });
+      setSelectedAction(collection);
+      setEdition(null);
+      // Let the action sheet finish its dismiss animation before the dialog
+      setTimeout(() => setIsInfoDialogOpen(true), 200);
+    } catch (error) {
+      setError(error?.message || "Failed to add book. Please try again later.");
+    }
   };
 
   const handleAddBook = () => {
     if (sourceScreen) {
-      DeviceEventEmitter.emit("BARCODE_BOOK_SCANNED", {
-        books: [edition].flat(),
-        collection: sourceScreen,
-      });
+      saveBookToCollection(sourceScreen as BookCollection);
     } else {
       const actionsConfig = [
         { type: BookCollections.WISHLIST, label: "add-my-wishlist" },
@@ -136,13 +140,10 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
   };
 
   const handleAction = (actionType: string) => {
-    setIsActionSheetOpen(false);
+    const book = edition;
+    closeActionSheet();
     if (actionType === "cancel") return;
-
-    DeviceEventEmitter.emit("BARCODE_BOOK_SCANNED", {
-      books: [edition].flat(),
-      collection: actionType,
-    });
+    saveBookToCollection(actionType as BookCollection, book);
   };
 
   const closeActionSheet = () => {
@@ -204,7 +205,7 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
       <CameraView
         onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={styles.fullScreenContainer}
-        barcodeScannerSettings={{ barcodeTypes: ["ean13"] }}
+        barcodeScannerSettings={BARCODE_SCANNER_SETTINGS}
       />
       {edition && (
         <Center>
@@ -212,18 +213,15 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
         </Center>
       )}
       <ErrorAlert message={error} />
-      <ActionSheet
+      <InlineActionSheet
         isOpen={isActionSheetOpen}
         onClose={closeActionSheet}
         actions={actions}
-        defaultLabel={
-          sourceScreen === BookCollections.WISHLIST || sourceScreen === BookCollections.LIBRARY ? "the-book-added" : null
-        }
       />
       {config && (
         <InfoDialogBox
           isOpen={isInfoDialogOpen}
-          onClose={() => setIsInfoDialogOpen(false)}
+          onClose={closeInfoDialog}
           config={config}
         />
       )}
