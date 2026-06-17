@@ -2,6 +2,7 @@ import { BookEndpoints } from "@/api/books.endpoints";
 import { ProfileEndpoints } from "@/api/profile.endpoints";
 import { AddBooksPayload, BookCollections, RemoveBooksPayload } from "@/types/book.types";
 import { createBookData } from "@/utils/helper";
+import i18n from "@/i18n";
 
   const endpointMap = {
     [BookCollections.WISHLIST]: ProfileEndpoints.WISHLIST,
@@ -29,10 +30,31 @@ export const addBookToCollections = async (
 
   const data = await response.json().catch(() => null);
 
-  if (!response.ok) {
-    throw new Error(
-      data?.message || "Failed to add books to collection"
-    );
+  const existingIds: number[] = data?.existing_edition_ids ?? [];
+
+  if (!response.ok || data?.status === "error") {
+    if (existingIds.length > 0) {
+      const existingIdSet = new Set(existingIds.map(String));
+      const existingTitles = books
+        .filter((book) => existingIdSet.has(String(book.id)))
+        .map((book) => book.title)
+        .filter(Boolean);
+
+      const titlesText =
+        existingTitles.length > 0
+          ? existingTitles.join(", ")
+          : i18n.t("this-book");
+
+      const count = existingTitles.length || 1;
+      const key =
+        collection === BookCollections.LIBRARY
+          ? "book-already-in-library"
+          : "book-already-in-wishlist";
+
+      throw new Error(i18n.t(key, { titles: titlesText, count }));
+    }
+
+    throw new Error(data?.message || "Failed to add books to collection");
   }
 
   return {

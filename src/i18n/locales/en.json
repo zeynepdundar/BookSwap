@@ -96,6 +96,15 @@
   "seconds-ago": "%{count}s ago",
   "just-now": "just now",
   "already-have-book": "You already have this book in your list",
+  "this-book": "This book",
+  "book-already-in-wishlist": {
+    "one": "%{titles} is already in your wishlist",
+    "other": "%{titles} are already in your wishlist"
+  },
+  "book-already-in-library": {
+    "one": "%{titles} is already in your library",
+    "other": "%{titles} are already in your library"
+  },
   "something-went-wrong": "Something went wrong",
   "block-and-report": "Block & Report",
   "inappropriate-behavior": "Inappropriate Behavior",
