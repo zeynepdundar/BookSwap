@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useLayoutEffect } from "react";
+import { useState, useCallback, useLayoutEffect } from "react";
 import {
   Composer,
   GiftedChat,
@@ -9,7 +9,6 @@ import {
   Bubble,
   SystemMessage,
   Message,
-  MessageText,
 } from "react-native-gifted-chat";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -24,31 +23,109 @@ import {
 } from "@react-native-firebase/firestore";
 import {
   ChevronLeftIcon,
-  Avatar,
-  Button,
   Heading,
   Icon,
-  Text,
-  View,
   Box,
-  HStack,
   Image,
   Flex,
   Divider,
+  Pressable,
+  HStack,
+  Text,
 } from "native-base";
 import Screen from "@/components/ui/Screen";
-import { ActionSheet } from "@/components/ui/ActionSheet";
-import { generateModalActions } from "@/utils/helper";
+import { generateModalActions, getImageSource } from "@/utils/helper";
+import { IMAGE_FALLBACKS } from "@/constants/image";
 import i18n from "@/i18n";
 import BlockUserModal from "@/components/Modal/BlockUserModal";
 import { useSelector } from "react-redux";
 import { initializeConversation, markMessagesAsSeen, updateLastMessage } from "@/store/messages/messages-actions";
 
+// Palette aligned with the app theme (see src/theme): primary purple + the
+// neutral "black" scale, so the chat matches the rest of the screens.
+const COLORS = {
+  primary: "#7F3DFF", // primary.500
+  bubbleLeft: "#F2F2F7", // incoming message surface
+  inputBg: "#F5F5F7", // composer pill
+  border: "#EEEEEE",
+  textDark: "#161719", // black.100
+  textMuted: "#91919F", // black.200
+};
+
+// The accept flow seeds the conversation with a plain-text message in the form
+// "Book A <---> Book B". We don't render it as a chat bubble from the accepter;
+// instead we detect it and pin a swap card to the top of the chat.
+const SWAP_SEPARATOR = "<--->";
+
+const parseSwapMessage = (text?: string) => {
+  if (!text || !text.includes(SWAP_SEPARATOR)) return null;
+  const [first, second] = text.split(SWAP_SEPARATOR);
+  const firstTitle = first?.trim();
+  const secondTitle = second?.trim();
+  if (!firstTitle || !secondTitle) return null;
+  return { firstTitle, secondTitle };
+};
+
+// Pinned banner showing the agreed exchange (two book titles), styled to echo
+// the swap card on the Received offers screen.
+const SwapBanner = ({ firstTitle, secondTitle }) => (
+  <Box
+    bg="primary.50"
+    borderWidth={1}
+    borderColor="primary.100"
+    rounded="xl"
+    px={4}
+    py={3}
+    mt={3}
+    mb={1}
+  >
+    <HStack alignItems="center" justifyContent="center" space={1.5} mb={2}>
+      <Icon as={<MaterialIcons name="swap-horiz" />} size="4" color="primary.500" />
+      <Text
+        fontSize="xs"
+        fontWeight="600"
+        color="primary.500"
+        letterSpacing={0.5}
+        textTransform="uppercase"
+      >
+        {i18n.t("agreed-swap")}
+      </Text>
+    </HStack>
+    <HStack alignItems="center" space={2}>
+      <Text
+        flex={1}
+        textAlign="center"
+        fontSize="sm"
+        fontWeight="500"
+        color="black.100"
+        numberOfLines={2}
+      >
+        {firstTitle}
+      </Text>
+      <Icon as={<MaterialIcons name="swap-horiz" />} size="5" color="primary.500" />
+      <Text
+        flex={1}
+        textAlign="center"
+        fontSize="sm"
+        fontWeight="500"
+        color="black.100"
+        numberOfLines={2}
+      >
+        {secondTitle}
+      </Text>
+    </HStack>
+  </Box>
+);
+
 export default function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([]);
+  const [swapInfo, setSwapInfo] = useState(null);
   const [actions, setActions] = useState([]);
   const { firebaseUserId: currentUserId } = useSelector(
     (state: any) => state.auth.user
+  );
+  const currentUserName = useSelector(
+    (state: any) => state.profile.profile?.name
   );
 
   const { conversationId, friend } = route.params;
@@ -64,7 +141,7 @@ export default function ChatScreen({ navigation, route }) {
 
   useLayoutEffect(() => {
     // Initialize conversation if it doesn't exist
-    initializeConversation(currentUserId, friend.userId, friend);
+    initializeConversation(currentUserId, friend.userId, friend, currentUserName);
 
     const subscriber = onSnapshot(
       query(
@@ -81,7 +158,18 @@ export default function ChatScreen({ navigation, route }) {
           },
         }));
 
-        setMessages(messages);
+        // Pull the seeded "Book A <---> Book B" message out of the bubble list
+        // and surface it as a pinned swap card instead.
+        const swapMessage = messages.find((message) =>
+          parseSwapMessage(message.text)
+        );
+        setSwapInfo(swapMessage ? parseSwapMessage(swapMessage.text) : null);
+
+        setMessages(
+          swapMessage
+            ? messages.filter((message) => message._id !== swapMessage._id)
+            : messages
+        );
 
         // The current user is viewing this chat, so mark incoming messages as
         // seen. This clears their unseen badge in the list and bottom tab.
@@ -134,14 +222,18 @@ export default function ChatScreen({ navigation, route }) {
       {...props}
       placeholder={i18n.t("text-message")}
       textInputStyle={{
-        color: "#222B45",
-        backgroundColor: "#EDF1F7",
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: "#E4E9F2",
-        paddingTop: 8.5,
-        paddingHorizontal: 12,
-        marginHorizontal: 8,
+        color: COLORS.textDark,
+        backgroundColor: COLORS.inputBg,
+        borderRadius: 22,
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingHorizontal: 16,
+        marginLeft: 12,
+        marginRight: 8,
+        marginBottom: 4,
+        fontSize: 15,
+        lineHeight: 20,
+        fontFamily: "poppins-regular",
       }}
     />
   );
@@ -151,8 +243,9 @@ export default function ChatScreen({ navigation, route }) {
         {...props}
         containerStyle={{
           backgroundColor: "#fff",
-          paddingTop: 6,
-          borderTopColor: "transparent",
+          paddingVertical: 6,
+          borderTopColor: COLORS.border,
+          borderTopWidth: 1,
         }}
         primaryStyle={{ alignItems: "center" }}
       />
@@ -163,83 +256,65 @@ export default function ChatScreen({ navigation, route }) {
       {...props}
       disabled={!props.text}
       containerStyle={{
-        width: 44,
-        height: 44,
-        alignItems: "center",
         justifyContent: "center",
-        marginHorizontal: 4,
+        alignItems: "center",
+        marginRight: 8,
+        marginBottom: 4,
       }}
     >
-      <Icon
-        size="32px"
-        color="primary.500"
-        as={<MaterialIcons name="arrow-circle-up" />}
-      />
+      <Box
+        size={9}
+        rounded="full"
+        bg={props.text ? "primary.500" : "primary.100"}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Icon
+          size="20px"
+          color={props.text ? "#fff" : "primary.500"}
+          as={<MaterialIcons name="send" />}
+        />
+      </Box>
     </Send>
   );
-  // const renderSend = useCallback((props: SendProps<IMessage>) => {
-  //   return (
-  //     <Send {...props} containerStyle={{ justifyContent: 'center' }}>
-  //       <MaterialIcons size={30} color={'tomato'} name={'send'} />
-  //     </Send>
-  //   )
-  // }, [])
-  const customSystemMessage = (props) => {
-    return (
-      <View {...props} style={{ bg: "amber.100" }}>
-        <Icon name="lock" color="#9d9d9d" size={16} />
-        <Text>
-          Your chat is secured. Remember to be cautious about what you share
-          with others.
-        </Text>
-      </View>
-    );
-  };
   const renderBubble = (props) => (
     <Bubble
       {...props}
-      containerStyle={{
-        left: {
-          borderColor: "teal",
-          borderWidth: 0,
-          marginLeft: -40,
-          alignItems: "flex-start",
-        },
-        right: {
-          borderColor: "teal",
-          borderWidth: 0,
-          marginRight: 0,
-
-          alignItems: "flex-end",
-        },
-      }}
       wrapperStyle={{
         left: {
-          borderWidth: 0,
-          backgroundColor: "#EDEDED",
+          backgroundColor: COLORS.bubbleLeft,
+          borderRadius: 18,
+          borderBottomLeftRadius: 4,
+          paddingHorizontal: 4,
+          paddingVertical: 2,
+          marginVertical: 1,
         },
         right: {
-          borderWidth: 0,
-          backgroundColor: "#7F3DFF",
+          backgroundColor: COLORS.primary,
+          borderRadius: 18,
+          borderBottomRightRadius: 4,
+          paddingHorizontal: 4,
+          paddingVertical: 2,
+          marginVertical: 1,
         },
       }}
-      bottomContainerStyle={{
+      textStyle={{
         left: {
-          borderWidth: 0,
-          backgroundColor: "white",
+          color: COLORS.textDark,
+          fontSize: 14,
+          lineHeight: 20,
+          fontFamily: "poppins-regular",
         },
         right: {
-          borderWidth: 0,
-          backgroundColor: "white",
+          color: "#FFFFFF",
+          fontSize: 14,
+          lineHeight: 20,
+          fontFamily: "poppins-regular",
         },
       }}
-      containerToNextStyle={{
-        right: { backgroundColor: "#7F3DFF" },
-        left: { backgroundColor: "#EDEDED" },
-      }}
-      containerToPreviousStyle={{
-        left: { borderColor: "transparent", borderWidth: 4 },
-        right: { borderColor: "#7F3DFF", borderWidth: 4 },
+      timeTextStyle={{
+        left: { color: COLORS.textMuted, fontSize: 11 },
+        right: { color: "rgba(255,255,255,0.7)", fontSize: 11 },
       }}
     />
   );
@@ -247,68 +322,18 @@ export default function ChatScreen({ navigation, route }) {
   const renderSystemMessage = (props) => (
     <SystemMessage
       {...props}
-      containerStyle={{ backgroundColor: "green" }}
-      wrapperStyle={{ borderWidth: 10, borderColor: "white" }}
-      textStyle={{ color: "crimson", fontWeight: "900" }}
-    />
-  );
-
-  const renderMessage = (props) => (
-    <Message
-      {...props}
-      // renderDay={() => <Text>Date</Text>}
-    />
-  );
-
-  const renderMessageText = (props) => (
-    <MessageText
-      {...props}
-      containerStyle={{
-        right: {
-          backgroundColor: "#7F31FF",
-          padding: 2,
-          borderTopLeftRadius: 12,
-          borderTopRightRadius: 12,
-          borderBottomRightRadius: 3,
-          borderBottomLeftRadius: 12,
-          marginBottom: 2,
-        },
-        left: {
-          backgroundColor: "#EDEDED",
-          padding: 2,
-          borderTopLeftRadius: 12,
-          borderTopRightRadius: 12,
-          borderBottomRightRadius: 12,
-          borderBottomLeftRadius: 3,
-          marginBottom: 2,
-        },
-      }}
+      containerStyle={{ backgroundColor: "transparent", marginVertical: 8 }}
+      wrapperStyle={{ borderWidth: 0 }}
       textStyle={{
-        left: {
-          color: "#505066",
-          fontSize: 14,
-        },
-        right: {
-          color: "#FFFFFF",
-          fontSize: 14,
-        },
-      }}
-      customTextStyle={{
-        fontSize: 14,
-        lineHeight: 24,
+        color: COLORS.textMuted,
+        fontSize: 12,
+        fontFamily: "poppins-regular",
       }}
     />
   );
 
-  const renderCustomView = ({ user }) => (
-    <View style={{ minHeight: 20, alignItems: "center" }}>
-      <Text>
-        Current user:
-        {user.name}
-      </Text>
-      <Text>From CustomView</Text>
-    </View>
-  );
+  const renderMessage = (props) => <Message {...props} />;
+
   const [isBlockUserModalOpen, setIsBlockUserModalOpen] =
     useState<boolean>(false);
 
@@ -317,50 +342,39 @@ export default function ChatScreen({ navigation, route }) {
       <>
         <Flex
           direction="row"
-          justifyContent="space-between"
           w="100%"
-          alignSelf="center"
           alignItems="center"
-          py={1}
+          py={2}
         >
-          <Button
-            backgroundColor="transparent"
-            variant="ghost"
-            leftIcon={<ChevronLeftIcon size="6" color="#212325" />}
-            _pressed={{ bg: "transparent" }}
-            onPress={onBackPress}
-          />
+          <Pressable onPress={onBackPress} p={1} _pressed={{ opacity: 0.5 }}>
+            <ChevronLeftIcon size="6" color="black.100" />
+          </Pressable>
           <Box
-            size={12}
+            size={10}
             rounded="full"
-            backgroundColor="#e0e0e0"
+            backgroundColor="black.900"
             overflow="hidden"
+            ml={1}
           >
-            {avatarUri && (
-              <Image
-                source={{ uri: avatarUri }}
-                alt="Profile Image"
-                size={12}
-                rounded="full"
-              />
-            )}
+            <Image
+              source={getImageSource(avatarUri, IMAGE_FALLBACKS.USER_AVATAR)}
+              alt="Profile Image"
+              size={10}
+              rounded="full"
+            />
           </Box>
-          <Heading pl="3" width="56%">
+          <Heading size="lg" flex={1} numberOfLines={1} ml={3}>
             {title}
           </Heading>
-          <Button
-            backgroundColor="transparent"
-            variant="ghost"
-            leftIcon={<MaterialIcons name="remove-circle-outline" size={30} />}
-            _pressed={{
-              bg: "transparent",
-            }}
-            onPress={onOptionsPress}
-            py={1}
-            px={4}
-          />
+          <Pressable onPress={onOptionsPress} p={2} _pressed={{ opacity: 0.5 }}>
+            <Icon
+              as={<MaterialIcons name="more-vert" />}
+              size="6"
+              color="black.100"
+            />
+          </Pressable>
         </Flex>
-        <Divider ml="-15" width="110%" bg="#EEEEEE" />
+        <Divider mx={-4} bg={COLORS.border} />
       </>
     );
   };
@@ -411,14 +425,20 @@ export default function ChatScreen({ navigation, route }) {
         onBackPress={handleBackPress}
         onOptionsPress={handleOptionsPress}
       />
+      {swapInfo && (
+        <SwapBanner
+          firstTitle={swapInfo.firstTitle}
+          secondTitle={swapInfo.secondTitle}
+        />
+      )}
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}
         renderInputToolbar={(props) => customtInputToolbar(props)}
         renderSystemMessage={renderSystemMessage}
         renderMessage={renderMessage}
-        renderMessageText={renderMessageText}
         renderBubble={renderBubble}
+        renderAvatar={null}
         messagesContainerStyle={{ backgroundColor: "#FFFFFF" }}
         renderComposer={renderComposer}
         renderSend={renderSend}
@@ -430,8 +450,8 @@ export default function ChatScreen({ navigation, route }) {
         }}
         infiniteScroll
         timeTextStyle={{
-          left: { color: "#505066" },
-          right: { color: "#505066" },
+          left: { color: COLORS.textMuted },
+          right: { color: "rgba(255,255,255,0.7)" },
         }}
       />
       <BlockUserModal
