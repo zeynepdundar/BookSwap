@@ -75,6 +75,7 @@
   "see-my-wishlist": "İstek listeme git",
   "see-my-library": "Kitaplığıma git",
   "swap-proposal": "Takas Teklifi",
+  "agreed-swap": "Anlaşılan Takas",
   "book-you-will-give": "Vereceğin kitap",
   "book-you-will-receive": "Alacağın kitap",
   "library-empty": "Kitaplığın Boş",
@@ -97,6 +98,7 @@
   "just-now": "şimdi",
   "already-have-book": "Bu kitap listende zaten mevcut",
   "this-book": "Bu kitap",
+  "you": "Sen",
   "book-already-in-wishlist": {
     "one": "%{titles} zaten istek listende mevcut",
     "other": "%{titles} zaten istek listende mevcut"

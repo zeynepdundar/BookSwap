@@ -1,14 +1,12 @@
 import  { useEffect, useState } from "react";
 
 import Screen from "@/components/ui/Screen";
+import ScreenHeader from "@/components/ui/ScreenHeader";
 import {
   Badge,
-  Box,
-  Center,
   Divider,
   FlatList,
   Flex,
-  Heading,
   Image,
   Pressable,
   Text,
@@ -105,12 +103,7 @@ export default function MessagesScreen({ navigation }) {
 
   return (
 <Screen>
-  {/* Header */}
-  <Center w="100%" h="60px">
-    <Heading>
-      {i18n.t("messages")}
-    </Heading>
-  </Center>
+  <ScreenHeader title={i18n.t("messages")} />
 
   {/* EMPTY STATE */}
   {!messages || messages.length === 0 ? (
@@ -130,20 +123,18 @@ export default function MessagesScreen({ navigation }) {
       data={messages}
       keyExtractor={(item) => item.conversationId}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingVertical: 8 }}
+      contentContainerStyle={{ paddingTop: 8 }}
       ItemSeparatorComponent={() => (
-        <Divider ml={16} bg="coolGray.100" />
+        <Divider ml={15} bg="coolGray.100" />
       )}
       renderItem={({ item }) => {
         const friendProfile = userProfiles[item.userId];
-        console.log("frienD", friendProfile)
 
         return (
           <Pressable onPress={() => handleStartChat(friendProfile)}>
             <Flex
               direction="row"
               alignItems="center"
-              px={4}
               py={3}
               bg="transparent"
             >
@@ -165,12 +156,17 @@ export default function MessagesScreen({ navigation }) {
                 </Text>
 
                 <Text fontSize="sm" color="coolGray.500" numberOfLines={1}>
+                  {item.lastMessageIsMine && (
+                    <Text fontWeight="500" color="coolGray.600">
+                      {i18n.t("you")}:{" "}
+                    </Text>
+                  )}
                   {truncateText(item.lastMessageText, 28)}
                 </Text>
               </VStack>
 
               {/* Right side meta */}
-              <VStack alignItems="flex-end" justifyContent="center">
+              <VStack alignItems="flex-end" justifyContent="center" space={1.5} ml={2}>
                 <Text fontSize="xs" color="coolGray.400">
                   {formatLastMessageTime(
                     item.lastMessageTime,

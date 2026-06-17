@@ -42,7 +42,13 @@ export const subscribeToMessages = (
   let conversations: any[] = [];
   const derived: Record<
     string,
-    { unseenCount: number; lastMessageText?: string; lastMessageTime?: Date }
+    {
+      unseenCount: number;
+      lastMessageText?: string;
+      lastMessageTime?: Date;
+      lastMessageSenderId?: string;
+      lastMessageIsMine?: boolean;
+    }
   > = {};
   const messageUnsubs: Record<string, () => void> = {};
 
@@ -58,6 +64,10 @@ export const subscribeToMessages = (
           // conversation doc only updates when they send).
           lastMessageText: d?.lastMessageText ?? conv.lastMessageText,
           lastMessageTime: d?.lastMessageTime ?? conv.lastMessageTime,
+          // Whether the last message was sent by the current user (for the
+          // "You: ..." prefix in the list).
+          lastMessageSenderId: d?.lastMessageSenderId,
+          lastMessageIsMine: d?.lastMessageIsMine ?? false,
         };
       })
       // Most recent conversation on top, like WhatsApp.
@@ -82,6 +92,7 @@ export const subscribeToMessages = (
         let unseenCount = 0;
         let latestText: string | undefined;
         let latestTime: Date | undefined;
+        let latestSenderId: string | undefined;
 
         snap.forEach((messageDoc) => {
           const message = messageDoc.data();
@@ -95,6 +106,7 @@ export const subscribeToMessages = (
           if (createdAt && (!latestTime || createdAt > latestTime)) {
             latestTime = createdAt;
             latestText = message.text ?? "";
+            latestSenderId = message.senderId;
           }
         });
 
@@ -102,6 +114,9 @@ export const subscribeToMessages = (
           unseenCount,
           lastMessageText: latestText,
           lastMessageTime: latestTime,
+          lastMessageSenderId: latestSenderId,
+          lastMessageIsMine:
+            !!latestSenderId && latestSenderId === firebaseUserId,
         };
         emit();
       },
@@ -296,7 +311,8 @@ export const markMessagesAsSeen = async (
 export const initializeConversation = async (
   currentUserId: string,
   friendUserId: string,
-  friend: any
+  friend: any,
+  currentUserName?: string
 ) => {
   try {
     if (!currentUserId || !friendUserId) {
@@ -306,32 +322,45 @@ export const initializeConversation = async (
 
     console.log("🆕 Initializing conversation between:", currentUserId, "and", friendUserId);
 
-    const conversationData = {
-      userId: friendUserId,
-      conversationId: `${currentUserId}_${friendUserId}`,
+    const db = getFirestore();
+    const now = Timestamp.now();
+
+    // A conversation only shows up in a user's Messages list when their own
+    // `Users/{uid}/conversations/{friend}` doc exists. The preview text and
+    // unseen count are derived live from the shared Conversations/messages
+    // collection, so the doc itself just needs to point at the other user.
+    //
+    // Create the doc for BOTH participants so the chat is visible to each side
+    // immediately — otherwise the person who didn't open/initialize the chat
+    // (e.g. the user whose offer was accepted) never sees it appear.
+    const buildDoc = (selfId: string, otherId: string, otherName?: string) => ({
+      userId: otherId,
+      conversationId: `${selfId}_${otherId}`,
       lastMessageText: "",
-      lastMessageTime: Timestamp.now(),
+      lastMessageTime: now,
       unseenCount: 0,
       friend: {
-        id: friendUserId,
-        name: friend?.name || "Unknown",
+        id: otherId,
+        name: otherName || "Unknown",
       },
-    };
+    });
 
-    // Initialize for current user
-    await setDoc(
-      doc(
-        getFirestore(),
-        "Users",
-        currentUserId,
-        "conversations",
-        friendUserId
+    await Promise.all([
+      // Current user's side
+      setDoc(
+        doc(db, "Users", currentUserId, "conversations", friendUserId),
+        buildDoc(currentUserId, friendUserId, friend?.name),
+        { merge: true }
       ),
-      conversationData,
-      { merge: true }
-    );
+      // Friend's side, so the conversation is visible to them too
+      setDoc(
+        doc(db, "Users", friendUserId, "conversations", currentUserId),
+        buildDoc(friendUserId, currentUserId, currentUserName),
+        { merge: true }
+      ),
+    ]);
 
-    console.log("✅ Conversation initialized successfully");
+    console.log("✅ Conversation initialized for both participants");
   } catch (error) {
     console.error("❌ Failed to initialize conversation:", error);
   }
