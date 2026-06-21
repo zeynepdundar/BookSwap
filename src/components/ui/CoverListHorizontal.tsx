@@ -53,16 +53,12 @@ export const CoverListHorizontal = ({
               </Box>
             </>
           ) : (
-            //            <Pressable
-            //              key={item.id}
-            //              onPress={() => {
-            //                navigation.navigate("BookSearch", {
-            //                  sourceScreen: "Home",
-            //                  // searchedBook: item.title,
-            //                });
-            //               }}
-            //            >
-            <>
+            <Pressable
+              key={item.id}
+              onPress={() =>
+                navigation?.navigate("BookDetail", { book: item })
+              }
+            >
               <Box pt={2} h="160px" w="100%">
                 <AspectRatio ratio={2 / 3} w="90%" h="100%">
                   <Image
@@ -99,8 +95,7 @@ export const CoverListHorizontal = ({
               >
                 {item.author}
               </Text>
-            </>
-            //       </Pressable>
+            </Pressable>
           )}
         </VStack>
       )}

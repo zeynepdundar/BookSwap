@@ -18,27 +18,19 @@ export const getImageSource = (
   fallbackImage: ImageSourcePropType
 ): ImageSourcePropType =>
   photoUrl?.trim() ? { uri: photoUrl } : fallbackImage;
-  
-export const createBookData = (books) => {
-  if (Array.isArray(books)) {
-    // If books is an array, map over it and apply createBookData for each item
-    return books.reverse().map((book) => createBookData(book));
-  }
 
-  // If books is not an array, create an array with book data for a single item
-  return {
-    id: books.id,
-    title: books.title,
-    publisher: Array.isArray(books.publishers)
-      ? books.publishers[0] || null
-      : books.publisher || null,
-    coverUrl: getCoverUrl(books),
-    author:
-      books.authors && books.authors.length > 0
-        ? books.authors[0]?.name
-        : books.author || null,
-  };
-};
+export const mapBookData = (book) => ({
+  id: book.id,
+  title: book.title ?? "",
+  publisher: book.publishers?.[0] ?? null,
+  coverUrl: book.cover_file_name || getCoverUrl(book),
+  author: book.author ?? null,
+  isbn_13: book.isbn_13?.[0] ?? null,
+  usersOwning: book.users_owning ?? [],
+});
+
+export const mapBooksData = (books = []) =>
+  books.map(mapBookData);
 
 export const structureOfferData = (offers, type) => {
   if (type === "history") {

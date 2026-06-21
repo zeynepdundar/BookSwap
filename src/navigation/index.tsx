@@ -9,6 +9,7 @@ import ProfileStack from "./ProfileStack";
 import OtherUserProfileScreen from "@/screens/OtherUserProfile";
 import ChatScreen from "@/screens/Messages/ChatScreen";
 import OtherLibraryScreen from "@/screens/OtherLibraryScreen";
+import BookDetailScreen from "@/screens/BookDetailScreen";
 import { RootState } from "@/store/types";
 import { RootStackParamList } from "@/types/navigation.types";
 import SwapOfferProposal from "@/screens/SwapOfferProposal";
@@ -56,6 +57,7 @@ export default function Navigation() {
             <Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen} />
             <Stack.Screen name="BarcodeScanner" component={BarcodeScannerScreen} />
             <Stack.Screen name="BookSearch" component={BookSearchScreen} />
+            <Stack.Screen name="BookDetail" component={BookDetailScreen} />
             <Stack.Screen name="SwapOfferProposal" component={SwapOfferProposal} />
             <Stack.Screen name="SwapOfferAcceptedScreen" component={SwapOfferAcceptedScreen} />
             <Stack.Screen name="OtherLibrary" component={OtherLibraryScreen} />

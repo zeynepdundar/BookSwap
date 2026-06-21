@@ -55,6 +55,7 @@ export type RootStackParamList = {
   BarcodeScanner: undefined;
   BookSearchFromList: undefined;
   BookSearch: undefined;
+  BookDetail: undefined;
   SwapOfferProposal: undefined;
   SwapOfferAcceptedScreen: undefined;
   OtherLibrary: undefined;
