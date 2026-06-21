@@ -15,7 +15,7 @@ import {
 } from "expo-image-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import i18n from "@/i18n";
-import { ErrorAlert } from "./ErrorAlert";
+import { useAppToast } from "@/hooks/useAppToast";
 import { IMAGE_FALLBACKS } from "@/constants/image";
 
 
@@ -29,7 +29,7 @@ const ImagePicker = ({
   initialImage?: any;
 }) => {
   const [pickedImage, setPickedImage] = useState(initialImage || "");
-  const [error, setError] = useState(null);
+  const toast = useAppToast();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
@@ -69,12 +69,9 @@ const ImagePicker = ({
       setPickedImage(newImageUri);
       selectedImage( newImageUri );
     } else {
-      setError(
+      toast.error(
         `The selected image is too large. Maximum allowed size is ${MAX_IMAGE_SIZE_MB} MB.`
       );
-      setTimeout(() => {
-        setError("")
-      }, 1500);
     }
 
   };
@@ -152,7 +149,6 @@ const ImagePicker = ({
           <AddIcon color="#545454" />
         </Badge>
       </Pressable>
-      <ErrorAlert message={error} onDismiss={() => setError("")} />
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content>
           <Actionsheet.Item onPress={uploadImageHandler}>

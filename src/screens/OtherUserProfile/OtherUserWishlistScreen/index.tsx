@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { BookListVertical } from "@/components/ui/BookListVertical";
 import { Center } from "native-base";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
-import { ErrorAlert } from "@/components/ui/ErrorAlert";
+import { useAppToast } from "@/hooks/useAppToast";
 import { Book, BookCollections } from "@/types/book.types";
 import { Keyboard } from "react-native";
 import { ActionSheet } from "@/components/ui/ActionSheet";
@@ -12,7 +12,7 @@ import i18n from "@/i18n";
 
 export default function OtherUserWishlistScreen({ navigation, wishedBook }) {
   const [wishedBooks, setWishedBook] = useState(wishedBook);
-  const [listError, setListError] = useState<string | null>(null);
+  const toast = useAppToast();
   const [selectedBook, setSelectedBook] = useState<any>(null);
 
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
@@ -30,12 +30,11 @@ export default function OtherUserWishlistScreen({ navigation, wishedBook }) {
   }, []);
   const pressDoneHandler = async ({ collection, books }) => {
     Keyboard.dismiss();
-    setListError(null);
 
     const targetCollection = collection;
 
     if (!targetCollection) {
-      setListError("No collection type specified.");
+      toast.error("No collection type specified.");
       return { success: false };
     }
 
@@ -46,7 +45,7 @@ export default function OtherUserWishlistScreen({ navigation, wishedBook }) {
       });
       return { success: true };
     } catch (error: any) {
-      setListError(error.message || "Failed to add book.");
+      toast.error(error.message || "Failed to add book.");
       return { success: false };
     }
   };
@@ -120,8 +119,6 @@ export default function OtherUserWishlistScreen({ navigation, wishedBook }) {
           config={config}
         />
       )}
-      <ErrorAlert message={listError} onDismiss={() => setListError(null)} />
-
     </Center>
   );
 }

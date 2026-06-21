@@ -22,7 +22,7 @@ import {
 import i18n from "@/i18n";
 import Screen from "@/components/ui/Screen";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
-import { ErrorAlert } from "@/components/ui/ErrorAlert";
+import { useAppToast } from "@/hooks/useAppToast";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
 import { fetchBooksByISBN } from "@/services/books/books.service";
 import { BookCollection, BookCollections } from "@/types/book.types";
@@ -50,8 +50,7 @@ export default function BookDetailScreen({ navigation, route }) {
   const [isInfoDialogOpen, setIsInfoDialogOpen] =
     useState(false);
 
-  const [listError, setListError] =
-    useState<string | null>(null);
+  const toast = useAppToast();
 
 
   useEffect(() => {
@@ -111,8 +110,6 @@ export default function BookDetailScreen({ navigation, route }) {
     actionType: BookCollection
   ) => {
 
-    setListError(null);
-
     try {
 
       await addBooksToCollection({
@@ -130,10 +127,7 @@ export default function BookDetailScreen({ navigation, route }) {
 
     } catch (error: any) {
 
-      setListError(
-        error.message ??
-        "Failed to add book"
-      );
+      toast.error(error.message ?? "Failed to add book");
     }
   };
 
@@ -501,12 +495,6 @@ export default function BookDetailScreen({ navigation, route }) {
 
         />
       }
-
-
-      <ErrorAlert
-        message={listError}
-        onDismiss={() => setListError(null)}
-      />
 
 
     </Screen>

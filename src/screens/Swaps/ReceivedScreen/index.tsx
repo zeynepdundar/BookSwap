@@ -23,7 +23,7 @@ import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 import { acceptOfferAsync, fetchReceivedOffersAsync, rejectOfferAsync } from "@/store/offers/thunks";
 import { offersSelectors } from "@/store/offers/slice";
-import { ErrorAlert } from "@/components/ui/ErrorAlert";
+import { useAppToast } from "@/hooks/useAppToast";
 import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 
@@ -33,7 +33,7 @@ export default function ReceivedScreen({ navigation }) {
     useState<any[]>(receivedOffers);
   const [refreshing, setRefreshing] = useState(false);
   const { loading, profile } = useSelector((state: any) => state.profile);
-  const [error, setError] = useState<string | null>(null);
+  const toast = useAppToast();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
 
@@ -83,8 +83,8 @@ export default function ReceivedScreen({ navigation }) {
   }, [dispatch, profile.id]);
 
   const showError = useCallback((message: string) => {
-    setError(message);
-  }, []);
+    toast.error(message);
+  }, [toast]);
 
   const acceptOfferHandler = async (offer: any) => {
     try {
@@ -385,7 +385,6 @@ export default function ReceivedScreen({ navigation }) {
         onClose={() => setIsInfoDialogOpen(false)}
         config={config}
       />
-      <ErrorAlert message={error} onDismiss={() => setError(null)} />
     </>
   );
 }
