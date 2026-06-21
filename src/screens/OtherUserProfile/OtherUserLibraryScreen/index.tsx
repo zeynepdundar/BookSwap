@@ -144,7 +144,7 @@ export default function OtherUserWishlistScreen({
           config={config}
         />
       )}
-      <ErrorAlert message={listError} />
+      <ErrorAlert message={listError} onDismiss={() => setListError(null)} />
     </Center>
   );
 }

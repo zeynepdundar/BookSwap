@@ -212,7 +212,7 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
           <BookInfoBox edition={edition} handleAddBookPress={handleAddBook} />
         </Center>
       )}
-      <ErrorAlert message={error} />
+      <ErrorAlert message={error} onDismiss={() => setError(null)} />
       <InlineActionSheet
         isOpen={isActionSheetOpen}
         onClose={closeActionSheet}

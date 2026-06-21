@@ -267,7 +267,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
           />
         )}
 
-        <ErrorAlert message={listError} />
+        <ErrorAlert message={listError} onDismiss={() => setListError(null)} />
 
 
       </Screen>
