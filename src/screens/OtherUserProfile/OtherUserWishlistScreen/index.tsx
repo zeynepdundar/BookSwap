@@ -120,7 +120,7 @@ export default function OtherUserWishlistScreen({ navigation, wishedBook }) {
           config={config}
         />
       )}
-      <ErrorAlert message={listError} />
+      <ErrorAlert message={listError} onDismiss={() => setListError(null)} />
 
     </Center>
   );

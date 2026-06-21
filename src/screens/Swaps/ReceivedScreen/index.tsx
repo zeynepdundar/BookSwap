@@ -82,11 +82,8 @@ export default function ReceivedScreen({ navigation }) {
     await dispatch(((fetchReceivedOffersAsync as any)()));
   }, [dispatch, profile.id]);
 
-  const showError = useCallback((message: string, durationMs: number = 5000) => {
+  const showError = useCallback((message: string) => {
     setError(message);
-    setTimeout(() => {
-      setError(null);
-    }, durationMs);
   }, []);
 
   const acceptOfferHandler = async (offer: any) => {
@@ -112,7 +109,7 @@ export default function ReceivedScreen({ navigation }) {
           ? i18n.t("offer-not-found-or-eligible-for-acceptance")
           : payload?.message ?? i18n.t("something-went-wrong");
 
-      showError(errorMessage, 5000);
+      showError(errorMessage);
       await refreshReceivedOffers();
     } catch (error) {
       showError(i18n.t("something-went-wrong"));
@@ -388,7 +385,7 @@ export default function ReceivedScreen({ navigation }) {
         onClose={() => setIsInfoDialogOpen(false)}
         config={config}
       />
-      <ErrorAlert message={error} />
+      <ErrorAlert message={error} onDismiss={() => setError(null)} />
     </>
   );
 }

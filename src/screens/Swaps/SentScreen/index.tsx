@@ -89,13 +89,11 @@ export default function SentScreen({ navigation }) {
             : payload.message;
 
         setError(errorMessage);
-        setTimeout(() => setError(null), 5000);
         dispatch(fetchSentOffersAsync());
         return;
       }
     } catch (error) {
       setError(i18n.t("something-went-wrong"));
-      setTimeout(() => setError(null), 5000);
       dispatch(fetchSentOffersAsync());
     }
   };
@@ -215,7 +213,7 @@ export default function SentScreen({ navigation }) {
           )}
         />
       )}
-      <ErrorAlert message={error} />
+      <ErrorAlert message={error} onDismiss={() => setError(null)} />
     </>
   );
 }

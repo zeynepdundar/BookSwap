@@ -9,7 +9,6 @@ import {
 } from "@expo/vector-icons";
 import {
   Box,
-  Button,
   ChevronLeftIcon,
   ChevronRightIcon,
   HStack,
@@ -22,7 +21,6 @@ import {
 } from "native-base";
 import i18n from "@/i18n";
 import Screen from "@/components/ui/Screen";
-import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
@@ -507,6 +505,7 @@ export default function BookDetailScreen({ navigation, route }) {
 
       <ErrorAlert
         message={listError}
+        onDismiss={() => setListError(null)}
       />
 
 

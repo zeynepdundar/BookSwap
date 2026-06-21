@@ -152,7 +152,7 @@ const ImagePicker = ({
           <AddIcon color="#545454" />
         </Badge>
       </Pressable>
-      <ErrorAlert message={error} />
+      <ErrorAlert message={error} onDismiss={() => setError("")} />
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content>
           <Actionsheet.Item onPress={uploadImageHandler}>
