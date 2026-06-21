@@ -9,7 +9,7 @@ import { fetchBooksByTitle } from "@/services/books/books.service";
 import { Book, BookCollections } from "@/types/book.types";
 import { BookListVertical } from "@/components/ui/BookListVertical";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
-import { ErrorAlert } from "@/components/ui/ErrorAlert";
+import { useAppToast } from "@/hooks/useAppToast";
 import { BorderedBookListVertical } from "@/components/ui/BorderedBookListVertical";
 import Screen from "@/components/ui/Screen";
 import { generateActions } from "@/utils/helper";
@@ -22,13 +22,13 @@ export default function BookSearchScreen({ navigation, route = null }) {
   const collectionType = sourceScreen?.toLowerCase();
 
   const { addBooksToCollection } = useAddBooksToCollection();
+  const toast = useAppToast();
   const inputRef = useRef(null);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [listError, setListError] = useState<string | null>(null);
 
   // Unified ActionSheet and Dialog UI Overlay states
   const [isActionSheetOpen, setIsActionSheetOpen] = useState<boolean>(false);
@@ -39,12 +39,11 @@ export default function BookSearchScreen({ navigation, route = null }) {
   const pressDoneHandler = async ({ collection, books }) => {
     Keyboard.dismiss();
     inputRef.current?.blur?.();
-    setListError(null);
 
     const targetCollection = collection ?? collectionType;
 
     if (!targetCollection) {
-      setListError("No collection type specified.");
+      toast.error("No collection type specified.");
       return { success: false };
     }
 
@@ -55,7 +54,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
       });
       return { success: true };
     } catch (error: any) {
-      setListError(error.message || "Failed to add book.");
+      toast.error(error.message || "Failed to add book.");
       return { success: false };
     }
   };
@@ -137,19 +136,9 @@ export default function BookSearchScreen({ navigation, route = null }) {
     });
   };
 
-  useEffect(() => {
-    if (listError) {
-      const timer = setTimeout(() => {
-        setListError(null);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [listError]);
-
   useFocusEffect(
     useCallback(() => {
       return () => {
-        setListError(null);
         setIsInfoDialogOpen(false);
         setIsActionSheetOpen(false);
       };
@@ -266,10 +255,6 @@ export default function BookSearchScreen({ navigation, route = null }) {
             config={config}
           />
         )}
-
-        <ErrorAlert message={listError} onDismiss={() => setListError(null)} />
-
-
       </Screen>
     </TouchableWithoutFeedback>
   );

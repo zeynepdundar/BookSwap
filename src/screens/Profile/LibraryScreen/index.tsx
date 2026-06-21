@@ -1,16 +1,17 @@
 import {
   Center,
   Icon,
-  Fab,
   Text,
-  Divider,
   VStack,
+  Pressable,
+  Box,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import i18n from "@/i18n";
 import Screen from "@/components/ui/Screen";
 import { BookListVertical } from "@/components/ui/BookListVertical";
+import { useAppToast } from "@/hooks/useAppToast";
 import { useSelector } from "react-redux";
 import { selectLibraryBooks } from "@/store/selectors";
 import { useAppDispatch } from "@/store";
@@ -20,14 +21,23 @@ import { removeBookFromCollectionAsync } from "@/store/books/thunks";
 import ScreenHeader from "@/components/ui/ScreenHeader";
 
 const RemoveBookButton = ({ onPress }) => (
-  <Icon
+  <Pressable
     onPress={onPress}
-    name={"delete-forever"}
-    variant="solid"
-    size="lg"
-    color="primary.100"
-    as={MaterialIcons}
-  />
+    w="9"
+    h="9"
+    rounded="full"
+    alignItems="center"
+    justifyContent="center"
+    bg="black.900"
+    _pressed={{ bg: "error.500:alpha.10" }}
+  >
+    <Icon
+      name="delete-outline"
+      size="md"
+      color="black.300"
+      as={MaterialIcons}
+    />
+  </Pressable>
 );
 
 const AddBookToProposalButton = ({ onPress }) => (
@@ -43,6 +53,7 @@ const AddBookToProposalButton = ({ onPress }) => (
 
 export default function LibraryScreen({ navigation, route }) {
   const dispatch = useAppDispatch();
+  const toast = useAppToast();
 
   const navigationState = useNavigationState((state) => state);
 
@@ -68,9 +79,12 @@ export default function LibraryScreen({ navigation, route }) {
 
   const removeBookButton = (book) => (
     <RemoveBookButton
-      onPress={() =>
-        dispatch(removeBookFromCollectionAsync({ bookIds: [book.id], collection: BookCollections.LIBRARY }))
-      }
+      onPress={async () => {
+        await dispatch(
+          removeBookFromCollectionAsync({ bookIds: [book.id], collection: BookCollections.LIBRARY })
+        ).unwrap();
+        toast.info(i18n.t("removed-from-list"));
+      }}
     />
   );
   const selectedBooksAction = isTradeProposal ? addBookToProposalButton : removeBookButton;
@@ -82,50 +96,100 @@ export default function LibraryScreen({ navigation, route }) {
         onBack={() => navigation.goBack()}
       />
       {libraryBooks.length === 0 && (
-        <VStack width="100%" height={200} mt="100">
-          <Center>
-            <Icon
-              name={"bookmark"}
-              color="primary.100"
-              variant="solid"
-              size="lg"
-              as={MaterialIcons}
-            />
+        <Center flex={1} px={8}>
+          <VStack space={4} alignItems="center">
 
-            <Text fontSize="md">{i18n.t("no-books-in-your-library-yet")}</Text>
-          </Center>
-          <Center w="100%">
-            <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
+            <Box
+              w="58px"
+              h="58px"
+              rounded="full"
+              bg="coolGray.100"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Icon
+                as={MaterialIcons}
+                name="menu-book"
+                size="lg"
+                color="coolGray.400"
+              />
+            </Box>
 
-            <Text textAlign="center" mx="30" fontWeight="200">
+            <Text fontSize="18" fontWeight="600" textAlign="center">
+              Your library is empty
+            </Text>
+
+            <Text
+              fontSize="13"
+              color="coolGray.500"
+              textAlign="center"
+              lineHeight={18}
+            >
               {i18n.t("add-books-to-your-library-to-swap-books")}
             </Text>
-          </Center>
-        </VStack>
-      )}
 
+            <Pressable
+              onPress={() =>
+                navigation.navigate("BookSearch", {
+                  sourceScreen: BookCollections.LIBRARY,
+                })
+              }
+              mt={4}
+            >
+              <Box
+                bg="primary.500"
+                px={5}
+                py={3}
+                rounded="full"
+                shadow={4}
+              >
+                <Text color="white" fontWeight="600">
+                  Add books
+                </Text>
+              </Box>
+            </Pressable>
+
+          </VStack>
+        </Center>
+      )}
       {libraryBooks.length > 0 && (
         <BookListVertical
           data={libraryBooks}
           onPrimaryAction={selectedBooksAction}
         />
       )}
-      {showFab && (
-        <Fab
+      {showFab && libraryBooks.length > 0 &&
+        <Pressable
           onPress={() =>
             navigation.navigate("BookSearch", {
               sourceScreen: BookCollections.LIBRARY,
             })
           }
-          renderInPortal={false}
-          shadow={2}
-          size="sm"
-          bgColor="primary.500"
-          right={35}
-          bottom={70}
-          icon={<Icon color="white" as={MaterialIcons} name="add" size="md" />}
-        />
-      )}
+          position="absolute"
+          right={6}
+          bottom={10}
+        >
+          <Box
+            flexDirection="row"
+            alignItems="center"
+            bg="primary.500"
+            px={4}
+            py={3}
+            rounded="full"
+            shadow={6}
+          >
+            <Icon
+              as={MaterialIcons}
+              name="add"
+              color="white"
+              size="sm"
+            />
+            <Text ml={2} color="white" fontWeight="600">
+              Add
+            </Text>
+          </Box>
+        </Pressable>
+      }
     </Screen>
   );
 }

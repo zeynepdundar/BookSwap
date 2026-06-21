@@ -42,7 +42,7 @@ const ListRow = React.memo(function ListRow({
 
   return (
     <>
-      <Box height="125" mx="2" pl="2" ml="2" key={item.id} overflow="hidden">
+      <Box height="125" mx="2" px="2" key={item.id} overflow="hidden">
         <HStack justifyContent="space-between" width="100%" space={3} py={1}>
           <AspectRatio w={{ base: "22%", md: "18%" }} ratio={40 / 62} maxWidth="80px">
             <Image
@@ -57,7 +57,7 @@ const ListRow = React.memo(function ListRow({
               roundedRight="4"
             />
           </AspectRatio>
-          <VStack width={198}>
+          <VStack flex={1}>
             <Text color="#000000" fontSize="15" numberOfLines={2} lineHeight="18">
               {truncateText(formatText(item.title), 44)}
             </Text>
@@ -92,7 +92,6 @@ const ListRow = React.memo(function ListRow({
               </Pressable>
             )}
           </VStack>
-          <Spacer />
           <VStack>
             {onPrimaryAction && onPrimaryAction(item)}
             {!onPrimaryAction && (
@@ -165,7 +164,9 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   const keyExtractorCb = useCallback((item: any) => item.id, []);
 
   return (
-    <FlatList
+
+
+      <FlatList
       data={data}
       initialNumToRender={10}
       maxToRenderPerBatch={10}
@@ -175,7 +176,12 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
       renderItem={renderItemCb}
       keyExtractor={keyExtractorCb}
       windowSize={7}
-      removeClippedSubviews
+      contentContainerStyle={{
+        paddingTop: 8,
+        paddingBottom: 120,
+        paddingHorizontal: 12,
+        gap: 10, // 💡 IMPORTANT (Apple-like spacing)
+      }}
     />
 
   );

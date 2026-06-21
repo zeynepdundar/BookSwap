@@ -22,13 +22,13 @@ import i18n from "@/i18n";
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { fetchSentOffersAsync, takeBackOfferAsync } from "@/store/offers/thunks";
 import { offersSelectors } from "@/store/offers/slice";
-import { ErrorAlert } from "@/components/ui/ErrorAlert";
+import { useAppToast } from "@/hooks/useAppToast";
 import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";
 import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 
 export default function SentScreen({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const toast = useAppToast();
 
   // Direct single source of truth from Redux
   const sentOffers = useSelector(offersSelectors.sent.selectAll);
@@ -88,12 +88,12 @@ export default function SentScreen({ navigation }) {
             ? i18n.t("offer-not-found-or-eligible-for-taking-back")
             : payload.message;
 
-        setError(errorMessage);
+        toast.error(errorMessage);
         dispatch(fetchSentOffersAsync());
         return;
       }
     } catch (error) {
-      setError(i18n.t("something-went-wrong"));
+      toast.error(i18n.t("something-went-wrong"));
       dispatch(fetchSentOffersAsync());
     }
   };
@@ -213,7 +213,6 @@ export default function SentScreen({ navigation }) {
           )}
         />
       )}
-      <ErrorAlert message={error} onDismiss={() => setError(null)} />
     </>
   );
 }

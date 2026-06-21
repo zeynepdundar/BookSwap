@@ -31,7 +31,7 @@ import i18n from "@/i18n";
 import { BookCollection, BookCollections } from "@/types/book.types";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { fetchBooksByISBN } from "@/services/books/books.service";
-import { ErrorAlert } from "@/components/ui/ErrorAlert";
+import { useAppToast } from "@/hooks/useAppToast";
 import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
 
 // Hoisted so the object identity stays stable across renders and the native
@@ -45,7 +45,7 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [edition, setEdition] = useState(null);
-  const [error, setError] = useState(null);
+  const toast = useAppToast();
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
   const [selectedAction, setSelectedAction] = useState<BookCollection | null>(null);
   const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
@@ -61,7 +61,6 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
   useEffect(() => {
     const resetScannedResult = () => {
       setScanned(false);
-      setError(null);
     };
 
     const timer = setTimeout(() => {
@@ -92,17 +91,17 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
       setScanned(true);
       const fetchedEditions = await fetchBooksByISBN(data);
       if (fetchedEditions.length === 0) {
-        setError("No book found with this ISBN!");
+        toast.error("No book found with this ISBN!");
       } else if (fetchedEditions.length > 1) {
-        setError("Multiple books found with this ISBN.");
+        toast.error("Multiple books found with this ISBN.");
       } else {
         setEdition(fetchedEditions[0]);
         startBoxExpiryTimer(6000);
       }
     } catch (error) {
-      setError("Error fetching editions. Please try again later.");
+      toast.error("Error fetching editions. Please try again later.");
     }
-  }, []);
+  }, [toast]);
 
   const saveBookToCollection = async (
     collection: BookCollection,
@@ -120,7 +119,7 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
       // Let the action sheet finish its dismiss animation before the dialog
       setTimeout(() => setIsInfoDialogOpen(true), 200);
     } catch (error) {
-      setError(error?.message || "Failed to add book. Please try again later.");
+      toast.error(error?.message || "Failed to add book. Please try again later.");
     }
   };
 
@@ -212,7 +211,6 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
           <BookInfoBox edition={edition} handleAddBookPress={handleAddBook} />
         </Center>
       )}
-      <ErrorAlert message={error} onDismiss={() => setError(null)} />
       <InlineActionSheet
         isOpen={isActionSheetOpen}
         onClose={closeActionSheet}
