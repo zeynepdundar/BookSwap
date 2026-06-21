@@ -60,13 +60,13 @@ const booksSlice = createSlice({
 
       if (collection === BookCollections.WISHLIST) {
         state.wishlistIds = [
-          ...new Set([...state.wishlistIds, ...bookIds]),
+          ...new Set([...bookIds, ...state.wishlistIds]),
         ];
       }
 
       if (collection === BookCollections.LIBRARY) {
         state.libraryIds = [
-          ...new Set([...state.libraryIds, ...bookIds]),
+          ...new Set([...bookIds, ...state.libraryIds]),
         ];
       }
     },
@@ -121,13 +121,13 @@ const booksSlice = createSlice({
 
         if (collection === BookCollections.WISHLIST) {
           state.wishlistIds = [
-            ...new Set([...state.wishlistIds, ...bookIds]),
+            ...new Set([...bookIds, ...state.wishlistIds]),
           ];
         }
 
         if (collection === BookCollections.LIBRARY) {
           state.libraryIds = [
-            ...new Set([...state.libraryIds, ...bookIds]),
+            ...new Set([...bookIds, ...state.libraryIds]),
           ];
         }
       })
