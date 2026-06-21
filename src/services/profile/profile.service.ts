@@ -1,6 +1,6 @@
 import { ProfileEndpoints } from "@/api/profile.endpoints";
 import AsyncStore from "@/utils/AsyncStore";
-import { createBookData } from "@/utils/helper";
+import { mapBooksData } from "@/utils/helper";
 
 export const fetchUserProfileData = async (firebaseUserId: string) => {
   try {
@@ -24,11 +24,11 @@ export const fetchUserProfileData = async (firebaseUserId: string) => {
     }
 
     // Once we have the result, we can fetch other related data in parallel
- const imageData = await fetchProfileImageUrl(result.id)
-    .catch((err) => {
-      console.error("Image fetch failed:", err);
-      return null;
-    });
+    const imageData = await fetchProfileImageUrl(result.id)
+      .catch((err) => {
+        console.error("Image fetch failed:", err);
+        return null;
+      });
 
     // Construct the user profile object
     const profile: any = {
@@ -38,11 +38,11 @@ export const fetchUserProfileData = async (firebaseUserId: string) => {
       imageData,
       gender: result.gender,
       languagePreference: result.language_preference,
-      wishlistBook: createBookData(result.wished_editions),
-      libraryBook: createBookData(result.owned_editions),
+      wishlistBook: mapBooksData(result.wished_editions),
+      libraryBook: mapBooksData(result.owned_editions),
       //receivedOffer: receivedOffers,
       //sentOffer: sentOffers,
-     // historyList: historyList,
+      // historyList: historyList,
     };
 
     return profile;
@@ -92,7 +92,7 @@ export const updateUserProfileData = async (profileData: any) => {
 
   // Image upload (side-effect, correct place)
   try {
-console.log("jbhhj",profileData)    
+    console.log("jbhhj", profileData)
     if (profileData.imageData) {
       await uploadProfileImage(
         profileData.id,

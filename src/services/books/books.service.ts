@@ -1,7 +1,7 @@
 import { BookEndpoints } from "@/api/books.endpoints";
 import { ProfileEndpoints } from "@/api/profile.endpoints";
 import { AddBooksPayload, BookCollections, RemoveBooksPayload } from "@/types/book.types";
-import { createBookData } from "@/utils/helper";
+import {  mapBooksData } from "@/utils/helper";
 import i18n from "@/i18n";
 
   const endpointMap = {
@@ -135,20 +135,9 @@ export const fetchBooksByTitle = async (bookTitle: string) => {
     throw new Error("Invalid or missing data structure from the server.");
   }
 
-  const transformedData = data.editions.map((item) => ({
-    id: item.id,
-    title: item.title,
-    publisher: item.publishers ? item.publishers[0] : "",
-    // isbn_13: item.isbn_13 || item.isbn_11,
-    coverUrl:
-      item.isbn_13 && item.isbn_13 > 0
-        ? BookEndpoints.COVER_OL(undefined, item.isbn_13)
-        : null,
-    author: item.author ? item.author : "",
-    usersOwning: item.users_owning,
-  }));
+  
+ return mapBooksData(data.editions);
 
-  return transformedData;
 };
 
 export const fetchBooksByISBN = async (isbn: string) => {
@@ -169,5 +158,5 @@ export const fetchBooksByISBN = async (isbn: string) => {
   if (!data || !data.editions || !Array.isArray(data.editions)) {
     throw new Error("Invalid or missing data structure from the server.");
   }
-  return createBookData(data.editions);
+  return  mapBooksData(data.editions);;
 };
