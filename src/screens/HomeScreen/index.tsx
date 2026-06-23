@@ -41,10 +41,10 @@ export default function HomeScreen({ navigation }) {
         pb={2}
       >
         <Flex direction="column">
-          <Text color="coolGray.400" fontSize="md" fontWeight="4 00" letterSpacing="wider">
+          <Text color="coolGray.500" fontSize="md" fontWeight="4 00" letterSpacing="wider">
             {i18n.t("hello")}
           </Text>
-          <Text color="coolGray.900" fontSize="22px" fontWeight="extrabold" mt={0.5}>
+          <Text color="coolGray.900" fontSize="22px" fontWeight="400">
             {profile.name}
           </Text>
         </Flex>

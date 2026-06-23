@@ -60,14 +60,13 @@ export const theme = extendTheme({
     Button: {
       baseStyle: {
         rounded: 10, // ✅ number, not "px"
-        shadow: 5,
+        shadow: 1,
         _text: {
           fontFamily: "poppins-semi-bold",
           fontWeight: "700",
           px: 4,
         },
         _pressed: {
-          bg: "primary.600",
           transform: [{ scale: 0.98 }],
         },
         _disabled: {
@@ -79,7 +78,7 @@ export const theme = extendTheme({
       variants: {
         primary: () => ({
           bg: "primary.500",
-          _text: { color: "#fff" },
+          _text: { color: "white" },
           _pressed: { bg: "primary.600" },
         }),
         secondary: () => ({
@@ -98,6 +97,13 @@ export const theme = extendTheme({
           bg: "transparent",
           _text: { color: "primary.500" },
           _pressed: { opacity: 0.6 }, // ✅ feedback without background
+        }),
+        neutral: () => ({
+          bg: "coolGray.50",
+          borderWidth: 1,
+          borderColor: "coolGray.200",
+          _text: { color: "coolGray.700" },
+          _pressed: { bg: "coolGray.100" },
         }),
       },
     },

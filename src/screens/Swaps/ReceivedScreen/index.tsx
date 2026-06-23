@@ -1,32 +1,24 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useAppDispatch } from "@/hooks/common/useAppDispatch";
 import {
-  AspectRatio,
   Box,
   Button,
-  Center,
-  Divider,
-  Flex,
   HStack,
-  Image,
-  FlatList,
+  Icon,
   Pressable,
   Text,
-  VStack,
-  Icon,
 } from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
+import { SwapOffersList } from "@/components/ui/SwapOffersList";
 import i18n from "@/i18n";
-import { MaterialIcons } from "@expo/vector-icons";
 
-import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 import { acceptOfferAsync, fetchReceivedOffersAsync, rejectOfferAsync } from "@/store/offers/thunks";
 import { offersSelectors } from "@/store/offers/slice";
 import { useAppToast } from "@/hooks/useAppToast";
-import { APP_ICONS, IMAGE_FALLBACKS } from "@/constants/image";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 
 export default function ReceivedScreen({ navigation }) {
@@ -41,18 +33,6 @@ export default function ReceivedScreen({ navigation }) {
 
   // Track the ID of the offer currently being declined (null means hidden)
   const [activeDeclineOfferId, setActiveDeclineOfferId] = useState<string | number | null>(null);
-
-  const showSuccess = useCallback(
-    (message: string, durationMs: number = 5000) => {
-      setSuccessMessage(i18n.t("swap-accepted-start-chat"));
-      setIsInfoDialogOpen(true)
-
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, durationMs);
-    },
-    []
-  );
 
   const fetchProfileImages = async () => {
     const updatedOffers = await Promise.all(
@@ -148,8 +128,6 @@ export default function ReceivedScreen({ navigation }) {
     });
   };
 
-  const renderEmptyItem = () => null;
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     dispatch(fetchReceivedOffersAsync())
@@ -173,238 +151,75 @@ export default function ReceivedScreen({ navigation }) {
     onConfirm: () => console.log("custom action"),
   };
 
-  return (
-    <>
-      {!receivedOffers || receivedOffers.length === 0 ? (
-        <VStack
+  const renderActions = (item: any) => {
+    const isConfirmingDecline = activeDeclineOfferId === item.id;
+
+    return !isConfirmingDecline ? (
+      <HStack space={3}>
+        <Button
           flex={1}
-          bg="#fff"
-          px="6"
-          justifyContent="center"
-          alignItems="center"
-          space={4}
+          variant="neutral"
+          onPress={() => setActiveDeclineOfferId(item.id)}
         >
-          <Box
-            w="64px"
-            h="64px"
-            rounded="full"
-            bg="primary.50"
-            alignItems="center"
-            justifyContent="center"
-          >
+          {i18n.t("decline")}
+        </Button>
+
+        <Button
+          variant="primary"
+          flex={1}
+          leftIcon={
             <Icon
               as={MaterialIcons}
-              name="swap-horiz"
-              size="lg"
-              color="primary.600"
+              name="check-circle-outline"
+              size="sm"
+              color="#fff"
             />
-          </Box>
-          <Text fontSize="18" fontWeight="500" color="#111827" textAlign="center">
+          }
+          onPress={() => acceptOfferHandler(item)}
+        >
+          {i18n.t("accept")}
+        </Button>
+      </HStack>
+    ) : (
+      <Box bg="transparent" py="3" mt="1">
+        <Text fontSize="14px" fontWeight="700" color="gray.900">
+          Decline this offer?
+        </Text>
+        <Text fontSize="12px" color="gray.500" mt="0.5">
+          The sender will be notified.
+        </Text>
+        <HStack space={5} mt="3" justifyContent="flex-end" alignItems="center">
+          <Pressable hitSlop={15} onPress={() => setActiveDeclineOfferId(null)}>
+            <Text color="gray.500" fontWeight="600" fontSize="13px">
+              Cancel
+            </Text>
+          </Pressable>
+          <Pressable hitSlop={15} onPress={() => rejectOfferHandler(item.id)}>
+            <Text color="red.500" fontWeight="600" fontSize="13px">
+              Decline
+            </Text>
+          </Pressable>
+        </HStack>
+      </Box>
+    );
+  };
 
-            {i18n.t("no-offers-received")}
-          </Text>
-
-          <Text
-            fontSize="sm"
-            fontWeight="400"
-            textAlign="center"
-            color="#6B7280"
-            px="8"
-            lineHeight="20px"
-          >
-            {i18n.t("received-offers-subtitle")}
-            {/* {i18n.t("scroll-down-to-get-latest-request-if-exists")} */}
-          </Text>
-
-          {/* 
-          @TODO: Review again
-          <Box flex={1}>
-            <FlatList
-              data={[]}
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              ListEmptyComponent={<></>}
-              renderItem={renderEmptyItem}
-              contentContainerStyle={{
-                flexGrow: 1,
-                justifyContent: "center",
-              }}
-              showsVerticalScrollIndicator={false}
-            />
-          </Box> */}
-        </VStack>
-      ) : (
-        <FlatList
-          bg="#fff"
-          data={receivedOffersWithUserPhoto}
-          showsVerticalScrollIndicator={false}
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          renderItem={({ item }: { item: any }) => {
-            const isConfirmingDecline = activeDeclineOfferId === item.id;
-
-            return (
-              <Box pb="6" overflow="hidden" alignItems="center">
-                {/* User Info Header Row */}
-                <Flex
-                  direction="row"
-                  justifyContent="space-between"
-                  w="95%"
-                  alignSelf="center"
-                  position="relative"
-                  zIndex={9}
-                  p={1}
-                >
-                  <Box size={10} rounded="full" backgroundColor="#e0e0e0" mr={3} overflow="hidden">
-                    <Image
-                      source={getImageSource(profile.imageData, IMAGE_FALLBACKS.USER_AVATAR)}
-                      alt="Profile Image"
-                      size={10}
-                      rounded="full"
-                    />
-                  </Box>
-                  <Pressable
-                    flex={1}
-                    alignItems="flex-end"
-                    onPress={() => onNavigateProfile(item?.participantProfile)}
-                  >
-                    <HStack>
-                      <VStack>
-                        <Text color="#161719" fontWeight="medium" fontSize="14px" mx={1}>
-                          {item?.participantProfile?.name}
-                        </Text>
-                        <Text color="coolGray.400" fontSize="12px" mx={1} textAlign="right" mt="-1.5">
-                          {item?.createdAt}
-                        </Text>
-                      </VStack>
-                      <Box size={10} rounded="full" backgroundColor="#e0e0e0" overflow="hidden">
-                        <Image
-                          source={getImageSource(item?.participantProfile.photo_file_name, IMAGE_FALLBACKS.USER_AVATAR)}
-                          alt="Profile Image"
-                          size={10}
-                          rounded="full"
-                        />
-                      </Box>
-                    </HStack>
-                  </Pressable>
-                </Flex>
-
-                {/* Main Card Content */}
-                <Box
-                  px="7"
-                  py="4"
-                  pt="6"
-                  pb="2"
-                  borderColor="coolGray.200"
-                  width="90%"
-                  alignSelf="center"
-                  maxW="80"
-                  top="-12"
-                  rounded="10"
-                  overflow="hidden"
-                  borderWidth="1"
-                >
-                  <VStack>
-                    <HStack justifyContent="space-between" width="100%" space={1}>
-                      {/* Requested Book */}
-                      <VStack flex={1} alignItems="center">
-                        <AspectRatio w="70%" ratio={{ base: 45 / 68 }}>
-                          <Image
-                            source={getImageSource(
-                              item?.requestedBook?.coverUrl,
-                              IMAGE_FALLBACKS.BOOK_COVER
-                            )}
-                            alt={`Book cover: ${item?.requestedBook?.title ?? "Unknown title"}`}
-                          />
-                        </AspectRatio>
-                        <Text color="#000000" fontSize="12" fontWeight={500} numberOfLines={2}>
-                          {truncateText(formatText(item?.requestedBook?.title), 36)}
-                        </Text>
-                        <Text color="#8c8c8c" fontSize="11" numberOfLines={1}>
-                          {truncateText(formatText(item?.requestedBook?.author), 30)}
-                        </Text>
-                      </VStack>
-
-                      <Center height={110}>
-                        <Image source={APP_ICONS.swap} alt="Swap books" />
-                      </Center>
-
-                      {/* Offered Book */}
-                      <VStack flex={1} alignItems="center">
-                        <AspectRatio w="70%" ratio={{ base: 45 / 68 }}>
-                          <Image
-                            source={
-                              item?.requestedBook?.coverUrl
-                                ? { uri: item?.offeredBook?.coverUrl }
-                                : { uri: "https://lightning.od-cdn.com/static/img/no-cover_en_US.a8920a302274ea37cfaecb7cf318890e.jpg" }
-                            }
-                            alt={`Book cover: ${item?.offeredBook?.title ?? "Unknown title"}`}
-                            roundedRight="4"
-                          />
-                        </AspectRatio>
-                        <Text color="#000000" fontSize="12" fontWeight={500} numberOfLines={2}>
-                          {truncateText(formatText(item?.offeredBook?.title), 36)}
-                        </Text>
-                        <Text color="#8c8c8c" fontSize="11" numberOfLines={2}>
-                          {truncateText(formatText(item?.offeredBook?.author), 30)}
-                        </Text>
-                      </VStack>
-                    </HStack>
-
-                    {/* Conditional Action Row vs Confirmation Box */}
-                    {!isConfirmingDecline ? (
-                      <Flex direction="row" justifyContent="space-between" pt="3">
-                        <Button
-                          variant="ghost"
-                          _text={{ color: "#9395A4" }}
-                          onPress={() => setActiveDeclineOfferId(item.id)} // Show confirm inside this item
-                        >
-                          {i18n.t("decline")}
-                        </Button>
-                        <Divider
-                          color="#E5E7F3"
-                          thickness="1"
-                          orientation="vertical"
-                          height={6}
-                          marginY="2"
-                        />
-                        <Button
-                          variant="ghost"
-                          onPress={() => acceptOfferHandler(item)}
-                        >
-                          {i18n.t("accept")}
-                        </Button>
-                      </Flex>
-                    ) : (
-                      <Box bg="transparent" py="3" mt="1">
-                        <Text fontSize="14px" fontWeight="700" color="gray.900">
-                          Decline this offer?
-                        </Text>
-                        <Text fontSize="12px" color="gray.500" mt="0.5">
-                          The sender will be notified.
-                        </Text>
-                        <HStack space={5} mt="3" justifyContent="flex-end" alignItems="center">
-                          <Pressable hitSlop={15} onPress={() => setActiveDeclineOfferId(null)}>
-                            <Text color="gray.500" fontWeight="600" fontSize="13px">
-                              Cancel
-                            </Text>
-                          </Pressable>
-                          <Pressable hitSlop={15} onPress={() => rejectOfferHandler(item.id)}>
-                            <Text color="red.500" fontWeight="600" fontSize="13px">
-                              Decline
-                            </Text>
-                          </Pressable>
-                        </HStack>
-                      </Box>
-                    )}
-                  </VStack>
-                </Box>
-              </Box>
-            );
-          }}
-          keyExtractor={(item) => `received-offer-${item.id}`}
-        />
-      )}
+  return (
+    <>
+      <SwapOffersList
+        type="received"
+        data={receivedOffersWithUserPhoto}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        onNavigateProfile={onNavigateProfile}
+        ownProfileImage={profile.imageData}
+        renderActions={renderActions}
+        emptyState={{
+          iconName: "swap-horiz",
+          title: i18n.t("no-offers-received"),
+          subtitle: i18n.t("received-offers-subtitle"),
+        }}
+      />
 
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
