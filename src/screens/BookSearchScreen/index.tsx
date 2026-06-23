@@ -154,7 +154,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Screen>
         <Box w="100%" h={9} justifyContent="center" px={4}>
-          <Heading>{i18n.t("keep-exploring")}</Heading>
+          <Heading fontWeight="500" size="xl">{i18n.t("keep-exploring")}</Heading>
         </Box>
         <Box px={2}>
           <AppSearchBar

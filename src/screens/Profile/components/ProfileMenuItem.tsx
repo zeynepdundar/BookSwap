@@ -1,7 +1,8 @@
-import { Flex, Text, Spacer, Pressable, Image, Box } from "native-base";
+import { Flex, Text, Spacer, Pressable, Icon, Box } from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
 
 type ProfileMenuItemProps = {
-  icon: any;
+  icon: string;
   label: string;
   onPress?: () => void;
   rightContent?: React.ReactNode;
@@ -23,24 +24,32 @@ export default function ProfileMenuItem({
         direction="row"
         alignItems="center"
         w="100%"
-        p="1"
-        pb="5"
-        mt="4"
-        overflow="hidden"
-        borderBottomColor={showBorder ? "#f5f5f5" : "transparent"}
-        borderBottomWidth={showBorder ? 2 : 0}
+        py="4"
+        px="1"
+        borderBottomWidth={showBorder ? 1 : 0}
+        borderBottomColor={showBorder ? "coolGray.100" : "transparent"}
         opacity={disabled ? 0.5 : 1}
       >
-        <Image source={icon} alt={label} />
+        <Icon
+          as={MaterialIcons}
+          name={icon}
+          size="md"
+          color="coolGray.500"
+        />
 
-        <Text ml={3} color="black.400" fontWeight="500" fontSize={16}>
+        <Text
+          ml={3}
+          fontSize="md"
+          fontWeight="400"
+          color="coolGray.800"
+        >
           {label}
         </Text>
- 
+
         <Spacer />
 
         {rightContent ? (
-          <Box alignSelf="center" maxW="20" px={1}>
+          <Box alignItems="center">
             {rightContent}
           </Box>
         ) : null}

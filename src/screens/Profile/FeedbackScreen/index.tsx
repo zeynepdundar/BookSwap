@@ -56,7 +56,7 @@ export default function FeedbackScreen({ navigation }) {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Screen>
+      <Screen full>
         <ScreenHeader
           title={i18n.t("feedback")}
           onBack={() => navigation.goBack()}

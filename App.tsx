@@ -13,6 +13,7 @@ import AsyncStore from "@/utils/AsyncStore";
 import { theme } from "@/theme";
 import Navigation from "@/navigation";
 import store from "@/store/store";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 
 ///  PUSH NOTIFICATIONS - START  ///
@@ -125,7 +126,9 @@ export default function App() {
   return (
     <Provider store={store}>
       <NativeBaseProvider theme={theme}>
-        <Navigation />
+        <SafeAreaProvider>
+          <Navigation />
+        </SafeAreaProvider>
       </NativeBaseProvider>
     </Provider>
   );

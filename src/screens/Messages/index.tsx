@@ -1,18 +1,22 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Screen from "@/components/ui/Screen";
 import ScreenHeader from "@/components/ui/ScreenHeader";
 import {
   Badge,
+  Box,
   Divider,
   FlatList,
   Flex,
+  Icon,
   Image,
   Pressable,
   Text,
   VStack,
 } from "native-base";
 import i18n from "@/i18n";
+import { MaterialIcons } from "@expo/vector-icons";
+
 import { useSelector } from "react-redux";
 import { useMessageSubscription } from "@/hooks/useMessageSubscription";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
@@ -102,96 +106,129 @@ export default function MessagesScreen({ navigation }) {
 
 
   return (
-<Screen>
-  <ScreenHeader title={i18n.t("messages")} />
+    <Screen full>
+      <ScreenHeader title={i18n.t("messages")} />
 
-  {/* EMPTY STATE */}
-  {!messages || messages.length === 0 ? (
-    <VStack flex={1} justifyContent="center" alignItems="center" px={6}>
-      <Text fontSize="md" textAlign="center" color="coolGray.700">
-        {i18n.t("check-offers-and-begin-chatting")}
-      </Text>
+      {/* EMPTY STATE */}
+      {!messages || messages.length === 0 ? (
+        <VStack
+          flex={1}
+          bg="#fff"
+          px="6"
+          justifyContent="center"
+          alignItems="center"
+          space={4}
+        >
+          <Box
+            w="64px"
+            h="64px"
+            rounded="full"
+            bg="primary.50"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Icon
+              as={MaterialIcons}
+              name="chat-bubble-outline"
+              size="lg"
+              color="primary.600"
+            />
+          </Box>
 
-      <Divider w="40%" my={5} bg="coolGray.200" />
+          <Text
+            fontSize="18"
+            fontWeight="500"
+            color="#111827"
+            textAlign="center"
+          >
+            {i18n.t("no-messages-yet")}
+          </Text>
 
-      <Text fontSize="sm" textAlign="center" color="coolGray.500">
-        {i18n.t("you-have-not-receive-any-message")}
-      </Text>
-    </VStack>
-  ) : (
-    <FlatList
-      data={messages}
-      keyExtractor={(item) => item.conversationId}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingTop: 8 }}
-      ItemSeparatorComponent={() => (
-        <Divider ml={15} bg="coolGray.100" />
-      )}
-      renderItem={({ item }) => {
-        const friendProfile = userProfiles[item.userId];
+          <Text
+            fontSize="sm"
+            fontWeight="400"
+            textAlign="center"
+            color="#6B7280"
+            px="8"
+            lineHeight="20px"
+          >
+            {i18n.t("check-book-offers-to-get-started")}
+          </Text>
+        </VStack>
+      ) : (
+        <FlatList
+          data={messages}
+          keyExtractor={(item) => item.conversationId}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingTop: 8, paddingHorizontal: 16 }}
+          ItemSeparatorComponent={() => (
+            <Divider ml={15} bg="coolGray.100" />
+          )}
+          renderItem={({ item }) => {
+            const friendProfile = userProfiles[item.userId];
 
-        return (
-          <Pressable onPress={() => handleStartChat(friendProfile)}>
-            <Flex
-              direction="row"
-              alignItems="center"
-              py={3}
-              bg="transparent"
-            >
-              {/* Avatar (no box, just image) */}
-              <Image
-                source={getImageSource(
-                  friendProfile.imageData,
-                  IMAGE_FALLBACKS.USER_AVATAR
-                )}
-                alt="Profile Image"
-                size={12}
-                rounded="full"
-              />
-
-              {/* Text content */}
-              <VStack flex={1} ml={3} space={0.5}>
-                <Text fontSize="md" fontWeight="600" color="coolGray.900">
-                  {friendProfile?.name || "Unknown User"}
-                </Text>
-
-                <Text fontSize="sm" color="coolGray.500" numberOfLines={1}>
-                  {item.lastMessageIsMine && (
-                    <Text fontWeight="500" color="coolGray.600">
-                      {i18n.t("you")}:{" "}
-                    </Text>
-                  )}
-                  {truncateText(item.lastMessageText, 28)}
-                </Text>
-              </VStack>
-
-              {/* Right side meta */}
-              <VStack alignItems="flex-end" justifyContent="center" space={1.5} ml={2}>
-                <Text fontSize="xs" color="coolGray.400">
-                  {formatLastMessageTime(
-                    item.lastMessageTime,
-                    languagePreference
-                  )}
-                </Text>
-
-                {item.unseenCount > 0 && (
-                  <Badge
-                    bg="primary.500"
+            return (
+              <Pressable onPress={() => handleStartChat(friendProfile)}>
+                <Flex
+                  direction="row"
+                  alignItems="center"
+                  py={3}
+                  bg="transparent"
+                >
+                  {/* Avatar (no box, just image) */}
+                  <Image
+                    source={getImageSource(
+                      friendProfile.imageData,
+                      IMAGE_FALLBACKS.USER_AVATAR
+                    )}
+                    alt="Profile Image"
+                    size={12}
                     rounded="full"
-                    px={2}
-                    py={0.5}
-                    _text={{ fontSize: 11, color: "white" }}
-                  >
-                    {item.unseenCount}
-                  </Badge>
-                )}
-              </VStack>
-            </Flex>
-          </Pressable>
-        );
-      }}
-    />
-  )}
-</Screen>
+                  />
+
+                  {/* Text content */}
+                  <VStack flex={1} ml={3} space={0.5}>
+                    <Text fontSize="md" fontWeight="600" color="coolGray.900">
+                      {friendProfile?.name || "Unknown User"}
+                    </Text>
+
+                    <Text fontSize="sm" color="coolGray.500" numberOfLines={1}>
+                      {item.lastMessageIsMine && (
+                        <Text fontWeight="500" color="coolGray.600">
+                          {i18n.t("you")}:{" "}
+                        </Text>
+                      )}
+                      {truncateText(item.lastMessageText, 28)}
+                    </Text>
+                  </VStack>
+
+                  {/* Right side meta */}
+                  <VStack alignItems="flex-end" justifyContent="center" space={1.5} ml={2}>
+                    <Text fontSize="xs" color="coolGray.400">
+                      {formatLastMessageTime(
+                        item.lastMessageTime,
+                        languagePreference
+                      )}
+                    </Text>
+
+                    {item.unseenCount > 0 && (
+                      <Badge
+                        bg="primary.500"
+                        rounded="full"
+                        px={2}
+                        py={0.5}
+                        _text={{ fontSize: 11, color: "white" }}
+                      >
+                        {item.unseenCount}
+                      </Badge>
+                    )}
+                  </VStack>
+                </Flex>
+              </Pressable>
+            );
+          }}
+        />
+      )}
+    </Screen>
   );
 }

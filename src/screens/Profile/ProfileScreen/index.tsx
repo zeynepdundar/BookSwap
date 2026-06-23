@@ -8,7 +8,11 @@ import {
   Pressable,
   Menu,
   VStack,
+  HStack,
+  Icon,
 } from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
+
 import i18n from "@/i18n";
 import Screen from "@/components/ui/Screen";
 import ImagePicker from "@/components/ui/ImagePicker";
@@ -50,10 +54,10 @@ export default function ProfileScreen({ navigation }) {
     i18n.locale = selectedLanguage;
 
     dispatch(updateProfileAsync({
-   
-        id: profileData.id,
-        languagePreference: selectedLanguage,
-    
+
+      id: profileData.id,
+      languagePreference: selectedLanguage,
+
     }));
   };
 
@@ -61,25 +65,20 @@ export default function ProfileScreen({ navigation }) {
 
     dispatch(updateProfileAsync({
 
-        id: profileData.id,
-        imageData: imageUri,
- 
+      id: profileData.id,
+      imageData: imageUri,
+
     }));
   };
   const menuItems = [
     {
       key: "wishlist",
-      icon: PROFILE_SCREEN_ICONS.wishlist,
+      icon: "bookmark-outline",
       label: i18n.t("my-wishlist"),
       onPress: () => navigation.navigate("Wishlist"),
       rightContent: (
-        <Box rounded="md" px={2} py={0.5} bg="primary.500">
-          <Text
-            fontSize="sm"
-            fontWeight="medium"
-            color="warmGray.50"
-            letterSpacing="lg"
-          >
+        <Box px={2} py={0.5} rounded="full" bg="primary.100">
+          <Text fontSize="xs" fontWeight="600" color="primary.700">
             {wishlistBookIds?.length ?? 0}
           </Text>
         </Box>
@@ -87,17 +86,12 @@ export default function ProfileScreen({ navigation }) {
     },
     {
       key: "library",
-      icon: PROFILE_SCREEN_ICONS.library,
+      icon: "auto-stories",
       label: i18n.t("my-library"),
       onPress: () => navigation.navigate("Library"),
       rightContent: (
-        <Box rounded="md" px={2} py={0.5} bg="primary.500">
-          <Text
-            fontSize="sm"
-            fontWeight="medium"
-            color="warmGray.50"
-            letterSpacing="lg"
-          >
+        <Box px={2} py={0.5} rounded="full" bg="primary.100">
+          <Text fontSize="xs" fontWeight="600" color="primary.700">
             {libraryBookIds?.length ?? 0}
           </Text>
         </Box>
@@ -105,23 +99,26 @@ export default function ProfileScreen({ navigation }) {
     },
     {
       key: "language",
-      icon: PROFILE_SCREEN_ICONS.language,
+      icon: "translate",
       label: i18n.t("language"),
       onPress: () => { },
       rightContent: (
         <Menu
-          w="106"
-          mr={18}
+          w="140"
           trigger={(triggerProps) => (
-            <Pressable accessibilityLabel="Language selection" {...triggerProps}>
-              <Text
-                fontSize="md"
-                fontWeight="medium"
-                color="black.700"
-                letterSpacing="lg"
-              >
-                {languagePreference?.toUpperCase()}
-              </Text>
+            <Pressable {...triggerProps} hitSlop={10}>
+              <HStack alignItems="center">
+                <Text fontSize="sm" color="coolGray.600" fontWeight="500">
+                  {languagePreference === "tr" ? "TR" : "EN"}
+                </Text>
+
+                <Icon
+                  as={MaterialIcons}
+                  name="expand-more"
+                  size="sm"
+                  color="coolGray.400"
+                />
+              </HStack>
             </Pressable>
           )}
         >
@@ -129,12 +126,19 @@ export default function ProfileScreen({ navigation }) {
             { code: "tr", lang: i18n.t("turkish") },
             { code: "en", lang: i18n.t("english") },
           ].map((input) => (
-            <Menu.Item
-              key={input.code}
-              onPress={() => handleLanguageChange(input.code)}
-              disabled={languagePreference === input.code}
-            >
-              {input.lang}
+            <Menu.Item key={input.code} onPress={() => handleLanguageChange(input.code)}>
+              <HStack justifyContent="space-between" w="100%">
+                <Text
+                  color={languagePreference === input.code ? "primary.600" : "coolGray.700"}
+                  fontWeight={languagePreference === input.code ? "600" : "400"}
+                >
+                  {input.lang}
+                </Text>
+
+                {languagePreference === input.code && (
+                  <Icon as={MaterialIcons} name="check" size="sm" color="primary.500" />
+                )}
+              </HStack>
             </Menu.Item>
           ))}
         </Menu>
@@ -142,13 +146,13 @@ export default function ProfileScreen({ navigation }) {
     },
     {
       key: "feedback",
-      icon: PROFILE_SCREEN_ICONS.feedback,
+      icon: "rate-review",
       label: i18n.t("feedback"),
       onPress: () => navigation.navigate("Feedback"),
     },
     {
       key: "logout",
-      icon: PROFILE_SCREEN_ICONS.logout,
+      icon: "logout",
       label: i18n.t("logout"),
       onPress: () => setIsOpen(true),
     },
@@ -169,30 +173,33 @@ export default function ProfileScreen({ navigation }) {
   };
 
   return (
-    <Screen>
+    <Screen full>
       <ScreenHeader
         title={i18n.t("profile")}
         onBack={() => navigation.goBack()}
       />
-      <VStack space={1} alignItems="center" height={"50%"}>
-        <Center w="100%" h="215px" px={6}>
+
+      <VStack flex={1} alignItems="center" space={6} px={6} pt={4}>
+
+        {/* Profile Section */}
+        <VStack alignItems="center" space={2}>
           <ImagePicker
             selectedImage={handleImageUpload}
             initialImage={imageData}
           />
-          <Heading color="black.100" my={3}>
+          <Text fontSize="md" fontWeight="600" color="#111827">
             {name}
-          </Heading>
-        </Center>
+          </Text>
+        </VStack>
 
+        {/* Menu Section */}
+        <VStack w="100%" space={1}>
+          {menuItems.map(({ key, ...item }) => (
+            <ProfileMenuItem key={key} {...item} />
+          ))}
+        </VStack>
 
-        {menuItems.map(({ key, ...item }) => (
-          <ProfileMenuItem
-            key={key}
-            {...item}
-          />
-        ))}
-
+        {/* Logout Dialog */}
         <AlertDialogBox
           isOpen={isOpen}
           onClose={onClose}
@@ -202,6 +209,7 @@ export default function ProfileScreen({ navigation }) {
           cancelButtonLabel={i18n.t("cancel")}
           confirmButtonLabel={i18n.t("logout")}
         />
+
       </VStack>
     </Screen>
   );
