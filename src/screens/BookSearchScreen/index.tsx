@@ -4,12 +4,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Box, Center, Heading, VStack, Text, Divider } from "native-base";
 import i18n from "@/i18n";
 
-import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
+import { useAddBooks } from "@/hooks/api/useAddBooks";
 import { fetchBooksByTitle } from "@/services/books/books.service";
 import { Book, BookCollections } from "@/types/book.types";
 import { BookListVertical } from "@/components/ui/BookListVertical";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
-import { useAppToast } from "@/hooks/useAppToast";
 import { BorderedBookListVertical } from "@/components/ui/BorderedBookListVertical";
 import Screen from "@/components/ui/Screen";
 import { generateActions } from "@/utils/helper";
@@ -18,11 +17,10 @@ import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { AppSearchBar } from "@/components/ui/AppSearchBar";
 
 export default function BookSearchScreen({ navigation, route = null }) {
-  const { sourceScreen } = route.params ?? {};
+  const { sourceScreen, mode = "live" } = route.params ?? {};
   const collectionType = sourceScreen?.toLowerCase();
 
-  const { addBooksToCollection } = useAddBooksToCollection();
-  const toast = useAppToast();
+  const addBooks = useAddBooks(mode, collectionType);
   const inputRef = useRef(null);
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -39,24 +37,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
   const pressDoneHandler = async ({ collection, books }) => {
     Keyboard.dismiss();
     inputRef.current?.blur?.();
-
-    const targetCollection = collection ?? collectionType;
-
-    if (!targetCollection) {
-      toast.error("No collection type specified.");
-      return { success: false };
-    }
-
-    try {
-      await addBooksToCollection({
-        collection: targetCollection.toLowerCase(),
-        books: [books].flat(),
-      });
-      return { success: true };
-    } catch (error: any) {
-      toast.error(error.message || "Failed to add book.");
-      return { success: false };
-    }
+    return addBooks({ collection, books });
   };
 
   const handleOpenActions = useCallback((book: Book) => {
@@ -132,7 +113,8 @@ export default function BookSearchScreen({ navigation, route = null }) {
 
   const scanBarcodeHandler = () => {
     navigation.navigate("BarcodeScanner", {
-      sourceScreen: sourceScreen, // Pass clean primitive serializable data rules
+      sourceScreen, // Pass clean primitive serializable data rules
+      mode, // propagate the flow so the scanner persists to the right place
     });
   };
 

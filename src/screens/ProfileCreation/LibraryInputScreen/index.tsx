@@ -89,7 +89,7 @@ export default function LibraryInputScreen({ navigation }) {
       >
         <VStack space={3} width="100%">
           <Heading>
-            {i18n.t("add-books-to-library")}
+            {i18n.t("add-to-library")}
           </Heading>
 
           <HomeSearchWidget

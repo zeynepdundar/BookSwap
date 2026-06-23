@@ -1,5 +1,14 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AddBooksMode } from "@/hooks/api/useAddBooks";
+
+export type BookSearchParams = {
+  sourceScreen?: string;
+  mode?: AddBooksMode;
+};
+
+// BarcodeScanner shares the same flow params as the search screen.
+export type BarcodeScannerParams = BookSearchParams;
 
 export type AuthStackParamList = {
   Welcome: undefined;
@@ -12,7 +21,8 @@ export type ProfileCreationStackParamList = {
   BirthdateInput: undefined;
   GenderInput: undefined;
   PhotoInput: undefined;
-  BookSearchOnCreation: undefined;
+  BookSearch: BookSearchParams | undefined;
+  BarcodeScanner: BarcodeScannerParams | undefined;
   LibraryInput: undefined;
   WishlistInput: undefined;
 };
@@ -44,17 +54,15 @@ export type RootStackParamList = {
   
   // Profile Creation Flow (for new users)
   ProfileCreation: NavigatorScreenParams<ProfileCreationStackParamList>;
-  BarcodeScannerOnProfileCreation: undefined;
-  
+
   // Main App Flow (for existing users)
   HomeTabs: NavigatorScreenParams<HomeTabsParamList>;
   SwapsTabs: NavigatorScreenParams<SwapsTabsParamList>;
   ProfileStack: NavigatorScreenParams<ProfileStackParamList>;
   UserList: undefined;
   OtherUserProfile: undefined;
-  BarcodeScanner: undefined;
-  BookSearchFromList: undefined;
-  BookSearch: undefined;
+  BarcodeScanner: BarcodeScannerParams | undefined;
+  BookSearch: BookSearchParams | undefined;
   BookDetail: undefined;
   SwapOfferProposal: undefined;
   SwapOfferAcceptedScreen: undefined;
