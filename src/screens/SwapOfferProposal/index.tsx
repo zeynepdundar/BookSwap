@@ -174,7 +174,7 @@ export default function SwapOfferProposal({ navigation, route }) {
       {/* Teklif Gönder Butonu */}
       <Button
         m="7"
-        variant={isButtonDisabled ? "disabled" : "primary"}
+        variant="primary"
         isDisabled={isButtonDisabled}
         onPress={proposeTradeHandler}
       >

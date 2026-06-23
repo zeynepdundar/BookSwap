@@ -84,7 +84,7 @@ export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(({
             onPress={handlePress}
             w="100%"
             borderRadius="xl"
-            bg="primary.500"
+            variant="primary"
           >
             <Text
               fontSize="14px"

@@ -173,7 +173,7 @@ export const BorderedBookListVertical: React.FC<
 
       <Box alignItems="center" h="20" mx="2">
         <Button
-          variant={isButtonDisabled ? "disabledOutline" : "outline"}
+          variant="outline"
           isDisabled={isButtonDisabled}
           onPress={handleDonePress}
           right={0}
