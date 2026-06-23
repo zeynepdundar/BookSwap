@@ -63,7 +63,7 @@ export default function NameInputScreen({ navigation }) {
 
         <Center p={4}>
           <Button
-            variant={isButtonDisabled ? "disabled" : "primary"}
+            variant="primary"
             isDisabled={isButtonDisabled}
             onPress={pressHandler}
           >

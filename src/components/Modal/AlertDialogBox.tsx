@@ -53,7 +53,7 @@ export const AlertDialogBox: React.FC<AlertDialogBoxProps> = memo(
           </AlertDialog.Body>
           <AlertDialog.Footer borderTopWidth={0} pt="2" pb="4" justifyContent="center" >
             <Button.Group space={3}>
-              <Button variant="outline" onPress={onClose} ref={cancelRef}>
+              <Button variant="neutral" onPress={onClose} ref={cancelRef}>
                 {cancelButtonLabel}
               </Button>
               <Button variant="primary" onPress={onConfirm}>

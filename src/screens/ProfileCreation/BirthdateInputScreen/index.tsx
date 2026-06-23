@@ -117,7 +117,7 @@ export default function BirthdateInputScreen({ navigation }) {
         <Spacer />
         <Center p={4}>
           <Button
-            variant={isInputProvided ? "primary" : "disabled"}
+            variant="primary"
             isDisabled={!isInputProvided}
             onPress={pressHandler}
           >
