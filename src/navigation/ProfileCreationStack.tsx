@@ -6,8 +6,9 @@ import {
   PhotoInputScreen,
   WishlistInputScreen,
   LibraryInputScreen,
-  BookSearchOnCreationScreen,
 } from "@/screens/ProfileCreation";
+import BookSearchScreen from "@/screens/BookSearchScreen";
+import BarcodeScannerScreen from "@/screens/BarcodeScannerScreen";
 import { ProfileCreationStackParamList } from "@/types/navigation.types";
 
 const Stack = createNativeStackNavigator<ProfileCreationStackParamList>();
@@ -41,11 +42,10 @@ export default function ProfileCreationStack() {
         component={LibraryInputScreen}
       ></Stack.Screen>
 
-      {/* Search screen specific only to the onboarding flow */}
-      <Stack.Screen
-        name="BookSearchOnCreation"
-        component={BookSearchOnCreationScreen}
-      />
+      {/* Shared screens, registered here so they are reachable inside the
+          onboarding tree. Behaviour is driven by the `mode` route param. */}
+      <Stack.Screen name="BookSearch" component={BookSearchScreen} />
+      <Stack.Screen name="BarcodeScanner" component={BarcodeScannerScreen} />
     </Stack.Navigator>
   );
 }

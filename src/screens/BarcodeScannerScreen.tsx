@@ -32,7 +32,7 @@ import { BookCollection, BookCollections } from "@/types/book.types";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
 import { fetchBooksByISBN } from "@/services/books/books.service";
 import { useAppToast } from "@/hooks/useAppToast";
-import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
+import { useAddBooks } from "@/hooks/api/useAddBooks";
 
 // Hoisted so the object identity stays stable across renders and the native
 // CameraView is not re-configured (which causes a brief blue flash).
@@ -40,8 +40,8 @@ const BARCODE_SCANNER_SETTINGS: BarcodeSettings = { barcodeTypes: ["ean13"] };
 
 export default function BarcodeScannerScreen({ navigation, route = null }) {
   // 1. ALL HOOKS DECLARATIONS MUST BE AT THE ABSOLUTE TOP
-  const { sourceScreen } = route.params ?? {};
-  const { addBooksToCollection } = useAddBooksToCollection();
+  const { sourceScreen, mode = "live" } = route.params ?? {};
+  const addBooks = useAddBooks(mode, sourceScreen);
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [edition, setEdition] = useState(null);
@@ -109,18 +109,23 @@ export default function BarcodeScannerScreen({ navigation, route = null }) {
   ) => {
     if (!book) return;
     stopBoxExpiryTimer();
-    try {
-      await addBooksToCollection({
-        collection,
-        books: [book].flat(),
-      });
-      setSelectedAction(collection);
-      setEdition(null);
-      // Let the action sheet finish its dismiss animation before the dialog
-      setTimeout(() => setIsInfoDialogOpen(true), 200);
-    } catch (error) {
-      toast.error(error?.message || "Failed to add book. Please try again later.");
+
+    const result = await addBooks({ collection, books: [book] });
+    if (!result.success) return;
+
+    setEdition(null);
+
+    // During onboarding the book is staged in redux and ProfileStack does not
+    // exist yet, so just return to the input screen instead of the success
+    // dialog (which links into the main-app profile tabs).
+    if (mode === "onboarding") {
+      navigation.goBack();
+      return;
     }
+
+    setSelectedAction(collection);
+    // Let the action sheet finish its dismiss animation before the dialog
+    setTimeout(() => setIsInfoDialogOpen(true), 200);
   };
 
   const handleAddBook = () => {

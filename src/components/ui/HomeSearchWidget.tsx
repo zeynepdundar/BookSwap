@@ -11,13 +11,17 @@ interface HomeSearchWidgetProps {
 export function HomeSearchWidget({ navigation, sourceScreen, isHome = false, }: HomeSearchWidgetProps) {
 
   const handleTextSearchPress = () => {
-    const targetScreen = isHome ? "BookSearch" : "BookSearchOnCreation";
-    navigation.navigate(targetScreen, !isHome ? { sourceScreen } : undefined);
+    navigation.navigate(
+      "BookSearch",
+      isHome ? undefined : { sourceScreen, mode: "onboarding" }
+    );
   };
 
   const handleBarcodePress = () => {
-    const targetScreen = isHome ? "BarcodeScanner" : "BarcodeScannerOnProfileCreation";
-    navigation.navigate(targetScreen, !isHome ? { sourceScreen } : undefined);
+    navigation.navigate(
+      "BarcodeScanner",
+      isHome ? undefined : { sourceScreen, mode: "onboarding" }
+    );
   };
 
   return (

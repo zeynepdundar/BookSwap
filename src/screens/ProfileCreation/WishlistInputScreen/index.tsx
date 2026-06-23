@@ -52,7 +52,7 @@ export default function WishlistInputScreen({ navigation }) {
       >
         <VStack space={3} width="100%">
           <Heading>
-            {i18n.t("add-books-to-wishlist")}
+            {i18n.t("add-to-wishlist")}
           </Heading>
 
           <HomeSearchWidget
