@@ -1,24 +1,26 @@
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useSelector } from "react-redux";
 import HomeScreen from "@/screens/HomeScreen";
-import NotificationScreen from "@/screens/NotificationScreen";
 import MessagesScreen from "@/screens/Messages";
 import SwapsTabs from "./SwapsTabs";
 import HouseIcon from "@/components/ui/icons/HouseIcon";
 import ArrowLeftRightIcon from "@/components/ui/icons/ArrowLeftRightIcon";
 import MessageSquareIcon from "@/components/ui/icons/MessageSquareIcon";
 import i18n from "@/i18n";
-import { useSelector } from "react-redux";
 import { useMessageSubscription } from "@/hooks/useMessageSubscription";
 import { HomeTabsParamList } from "@/types/navigation.types";
 
 const BottomTab = createBottomTabNavigator<HomeTabsParamList>();
 
 export default function HomeTabs() {
-  const { firebaseUserId } = useSelector((state: any) => state.auth.user);
+  // Redux tiplemesi düzeltildi (Kendi RootState tipinizi buraya verebilirsiniz)
+  const firebaseUserId = useSelector((state: any) => state.auth.user?.firebaseUserId);
   const { messages } = useMessageSubscription(firebaseUserId);
 
-  const unseenMessagesCount =
-    messages?.reduce((total, item) => total + (item.unseenCount || 0), 0) || 0;
+  const unseenMessagesCount = React.useMemo(() => {
+    return messages?.reduce((total, item) => total + (item.unseenCount || 0), 0) || 0;
+  }, [messages]); // Performance optimization: useMemo ile gereksiz hesaplamaları önledik
 
   return (
     <BottomTab.Navigator
@@ -35,16 +37,21 @@ export default function HomeTabs() {
         },
         tabBarStyle: {
           backgroundColor: "#fff",
-          height: 80,
+          height: 84, // Cihaz alt boşluğu (Safe Area) için ideal yükseklik
           paddingHorizontal: 24,
-          paddingTop: 10,
+          paddingTop: 8,
+          paddingBottom: 20, // Alt barın yazılarını modern cihazlarda yukarı çeker
           borderTopColor: "transparent",
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          position: "absolute",
-          elevation: 10,
-          shadowOpacity: 0.05,
-          shadowRadius: 10,
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          elevation: 12,
+          shadowColor: "#000",
+          shadowOpacity: 0.06,
+          shadowRadius: 12,
+          shadowOffset: { width: 0, height: -4 },
         }
       }}
     >
@@ -56,21 +63,7 @@ export default function HomeTabs() {
           tabBarIcon: ({ color }) => <HouseIcon size={22} color={color} />,
         }}
       />
-      {/* <BottomTab.Screen
-        name="Notification"
-        component={NotificationScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon
-              size="7"
-              color={color}
-              as={<MaterialIcons name="notifications" />}
-            />
-          ),
-          tabBarBadge: 3,
-          tabBarBadgeStyle: { backgroundColor: "#7F3DFF", color: "#fff" },
-        }}
-      /> */}
+      
       <BottomTab.Screen
         name="Swaps"
         component={SwapsTabs}
@@ -79,6 +72,7 @@ export default function HomeTabs() {
           tabBarIcon: ({ color }) => <ArrowLeftRightIcon size={22} color={color} />,
         }}
       />
+      
       <BottomTab.Screen
         name="Messages"
         component={MessagesScreen}
@@ -89,16 +83,14 @@ export default function HomeTabs() {
             backgroundColor: "#7F3DFF",
             color: "#fff",
             fontSize: 10,
-            lineHeight: 15,
+            lineHeight: 14,
             minWidth: 16,
             height: 16,
             borderRadius: 8,
-            top: -2,
-            marginLeft: 0,
+            alignItems: "center",
+            justifyContent: "center",
           },
-          tabBarIcon: ({ color }) => (
-            <MessageSquareIcon size={22} color={color} />
-          ),
+          tabBarIcon: ({ color }) => <MessageSquareIcon size={22} color={color} />,
         }}
       />
     </BottomTab.Navigator>

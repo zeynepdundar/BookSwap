@@ -11,10 +11,12 @@ import {
   WarningTwoIcon,
   Pressable,
   Divider,
+  Icon,
 } from "native-base";
 import { useCallback, useState } from "react";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { MaterialIcons } from "@expo/vector-icons";
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { useFocusEffect } from "@react-navigation/native";
 import i18n from "@/i18n";
@@ -28,7 +30,7 @@ export default function HistoryScreen({ navigation }) {
 
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
- const historyList  = useSelector(offersSelectors.history.selectAll);
+  const historyList = useSelector(offersSelectors.history.selectAll);
 
   const [historyListWithUserPhoto, setHistoryListWithUserPhoto] =
     useState<any[]>(historyList);
@@ -44,7 +46,7 @@ export default function HistoryScreen({ navigation }) {
           ...offer,
           participantProfile: {
             ...offer.participantProfile,
-            photo_file_name: photoUrl , // Add the photo URL or default image
+            photo_file_name: photoUrl, // Add the photo URL or default image
           },
         };
       })
@@ -80,151 +82,163 @@ export default function HistoryScreen({ navigation }) {
 
   return (
     <>
-      {!historyList ||
-        (historyList.length === 0 && (
-          <VStack width="100%" height="100%" pt="100" bg="#fff">
-            <Center>
-              <Text fontSize="md" textAlign="center">
-                {i18n.t("start-searching-for-new-books")}
-              </Text>
-            </Center>
-            <Center w="100%">
-              <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-              <Text textAlign="center" mx="30" fontWeight="200">
-                {i18n.t("you-have-not-received-any-offer-yet")}
-              </Text>
-            </Center>
-          </VStack>
-        ))}
-      {!error && historyList && historyList?.length > 0 && (
+      {/* EMPTY STATE */}
+      {!historyList || historyList.length === 0 ? (
+        <VStack
+          flex={1}
+          bg="#fff"
+          px="6"
+          justifyContent="center"
+          alignItems="center"
+          space={4}
+        >
+          <Box
+            w="64px"
+            h="64px"
+            rounded="full"
+            bg="primary.50"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Icon
+              as={MaterialIcons}
+              name="history"
+              size="lg"
+              color="primary.600"
+            />
+          </Box>
+
+          <Text fontSize="18" fontWeight="500" color="#111827" textAlign="center">
+
+            {i18n.t("no-history")}
+          </Text>
+
+          <Text
+            fontSize="sm"
+            fontWeight="400"
+            textAlign="center"
+            color="#6B7280"
+            px="8"
+            lineHeight="20px"
+          >
+            {i18n.t("history-subtitle")}
+          </Text>
+        </VStack>
+      ) : (
         <FlatList
           w="100%"
           bg="#fff"
-          height="75%"
           data={historyListWithUserPhoto}
           showsVerticalScrollIndicator={false}
-          pt="3"
           refreshing={refreshing}
           onRefresh={onRefresh}
+          contentContainerStyle={{ paddingBottom: 20 }}
           renderItem={({ item }) => (
             <Box
-              p="2"
-              mx="2"
+              mx="4"
+              my="2"
+              p="3"
               borderWidth="1"
-              borderRadius="10"
+              borderRadius="12"
               borderColor="#EEEEEE"
-              overflow="hidden"
-              key={item.id}
-              alignItems="center"
-              mb="4"
+              bg="#fff"
             >
-              <HStack space="0.8" alignItems="center" h={151}>
-                <VStack w="85px" h={140} alignItems="center" pt={3}>
-                  <Image
-                    source={
-                      item.requestedBook.coverUrl
-                        ? { uri: item.requestedBook.coverUrl }
-                        : {
-                            uri: "https://store.bookbaby.com/bookshop/OnePageBookCoverImage.jpg?BookID=BK00009510&abOnly=False",
+              <HStack alignItems="center" justifyContent="space-between">
+
+                {/* LEFT: BOOKS */}
+                <HStack space={3} alignItems="center">
+
+                  {/* Requested Book */}
+                  <VStack alignItems="center" w="70px">
+                    <Image
+                      source={
+                        item.requestedBook.coverUrl
+                          ? { uri: item.requestedBook.coverUrl }
+                          : {
+                            uri: "https://store.bookbaby.com/bookshop/OnePageBookCoverImage.jpg"
                           }
-                    }
-                    alt="Library"
-                    roundedRight="5"
-                    width="60"
-                    height="82"
-                  />
-                  <Text
-                    color="#06070D"
-                    fontSize="xs"
-                    mt="1"
-                    textAlign="center"
-                    numberOfLines={2}
-                  >
-                    {truncateText(formatText(item.requestedBook.title), 36)}
-                  </Text>
-                </VStack>
-                <Image source={APP_ICONS.swap} alt=" Library" />
-                <VStack w="85px" h={140} alignItems="center" pt={3}>
-                  <Image
-                    source={
-                      item.offeredBook.coverUrl
-                        ? { uri: item.offeredBook.coverUrl }
-                        : {
-                            uri: "https://store.bookbaby.com/bookshop/OnePageBookCoverImage.jpg?BookID=BK00009510&abOnly=False",
-                          }
-                    }
-                    alt=" Library"
-                    width="60"
-                    height="82"
-                    roundedRight="4"
-                  />
-                  <Text
-                    color="#06070D"
-                    fontSize="xs"
-                    mt="1"
-                    textAlign="center"
-                    numberOfLines={2}
-                  >
-                    {truncateText(formatText(item.offeredBook.title), 36)}
-                  </Text>
-                </VStack>
-                <Spacer></Spacer>
-                <VStack w="102" h={126}>
-                  <Text color="#8c8c8c" fontSize="xs" textAlign="right">
-                    20 Jun
-                  </Text>
-                  <Spacer />
-                  <Flex direction="column" alignItems="flex-end">
-                    <Pressable
-                      onPress={() => {
-                        onNavigateProfile(item.participantProfile);
-                      }}
+                      }
+                      width="55"
+                      height="80"
+                      borderRadius={6}
+                    />
+
+                    <Text
+                      fontSize="10px"
+                      mt="1"
+                      textAlign="center"
+                      numberOfLines={2}
                     >
-                      <Box
-                        size={10}
-                        rounded="full"
-                        backgroundColor="#e0e0e0"
-                        mr={3}
-                        overflow="hidden"
-                      >
+                      {truncateText(formatText(item.requestedBook.title), 32)}
+                    </Text>
+                  </VStack>
+
+                  <Image source={APP_ICONS.swap} alt="swap" />
+
+                  {/* Offered Book */}
+                  <VStack alignItems="center" w="70px">
+                    <Image
+                      source={
+                        item.offeredBook.coverUrl
+                          ? { uri: item.offeredBook.coverUrl }
+                          : {
+                            uri: "https://store.bookbaby.com/bookshop/OnePageBookCoverImage.jpg"
+                          }
+                      }
+                      width="55"
+                      height="80"
+                      borderRadius={6}
+                    />
+
+                    <Text
+                      fontSize="10px"
+                      mt="1"
+                      textAlign="center"
+                      numberOfLines={2}
+                    >
+                      {truncateText(formatText(item.offeredBook.title), 32)}
+                    </Text>
+                  </VStack>
+                </HStack>
+
+                {/* RIGHT: META */}
+                <VStack alignItems="flex-end" justifyContent="space-between" h="100%">
+                  <Text fontSize="10px" color="#8c8c8c">
+                    {item.createdAt}
+                  </Text>
+
+                  <Pressable onPress={() => onNavigateProfile(item.participantProfile)}>
+                    <VStack alignItems="center" mt="3">
+                      <Box size={10} rounded="full" overflow="hidden" bg="#e0e0e0">
                         <Image
                           source={getImageSource(
                             item.participantProfile.photo_file_name,
                             IMAGE_FALLBACKS.USER_AVATAR
                           )}
-                          alt="Profile Image"
                           size={10}
                           rounded="full"
                         />
                       </Box>
-                      <Text
-                        color="#8c8c8c"
-                        fontSize="10"
-                        maxW="68px"
-                        textAlign="center"
-                        pt="1"
-                      >
-                        with <Text> {item.participantProfile.name}</Text>
+
+                      <Text fontSize="10px" color="#8c8c8c" mt="1" textAlign="center">
+                        {item.participantProfile.name}
                       </Text>
-                    </Pressable>
-                  </Flex>
+                    </VStack>
+                  </Pressable>
                 </VStack>
+
               </HStack>
             </Box>
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => `history-${item.id}`}
         />
       )}
+
+      {/* ERROR STATE */}
       {error && (
         <Box h="75%" alignItems="center" justifyContent="center">
-          <WarningTwoIcon size="5" mt="0.5" mx="2" color="error.500" />
-          <Text
-            mt={2}
-            px={5}
-            fontSize="xs"
-            color="error.500"
-            textAlign="center"
-          >
+          <WarningTwoIcon size="5" color="error.500" />
+          <Text mt={2} px={5} fontSize="xs" color="error.500" textAlign="center">
             {error}
           </Text>
         </Box>

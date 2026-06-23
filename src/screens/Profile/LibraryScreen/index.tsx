@@ -5,6 +5,7 @@ import {
   VStack,
   Pressable,
   Box,
+  Button,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -90,7 +91,7 @@ export default function LibraryScreen({ navigation, route }) {
   const selectedBooksAction = isTradeProposal ? addBookToProposalButton : removeBookButton;
 
   return (
-    <Screen>
+    <Screen full>
       <ScreenHeader
         title={i18n.t("my-library")}
         onBack={() => navigation.goBack()}
@@ -100,54 +101,49 @@ export default function LibraryScreen({ navigation, route }) {
           <VStack space={4} alignItems="center">
 
             <Box
-              w="58px"
-              h="58px"
+              w="64px"
+              h="64px"
               rounded="full"
-              bg="coolGray.100"
+              bg="primary.50"
               alignItems="center"
               justifyContent="center"
             >
               <Icon
                 as={MaterialIcons}
-                name="menu-book"
+                name="auto-stories"
                 size="lg"
-                color="coolGray.400"
+                color="primary.500"
               />
             </Box>
 
-            <Text fontSize="18" fontWeight="600" textAlign="center">
-              Your library is empty
+            <Text fontSize="18" fontWeight="500" color="#111827" textAlign="center">
+
+              {i18n.t("no-books-in-your-library-yet")}
             </Text>
 
             <Text
-              fontSize="13"
+              fontSize="sm"
               color="coolGray.500"
               textAlign="center"
               lineHeight={18}
             >
               {i18n.t("add-books-to-your-library-to-swap-books")}
             </Text>
-
-            <Pressable
+            <Button
               onPress={() =>
                 navigation.navigate("BookSearch", {
                   sourceScreen: BookCollections.LIBRARY,
                 })
               }
+
+              variant="primary"
+              rounded="full"
               mt={4}
+              px={2}
+              py={3}
             >
-              <Box
-                bg="primary.500"
-                px={5}
-                py={3}
-                rounded="full"
-                shadow={4}
-              >
-                <Text color="white" fontWeight="600">
-                  Add books
-                </Text>
-              </Box>
-            </Pressable>
+              {i18n.t("add-books")}
+            </Button>
 
           </VStack>
         </Center>

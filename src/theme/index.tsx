@@ -103,26 +103,16 @@ export const theme = extendTheme({
     },
     Heading: {
       baseStyle: {
-        color: "coolGray.800",
-        fontWeight: "500",
-        fontFamily: "poppins"
+        color: "#1F2937",
+        fontWeight: "600",
+        fontFamily: "poppins",
       },
       sizes: {
-        xs: {
-          fontSize: "12px",
-        },
-        sm: {
-          fontSize: "14px",
-        },
-        md: {
-          fontSize: "16px",
-        },
-        lg: {
-          fontSize: "18px",
-        },
-        xl: {
-          fontSize: "20px",
-        },
+        xs: { fontSize: "12px" },
+        sm: { fontSize: "14px" },
+        md: { fontSize: "16px" },
+        lg: { fontSize: "18px" },
+        xl: { fontSize: "20px" },
       },
       defaultProps: {
         size: "xl",

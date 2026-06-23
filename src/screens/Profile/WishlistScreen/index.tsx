@@ -5,6 +5,7 @@ import {
   VStack,
   Pressable,
   Box,
+  Button,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { selectWishlistBooks } from "@/store/selectors";
@@ -29,14 +30,14 @@ const RemoveBookButton = ({ onPress }) => (
     rounded="full"
     alignItems="center"
     justifyContent="center"
-    bg="black.900"
-    _pressed={{ bg: "primary.100" }}
+    bg="#F3F4F6"
+    _pressed={{ opacity: 0.6 }}
   >
     <Icon
-      name="delete-outline"
-      size="md"
-      color="black.300"
       as={MaterialIcons}
+      name="remove-circle-outline"
+      size="md"
+      color="#6B7280"
     />
   </Pressable>
 );
@@ -64,98 +65,98 @@ export default function WishlistScreen({ navigation }) {
   ), [dispatch, toast]);
 
   return (
-<Screen>
-  <ScreenHeader
-    title={i18n.t("my-wishlist")}
-    onBack={() => navigation.goBack()}
-  />
+    <Screen full>
+      <ScreenHeader
+        title={i18n.t("my-wishlist")}
+        onBack={() => navigation.goBack()}
+      />
 
-  {wishlistBooks.length === 0 && (
-    <Center flex={1} px={8}>
-      <VStack space={4} alignItems="center">
+      {wishlistBooks.length === 0 && (
+        <Center flex={1} px={8}>
+          <VStack space={4} alignItems="center">
+            <Box
+              w="64px"
+              h="64px"
+              rounded="full"
+              bg="primary.50"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Icon
+                as={MaterialIcons}
+                name="bookmark-outline"
+                size="lg"
+                color="primary.500"
+              />
+            </Box>
 
-        <Box
-          w="58px"
-          h="58px"
-          rounded="full"
-          bg="coolGray.100"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Icon
-            as={MaterialIcons}
-            name="bookmark"
-            size="lg"
-            color="coolGray.400"
-          />
-        </Box>
+          <Text fontSize="18" fontWeight="500" color="#111827" textAlign="center">
 
-        <Text fontSize="18" fontWeight="600" textAlign="center">
-          {i18n.t("no-books-in-your-wishlist-yet")}
-        </Text>
 
-        <Text
-          fontSize="13"
-          color="coolGray.500"
-          textAlign="center"
-          lineHeight={18}
-        >
-          {i18n.t("add-books-to-your-wishlist-to-swap-books")}
-        </Text>
+              {i18n.t("no-books-in-your-wishlist-yet")}
+            </Text>
 
+            <Text
+              fontSize="sm"
+              color="coolGray.500"
+              textAlign="center"
+              lineHeight={20}
+            >
+              {i18n.t("add-books-to-your-wishlist-to-swap-books")}
+            </Text>
+
+            <Button
+              onPress={() =>
+                navigation.navigate("BookSearch", {
+                  sourceScreen: BookCollections.WISHLIST,
+                })
+              }
+              variant="primary"
+              rounded="full"
+              mt={4}
+              px={2}
+              py={3}
+            >
+              {i18n.t("add-books")}
+            </Button>
+          </VStack>
+        </Center>
+      )}
+
+      {wishlistBooks.length > 0 && (
+        <BookListVertical
+          data={wishlistBooks}
+          onPrimaryAction={renderRemoveButton}
+        />
+      )}
+
+      {showFab && wishlistBooks.length > 0 && (
         <Pressable
           onPress={() =>
             navigation.navigate("BookSearch", {
               sourceScreen: BookCollections.WISHLIST,
             })
           }
-          mt={4}
+          position="absolute"
+          right={6}
+          bottom={10}
         >
-          <Box bg="primary.500" px={5} py={3} rounded="full" shadow={4}>
-            <Text color="white" fontWeight="600">
-              Add books
+          <Box
+            flexDirection="row"
+            alignItems="center"
+            bg="primary.500"
+            px={4}
+            py={3}
+            rounded="full"
+            shadow={6}
+          >
+            <Icon as={MaterialIcons} name="add" color="white" size="sm" />
+            <Text ml={2} color="white" fontWeight="600">
+              Add
             </Text>
           </Box>
         </Pressable>
-
-      </VStack>
-    </Center>
-  )}
-
-  {wishlistBooks.length > 0 && (
-    <BookListVertical
-      data={wishlistBooks}
-      onPrimaryAction={renderRemoveButton}
-    />
-  )}
-
-  {showFab && wishlistBooks.length > 0 && (
-    <Pressable
-      onPress={() =>
-        navigation.navigate("BookSearch", {
-          sourceScreen: BookCollections.WISHLIST,
-        })
-      }
-      position="absolute"
-      right={6}
-      bottom={10}
-    >
-      <Box
-        flexDirection="row"
-        alignItems="center"
-        bg="primary.500"
-        px={4}
-        py={3}
-        rounded="full"
-        shadow={6}
-      >
-        <Icon as={MaterialIcons} name="add" color="white" size="sm" />
-        <Text ml={2} color="white" fontWeight="600">
-          Add
-        </Text>
-      </Box>
-    </Pressable>
-  )}
-</Screen>
+      )}
+    </Screen>
   );
 }

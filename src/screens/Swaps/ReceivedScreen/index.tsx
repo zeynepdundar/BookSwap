@@ -13,11 +13,13 @@ import {
   Pressable,
   Text,
   VStack,
+  Icon,
 } from "native-base";
 import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 import i18n from "@/i18n";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { fetchProfileImageUrl } from "@/services/profile/profile.service";
@@ -174,24 +176,48 @@ export default function ReceivedScreen({ navigation }) {
   return (
     <>
       {!receivedOffers || receivedOffers.length === 0 ? (
-        <VStack width="100%" height="100%" bg="#fff" position="relative">
-          <Box position="absolute" top={0} left={0} right={0} zIndex={1}>
-            <Center pt="100">
-              <Text fontSize="md">
-                {i18n.t("start-searching-for-new-books")}
-              </Text>
-            </Center>
-            <Center w="100%">
-              <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-              <Text textAlign="center" mx="30" fontWeight="200">
-                {i18n.t("you-have-not-received-any-offer-yet")}
-              </Text>
-              <Text textAlign="center" mx="30" fontWeight="200">
-                {i18n.t("scroll-down-to-get-latest-request-if-exists")}
-              </Text>
-            </Center>
+        <VStack
+          flex={1}
+          bg="#fff"
+          px="6"
+          justifyContent="center"
+          alignItems="center"
+          space={4}
+        >
+          <Box
+            w="64px"
+            h="64px"
+            rounded="full"
+            bg="primary.50"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Icon
+              as={MaterialIcons}
+              name="swap-horiz"
+              size="lg"
+              color="primary.600"
+            />
           </Box>
+          <Text fontSize="18" fontWeight="500" color="#111827" textAlign="center">
 
+            {i18n.t("no-offers-received")}
+          </Text>
+
+          <Text
+            fontSize="sm"
+            fontWeight="400"
+            textAlign="center"
+            color="#6B7280"
+            px="8"
+            lineHeight="20px"
+          >
+            {i18n.t("received-offers-subtitle")}
+            {/* {i18n.t("scroll-down-to-get-latest-request-if-exists")} */}
+          </Text>
+
+          {/* 
+          @TODO: Review again
           <Box flex={1}>
             <FlatList
               data={[]}
@@ -205,7 +231,7 @@ export default function ReceivedScreen({ navigation }) {
               }}
               showsVerticalScrollIndicator={false}
             />
-          </Box>
+          </Box> */}
         </VStack>
       ) : (
         <FlatList

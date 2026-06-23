@@ -9,6 +9,7 @@ import {
   FlatList,
   Flex,
   HStack,
+  Icon,
   Image,
   Pressable,
   Text,
@@ -19,6 +20,7 @@ import { useSelector } from "react-redux";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 import i18n from "@/i18n";
 
+import { MaterialIcons } from "@expo/vector-icons";
 import { formatText, getImageSource, truncateText } from "@/utils/helper";
 import { fetchSentOffersAsync, takeBackOfferAsync } from "@/store/offers/thunks";
 import { offersSelectors } from "@/store/offers/slice";
@@ -120,18 +122,45 @@ export default function SentScreen({ navigation }) {
   return (
     <>
       {!sentOffers || sentOffers.length === 0 ? (
-        <VStack width="100%" height="100%" pt="100" bg="#fff">
-          <Center>
-            <Text fontSize="md" textAlign="center">
-              {i18n.t("start-searching-for-new-books")}
-            </Text>
-          </Center>
-          <Center w="100%">
-            <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-            <Text textAlign="center" mx="30" fontWeight="200">
-              {i18n.t("you-have-not-sent-any-offer-yet")}
-            </Text>
-          </Center>
+        <VStack
+          flex={1}
+          bg="#fff"
+          px="6"
+          justifyContent="center"
+          alignItems="center"
+          space={4}
+        >
+          <Box
+            w="64px"
+            h="64px"
+            rounded="full"
+            bg="primary.50"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Icon
+              as={MaterialIcons}
+              name="swap-horiz"
+              size="lg"
+              color="primary.600"
+            />
+          </Box>
+
+          <Text fontSize="18" fontWeight="500" color="#111827" textAlign="center">
+
+            {i18n.t("no-sent-offers")}
+          </Text>
+
+          <Text
+            fontSize="sm"
+            fontWeight="400"
+            textAlign="center"
+            color="#6B7280"
+            px="8"
+            lineHeight="20px"
+          >
+            {i18n.t("discover-books-to-make-your-first-offer")}
+          </Text>
         </VStack>
       ) : (
         <FlatList
