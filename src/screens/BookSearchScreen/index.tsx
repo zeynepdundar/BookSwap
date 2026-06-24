@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { Box, Center, Heading, VStack, Text, Divider } from "native-base";
+import { Box, Center, Heading, VStack, Text, Divider, Button, Icon } from "native-base";
 import i18n from "@/i18n";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import { useAddBooks } from "@/hooks/api/useAddBooks";
 import { fetchBooksByTitle } from "@/services/books/books.service";
@@ -126,7 +127,7 @@ export default function BookSearchScreen({ navigation, route = null }) {
       };
     }, [])
   );
-   const getInfoDialogConfig = (selectedAction: string | null) => {
+  const getInfoDialogConfig = (selectedAction: string | null) => {
     if (selectedAction === BookCollections.WISHLIST) {
       return {
         title: i18n.t("successfully-added"),
@@ -150,11 +151,18 @@ export default function BookSearchScreen({ navigation, route = null }) {
     return null;
   };
   const config = getInfoDialogConfig(selectedAction);
+
+  // Derived render states (mutually exclusive)
+  const hasResults = !loading && !searchError && searchResults?.length > 0;
+  const initialState = !loading && searchQuery.length < 3;
+  const emptyState =
+    !loading && !searchError && searchResults.length === 0 && searchQuery.length >= 3;
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Screen>
         <Box w="100%" h={9} justifyContent="center" px={4}>
-          <Heading fontWeight="500" size="xl">{i18n.t("keep-exploring")}</Heading>
+          <Heading fontWeight="500" size="xl">{i18n.t("discover-books")}</Heading>
         </Box>
         <Box px={2}>
           <AppSearchBar
@@ -164,17 +172,14 @@ export default function BookSearchScreen({ navigation, route = null }) {
             inputRef={inputRef}
           />
         </Box>
-        <Box flex={1} mt="2">
+        <VStack flex={1} mt="2">
           {loading && (
             <Box h="75%" alignItems="center" justifyContent="center">
               <LoadingOverlay />
             </Box>
           )}
 
-
-
-
-          {!loading && !searchError && searchResults?.length > 0 && (
+          {hasResults && (
             <>
               {collectionType ? (
                 <BorderedBookListVertical data={searchResults} onDonePress={pressDoneHandler} />
@@ -189,38 +194,87 @@ export default function BookSearchScreen({ navigation, route = null }) {
             </>
           )}
 
-          {searchQuery.length < 3 && (
-            <VStack width="100%" height={200} mt="100">
-              <Center>
-                <Text fontSize="md">{i18n.t("find-favorite-books")}</Text>
-              </Center>
-              <Center w="100%">
-                <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-                <Text textAlign="center" mx="30" fontWeight="200">
-                  {sourceScreen === BookCollections.WISHLIST
-                    ? i18n.t("add-books-to-your-wishlist-to-start-swap")
-                    : i18n.t("add-books-to-your-library-to-start-swap")}
-                </Text>
-              </Center>
+          {initialState && (
+            <VStack
+              flex={1}
+              justifyContent="flex-start"
+              alignItems="center"
+              px={8}
+              pt={12}
+            >
+              <Text
+                fontSize="sm"
+                color="coolGray.500"
+                textAlign="center"
+                maxW="85%"
+              >
+                {sourceScreen === BookCollections.WISHLIST
+                  ? i18n.t("find-books-to-your-wishlist")
+                  : i18n.t("find-books-to-your-library")}
+              </Text>
             </VStack>
           )}
 
-          {!searchError && searchResults.length === 0 && searchQuery.length >= 3 && (
-            <VStack width="100%" height={200} mt="100">
-              <Center w="100%">
-                <Text fontSize="md" alignSelf="center" maxWidth={360} textAlign="center">
-                  {`${i18n.t("no-results-for")} "${searchQuery}"`}
-                </Text>
-              </Center>
-              <Center w="100%">
-                <Divider mt="3" mb="7" width={300} bg="#EEEEEE" />
-                <Text textAlign="center" mx="30" fontWeight="200">
-                  {i18n.t("we-do-not-have-the-book-yet")}
-                </Text>
-              </Center>
+          {emptyState && (
+            <VStack
+              flex={1}
+              justifyContent="flex-start"
+              alignItems="center"
+              pt={12}
+              px={8}
+              space={4}
+            >
+              <Box
+                size={16}
+                rounded="full"
+                bg="primary.50"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Icon
+                  as={MaterialIcons}
+                  name="menu-book"
+                  size="xl"
+                  color="primary.600"
+                />
+              </Box>
+
+              <Text
+                fontSize="md"
+                fontWeight="600"
+                color="coolGray.900"
+                textAlign="center"
+              >
+                {`${i18n.t("no-results-for")} "${searchQuery}"`}
+              </Text>
+
+              <Text
+                fontSize="sm"
+                color="coolGray.500"
+                textAlign="center"
+                maxW="80%"
+                lineHeight="20px"
+              >
+                {i18n.t("try-scanning-its-barcode")}
+              </Text>
+
+              <Button
+                mt={2}
+                variant="outline"
+                leftIcon={
+                  <Icon
+                    as={MaterialIcons}
+                    name="qr-code-scanner"
+                    size="sm"
+                  />
+                }
+                onPress={scanBarcodeHandler}
+              >
+                {i18n.t("scan-barcode")}
+              </Button>
             </VStack>
           )}
-        </Box>
+        </VStack>
 
 
         {/* Global UI sheets share state variables interchangeably */}

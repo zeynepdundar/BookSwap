@@ -5,6 +5,7 @@ import ScreenHeader from "@/components/ui/ScreenHeader";
 import {
   Badge,
   Box,
+  Button,
   Divider,
   FlatList,
   Flex,
@@ -41,10 +42,6 @@ export default function MessagesScreen({ navigation }) {
   const profileData = useSelector((state: RootState) => state.profile.profile);
 
   const { languagePreference } = profileData;
-
-
-  const unseenMessagesCount =
-    messages?.reduce((total, item) => total + item.unseenCount, 0) || 0;
 
   const fetchUserProfiles = async () => {
     try {
@@ -154,31 +151,61 @@ export default function MessagesScreen({ navigation }) {
           >
             {i18n.t("check-book-offers-to-get-started")}
           </Text>
+
+          <Button
+            onPress={() =>
+              navigation.navigate("HomeTabs", {
+                screen: "Swaps",
+                params: { screen: "Received" }
+              })}
+
+            variant="primary"
+            rounded="full"
+            mt={4}
+            px={2}
+            py={3}
+          >
+            {i18n.t("browse")}
+          </Button>
         </VStack>
       ) : (
         <FlatList
           data={messages}
           keyExtractor={(item) => item.conversationId}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingTop: 8, paddingHorizontal: 16 }}
+          contentContainerStyle={{
+            paddingTop: 8,
+            paddingHorizontal: 16,
+            paddingBottom: 24,
+          }}
           ItemSeparatorComponent={() => (
             <Divider ml={15} bg="coolGray.100" />
           )}
           renderItem={({ item }) => {
-            const friendProfile = userProfiles[item.userId];
+            const friendProfile = userProfiles[item.userId] ?? {
+              userId: item.userId,
+            };
+
+            const isUnread = item.unseenCount > 0;
 
             return (
-              <Pressable onPress={() => handleStartChat(friendProfile)}>
+              <Pressable
+                onPress={() => handleStartChat(friendProfile)}
+                _pressed={{
+                  bg: "coolGray.50",
+                }}
+                rounded="lg"
+              >
                 <Flex
                   direction="row"
                   alignItems="center"
-                  py={3}
-                  bg="transparent"
+                  py={3.5}
+                  px={1}
                 >
-                  {/* Avatar (no box, just image) */}
+                  {/* Avatar */}
                   <Image
                     source={getImageSource(
-                      friendProfile.imageData,
+                      friendProfile?.imageData,
                       IMAGE_FALLBACKS.USER_AVATAR
                     )}
                     alt="Profile Image"
@@ -186,40 +213,72 @@ export default function MessagesScreen({ navigation }) {
                     rounded="full"
                   />
 
-                  {/* Text content */}
+                  {/* Content */}
                   <VStack flex={1} ml={3} space={0.5}>
-                    <Text fontSize="md" fontWeight="600" color="coolGray.900">
-                      {friendProfile?.name || "Unknown User"}
+                    <Text
+                      fontSize="md"
+                      fontWeight={isUnread ? "700" : "500"}
+                      color="coolGray.900"
+                      numberOfLines={1}
+                    >
+                      {friendProfile?.name ?? i18n.t("user")}
                     </Text>
 
-                    <Text fontSize="sm" color="coolGray.500" numberOfLines={1}>
+                    <Text
+                      fontSize="sm"
+                      color={isUnread ? "coolGray.700" : "coolGray.500"}
+                      fontWeight={isUnread ? "500" : "400"}
+                      numberOfLines={1}
+                    >
                       {item.lastMessageIsMine && (
-                        <Text fontWeight="500" color="coolGray.600">
+                        <Text
+                          fontWeight="600"
+                          color="coolGray.700"
+                        >
                           {i18n.t("you")}:{" "}
                         </Text>
                       )}
-                      {truncateText(item.lastMessageText, 28)}
+
+                      {truncateText(item.lastMessageText, 32)}
                     </Text>
                   </VStack>
 
-                  {/* Right side meta */}
-                  <VStack alignItems="flex-end" justifyContent="center" space={1.5} ml={2}>
-                    <Text fontSize="xs" color="coolGray.400">
+                  {/* Meta */}
+                  <VStack
+                    alignItems="flex-end"
+                    justifyContent="center"
+                    ml={3}
+                    minW="52px"
+                    space={1.5}
+                  >
+                    <Text
+                      fontSize="xs"
+                      color={isUnread ? "primary.500" : "coolGray.400"}
+                      fontWeight={isUnread ? "600" : "400"}
+                    >
                       {formatLastMessageTime(
                         item.lastMessageTime,
                         languagePreference
                       )}
                     </Text>
 
-                    {item.unseenCount > 0 && (
+                    {isUnread && (
                       <Badge
                         bg="primary.500"
                         rounded="full"
-                        px={2}
-                        py={0.5}
-                        _text={{ fontSize: 11, color: "white" }}
+                        minW="22px"
+                        h="22px"
+                        alignItems="center"
+                        justifyContent="center"
+                        _text={{
+                          color: "white",
+                          fontSize: 11,
+                          fontWeight: "700",
+                        }}
                       >
-                        {item.unseenCount}
+                        {item.unseenCount > 99
+                          ? "99+"
+                          : item.unseenCount}
                       </Badge>
                     )}
                   </VStack>

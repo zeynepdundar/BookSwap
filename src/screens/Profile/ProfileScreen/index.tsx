@@ -78,7 +78,7 @@ export default function ProfileScreen({ navigation }) {
       onPress: () => navigation.navigate("Wishlist"),
       rightContent: (
         <Box px={2} py={0.5} rounded="full" bg="primary.100">
-          <Text fontSize="xs" fontWeight="600" color="primary.700">
+          <Text fontSize="xs" fontWeight="600" color="primary.500">
             {wishlistBookIds?.length ?? 0}
           </Text>
         </Box>
@@ -91,7 +91,7 @@ export default function ProfileScreen({ navigation }) {
       onPress: () => navigation.navigate("Library"),
       rightContent: (
         <Box px={2} py={0.5} rounded="full" bg="primary.100">
-          <Text fontSize="xs" fontWeight="600" color="primary.700">
+          <Text fontSize="xs" fontWeight="600" color="primary.500">
             {libraryBookIds?.length ?? 0}
           </Text>
         </Box>

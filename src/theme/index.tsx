@@ -15,7 +15,6 @@ export const theme = extendTheme({
       100: "#E7DCFF",  // surfaces
       500: "#7F3DFF",  // primary
       600: "#6E2EE6",  // pressed
-      700: "#5A23C7",
     },
     black: {
       100: "#161719",
@@ -59,7 +58,7 @@ export const theme = extendTheme({
   components: {
     Button: {
       baseStyle: {
-        rounded: 10, // ✅ number, not "px"
+        rounded: 10,
         shadow: 1,
         _text: {
           fontFamily: "poppins-semi-bold",
@@ -91,12 +90,12 @@ export const theme = extendTheme({
           borderWidth: 1,
           borderColor: "primary.500",
           _text: { color: "primary.500" },
-          _pressed: { bg: "primary.500:alpha.10" }, // ✅ subtle feedback
+          _pressed: { bg: "primary.500:alpha.10" }, // subtle feedback
         }),
         ghost: () => ({
           bg: "transparent",
           _text: { color: "primary.500" },
-          _pressed: { opacity: 0.6 }, // ✅ feedback without background
+          _pressed: { opacity: 0.6 }, // feedback without background
         }),
         neutral: () => ({
           bg: "coolGray.50",

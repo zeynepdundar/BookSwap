@@ -66,9 +66,19 @@ export default function SentScreen({ navigation }) {
   const takeBackOfferHandler = async (offerId: string) => {
     try {
       const response = await dispatch(takeBackOfferAsync(offerId));
-      const payload = response.payload;
 
-      if (!payload.success) {
+      // The thunk threw (network/exception) — no payload to inspect.
+      if (takeBackOfferAsync.rejected.match(response)) {
+        toast.error(i18n.t("something-went-wrong"));
+        dispatch(fetchSentOffersAsync());
+        return;
+      }
+
+      const payload = response.payload as any;
+
+      // On success the thunk resolves with the bare offerId; only a
+      // handled failure carries the `{ success: false, message }` shape.
+      if (payload?.success === false) {
         const errorMessage =
           payload.message === "Offer not found or not eligible for taking back"
             ? i18n.t("offer-not-found-or-eligible-for-taking-back")
@@ -78,6 +88,12 @@ export default function SentScreen({ navigation }) {
         dispatch(fetchSentOffersAsync());
         return;
       }
+
+      // Instantly remove it from the UI so the user sees it disappear
+      setSentOffersWithUserPhoto((prev) =>
+        prev.filter((item) => item.id !== offerId)
+      );
+      toast.info(i18n.t("offer-taken-back-successfully"));
     } catch (error) {
       toast.error(i18n.t("something-went-wrong"));
       dispatch(fetchSentOffersAsync());

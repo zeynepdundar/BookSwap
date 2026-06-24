@@ -110,13 +110,23 @@ const offersSlice = createSlice({
     });
 
     // REJECT
+    // Like take-back, the thunk resolves with the bare offerId string on
+    // success and a `{ success: false }` object on a handled failure.
     builder.addCase(rejectOfferAsync.fulfilled, (state, action) => {
-      receivedAdapter.removeOne(state.received, action.payload.id);
+      const offerId = action.payload;
+      if (typeof offerId === "string" || typeof offerId === "number") {
+        receivedAdapter.removeOne(state.received, offerId);
+      }
     });
 
     // TAKE BACK
+    // On success the thunk resolves with the bare offerId string; a handled
+    // failure resolves with a `{ success: false }` object, which we ignore.
     builder.addCase(takeBackOfferAsync.fulfilled, (state, action) => {
-      sentAdapter.removeOne(state.sent, action.payload.id);
+      const offerId = action.payload;
+      if (typeof offerId === "string" || typeof offerId === "number") {
+        sentAdapter.removeOne(state.sent, offerId);
+      }
     });
 
     // GLOBAL LOADING

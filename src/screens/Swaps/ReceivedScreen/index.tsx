@@ -9,7 +9,7 @@ import {
   Text,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 import { SwapOffersList } from "@/components/ui/SwapOffersList";
@@ -20,6 +20,7 @@ import { acceptOfferAsync, fetchReceivedOffersAsync, rejectOfferAsync } from "@/
 import { offersSelectors } from "@/store/offers/slice";
 import { useAppToast } from "@/hooks/useAppToast";
 import { InfoDialogBox } from "@/components/Modal/InfoDialogBox";
+import { generateConversationId } from "@/utils/helper";
 
 export default function ReceivedScreen({ navigation }) {
   const receivedOffers = useSelector(offersSelectors.received.selectAll);
@@ -27,9 +28,12 @@ export default function ReceivedScreen({ navigation }) {
     useState<any[]>(receivedOffers);
   const [refreshing, setRefreshing] = useState(false);
   const { loading, profile } = useSelector((state: any) => state.profile);
+  const { firebaseUserId } = useSelector((state: any) => state.auth.user);
   const toast = useAppToast();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState<boolean>(false);
+  // Participant of the just-accepted offer, used to open the chat on confirm
+  const [acceptedParticipant, setAcceptedParticipant] = useState<any>(null);
 
   // Track the ID of the offer currently being declined (null means hidden)
   const [activeDeclineOfferId, setActiveDeclineOfferId] = useState<string | number | null>(null);
@@ -76,6 +80,8 @@ export default function ReceivedScreen({ navigation }) {
         // Instantly clear it from the UI list so the user sees it disappear
         setReceivedOffersWithUserPhoto((prev) => prev.filter((item) => item.id !== offer.id));
 
+        // Remember who the offer was with so the dialog can open their chat
+        setAcceptedParticipant(offer.participantProfile);
         setSuccessMessage(i18n.t("swap-accepted-start-chat"));
         setIsInfoDialogOpen(true);
 
@@ -103,9 +109,19 @@ export default function ReceivedScreen({ navigation }) {
     setActiveDeclineOfferId(null); // Close the inline confirm window safely
     try {
       const response = await dispatch(rejectOfferAsync(offerId));
+
+      // The thunk threw (network/exception) — no payload to inspect.
+      if (rejectOfferAsync.rejected.match(response)) {
+        showError(i18n.t("something-went-wrong"));
+        await refreshReceivedOffers();
+        return;
+      }
+
       const payload = (response as any).payload as any;
 
-      if (!payload.success) {
+      // On success the thunk resolves with the bare offerId; only a
+      // handled failure carries the `{ success: false, message }` shape.
+      if (payload?.success === false) {
         const errorMessage =
           payload.message === "Offer not found or not eligible for rejection"
             ? i18n.t("offer-not-found-or-eligible-for-rejection")
@@ -115,6 +131,11 @@ export default function ReceivedScreen({ navigation }) {
         await refreshReceivedOffers();
         return;
       }
+
+      // Instantly remove it from the UI so the user sees it disappear
+      setReceivedOffersWithUserPhoto((prev) =>
+        prev.filter((item) => item.id !== offerId)
+      );
     } catch (error) {
       showError(i18n.t("something-went-wrong"));
       await refreshReceivedOffers();
@@ -144,12 +165,40 @@ export default function ReceivedScreen({ navigation }) {
     return <LoadingOverlay />;
   }
 
-  const config = {
-    title: "Offer accepted!",
-    description: "You’ve accepted the offer. The conversation is now available in Messages.",
-    buttonLabel: "Go to chat",
-    onConfirm: () => console.log("custom action"),
-  };
+  const closeInfoDialog = useCallback(() => {
+    setIsInfoDialogOpen(false);
+    setAcceptedParticipant(null);
+  }, []);
+
+  // Open the chat with the participant of the offer that was just accepted
+  const goToChatWithParticipant = useCallback(() => {
+    setIsInfoDialogOpen(false);
+
+    if (!acceptedParticipant) return;
+
+    const friend = {
+      userId: acceptedParticipant.firebase_uid,
+      name: acceptedParticipant.name,
+      imageData: acceptedParticipant.photo_file_name,
+    };
+
+    navigation.navigate("ChatScreen", {
+      conversationId: generateConversationId(friend.userId, firebaseUserId),
+      friend,
+      currentUserId: firebaseUserId,
+    });
+
+    setAcceptedParticipant(null);
+  }, [acceptedParticipant, firebaseUserId, navigation]);
+
+  const config = useMemo(() => {
+    return {
+      title: i18n.t("offer-accepted-title"),
+      description: i18n.t("offer-accepted-description"),
+      buttonLabel: i18n.t("offer-accepted-button-label"),
+      onConfirm: goToChatWithParticipant,
+    };
+  }, [goToChatWithParticipant]);
 
   const renderActions = (item: any) => {
     const isConfirmingDecline = activeDeclineOfferId === item.id;
@@ -223,7 +272,7 @@ export default function ReceivedScreen({ navigation }) {
 
       <InfoDialogBox
         isOpen={isInfoDialogOpen}
-        onClose={() => setIsInfoDialogOpen(false)}
+        onClose={closeInfoDialog}
         config={config}
       />
     </>
