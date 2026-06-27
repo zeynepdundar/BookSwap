@@ -156,7 +156,7 @@ export default function WishlistScreen({ navigation }) {
           >
             <Icon as={MaterialIcons} name="add" color="white" size="sm" />
 
-            <Text ml={2}  fontFamily="poppins-semi-bold">
+            <Text ml={2}  fontFamily="poppins-semi-bold" color="white">
               Add
             </Text>
           </Box>

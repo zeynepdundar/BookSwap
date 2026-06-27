@@ -75,6 +75,19 @@ export const theme = extendTheme({
           opacity: 1,
         },
       },
+      sizes: {
+        sm: {
+          _text: {
+            px: 2,
+            fontSize: "xs",
+            fontFamily: "poppins-semi-bold",
+          },
+        },
+        md: {
+          px: 4,
+          py: 2,
+        },
+      },
       variants: {
         primary: () => ({
           bg: "primary.500",

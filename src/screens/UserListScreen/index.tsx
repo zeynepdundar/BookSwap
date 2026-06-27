@@ -1,13 +1,9 @@
 import { useCallback, useState } from "react";
 import {
   Button,
-  Heading,
   FlatList,
   Text,
   HStack,
-  Spacer,
-  ChevronLeftIcon,
-  Divider,
   Pressable,
   Image,
   Box,
@@ -21,6 +17,7 @@ import { getImageSource } from "@/utils/helper";
 import { fetchProfileImageUrl } from "@/services/profile/profile.service";
 import { selectLibraryBooks } from "@/store/selectors";
 import { IMAGE_FALLBACKS } from "@/constants/image";
+import ScreenHeader from "@/components/ui/ScreenHeader";
 
 export default function UserListScreen({ navigation, route }) {
   const usersTemp = route?.params?.data?.usersOwning;
@@ -72,90 +69,78 @@ export default function UserListScreen({ navigation, route }) {
   };
 
   return (
-    <Screen>
-      <HStack
-        alignItems="center"
-        space="22%"
-        justifyContent="space-between"
-        w="100%"
-        h="50px"
-      >
-        <Button
-          variant="ghost"
-          leftIcon={<ChevronLeftIcon size="6" color="black.100" pr="0" />}
-          _pressed={{
-            bg: "transparent",
-          }}
-          onPress={() => navigation.goBack()}
-        />
-        <Heading>{i18n.t("ask-for-swap")}</Heading>
-        <Spacer></Spacer>
-      </HStack>
+    <Screen full>
+      <ScreenHeader
+        title={i18n.t("ask-for-swap")}
+        onBack={() => navigation.goBack()}
+      />
       <FlatList
-        maxWidth="100%"
-        height="100%"
         data={usersWithPhotos}
         extraData={usersWithPhotos}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
-          <>
-            <Box
-              py="1"
-              justifyContent="center"
-              height="60"
-              mx="2"
-              p="2"
-              key={item.id}
-              overflow={"hidden"}
+          <Box
+            py={3}
+            px={4}
+            borderBottomWidth={1}
+            borderColor="gray.200"
+          >
+            <HStack
+              alignItems="center"
+              justifyContent="space-between"
             >
-              <HStack space={[4, 6]} justifyContent="space-between">
-                <Pressable
-                  onPress={() => {
-                    onNavigateProfile(item);
-                  }}
-                  flexDirection="row"
-                  padding="1"
-                  alignItems="center"
+              <Pressable
+                onPress={() => onNavigateProfile(item)}
+                flexDirection="row"
+                alignItems="center"
+                flex={1}
+                mr={3}
+              >
+                <Box
+                  size={10}
+                  rounded="full"
+                  bg="gray.200"
+                  mr={3}
+                  overflow="hidden"
                 >
-                  <Box
+                  <Image
+                    source={getImageSource(
+                      item.photo_file_name,
+                      IMAGE_FALLBACKS.USER_AVATAR
+                    )}
+                    alt="Profile Image"
                     size={10}
                     rounded="full"
-                    backgroundColor="#e0e0e0"
-                    mr={3}
-                    overflow="hidden"
-                  >
-                    <Image
-                      source={getImageSource(item.photo_file_name, IMAGE_FALLBACKS.USER_AVATAR)}
-                      alt="Profile Image"
-                      size={10}
-                      rounded="full"
-                    />
-                  </Box>
-                  <Text
-                    color="#000000"
-                    fontSize="16"
-                    alignSelf="center"
-                    numberOfLines={1}
-                  >
-                    {item.name}
-                  </Text>
-                </Pressable>
-                <Button
-                  onPress={() => sendOfferHandler({ book: book, user: item })}
-                  variant="primary"
-                  p={0}
-                  m="6px"
+                  />
+                </Box>
+
+                <Text
+                  color="gray.900"
+                  fontWeight="600"
+                  numberOfLines={1}
                 >
-                  {i18n.t("send-offer")}
-                </Button>
-              </HStack>
-            </Box>
-            <Box w="100%" alignSelf="center">
-              <Divider my={2} mx="auto" w="90%" bg="#EEEEEE" />
-            </Box>
-          </>
+                  {item.name}
+                </Text>
+              </Pressable>
+
+
+              <Button
+                onPress={() =>
+                  sendOfferHandler({
+                    book,
+                    user: item,
+                  })
+                }
+                variant="primary"
+                size="sm"
+              >
+                {i18n.t("send-offer")}
+              </Button>
+
+            </HStack>
+          </Box>
         )}
-        keyExtractor={(user: any) => user.id}
+        keyExtractor={(user) => user.id}
       />
       <AlertDialogBox
         isOpen={isOpen}

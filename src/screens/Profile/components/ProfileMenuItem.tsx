@@ -1,4 +1,4 @@
-import { Flex, Text, Spacer, Pressable, Icon, Box } from "native-base";
+import { Flex, Text, Spacer, Pressable, Icon, Box, HStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
 type ProfileMenuItemProps = {
@@ -19,41 +19,44 @@ export default function ProfileMenuItem({
   disabled = false,
 }: ProfileMenuItemProps) {
   return (
-    <Pressable onPress={onPress} isDisabled={disabled} width="100%">
-      <Flex
-        direction="row"
+    <Pressable
+      onPress={onPress}
+      isDisabled={disabled}
+      width="100%"
+      _pressed={{ opacity: 0.7 }}
+    >
+      <HStack
         alignItems="center"
         w="100%"
-        py="4"
-        px="1"
+        py={4}
+        px={1}
+        space={6}
         borderBottomWidth={showBorder ? 1 : 0}
-        borderBottomColor={showBorder ? "coolGray.100" : "transparent"}
+        borderBottomColor={showBorder ? "gray.200" : "transparent"}
         opacity={disabled ? 0.5 : 1}
       >
         <Icon
           as={MaterialIcons}
           name={icon}
           size="md"
-          color="coolGray.500"
+          color="gray.500"
         />
 
         <Text
-          ml={3}
+          flex={1}
           fontSize="md"
-          fontWeight="400"
-          color="coolGray.800"
+          color="gray.900"
+          fontFamily="poppins-medium"
         >
           {label}
         </Text>
 
-        <Spacer />
-
-        {rightContent ? (
+        {rightContent && (
           <Box alignItems="center">
             {rightContent}
           </Box>
-        ) : null}
-      </Flex>
+        )}
+      </HStack>
     </Pressable>
   );
 }

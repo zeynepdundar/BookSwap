@@ -68,7 +68,7 @@ export default function ProfileScreen({ navigation }) {
       onPress: () => navigation.navigate("Wishlist"),
       rightContent: (
         <Box px={2} py={0.5} rounded="full" bg="primary.100">
-          <Text fontSize="xs" fontWeight="600" color="primary.500">
+          <Text fontSize="xs" fontWeight="600" color="primary.600">
             {wishlistBookIds?.length ?? 0}
           </Text>
         </Box>
@@ -81,7 +81,7 @@ export default function ProfileScreen({ navigation }) {
       onPress: () => navigation.navigate("Library"),
       rightContent: (
         <Box px={2} py={0.5} rounded="full" bg="primary.100">
-          <Text fontSize="xs" fontWeight="600" color="primary.500">
+          <Text fontSize="xs" fontWeight="600" color="primary.600">
             {libraryBookIds?.length ?? 0}
           </Text>
         </Box>
@@ -187,7 +187,7 @@ export default function ProfileScreen({ navigation }) {
             initialImage={imageData}
           />
 
-          <Text fontSize="md" fontWeight="600" color="gray.900">
+          <Text fontSize="xl"  fontFamily="poppins-bold">
             {name}
           </Text>
         </VStack>
