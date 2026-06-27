@@ -110,7 +110,6 @@ export default function MessagesScreen({ navigation }) {
       {!messages || messages.length === 0 ? (
         <VStack
           flex={1}
-          bg="#fff"
           px="6"
           justifyContent="center"
           alignItems="center"
@@ -128,26 +127,25 @@ export default function MessagesScreen({ navigation }) {
               as={MaterialIcons}
               name="chat-bubble-outline"
               size="lg"
-              color="primary.600"
+              color="primary.500"
             />
           </Box>
 
           <Text
-            fontSize="18"
-            fontWeight="500"
-            color="#111827"
+            fontSize="lg"
+            color="gray.900"
             textAlign="center"
+            fontFamily="poppins-medium"
           >
             {i18n.t("no-messages-yet")}
           </Text>
 
           <Text
             fontSize="sm"
-            fontWeight="400"
+            color="gray.500"
             textAlign="center"
-            color="#6B7280"
+            lineHeight={20}
             px="8"
-            lineHeight="20px"
           >
             {i18n.t("check-book-offers-to-get-started")}
           </Text>
@@ -165,7 +163,7 @@ export default function MessagesScreen({ navigation }) {
             px={2}
             py={3}
           >
-            {i18n.t("browse")}
+            {i18n.t("browse-offers")}
           </Button>
         </VStack>
       ) : (

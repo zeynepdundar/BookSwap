@@ -164,9 +164,8 @@ export default function OtherUserProfileScreen({ navigation, route }) {
         <Center w="100%" h="10" justifyContent="space-between">
           <Flex direction="row" justifyContent="space-between" w="100%" h="10">
             <Button
-              backgroundColor="transparent"
               variant="ghost"
-              leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
+              leftIcon={<ChevronLeftIcon size="6" color="black.100" pr="0" />}
               _pressed={{
                 bg: "transparent",
               }}

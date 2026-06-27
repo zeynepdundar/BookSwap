@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+import { useCallback } from "react";
 import {
   Center,
   Icon,
@@ -11,15 +13,16 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import i18n from "@/i18n";
 import Screen from "@/components/ui/Screen";
+import ScreenHeader from "@/components/ui/ScreenHeader";
 import { BookListVertical } from "@/components/ui/BookListVertical";
+
 import { useAppToast } from "@/hooks/useAppToast";
-import { useSelector } from "react-redux";
-import { selectLibraryBooks } from "@/store/selectors";
 import { useAppDispatch } from "@/store";
 import { useNavigationState } from "@react-navigation/native";
-import { BookCollections } from "@/types/book.types";
+
+import { selectLibraryBooks } from "@/store/selectors";
+import { BookCollections, Book } from "@/types/book.types";
 import { removeBookFromCollectionAsync } from "@/store/books/thunks";
-import ScreenHeader from "@/components/ui/ScreenHeader";
 
 const RemoveBookButton = ({ onPress }) => (
   <Pressable
@@ -29,14 +32,14 @@ const RemoveBookButton = ({ onPress }) => (
     rounded="full"
     alignItems="center"
     justifyContent="center"
-    bg="black.900"
-    _pressed={{ bg: "error.500:alpha.10" }}
+    bg="gray.100"
+    _pressed={{ opacity: 0.6 }}
   >
     <Icon
-      name="delete-outline"
-      size="md"
-      color="black.300"
       as={MaterialIcons}
+      name="remove-circle-outline"
+      size="md"
+      color="gray.500"
     />
   </Pressable>
 );
@@ -44,11 +47,10 @@ const RemoveBookButton = ({ onPress }) => (
 const AddBookToProposalButton = ({ onPress }) => (
   <Icon
     onPress={onPress}
-    name={"add-circle"}
-    variant="solid"
-    size="xl"
-    color="primary.100"
     as={MaterialIcons}
+    name="add-circle"
+    size="xl"
+    color="primary.500"
   />
 );
 
@@ -56,39 +58,48 @@ export default function LibraryScreen({ navigation, route }) {
   const dispatch = useAppDispatch();
   const toast = useAppToast();
 
+  const libraryBooks = useSelector(selectLibraryBooks);
   const navigationState = useNavigationState((state) => state);
 
-  const libraryBooks = useSelector(selectLibraryBooks);
+  const previousRoute =
+    navigationState?.routes?.[navigationState.index - 1];
 
-  const { params } = route;
-  const isTradeProposal = params?.data === "SwapOfferProposal";
-  const addBookToProposalButton = (book) => (
+  const showFab = previousRoute?.name === "Profile" ?? false;
+
+  const isTradeProposal =
+    route?.params?.data === "SwapOfferProposal";
+
+  const removeBook = useCallback(
+    (book: Book) => (
+      <RemoveBookButton
+        onPress={async () => {
+          await dispatch(
+            removeBookFromCollectionAsync({
+              bookIds: [book.id],
+              collection: BookCollections.LIBRARY,
+            })
+          ).unwrap();
+
+          toast.info(i18n.t("removed-from-list"));
+        }}
+      />
+    ),
+    [dispatch, toast]
+  );
+
+  const addToProposal = (book: Book) => (
     <AddBookToProposalButton
-      onPress={() => {
+      onPress={() =>
         navigation.navigate({
           name: "SwapOfferProposal",
           params: { offeredBook: book },
           merge: true,
-        } as any);
-      }}
+        } as any)
+      }
     />
   );
 
-  const previousRoute = navigationState?.routes?.[navigationState.index - 1];
-  const showFab = previousRoute?.name === "Profile" ?? false;
-
-
-  const removeBookButton = (book) => (
-    <RemoveBookButton
-      onPress={async () => {
-        await dispatch(
-          removeBookFromCollectionAsync({ bookIds: [book.id], collection: BookCollections.LIBRARY })
-        ).unwrap();
-        toast.info(i18n.t("removed-from-list"));
-      }}
-    />
-  );
-  const selectedBooksAction = isTradeProposal ? addBookToProposalButton : removeBookButton;
+  const selectedAction = isTradeProposal ? addToProposal : removeBook;
 
   return (
     <Screen full>
@@ -96,10 +107,11 @@ export default function LibraryScreen({ navigation, route }) {
         title={i18n.t("my-library")}
         onBack={() => navigation.goBack()}
       />
+
+      {/* EMPTY STATE */}
       {libraryBooks.length === 0 && (
         <Center flex={1} px={8}>
           <VStack space={4} alignItems="center">
-
             <Box
               w="64px"
               h="64px"
@@ -116,45 +128,51 @@ export default function LibraryScreen({ navigation, route }) {
               />
             </Box>
 
-            <Text fontSize="18" fontWeight="500" color="#111827" textAlign="center">
-
+            <Text
+              fontSize="lg"
+              color="gray.900"
+              textAlign="center"
+              fontFamily="poppins-medium"
+            >
               {i18n.t("no-books-in-your-library-yet")}
             </Text>
 
             <Text
               fontSize="sm"
-              color="coolGray.500"
+              color="gray.500"
               textAlign="center"
-              lineHeight={18}
+              lineHeight={20}
+              px="8"
             >
               {i18n.t("add-books-to-your-library-to-swap-books")}
             </Text>
+
             <Button
               onPress={() =>
                 navigation.navigate("BookSearch", {
                   sourceScreen: BookCollections.LIBRARY,
                 })
               }
-
               variant="primary"
               rounded="full"
               mt={4}
-              px={2}
               py={3}
             >
               {i18n.t("add-books")}
             </Button>
-
           </VStack>
         </Center>
       )}
+
+
       {libraryBooks.length > 0 && (
         <BookListVertical
           data={libraryBooks}
-          onPrimaryAction={selectedBooksAction}
+          onPrimaryAction={selectedAction}
         />
       )}
-      {showFab && libraryBooks.length > 0 &&
+
+      {showFab && libraryBooks.length > 0 && (
         <Pressable
           onPress={() =>
             navigation.navigate("BookSearch", {
@@ -164,15 +182,16 @@ export default function LibraryScreen({ navigation, route }) {
           position="absolute"
           right={6}
           bottom={10}
+          _pressed={{ opacity: 0.85 }}
         >
           <Box
             flexDirection="row"
             alignItems="center"
             bg="primary.500"
-            px={4}
+            px={5}
             py={3}
             rounded="full"
-            shadow={6}
+            shadow={3}
           >
             <Icon
               as={MaterialIcons}
@@ -180,12 +199,17 @@ export default function LibraryScreen({ navigation, route }) {
               color="white"
               size="sm"
             />
-            <Text ml={2} color="white" fontWeight="600">
+
+            <Text
+              ml={2}
+              color="white"
+              fontFamily="poppins-semi-bold"
+            >
               Add
             </Text>
           </Box>
         </Pressable>
-      }
+      )}
     </Screen>
   );
 }

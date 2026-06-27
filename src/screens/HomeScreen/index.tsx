@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Box, Flex, Image, Pressable, Text } from "native-base";
+import { Box, Flex, Heading, Image, Pressable, Text } from "native-base";
 import i18n from "@/i18n";
 import Screen from "@/components/ui/Screen";
 import { CoverListHorizontal } from "@/components/ui/CoverListHorizontal";
 import { LoadingOverlay } from "@/components/ui/LoadingOverlay";
 import { fetchMostPopularBooks } from "@/services/books/books.service";
-import { useAddBooksToCollection } from "@/hooks/api/useAddBookToList";
 import { HomeSearchWidget } from "@/components/ui/HomeSearchWidget";
 import { getImageSource } from "@/utils/helper";
 import { IMAGE_FALLBACKS } from "@/constants/image";
@@ -25,7 +24,6 @@ export default function HomeScreen({ navigation }) {
     })();
   }, []);
 
-  const { addBooksToCollection } = useAddBooksToCollection();
 
   if (profileLoading || !profile) {
     return <LoadingOverlay />;
@@ -33,7 +31,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <Screen>
-         <Flex
+      <Flex
         direction="row"
         justifyContent="space-between"
         alignItems="center"
@@ -41,12 +39,17 @@ export default function HomeScreen({ navigation }) {
         pb={2}
       >
         <Flex direction="column">
-          <Text color="coolGray.500" fontSize="md" fontWeight="4 00" letterSpacing="wider">
+          <Text
+            fontSize="sm"
+            color="gray.500"
+            lineHeight="20px"
+          >
             {i18n.t("hello")}
           </Text>
-          <Text color="coolGray.900" fontSize="22px" fontWeight="400">
+
+          <Heading size="xl" fontFamily="poppins-medium">
             {profile.name}
-          </Text>
+          </Heading>
         </Flex>
 
         <Pressable
@@ -60,39 +63,65 @@ export default function HomeScreen({ navigation }) {
             height="44px"
             rounded="full"
             borderWidth={1.5}
-            borderColor="coolGray.100"
+            borderColor="gray.200"
           />
         </Pressable>
       </Flex>
 
       {/* Arama Widget'ı */}
-      <Box mb={4} mt={1}>
+      <Box mt={3} mb={4}>
         <HomeSearchWidget navigation={navigation} isHome />
       </Box>
 
       {/* Son Eklenenler Bölümü */}
       {books.length > 0 && (
-        <Box mb={4}>
-          <Flex direction="row" justifyContent="space-between" alignItems="center" mb={1.5}>
-            <Text color="coolGray.900" fontSize="md" fontWeight="bold" letterSpacing="tight">
+        <Box mb={5}>
+          <Flex
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={2}
+          >
+            <Text
+              color="gray.900"
+              fontFamily="poppins-semi-bold"
+              fontSize="lg"
+              lineHeight="24px"
+            >
               {i18n.t("recently-added")}
             </Text>
           </Flex>
-          <CoverListHorizontal data={books} navigation={navigation} />
+
+          <CoverListHorizontal
+            data={books}
+            navigation={navigation}
+          />
         </Box>
       )}
 
       {/* En Popülerler Bölümü */}
-      {books.length > 0 && (
-        <Box mb={4}>
-          <Flex direction="row" justifyContent="space-between" alignItems="center" mb={1.5}>
-            <Text color="coolGray.900" fontSize="md" fontWeight="bold" letterSpacing="tight">
-              {i18n.t("most-popular")}
-            </Text>
-          </Flex>
-          <CoverListHorizontal data={books} navigation={navigation} />
-        </Box>
-      )}
+      <Box mb={5}>
+        <Flex
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <Text
+            color="gray.900"
+            fontFamily="poppins-semi-bold"
+            fontSize="lg"
+            lineHeight="24px"
+          >
+            {i18n.t("most-popular")}
+          </Text>
+        </Flex>
+
+        <CoverListHorizontal
+          data={books}
+          navigation={navigation}
+        />
+      </Box>
     </Screen>
   );
 }

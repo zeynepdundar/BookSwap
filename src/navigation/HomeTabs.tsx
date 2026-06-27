@@ -37,7 +37,7 @@ export default function HomeTabs() {
         },
         tabBarStyle: {
           backgroundColor: "#fff",
-          height: 84, // Cihaz alt boşluğu (Safe Area) için ideal yükseklik
+          height: 78, // Cihaz alt boşluğu (Safe Area) için ideal yükseklik
           paddingHorizontal: 24,
           paddingTop: 8,
           paddingBottom: 20, // Alt barın yazılarını modern cihazlarda yukarı çeker

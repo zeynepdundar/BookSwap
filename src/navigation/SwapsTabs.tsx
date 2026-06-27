@@ -1,5 +1,5 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { useWindowDimensions} from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import i18n from "@/i18n";
 import { ReceivedScreen, SentScreen, HistoryScreen } from "@/screens";
@@ -16,39 +16,53 @@ export default function SwapsTabs() {
 
   return (
     <Screen full>
-      <ScreenHeader
-        title={i18n.t("swaps")}
-      />
+      <ScreenHeader title={i18n.t("swaps")} />
+
       <Tab.Navigator
         initialRouteName="Received"
+        initialLayout={{ width }}
         screenOptions={{
-          tabBarActiveTintColor: "#001833",
-          tabBarInactiveTintColor: "#D8D8D8",
+          tabBarActiveTintColor: "#7F3DFF",
+          tabBarInactiveTintColor: "#8E8E93",
+
           tabBarLabelStyle: {
-            fontSize: 14,
+            fontSize: 13,
+            fontFamily: "poppins-medium",
             textTransform: "none",
           },
+          tabBarItemStyle: {
+            flex: 1,
+          },
+
           tabBarStyle: {
             backgroundColor: "#fff",
-            height: 48,
             elevation: 0,
             shadowOpacity: 0,
+            borderBottomWidth: 1,
+            borderBottomColor: "#F2F2F7",
           },
+
+          tabBarIndicatorStyle: {
+            backgroundColor: "#7F3DFF",
+            height: 3,
+            borderRadius: 3,
+          },
+
           tabBarAllowFontScaling: false,
-          tabBarIndicatorStyle: { backgroundColor: "#7F3DFF" },
         }}
-        initialLayout={{ width }}
       >
         <Tab.Screen
           name="Received"
           component={ReceivedScreen}
           options={{ tabBarLabel: i18n.t("received") }}
         />
+
         <Tab.Screen
           name="Sent"
           component={SentScreen}
           options={{ tabBarLabel: i18n.t("sent") }}
         />
+
         <Tab.Screen
           name="History"
           component={HistoryScreen}

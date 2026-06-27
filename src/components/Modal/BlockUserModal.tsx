@@ -43,9 +43,8 @@ const BlockUserModal = ({ isOpen, onClose, blockUser = null }) => {
                   as={MaterialIcons}
                 /> */}
                 <Button
-                  backgroundColor="transparent"
                   variant="ghost"
-                  _text={{ color: "#000000", fontWeight: "200" }}
+                  _text={{ color: "black.100", fontWeight: "200" }}
                   key={reason}
                   onPress={() => handleBlockUser(reason)}
                 >
@@ -58,9 +57,8 @@ const BlockUserModal = ({ isOpen, onClose, blockUser = null }) => {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            backgroundColor="transparent"
             variant="ghost"
-            _text={{ color: "#000000", fontWeight: "200" }}
+            _text={{ color: "black.100", fontWeight: "200" }}
             flex="1"
             onPress={() => {
               onClose();

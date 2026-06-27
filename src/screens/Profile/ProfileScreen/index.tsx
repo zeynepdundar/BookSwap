@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import {
-  Center,
-  Heading,
   Box,
   Text,
   Pressable,
@@ -28,7 +26,6 @@ import ScreenHeader from "@/components/ui/ScreenHeader";
 import { clearOffers } from "@/store/offers/slice";
 import { clearBooks } from "@/store/books/slice";
 import { signOut } from "@/store/auth/slice";
-import { PROFILE_SCREEN_ICONS } from "@/constants/image";
 
 
 export default function ProfileScreen({ navigation }) {
@@ -38,38 +35,31 @@ export default function ProfileScreen({ navigation }) {
   const wishlistBookIds = useSelector(selectWishlistBookIds);
   const libraryBookIds = useSelector(selectLibraryBookIds);
 
-
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
 
-  const {
-    name,
-    languagePreference,
-    imageData,
-  } = profileData;
+  const { name, languagePreference, imageData } = profileData;
 
-
-
-  const handleLanguageChange = (selectedLanguage) => {
+  const handleLanguageChange = (selectedLanguage: string) => {
     i18n.locale = selectedLanguage;
 
-    dispatch(updateProfileAsync({
-
-      id: profileData.id,
-      languagePreference: selectedLanguage,
-
-    }));
+    dispatch(
+      updateProfileAsync({
+        id: profileData.id,
+        languagePreference: selectedLanguage,
+      })
+    );
   };
 
-  const handleImageUpload = (imageUri) => {
-
-    dispatch(updateProfileAsync({
-
-      id: profileData.id,
-      imageData: imageUri,
-
-    }));
+  const handleImageUpload = (imageUri: string) => {
+    dispatch(
+      updateProfileAsync({
+        id: profileData.id,
+        imageData: imageUri,
+      })
+    );
   };
+
   const menuItems = [
     {
       key: "wishlist",
@@ -105,38 +95,51 @@ export default function ProfileScreen({ navigation }) {
       rightContent: (
         <Menu
           w="140"
-          trigger={(triggerProps) => (
-            <Pressable {...triggerProps} hitSlop={10}>
-              <HStack alignItems="center">
-                <Text fontSize="sm" color="coolGray.600" fontWeight="500">
+          trigger={(props) => (
+            <Pressable {...props} hitSlop={10}>
+              <HStack alignItems="center" space={1}>
+                <Text fontSize="sm" color="gray.500">
                   {languagePreference === "tr" ? "TR" : "EN"}
                 </Text>
-
                 <Icon
                   as={MaterialIcons}
                   name="expand-more"
                   size="sm"
-                  color="coolGray.400"
+                  color="gray.400"
                 />
               </HStack>
             </Pressable>
           )}
         >
           {[
-            { code: "tr", lang: i18n.t("turkish") },
-            { code: "en", lang: i18n.t("english") },
-          ].map((input) => (
-            <Menu.Item key={input.code} onPress={() => handleLanguageChange(input.code)}>
+            { code: "tr", label: i18n.t("turkish") },
+            { code: "en", label: i18n.t("english") },
+          ].map((item) => (
+            <Menu.Item
+              key={item.code}
+              onPress={() => handleLanguageChange(item.code)}
+            >
               <HStack justifyContent="space-between" w="100%">
                 <Text
-                  color={languagePreference === input.code ? "primary.600" : "coolGray.700"}
-                  fontWeight={languagePreference === input.code ? "600" : "400"}
+                  color={
+                    languagePreference === item.code
+                      ? "primary.500"
+                      : "gray.700"
+                  }
+                  fontWeight={
+                    languagePreference === item.code ? "600" : "400"
+                  }
                 >
-                  {input.lang}
+                  {item.label}
                 </Text>
 
-                {languagePreference === input.code && (
-                  <Icon as={MaterialIcons} name="check" size="sm" color="primary.500" />
+                {languagePreference === item.code && (
+                  <Icon
+                    as={MaterialIcons}
+                    name="check"
+                    size="sm"
+                    color="primary.500"
+                  />
                 )}
               </HStack>
             </Menu.Item>
@@ -158,7 +161,7 @@ export default function ProfileScreen({ navigation }) {
     },
   ];
 
-  const signOutHandler = async (): Promise<void> => {
+  const signOutHandler = async () => {
     try {
       dispatch(signOut());
       dispatch(clearMessages());
@@ -174,32 +177,29 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <Screen full>
-      <ScreenHeader
-        title={i18n.t("profile")}
-        onBack={() => navigation.goBack()}
-      />
+      <ScreenHeader title={i18n.t("profile")} />
 
       <VStack flex={1} alignItems="center" space={6} px={6} pt={4}>
-
-        {/* Profile Section */}
+        {/* Profile */}
         <VStack alignItems="center" space={2}>
           <ImagePicker
             selectedImage={handleImageUpload}
             initialImage={imageData}
           />
-          <Text fontSize="md" fontWeight="600" color="#111827">
+
+          <Text fontSize="md" fontWeight="600" color="gray.900">
             {name}
           </Text>
         </VStack>
 
-        {/* Menu Section */}
+        {/* Menu */}
         <VStack w="100%" space={1}>
           {menuItems.map(({ key, ...item }) => (
             <ProfileMenuItem key={key} {...item} />
           ))}
         </VStack>
 
-        {/* Logout Dialog */}
+        {/* Logout */}
         <AlertDialogBox
           isOpen={isOpen}
           onClose={onClose}
@@ -209,7 +209,6 @@ export default function ProfileScreen({ navigation }) {
           cancelButtonLabel={i18n.t("cancel")}
           confirmButtonLabel={i18n.t("logout")}
         />
-
       </VStack>
     </Screen>
   );

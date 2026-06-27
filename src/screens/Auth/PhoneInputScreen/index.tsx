@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Flex,
+  HStack,
   Icon,
   Image,
   Text,
@@ -105,12 +106,15 @@ export default function PhoneInputScreen({ navigation }: Props) {
             {i18n.t("enter-your-phone-number")}
           </Text>
 
-          <Box width="300px">
+          <Box w="100%" maxW="280px" alignSelf="center">
             <Box
               flexDirection="row"
               alignItems="center"
               borderBottomWidth={1}
-              borderBottomColor={error ? "#E53E3E" : "#CBD5E0"}
+              borderBottomColor={
+                error ? "error.500" : "gray.300"
+              }
+
               paddingBottom={4}
             >
               <PhoneInput
@@ -125,10 +129,9 @@ export default function PhoneInputScreen({ navigation }: Props) {
                 textStyle={{
                   fontSize: 24,
                   fontFamily: "poppins-regular",
-                  color: "#111",
+                  color: "#111113",
                   paddingVertical: 0,
                   margin: 0,
-                  lineHeight: 0,
                   textAlignVertical: "center",
                 }}
                 style={{
@@ -140,16 +143,18 @@ export default function PhoneInputScreen({ navigation }: Props) {
           </Box>
 
           {error && (
-            <Flex direction="row" mt="2">
+            <HStack space={2} mt={2} alignItems="center">
               <Icon
+                as={MaterialIcons}
+                name="error-outline"
                 size="4"
                 color="error.500"
-                as={<MaterialIcons name="error-outline" />}
+                mt="0.5"
               />
-              <Text fontSize="xs" color="error.500" px="2">
+              <Text fontSize="xs" color="error.500">
                 {error}
               </Text>
-            </Flex>
+            </HStack>
           )}
 
           <Button

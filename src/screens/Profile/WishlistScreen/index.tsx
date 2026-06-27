@@ -30,14 +30,14 @@ const RemoveBookButton = ({ onPress }) => (
     rounded="full"
     alignItems="center"
     justifyContent="center"
-    bg="#F3F4F6"
+    bg="gray.100"
     _pressed={{ opacity: 0.6 }}
   >
     <Icon
       as={MaterialIcons}
       name="remove-circle-outline"
       size="md"
-      color="#6B7280"
+      color="gray.500"
     />
   </Pressable>
 );
@@ -90,17 +90,21 @@ export default function WishlistScreen({ navigation }) {
               />
             </Box>
 
-          <Text fontSize="18" fontWeight="500" color="#111827" textAlign="center">
-
-
+            <Text
+              fontSize="lg"
+              color="gray.900"
+              textAlign="center"
+              fontFamily="poppins-medium"
+              >
               {i18n.t("no-books-in-your-wishlist-yet")}
             </Text>
 
             <Text
               fontSize="sm"
-              color="coolGray.500"
+              color="gray.500"
               textAlign="center"
               lineHeight={20}
+              px="8"
             >
               {i18n.t("add-books-to-your-wishlist-to-swap-books")}
             </Text>
@@ -114,7 +118,6 @@ export default function WishlistScreen({ navigation }) {
               variant="primary"
               rounded="full"
               mt={4}
-              px={2}
               py={3}
             >
               {i18n.t("add-books")}
@@ -140,18 +143,20 @@ export default function WishlistScreen({ navigation }) {
           position="absolute"
           right={6}
           bottom={10}
+          _pressed={{ opacity: 0.85 }}
         >
           <Box
             flexDirection="row"
             alignItems="center"
             bg="primary.500"
-            px={4}
+            px={5}
             py={3}
             rounded="full"
-            shadow={6}
+            shadow={3}
           >
             <Icon as={MaterialIcons} name="add" color="white" size="sm" />
-            <Text ml={2} color="white" fontWeight="600">
+
+            <Text ml={2}  fontFamily="poppins-semi-bold">
               Add
             </Text>
           </Box>

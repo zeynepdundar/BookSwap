@@ -241,7 +241,7 @@ const BookInfoBox = ({ edition, handleAddBookPress }) => (
         <Text color="#494949" fontSize="16" numberOfLines={2}>{truncateText(formatText(edition?.title), 36)}</Text>
         <Text color="#494949" fontSize="11">{truncateText(formatText(edition?.publisher), 23)}</Text>
       </VStack>
-      <IconButton onPress={handleAddBookPress} m="8px" borderRadius="11" bg="primary.500" variant="solid" p="3" size={10} _pressed={{ bg: "primary.100" }} icon={<Icon color="white" name={"add"} as={MaterialIcons} size="md" />} />
+      <IconButton onPress={handleAddBookPress} m="8px" borderRadius="11" bg="primary.500" variant="solid" p="3" size={10} _pressed={{ bg: "primary.600" }} icon={<Icon color="white" name={"add"} as={MaterialIcons} size="md" />} />
     </HStack>
   </Box>
 );
