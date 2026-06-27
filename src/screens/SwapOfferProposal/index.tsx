@@ -92,7 +92,7 @@ export default function SwapOfferProposal({ navigation, route }) {
       <HStack alignItems="center" space="20%" justifyContent="space-between" w="100%" h="50px">
         <Button
           variant="ghost"
-          leftIcon={<ChevronLeftIcon size="6" color="#212325" pr="0" />}
+          leftIcon={<ChevronLeftIcon size="6" color="black.100" pr="0" />}
           _pressed={{ bg: "transparent" }}
           onPress={() => navigation.goBack()}
         />
@@ -171,7 +171,6 @@ export default function SwapOfferProposal({ navigation, route }) {
         </HStack>
       </VStack>
 
-      {/* Teklif Gönder Butonu */}
       <Button
         m="7"
         variant="primary"

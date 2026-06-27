@@ -215,34 +215,23 @@ export default function BookDetailScreen({ navigation, route }) {
         {/* Header */}
         <HStack
           alignItems="center"
-          mb={6}
+          mb={4}
         >
           <Pressable
             onPress={() => navigation.goBack()}
             hitSlop={12}
           >
             <Box
-              bg="coolGray.100"
+              bg="gray.100"
               rounded="full"
               p={2}
             >
               <ChevronLeftIcon
                 size={5}
-                color="coolGray.700"
+                color="gray.500"
               />
             </Box>
           </Pressable>
-
-
-          <Heading
-            flex={1}
-            textAlign="center"
-            fontSize={18}
-            fontWeight="600"
-            mr={8}
-          >
-            {i18n.t("book-details")}
-          </Heading>
 
         </HStack>
 
@@ -262,19 +251,17 @@ export default function BookDetailScreen({ navigation, route }) {
               justifyContent="center"
             >
               <Box
-
-                alignItems="center"
-                justifyContent="center"
-                bg="transparent"
+                rounded="md"
+                overflow="hidden"
+                shadow={4}
                 style={{
                   shadowColor: "#000",
-                  shadowOpacity: 0.25,
-                  shadowRadius: 18,
-                  shadowOffset: { width: 0, height: 10 },
-                  elevation: 10,
+                  shadowOpacity: 0.18,
+                  shadowRadius: 14,
+                  shadowOffset: { width: 0, height: 8 },
+                  elevation: 8,
                 }}
               >
-
                 <AspectRatio ratio={2 / 3} w="190px">
                   <Image
                     source={
@@ -297,9 +284,9 @@ export default function BookDetailScreen({ navigation, route }) {
               px={2}
             >
               <Heading
-                fontSize={22}
-                fontWeight="700"
-                color="coolGray.900"
+                fontSize="2xl"
+                fontFamily="poppins-semi-bold"
+                color="gray.900"
                 textAlign="center"
                 noOfLines={2}
               >
@@ -308,9 +295,9 @@ export default function BookDetailScreen({ navigation, route }) {
 
               {!!book.author && (
                 <Text
-                  fontSize={15}
-                  fontWeight="500"
-                  color="coolGray.500"
+                  fontSize="sm"
+                  color="gray.500"
+                  fontFamily="poppins-medium"
                   textAlign="center"
                   noOfLines={1}
                 >
@@ -320,8 +307,8 @@ export default function BookDetailScreen({ navigation, route }) {
 
               {!!book.publisher && (
                 <Text
-                  fontSize={12}
-                  color="coolGray.400"
+                  fontSize="xs"
+                  color="gray.500"
                   textAlign="center"
                   noOfLines={1}
                 >
@@ -340,9 +327,9 @@ export default function BookDetailScreen({ navigation, route }) {
               <HStack
                 alignItems="center"
                 space={3}
-                bg="coolGray.50"
+                bg="gray.100"
                 borderWidth={1}
-                borderColor="coolGray.100"
+                borderColor="gray.200"
                 rounded="2xl"
                 px={4}
                 py={3.5}
@@ -364,16 +351,16 @@ export default function BookDetailScreen({ navigation, route }) {
                   <Text
                     fontSize={15}
                     fontWeight="700"
-                    color="coolGray.800"
+                    color="gray.800"
                   >
                     {otherOwners.length > 0
                       ? i18n.t("available-count", {
-                          count: otherOwners.length,
-                        })
+                        count: otherOwners.length,
+                      })
                       : i18n.t("no-owners-yet")}
                   </Text>
                   {otherOwners.length > 0 && (
-                    <Text fontSize={12} color="coolGray.500">
+                    <Text fontSize={12} color="gray.500">
                       {i18n.t("view-all")}
                     </Text>
                   )}
@@ -382,7 +369,7 @@ export default function BookDetailScreen({ navigation, route }) {
                 {otherOwners.length > 0 && (
                   <ChevronRightIcon
                     size={5}
-                    color="coolGray.400"
+                    color="gray.400"
                   />
                 )}
               </HStack>
@@ -398,10 +385,8 @@ export default function BookDetailScreen({ navigation, route }) {
 
             <Pressable
               flex={1}
-              onPress={() =>
-                handleAction(BookCollections.LIBRARY)
-              }
-              _pressed={{ opacity: 0.7 }}
+              onPress={() => handleAction(BookCollections.LIBRARY)}
+              _pressed={{ opacity: 0.85 }}
             >
               <VStack
                 alignItems="center"
@@ -410,13 +395,7 @@ export default function BookDetailScreen({ navigation, route }) {
                 bg="primary.500"
                 rounded="2xl"
                 py={4}
-                style={{
-                  shadowColor: "#000",
-                  shadowOpacity: 0.12,
-                  shadowRadius: 12,
-                  shadowOffset: { width: 0, height: 6 },
-                  elevation: 6,
-                }}
+                shadow={2}
               >
                 <Icon
                   as={MaterialIcons}
@@ -426,52 +405,46 @@ export default function BookDetailScreen({ navigation, route }) {
                 />
 
                 <Text
-                  fontSize={13}
-                  fontWeight="700"
+                  fontSize="sm"
+                  fontFamily="poppins-semi-bold"
                   color="white"
                 >
                   {i18n.t("add-to-library")}
                 </Text>
               </VStack>
             </Pressable>
-
-
             <Pressable
               flex={1}
-              onPress={() =>
-                handleAction(
-                  BookCollections.WISHLIST
-                )
-              }
-              _pressed={{ opacity: 0.7 }}
+              onPress={() => handleAction(BookCollections.WISHLIST)}
+              _pressed={{ opacity: 0.85 }}
             >
               <VStack
                 alignItems="center"
                 justifyContent="center"
                 space={2}
-                bg="coolGray.50"
+                bg="white"
                 borderWidth={1}
-                borderColor="coolGray.100"
+                borderColor="gray.200"
                 rounded="2xl"
                 py={4}
+                shadow={1}
               >
                 <Icon
                   as={MaterialIcons}
                   name="favorite-border"
                   size="6"
-                  color="red.400"
+                  color="primary.500"
                 />
 
                 <Text
-                  fontSize={13}
-                  fontWeight="700"
-                  color="coolGray.700"
+                  fontSize="sm"
+                  fontFamily="poppins-semi-bold"
+                  color="gray.700"
                 >
                   {i18n.t("add-to-wishlist")}
                 </Text>
               </VStack>
             </Pressable>
-
           </HStack>
 
 

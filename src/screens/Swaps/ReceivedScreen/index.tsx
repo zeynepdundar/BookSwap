@@ -221,7 +221,7 @@ export default function ReceivedScreen({ navigation }) {
               as={MaterialIcons}
               name="check-circle-outline"
               size="sm"
-              color="#fff"
+              color="white"
             />
           }
           onPress={() => acceptOfferHandler(item)}

@@ -41,90 +41,84 @@ export default function WelcomeScreen({
   }, [navigation, dispatch]);
 
   return (
-    <Screen>
-      <Box flex={1} bg="white">
+    <Screen full>
+      <Box flex={1} bg="gray.50" overflow="hidden">
+
         <Box
           position="absolute"
-          top={-140}
+          top={-100}
           left={-100}
-          w="320px"
-          h="320px"
+          w="80"
+          h="80"
           borderRadius="full"
           bg="primary.100"
-          opacity={0.12}
-        />
-
-        <Box
-          position="absolute"
-          bottom={-140}
-          right={-100}
-          w="300px"
-          h="300px"
-          borderRadius="full"
-          bg="secondary.100"
-          opacity={0.1}
-        />
-
-        <Image
-          source={APP_IMAGES.infiniteLibrary}
-          alt={i18n.t("infinite-library")}
-          position="absolute"
-          top="20%"
-          alignSelf="center"
-          resizeMode="contain"
-          w="100%"
-          h={400}
-          opacity={0.22}
+          opacity={0.4}
         />
 
         <VStack
           flex={1}
-          px={7}
-          pt={18}
-          pb={10}
+          px={6}
+          pt={16}
+          pb={8}
           justifyContent="space-between"
+          zIndex={1}
         >
-          <VStack space={6}>
-            <Text fontSize="sm" fontWeight="bold" letterSpacing="xl" color="primary.500" > BOOK SWAP </Text>
+          <VStack space={3} mt={4}>
+            <Text
+              fontSize="xs"
+              fontWeight="800"
+              letterSpacing="2xl"
+              color="primary.600"
+              textTransform="uppercase"
+            >
+              BOOK SWAP
+            </Text>
 
             <Heading
-              fontSize="4xl" lineHeight="48px" fontWeight="semibold"
-              color="black"
-              maxW="320px"
+              fontSize="4xl"
+              lineHeight="sm"
+              maxW="300px"
             >
               {i18n.t("build-your-infinite-library")}
             </Heading>
 
             <Text
-              fontSize="md"
-              color="black.500"
-              lineHeight="28px"
-              maxW="260px"
+              maxW="280px"
             >
               {i18n.t("discover-and-exchange-books-with-people-who-read-like-you")}
             </Text>
           </VStack>
 
-          <VStack space={4}>
+          <Box flex={1} bg="white" overflow="hidden">
+
+            <Image
+              source={APP_IMAGES.infiniteLibrary}
+              accessible={false}
+              resizeMode="contain"
+              w="100%"
+              h="85%"
+              opacity={.6}
+            />
+          </Box>
+
+          <VStack space={4} w="100%">
             <Button
-              size="lg"
-              borderRadius="full"
               py={4}
-              variant="primary" 
-              shadow={1}
+              variant="primary"
+              shadow={3}
               onPress={handleGetStarted}
             >
               {i18n.t("get-started")}
             </Button>
-
             <Text
               textAlign="center"
-              fontSize="sm"
-              color="black.400"
+              fontSize="xs"
+              fontWeight="500"
             >
               {i18n.t("a-shared-world-of-books")}
             </Text>
           </VStack>
+
         </VStack>
       </Box>
     </Screen>

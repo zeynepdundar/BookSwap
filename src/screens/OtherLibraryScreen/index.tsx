@@ -87,7 +87,7 @@ export default function OtherLibraryScreen({ navigation, route }) {
             as={MaterialIcons}
             name="chevron-left"
             size="8"
-            color="#212325"
+            color="black.100"
           />
         </Pressable>
 

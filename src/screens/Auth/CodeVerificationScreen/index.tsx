@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import {
   Alert,
+  Box,
   Button,
   Heading,
   Icon,
@@ -88,13 +89,19 @@ export default function CodeVerificationScreen({ navigation }: Props) {
             variant="underlined"
             keyboardType="numeric"
             maxLength={6}
-            width={200}
-            fontSize={20}
+            w="100%"
+            maxW="160px"
+            alignSelf="center"
+            fontSize={24}
             borderTopColor="none"
-            borderBottomColor="black.300"
+            borderBottomColor={error ? "error.500" : "gray.300"}
+            _focus={{
+              borderBottomColor: error ? "error.500" : "primary.500",
+            }}
             textAlign="center"
             value={verificationCode}
             onChangeText={handleVerificationCodeChange}
+
           />
 
           <Button
@@ -108,9 +115,11 @@ export default function CodeVerificationScreen({ navigation }: Props) {
           </Button>
 
           {error && (
-            <Alert mt="5" w="80%" borderRadius="10px">
-              <Text fontSize="sm">{error}</Text>
-            </Alert>
+            <Box mt={5} px={4} py={3} bg="error.50" borderRadius="md">
+              <Text fontSize="sm" color="error.500" fontWeight="500">
+                {error}
+              </Text>
+            </Box>
           )}
         </VStack>
       </KeyboardAvoidingView>

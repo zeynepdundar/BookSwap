@@ -83,7 +83,6 @@ export const InfoDialogBox: React.FC<InfoDialogBoxProps> = memo(({
           <Button
             onPress={handlePress}
             w="100%"
-            borderRadius="xl"
             variant="primary"
           >
             <Text

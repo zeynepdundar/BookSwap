@@ -29,14 +29,14 @@ export default function ScreenHeader({
                 as={MaterialIcons}
                 name="chevron-left"
                 size="8"
-                color="#212325"
+                color="black.100"
               />
             </Pressable>
           )}
         </Box>
 
         <Box flex={1} alignItems="center" justifyContent="center">
-          <Heading fontWeight="500" size="xl">
+          <Heading fontFamily="poppins-semi-bold" size="xl">
             {title}
           </Heading>
         </Box>

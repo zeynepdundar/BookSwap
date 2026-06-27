@@ -112,7 +112,6 @@ const ListRow = React.memo(function ListRow({
                 position="absolute"
                 py="6px"
                 px={0}
-                rounded="6"
                 width={126}
               >
                 {i18n.t("send-offer")}
@@ -166,7 +165,7 @@ export const BookListVertical: React.FC<BookListVerticalProps> = ({
   return (
 
 
-      <FlatList
+    <FlatList
       data={data}
       initialNumToRender={10}
       maxToRenderPerBatch={10}

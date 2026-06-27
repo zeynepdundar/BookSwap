@@ -20,7 +20,7 @@ export default function StepHeader({ onBack, onSkip, skipLabel = "SKIP" }: Props
         {onBack ? (
           <Button
             variant="ghost"
-            leftIcon={<ChevronLeftIcon size="6" color="#212325" />}
+            leftIcon={<ChevronLeftIcon size="6" color="black.100" />}
             _pressed={{ bg: "transparent" }}
             onPress={onBack}
           />

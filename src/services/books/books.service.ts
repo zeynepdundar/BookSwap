@@ -1,13 +1,13 @@
 import { BookEndpoints } from "@/api/books.endpoints";
 import { ProfileEndpoints } from "@/api/profile.endpoints";
 import { AddBooksPayload, BookCollections, RemoveBooksPayload } from "@/types/book.types";
-import {  mapBooksData } from "@/utils/helper";
+import { mapBooksData } from "@/utils/helper";
 import i18n from "@/i18n";
 
-  const endpointMap = {
-    [BookCollections.WISHLIST]: ProfileEndpoints.WISHLIST,
-    [BookCollections.LIBRARY]: ProfileEndpoints.LIBRARY,
-  };
+const endpointMap = {
+  [BookCollections.WISHLIST]: ProfileEndpoints.WISHLIST,
+  [BookCollections.LIBRARY]: ProfileEndpoints.LIBRARY,
+};
 
 export const addBookToCollections = async (
   userId: number,
@@ -100,6 +100,7 @@ export const fetchMostPopularBooks = async () => {
 
   const result = await response.json();
 
+  // TODO: Include publisher field in API response and display it in BookDetail page
   const transformedData = result.map((item) => ({
     id: item.id,
     title: item.title,
@@ -135,8 +136,8 @@ export const fetchBooksByTitle = async (bookTitle: string) => {
     throw new Error("Invalid or missing data structure from the server.");
   }
 
-  
- return mapBooksData(data.editions);
+
+  return mapBooksData(data.editions);
 
 };
 
@@ -158,5 +159,5 @@ export const fetchBooksByISBN = async (isbn: string) => {
   if (!data || !data.editions || !Array.isArray(data.editions)) {
     throw new Error("Invalid or missing data structure from the server.");
   }
-  return  mapBooksData(data.editions);;
+  return mapBooksData(data.editions);;
 };

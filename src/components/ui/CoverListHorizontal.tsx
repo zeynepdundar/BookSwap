@@ -6,7 +6,7 @@ export const CoverListHorizontal = ({
   removeBook = null,
   navigation = null,
 }) => {
-  
+
   const renderBookCover = (item) => (
     <Box position="relative">
       <AspectRatio ratio={2 / 3} w="100%">
@@ -38,6 +38,7 @@ export const CoverListHorizontal = ({
     </Box>
   );
 
+  console.log("data",data)
   return (
     <FlatList
       data={data}
@@ -46,10 +47,10 @@ export const CoverListHorizontal = ({
       extraData={data}
       keyExtractor={(item) => item.id.toString()}
       // 🔥 paddingHorizontal kaldırıldı çünkü ana ekranın padding'ini kullanıyoruz
-      contentContainerStyle={{ paddingLeft: 0, paddingRight: 16 }} 
+      contentContainerStyle={{ paddingLeft: 0, paddingRight: 16 }}
       renderItem={({ item }) => (
         // Orijinal büyük boyutlara geri dönüldü
-        <Box w="110px" mr="4"> 
+        <Box w="110px" mr="4">
           {!!removeBook ? (
             renderBookCover(item)
           ) : (
@@ -60,24 +61,25 @@ export const CoverListHorizontal = ({
               {renderBookCover(item)}
 
               {/* Kitap Adı */}
-              <Box h="30px" mt={2} justifyContent="flex-start">
+              <Box mt={2} h="36px" justifyContent="flex-start">
                 <Text
-                  color="coolGray.900"
-                  fontWeight="semibold"
-                  fontSize="13px"
+                  color="gray.900"
+                  fontFamily="poppins-semi-bold"
+                  fontSize="sm"
+                  lineHeight="18px"
                   numberOfLines={2}
-                  lineHeight="xs"
                 >
                   {item.title}
                 </Text>
               </Box>
 
               {/* Yazar Adı */}
-              <Box mt={1} h="16px" justifyContent="flex-start">
+              <Box mt={1}>
                 <Text
-                  color="coolGray.500"
-                  fontSize="11px"
-                  fontWeight="medium"
+                  color="gray.400"
+                  fontSize="xs"
+                  lineHeight="16px"
+                  fontFamily="poppins-medium"
                   numberOfLines={1}
                 >
                   {item.author}

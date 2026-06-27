@@ -100,11 +100,11 @@ export default function SwapOfferAcceptedScreen({ navigation, route }) {
 
             {/* buttons */}
             <VStack space={3} width="100%" mt={6}>
-              <Button onPress={goToChatScreen} variant="primary" borderRadius="xl">
+              <Button onPress={goToChatScreen} variant="primary">
                 Open Chat
               </Button>
 
-              <Button onPress={goHome} variant="outline" borderRadius="xl">
+              <Button onPress={goHome} variant="outline">
                 Back to Home
               </Button>
             </VStack>

@@ -176,19 +176,19 @@ function OfferCard({
             />
           </Center>
 
-        <BookColumn book={rightBook} />
-      </HStack>
+          <BookColumn book={rightBook} />
+        </HStack>
 
-      {/* ACTIONS */}
-      {renderActions ? (
-        <>
-          <Divider bg="coolGray.100" />
-          <Box px={4} py={3}>
-            {renderActions(item)}
-          </Box>
-        </>
-      ) : null}
-    </Box>
+        {/* ACTIONS */}
+        {renderActions ? (
+          <>
+            <Divider bg="coolGray.100" />
+            <Box px={4} py={3}>
+              {renderActions(item)}
+            </Box>
+          </>
+        ) : null}
+      </Box>
     </Box >
   );
 }
@@ -225,21 +225,23 @@ export const SwapOffersList: React.FC<SwapOffersListProps> = ({
             as={MaterialIcons}
             name={emptyState.iconName}
             size="lg"
-            color="primary.600"
+            color="primary.500"
           />
         </Box>
 
-        <Text fontSize="18" fontWeight="500" color="#111827" textAlign="center">
+        <Text fontSize="lg"
+          color="gray.900"
+          textAlign="center"
+          fontFamily="poppins-medium">
           {emptyState.title}
         </Text>
 
         <Text
           fontSize="sm"
-          fontWeight="400"
+          color="gray.500"
           textAlign="center"
-          color="#6B7280"
+          lineHeight={20}
           px="8"
-          lineHeight="20px"
         >
           {emptyState.subtitle}
         </Text>

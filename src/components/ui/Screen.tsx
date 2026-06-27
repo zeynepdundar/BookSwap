@@ -27,7 +27,7 @@ export const Screen: React.FC<ScreenProps> = ({
   const paddingTop = full ? 0 : (insets.top > 0 ? insets.top : 16); 
   
   // Alt boşluk: Tab bar absolute olmadığı için hafif bir nefes payı yeterli
-  const paddingBottom = full ? 0 : 16; 
+  const paddingBottom = full ? 0 : insets.bottom; 
 
   if (scroll) {
     return (

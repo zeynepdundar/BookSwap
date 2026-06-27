@@ -77,7 +77,6 @@ export default function WishlistInputScreen({ navigation }) {
             onPress={pressHandler}
             w={{ base: "250", lg: "200" }}
             h="12"
-            borderRadius="16"
           >
             {i18n.t("continue")}
           </Button>
