@@ -205,7 +205,7 @@ export default function LibraryScreen({ navigation, route }) {
               color="white"
               fontFamily="poppins-semi-bold"
             >
-              Add
+              {i18n.t("add")}
             </Text>
           </Box>
         </Pressable>
