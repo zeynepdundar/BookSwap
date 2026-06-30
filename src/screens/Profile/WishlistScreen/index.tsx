@@ -157,7 +157,7 @@ export default function WishlistScreen({ navigation }) {
             <Icon as={MaterialIcons} name="add" color="white" size="sm" />
 
             <Text ml={2}  fontFamily="poppins-semi-bold" color="white">
-              Add
+              {i18n.t("add")}
             </Text>
           </Box>
         </Pressable>
