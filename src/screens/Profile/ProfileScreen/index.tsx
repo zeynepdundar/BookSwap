@@ -67,8 +67,18 @@ export default function ProfileScreen({ navigation }) {
       label: i18n.t("my-wishlist"),
       onPress: () => navigation.navigate("Wishlist"),
       rightContent: (
-        <Box px={2} py={0.5} rounded="full" bg="primary.100">
-          <Text fontSize="xs" fontWeight="600" color="primary.600">
+        <Box
+          size={6}
+          rounded="full"
+          bg="primary.100"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Text
+            fontSize="xs"
+            fontFamily="poppins-semi-bold"
+            color="primary.600"
+          >
             {wishlistBookIds?.length ?? 0}
           </Text>
         </Box>
@@ -80,8 +90,18 @@ export default function ProfileScreen({ navigation }) {
       label: i18n.t("my-library"),
       onPress: () => navigation.navigate("Library"),
       rightContent: (
-        <Box px={2} py={0.5} rounded="full" bg="primary.100">
-          <Text fontSize="xs" fontWeight="600" color="primary.600">
+        <Box
+          size={6}
+          rounded="full"
+          bg="primary.100"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Text
+            fontSize="xs"
+            fontFamily="poppins-semi-bold"
+            color="primary.600"
+          >
             {libraryBookIds?.length ?? 0}
           </Text>
         </Box>
@@ -186,14 +206,17 @@ export default function ProfileScreen({ navigation }) {
             selectedImage={handleImageUpload}
             initialImage={imageData}
           />
-
-          <Text fontSize="xl"  fontFamily="poppins-bold">
+          <Text
+            fontSize="xl"
+            fontFamily="poppins-semi-bold"
+            color="gray.900"
+          >
             {name}
           </Text>
         </VStack>
 
         {/* Menu */}
-        <VStack w="100%" space={1}>
+        <VStack w="100%" space={2}>
           {menuItems.map(({ key, ...item }) => (
             <ProfileMenuItem key={key} {...item} />
           ))}

@@ -35,39 +35,40 @@ import { IMAGE_FALLBACKS } from "@/constants/image";
 export default function MessagesScreen({ navigation }) {
   const [isFetchingUserData, setIsFetchingUserData] = useState(true);
   const [userProfiles, setUserProfiles] = useState({});
+
   const { firebaseUserId } = useSelector((state: any) => state.auth.user);
   const { loading: isMessagesLoading, messages } =
     useMessageSubscription(firebaseUserId);
 
   const profileData = useSelector((state: RootState) => state.profile.profile);
-
   const { languagePreference } = profileData;
 
   const fetchUserProfiles = async () => {
     try {
-      if (!messages || messages.length === 0) {
+      if (!messages?.length) {
         setIsFetchingUserData(false);
         return;
       }
 
-      const userIds = messages.map((message) => message.userId);
-      const userProfilesPromises = userIds.map((userId) =>
-        fetchUserProfileData(userId).then((userProfile) => ({
-          ...userProfile,
-          userId: userId,
-        }))
-      );
-      const fetchedUserProfiles = await Promise.all(userProfilesPromises);
+      const userIds = messages.map((m) => m.userId);
 
-      const newUserProfiles = fetchedUserProfiles.reduce((acc, userProfile) => {
-        const { userId, name, imageData } = userProfile;
-        acc[userId] = { userId, name, imageData };
+      const results = await Promise.all(
+        userIds.map((userId) =>
+          fetchUserProfileData(userId).then((profile) => ({
+            ...profile,
+            userId,
+          }))
+        )
+      );
+
+      const map = results.reduce((acc, user) => {
+        acc[user.userId] = user;
         return acc;
       }, {});
 
-      setUserProfiles(newUserProfiles);
-    } catch (error) {
-      console.error("Error fetching user profiles:", error);
+      setUserProfiles(map);
+    } catch (e) {
+      console.error(e);
     } finally {
       setIsFetchingUserData(false);
     }
@@ -79,42 +80,34 @@ export default function MessagesScreen({ navigation }) {
     }
   }, [messages, isMessagesLoading]);
 
-  // Return early if data is still loading or user id is not ready
   if (!firebaseUserId || isFetchingUserData || isMessagesLoading) {
     return <LoadingOverlay />;
   }
+
+  const handleResetUnseenCount = (friendUserId, firebaseUserId) => {
+    resetUnseenCount({ friendUserId, firebaseUserId });
+  };
 
   const handleStartChat = (friend) => {
     const conversationId = generateConversationId(
       friend.userId,
       firebaseUserId
     );
+
     handleResetUnseenCount(friend.userId, firebaseUserId);
 
     navigation.navigate("ChatScreen", {
-      conversationId: conversationId,
-      friend: friend,
+      conversationId,
+      friend,
     });
   };
-
-  const handleResetUnseenCount = (friendUserId, firebaseUserId) => {
-    resetUnseenCount({ friendUserId, firebaseUserId });
-  };
-
 
   return (
     <Screen full>
       <ScreenHeader title={i18n.t("messages")} />
 
-      {/* EMPTY STATE */}
-      {!messages || messages.length === 0 ? (
-        <VStack
-          flex={1}
-          px="6"
-          justifyContent="center"
-          alignItems="center"
-          space={4}
-        >
+      {!messages?.length ? (
+        <VStack flex={1} px={6} justifyContent="center" alignItems="center" space={4}>
           <Box
             w="64px"
             h="64px"
@@ -144,8 +137,7 @@ export default function MessagesScreen({ navigation }) {
             fontSize="sm"
             color="gray.500"
             textAlign="center"
-            lineHeight={20}
-            px="8"
+            px={8}
           >
             {i18n.t("check-book-offers-to-get-started")}
           </Text>
@@ -154,14 +146,12 @@ export default function MessagesScreen({ navigation }) {
             onPress={() =>
               navigation.navigate("HomeTabs", {
                 screen: "Swaps",
-                params: { screen: "Received" }
-              })}
-
+                params: { screen: "Received" },
+              })
+            }
             variant="primary"
             rounded="full"
             mt={4}
-            px={2}
-            py={3}
           >
             {i18n.t("browse-offers")}
           </Button>
@@ -173,14 +163,14 @@ export default function MessagesScreen({ navigation }) {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingTop: 8,
-            paddingHorizontal: 16,
             paddingBottom: 24,
+            paddingHorizontal: 24, // ✅ consistent system
           }}
           ItemSeparatorComponent={() => (
-            <Divider ml={15} bg="coolGray.100" />
+            <Divider ml={16} bg="gray.200" />
           )}
           renderItem={({ item }) => {
-            const friendProfile = userProfiles[item.userId] ?? {
+            const friend = userProfiles[item.userId] ?? {
               userId: item.userId,
             };
 
@@ -188,22 +178,19 @@ export default function MessagesScreen({ navigation }) {
 
             return (
               <Pressable
-                onPress={() => handleStartChat(friendProfile)}
-                _pressed={{
-                  bg: "coolGray.50",
-                }}
+                onPress={() => handleStartChat(friend)}
+                _pressed={{ bg: "gray.50" }}
                 rounded="lg"
               >
                 <Flex
                   direction="row"
                   alignItems="center"
                   py={3.5}
-                  px={1}
                 >
                   {/* Avatar */}
                   <Image
                     source={getImageSource(
-                      friendProfile?.imageData,
+                      friend?.imageData,
                       IMAGE_FALLBACKS.USER_AVATAR
                     )}
                     alt="Profile Image"
@@ -215,44 +202,43 @@ export default function MessagesScreen({ navigation }) {
                   <VStack flex={1} ml={3} space={0.5}>
                     <Text
                       fontSize="md"
-                      fontWeight={isUnread ? "700" : "500"}
-                      color="coolGray.900"
+                      fontFamily={
+                        isUnread ? "poppins-semi-bold" : "poppins-medium"
+                      }
+                      color="gray.900"
                       numberOfLines={1}
                     >
-                      {friendProfile?.name ?? i18n.t("user")}
+                      {friend?.name ?? i18n.t("user")}
                     </Text>
 
                     <Text
                       fontSize="sm"
-                      color={isUnread ? "coolGray.700" : "coolGray.500"}
-                      fontWeight={isUnread ? "500" : "400"}
+                      color="gray.500"
                       numberOfLines={1}
                     >
                       {item.lastMessageIsMine && (
-                        <Text
-                          fontWeight="600"
-                          color="coolGray.700"
-                        >
+                        <Text fontFamily="poppins-semi-bold" color="gray.700">
                           {i18n.t("you")}:{" "}
                         </Text>
                       )}
-
                       {truncateText(item.lastMessageText, 32)}
                     </Text>
                   </VStack>
 
-                  {/* Meta */}
+                  {/* Right side */}
                   <VStack
                     alignItems="flex-end"
                     justifyContent="center"
                     ml={3}
                     minW="52px"
-                    space={1.5}
+                    space={1}
                   >
                     <Text
                       fontSize="xs"
-                      color={isUnread ? "primary.500" : "coolGray.400"}
-                      fontWeight={isUnread ? "600" : "400"}
+                      color={isUnread ? "primary.500" : "gray.400"}
+                      fontFamily={
+                        isUnread ? "poppins-semi-bold" : "poppins-regular"
+                      }
                     >
                       {formatLastMessageTime(
                         item.lastMessageTime,
@@ -268,15 +254,16 @@ export default function MessagesScreen({ navigation }) {
                         h="22px"
                         alignItems="center"
                         justifyContent="center"
+                        px={0}
                         _text={{
-                          color: "white",
                           fontSize: 11,
-                          fontWeight: "700",
+                          color: "white",
+                          fontFamily: "poppins-bold",
+                          textAlign: "center",
+                          lineHeight: 14,
                         }}
                       >
-                        {item.unseenCount > 99
-                          ? "99+"
-                          : item.unseenCount}
+                        {item.unseenCount > 99 ? "99+" : item.unseenCount}
                       </Badge>
                     )}
                   </VStack>

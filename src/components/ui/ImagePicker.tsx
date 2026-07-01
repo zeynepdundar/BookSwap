@@ -1,121 +1,128 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Actionsheet,
-  AddIcon,
   Badge,
   Image,
   Pressable,
-  Alert,
+  Icon,
 } from "native-base";
 import {
   launchCameraAsync,
   launchImageLibraryAsync,
   useCameraPermissions,
-  PermissionStatus,
+  useMediaLibraryPermissions,
 } from "expo-image-picker";
+import { MaterialIcons } from "@expo/vector-icons";
+
 import * as FileSystem from "expo-file-system/legacy";
-import i18n from "@/i18n";
 import { useAppToast } from "@/hooks/useAppToast";
 import { IMAGE_FALLBACKS } from "@/constants/image";
+import { ActionSheet } from "./ActionSheet";
 
 
-const MAX_IMAGE_SIZE_MB = 10; // Maximum allowed size in MB
+const MAX_IMAGE_SIZE_MB = 10;
 
 const ImagePicker = ({
   selectedImage,
   initialImage,
 }: {
-  selectedImage: (data: any) => void;
-  initialImage?: any;
+  selectedImage: (data: string) => void;
+  initialImage?: string;
 }) => {
   const [pickedImage, setPickedImage] = useState(initialImage || "");
+  const [isOpen, setIsOpen] = useState(false);
+
   const toast = useAppToast();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [cameraPermissionInformation, requestPermission] =
-    useCameraPermissions();
+
+  const [, requestCameraPermission] = useCameraPermissions();
+
+  const [, requestLibraryPermission] =
+    useMediaLibraryPermissions();
+
+
   const onClose = () => {
     setIsOpen(false);
   };
 
-  const verifyPermissions = async () => {
-    if (cameraPermissionInformation.status === PermissionStatus.UNDETERMINED) {
-      const permissionResponse = await requestPermission();
-      return permissionResponse.granted;
-    }
-
-    if (cameraPermissionInformation.status === PermissionStatus.DENIED) {
-      Alert("Insufficient Permissions");
-      return false;
-    }
-
-    return true;
-  };
 
   const getImageSize = async (imageUri: string) => {
     try {
       const imageInfo = await FileSystem.getInfoAsync(imageUri);
-      return imageInfo.size; // Size in bytes
+
+      return imageInfo.size ?? 0;
     } catch (error) {
       console.error("Error getting image size:", error);
       return 0;
     }
   };
 
+
   const checkImageSizeAndSet = async (newImageUri: string) => {
     const fileSizeInBytes = await getImageSize(newImageUri);
-    const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+    const fileSizeInMB =
+      fileSizeInBytes / (1024 * 1024);
+
 
     if (fileSizeInMB <= MAX_IMAGE_SIZE_MB) {
       setPickedImage(newImageUri);
-      selectedImage( newImageUri );
+      selectedImage(newImageUri);
     } else {
       toast.error(
         `The selected image is too large. Maximum allowed size is ${MAX_IMAGE_SIZE_MB} MB.`
       );
     }
-
   };
+
 
   const takeImageHandler = async () => {
     setIsOpen(false);
 
-    const hasPermission = await verifyPermissions();
+    const permission = await requestCameraPermission();
 
-    if (!hasPermission) {
+    if (!permission.granted) {
       return;
     }
 
+
     const image = await launchCameraAsync({
       allowsEditing: true,
-      aspect: [16, 9],
+      aspect: [1, 1],
       quality: 0.5,
     });
 
+
     if (!image.canceled) {
-      const newImageUri = image.assets[0].uri;
-      await checkImageSizeAndSet(newImageUri);
+      await checkImageSizeAndSet(
+        image.assets[0].uri
+      );
     }
   };
+
 
   const uploadImageHandler = async () => {
     setIsOpen(false);
 
-    const hasPermission = await verifyPermissions();
+    const permission = await requestLibraryPermission();
 
-    if (!hasPermission) {
+    if (!permission.granted) {
       return;
     }
 
+
     const result = await launchImageLibraryAsync({
       allowsEditing: true,
+      aspect: [1, 1],
       quality: 1,
     });
 
+
     if (!result.canceled) {
-      const newImageUri = result.assets[0].uri;
-      await checkImageSizeAndSet(newImageUri);
+      await checkImageSizeAndSet(
+        result.assets[0].uri
+      );
     }
   };
+
 
   useEffect(() => {
     if (initialImage) {
@@ -123,45 +130,72 @@ const ImagePicker = ({
     }
   }, [initialImage]);
 
+
+  const imageActions = [
+    {
+      type: "upload",
+      label: "upload-photo",
+      onPress: uploadImageHandler,
+    },
+    {
+      type: "camera",
+      label: "take-photo",
+      onPress: takeImageHandler,
+    },
+    {
+      type: "cancel",
+      label: "cancel",
+      onPress: onClose,
+    },
+  ];
+
+
   return (
     <>
       <Pressable
         onPress={() => setIsOpen(true)}
-        width="40%"
-        height="120px"
         borderRadius="full"
       >
         <Image
-          source={pickedImage ? { uri: pickedImage } : IMAGE_FALLBACKS.USER_AVATAR}
+          source={
+            pickedImage
+              ? { uri: pickedImage }
+              : IMAGE_FALLBACKS.USER_AVATAR
+          }
           alt="Profile Image"
           rounded="full"
           size={120}
         />
+
         <Badge
-          rounded="100"
+          rounded="full"
           w="7"
           h="7"
-          bg="#F2F2F2"
+          bg="gray.100"
           position="absolute"
           right={0}
           bottom={0}
+          alignItems="center"
+          justifyContent="center"
         >
-          <AddIcon color="#545454" />
+          <Icon
+            as={MaterialIcons}
+            name="photo-camera"
+            size="sm"
+            color="gray.700"
+          />
         </Badge>
       </Pressable>
-      <Actionsheet isOpen={isOpen} onClose={onClose}>
-        <Actionsheet.Content>
-          <Actionsheet.Item onPress={uploadImageHandler}>
-            {i18n.t("upload-photo")}
-          </Actionsheet.Item>
-          <Actionsheet.Item onPress={takeImageHandler}>
-            {i18n.t("take-photo")}
-          </Actionsheet.Item>
-          <Actionsheet.Item onPress={onClose}>Cancel</Actionsheet.Item>
-        </Actionsheet.Content>
-      </Actionsheet>
+
+
+      <ActionSheet
+        isOpen={isOpen}
+        onClose={onClose}
+        actions={imageActions}
+      />
     </>
   );
 };
+
 
 export default ImagePicker;

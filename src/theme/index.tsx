@@ -12,8 +12,8 @@ export const theme = extendTheme({
   },
   colors: {
     primary: {
-      50: "#F5F0FF",  // background tint... cards empty states onboarding backgrounds
-      100: "#E7DCFF",  // surfaces
+      50: "#F7F3FF",  // background tint... cards empty states onboarding backgrounds
+      100: "#EFE6FF",  // surfaces
       500: "#7F3DFF",  // main brand .. Get Started Swap button Active navigation
       600: "#6E2EE6",  // pressed/active
     },
@@ -77,15 +77,19 @@ export const theme = extendTheme({
       },
       sizes: {
         sm: {
-          _text: {
-            px: 2,
-            fontSize: "xs",
-            fontFamily: "poppins-semi-bold",
-          },
+          px: 3,
+          py: 2,
+          _text: { fontSize: "sm" },
         },
         md: {
-          px: 4,
-          py: 2,
+          px: 5,
+          py: 3,
+          _text: { fontSize: "md" },
+        },
+        lg: {
+          px: 6,
+          py: 4,
+          _text: { fontSize: "lg" },
         },
       },
       variants: {
